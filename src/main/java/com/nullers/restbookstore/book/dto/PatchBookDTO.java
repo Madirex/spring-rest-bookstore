@@ -5,6 +5,8 @@ import lombok.Getter;
 
 /**
  * Class PatchBookDTO
+ *
+ * @Author Madirex
  */
 @Getter
 @Builder

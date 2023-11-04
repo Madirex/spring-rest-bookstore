@@ -7,6 +7,8 @@ import lombok.Getter;
 
 /**
  * Class CreateBookDTO
+ *
+ * @Author Madirex
  */
 @Getter
 @Builder
