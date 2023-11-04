@@ -13,6 +13,8 @@ import java.util.UUID;
 
 /**
  * Clase BookMapper
+ *
+ * @Author Madirex
  */
 @Component
 public class BookMapperImpl implements BookMapper {

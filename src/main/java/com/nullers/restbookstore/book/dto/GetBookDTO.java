@@ -8,6 +8,8 @@ import java.util.UUID;
 
 /**
  * Class GetBookDTO
+ *
+ * @Author Madirex
  */
 @Getter
 @Builder

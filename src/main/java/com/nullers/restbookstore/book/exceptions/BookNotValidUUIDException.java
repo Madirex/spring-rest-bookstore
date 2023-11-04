@@ -5,6 +5,8 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 
 /**
  * Class BookNotValidUUIDException
+ *
+ * @Author Madirex
  */
 @ResponseStatus(HttpStatus.BAD_REQUEST)
 public class BookNotValidUUIDException extends BookException {

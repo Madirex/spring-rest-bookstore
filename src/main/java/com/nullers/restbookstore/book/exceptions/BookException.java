@@ -2,6 +2,8 @@ package com.nullers.restbookstore.book.exceptions;
 
 /**
  * Class BookException
+ *
+ * @Author Madirex
  */
 public abstract class BookException extends RuntimeException {
     /**
