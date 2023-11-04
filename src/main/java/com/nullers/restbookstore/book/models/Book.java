@@ -16,6 +16,8 @@ import java.util.UUID;
 
 /**
  * Clase Book
+ *
+ * @Author Madirex
  */
 @NoArgsConstructor
 @AllArgsConstructor
@@ -25,6 +27,8 @@ import java.util.UUID;
 @Builder
 @Entity
 public class Book {
+    public static final String IMAGE_DEFAULT = "https://books.madirex.com/favicon.ico";
+
     @NotNull
     @Id
     private UUID id;
