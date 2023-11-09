@@ -5,7 +5,7 @@ build/
 !**/src/main/**/build/
 !**/src/test/**/build/
 /book-images/
-
+NOADD/
 ### STS ###
 .apt_generated
 .classpath
