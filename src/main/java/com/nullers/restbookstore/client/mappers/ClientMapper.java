@@ -13,7 +13,7 @@ public class ClientMapper {
                 .email(dto.getEmail())
                 .phone(dto.getPhone())
                 .address(dto.getAddress())
-                .qrImage(dto.getQrImage())
+                .books(dto.getBooks())
                 .build();
     }
 
@@ -25,7 +25,7 @@ public class ClientMapper {
                 .email(entity.getEmail())
                 .phone(entity.getPhone())
                 .address(entity.getAddress())
-                .qrImage(entity.getQrImage())
+                .books(entity.getBooks())
                 .build();
     }
 

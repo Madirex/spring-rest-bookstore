@@ -12,7 +12,6 @@ public class ClientCreateMapper {
                 .email(dto.getEmail())
                 .phone(dto.getPhone())
                 .address(dto.getAddress())
-                .qrImage(dto.getQrImage())
                 .build();
     }
 
@@ -23,7 +22,6 @@ public class ClientCreateMapper {
                 .email(entity.getEmail())
                 .phone(entity.getPhone())
                 .address(entity.getAddress())
-                .qrImage(entity.getQrImage())
                 .build();
     }
 
