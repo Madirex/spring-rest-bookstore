@@ -1,5 +1,6 @@
 package com.nullers.restbookstore.client.dto;
 
+import com.nullers.restbookstore.NOADD.models.Book;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -20,7 +21,6 @@ public class ClientDto {
     private String email;
     private String phone;
     private String address;
-    private String qrImage;
-    private List<UUID> booksId;
+    private List<Book> books;
 
 }
