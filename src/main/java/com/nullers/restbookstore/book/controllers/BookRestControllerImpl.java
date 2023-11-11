@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -202,7 +203,7 @@ public class BookRestControllerImpl implements BookRestController {
     public ResponseEntity<GetBookDTO> newBookImg(
             @PathVariable String id,
             @RequestPart("file") MultipartFile file) throws BookNotValidUUIDException, PublisherNotFoundException,
-            BookNotFoundException, PublisherNotValidIDException {
+            BookNotFoundException, PublisherNotValidIDException, IOException {
         if (!file.isEmpty()) {
             return ResponseEntity.ok(service.updateImage(id, file, true));
         } else {
