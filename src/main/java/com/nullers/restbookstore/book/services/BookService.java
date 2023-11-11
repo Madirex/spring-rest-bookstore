@@ -10,6 +10,7 @@ import com.nullers.restbookstore.book.exceptions.BookNotFoundException;
 import com.nullers.restbookstore.book.exceptions.BookNotValidUUIDException;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 
 /**
@@ -28,5 +29,5 @@ public interface BookService {
 
     void deleteBook(String id) throws BookNotFoundException, BookNotValidUUIDException;
 
-    GetBookDTO updateImage(String id, MultipartFile image, Boolean withUrl) throws BookNotFoundException, BookNotValidUUIDException, PublisherNotFoundException, PublisherNotValidIDException;
+    GetBookDTO updateImage(String id, MultipartFile image, Boolean withUrl) throws BookNotFoundException, BookNotValidUUIDException, PublisherNotFoundException, PublisherNotValidIDException, IOException;
 }
