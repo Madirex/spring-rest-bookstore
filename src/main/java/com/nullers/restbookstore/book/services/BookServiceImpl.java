@@ -34,6 +34,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
@@ -256,15 +257,15 @@ public class BookServiceImpl implements BookService {
     @CachePut(key = "#result.id")
     @Transactional
     public GetBookDTO updateImage(String id, MultipartFile image, Boolean withUrl) throws BookNotFoundException,
-            BookNotValidUUIDException, PublisherNotFoundException, PublisherNotValidIDException {
+            BookNotValidUUIDException, PublisherNotFoundException, PublisherNotValidIDException, IOException {
         try {
             UUID uuid = UUID.fromString(id);
             var actualBook = bookRepository.findById(uuid).orElseThrow(() -> new BookNotFoundException(id));
+            String imageStored = storageService.store(image, List.of("jpg", "jpeg", "png"), id);
+            String imageUrl = Boolean.FALSE.equals(withUrl) ? imageStored : storageService.getUrl(imageStored);
             if (actualBook.getImage() != null && !actualBook.getImage().equals(Book.IMAGE_DEFAULT)) {
                 storageService.delete(actualBook.getImage());
             }
-            String imageStored = storageService.store(image);
-            String imageUrl = Boolean.FALSE.equals(withUrl) ? imageStored : storageService.getUrl(imageStored);
             return patchBook(id, PatchBookDTO.builder()
                     .image(imageUrl)
                     .build());
