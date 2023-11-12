@@ -189,7 +189,7 @@ public class ClientController {
      */
     @PatchMapping("{id}/books/add")
     public ResponseEntity<ClientDto> updatePatchBook(@PathVariable UUID id, @RequestParam UUID idBook) {
-        return ResponseEntity.ok(clientService.addBookOfClient(id, idBook));
+        return ResponseEntity.ok(clientService.addBookToClient(id, idBook));
     }
 
     /**
@@ -226,7 +226,7 @@ public class ClientController {
      */
     @ExceptionHandler(ClientNotFound.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
-    public ErrorResponse handleFunkoNotFound(ClientNotFound exception){
+    public ErrorResponse handleClientNotFound(ClientNotFound exception){
         return new ErrorResponse(HttpStatus.NOT_FOUND.value(), exception.getMessage());
     }
 
@@ -237,7 +237,7 @@ public class ClientController {
      */
     @ExceptionHandler(ClientAlreadyExists.class)
     @ResponseStatus(HttpStatus.CONFLICT)
-    public ErrorResponse handleFunkoNotFound(ClientAlreadyExists exception){
+    public ErrorResponse handleClientAlreadyExists(ClientAlreadyExists exception){
         return new ErrorResponse(HttpStatus.CONFLICT.value(), exception.getMessage());
     }
 
@@ -248,7 +248,7 @@ public class ClientController {
      */
     @ExceptionHandler(BookNotFoundException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
-    public ErrorResponse handleFunkoNotFound(BookNotFoundException exception){
+    public ErrorResponse handleBookException(BookNotFoundException exception){
         return new ErrorResponse(HttpStatus.NOT_FOUND.value(), exception.getMessage());
     }
 
@@ -259,7 +259,7 @@ public class ClientController {
      */
     @ExceptionHandler(ClientBadRequest.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ErrorResponse handleFunkoNotFound(ClientBadRequest exception){
+    public ErrorResponse handleClientBadRequest(ClientBadRequest exception){
         return new ErrorResponse(HttpStatus.BAD_REQUEST.value(), exception.getMessage());
     }
 
@@ -270,7 +270,7 @@ public class ClientController {
      */
     @ExceptionHandler(PropertyReferenceException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ErrorResponse handleFunkoNotFound(PropertyReferenceException exception){
+    public ErrorResponse handlePropertyReferenceException(PropertyReferenceException exception){
         return new ErrorResponse(HttpStatus.BAD_REQUEST.value(), exception.getMessage());
     }
 
@@ -282,7 +282,7 @@ public class ClientController {
      */
     @ExceptionHandler(IllegalArgumentException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ErrorResponse handleFunkoNotFound(IllegalArgumentException exception){
+    public ErrorResponse handleIllegelAlrgumentException(IllegalArgumentException exception){
         return new ErrorResponse(HttpStatus.BAD_REQUEST.value(), exception.getMessage());
     }
 
