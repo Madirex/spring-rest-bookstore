@@ -8,6 +8,8 @@ import com.nullers.restbookstore.rest.book.dto.PatchBookDTO;
 import com.nullers.restbookstore.rest.book.dto.UpdateBookDTO;
 import com.nullers.restbookstore.rest.book.exceptions.BookNotFoundException;
 import com.nullers.restbookstore.rest.book.exceptions.BookNotValidUUIDException;
+import com.nullers.restbookstore.utils.pagination.PageResponse;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -15,8 +17,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 /**
  * Interface BookRestController
@@ -24,7 +26,16 @@ import java.util.Map;
  * @Author Madirex
  */
 public interface BookRestController {
-    ResponseEntity<List<GetBookDTO>> getAllBook(@Valid @RequestParam(required = false) String category);
+
+    public ResponseEntity<PageResponse<GetBookDTO>> getAllBook(
+            @Valid @RequestParam(required = false) Optional<String> publisher,
+            @RequestParam(required = false) Optional<Double> maxPrice,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(defaultValue = "id") String sortBy,
+            @RequestParam(defaultValue = "asc") String direction,
+            HttpServletRequest request
+    );
 
     ResponseEntity<GetBookDTO> getBookById(@Valid @PathVariable String id)
             throws BookNotValidUUIDException, BookNotFoundException;

@@ -9,8 +9,14 @@ import com.nullers.restbookstore.rest.book.dto.UpdateBookDTO;
 import com.nullers.restbookstore.rest.book.exceptions.BookNotFoundException;
 import com.nullers.restbookstore.rest.book.exceptions.BookNotValidUUIDException;
 import com.nullers.restbookstore.rest.book.services.BookServiceImpl;
+import com.nullers.restbookstore.utils.pagination.PageResponse;
+import com.nullers.restbookstore.utils.pagination.PaginationLinksUtils;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.MediaType;
@@ -20,11 +26,12 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
+import org.springframework.web.util.UriComponentsBuilder;
 
 import java.io.IOException;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 /**
  * Clase BookRestControllerImpl
@@ -37,15 +44,18 @@ public class BookRestControllerImpl implements BookRestController {
 
     public static final String PUBLISHER_ID_NOT_VALID_MSG = "ID de publisher no válido: ";
     private final BookServiceImpl service;
+    private final PaginationLinksUtils paginationLinksUtils;
 
     /**
      * Constructor de la clase
      *
-     * @param service Servicio de Book
+     * @param service              Servicio de Book
+     * @param paginationLinksUtils Utilidades para la paginación
      */
     @Autowired
-    public BookRestControllerImpl(BookServiceImpl service) {
+    public BookRestControllerImpl(BookServiceImpl service, PaginationLinksUtils paginationLinksUtils) {
         this.service = service;
+        this.paginationLinksUtils = paginationLinksUtils;
     }
 
     /**
@@ -56,12 +66,22 @@ public class BookRestControllerImpl implements BookRestController {
      */
     @GetMapping
     @Override
-    public ResponseEntity<List<GetBookDTO>> getAllBook(@Valid @RequestParam(required = false) String publisher) {
-        if (publisher != null && !publisher.isEmpty()) {
-            return ResponseEntity.ok(service.getAllBookFilterByPublisher(service.getAllBook(), publisher));
-        } else {
-            return ResponseEntity.ok(service.getAllBook());
-        }
+    public ResponseEntity<PageResponse<GetBookDTO>> getAllBook(
+            @Valid @RequestParam(required = false) Optional<String> publisher,
+            @RequestParam(required = false) Optional<Double> maxPrice,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(defaultValue = "id") String sortBy,
+            @RequestParam(defaultValue = "asc") String direction,
+            HttpServletRequest request
+    ) {
+        Sort sort = direction.equalsIgnoreCase(
+                Sort.Direction.ASC.name()) ? Sort.by(sortBy).ascending() : Sort.by(sortBy).descending();
+        UriComponentsBuilder uriBuilder = UriComponentsBuilder.fromHttpUrl(request.getRequestURL().toString());
+        Page<GetBookDTO> pageResult = service.getAllBook(publisher, maxPrice, PageRequest.of(page, size, sort));
+        return ResponseEntity.ok()
+                .header("link", paginationLinksUtils.createLinkHeader(pageResult, uriBuilder))
+                .body(PageResponse.of(pageResult, sortBy, direction));
     }
 
     /**
