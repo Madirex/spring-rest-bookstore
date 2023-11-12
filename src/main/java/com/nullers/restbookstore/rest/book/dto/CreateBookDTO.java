@@ -1,4 +1,4 @@
-package com.nullers.restbookstore.book.dto;
+package com.nullers.restbookstore.rest.book.dto;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -6,13 +6,13 @@ import lombok.Builder;
 import lombok.Getter;
 
 /**
- * Class UpdateBookDTO
+ * Class CreateBookDTO
  *
  * @Author Madirex
  */
 @Getter
 @Builder
-public class UpdateBookDTO {
+public class CreateBookDTO {
     @NotBlank(message = "El nombre no puede estar vacío")
     private String name;
 

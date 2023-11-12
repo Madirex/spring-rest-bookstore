@@ -1,4 +1,4 @@
-package com.nullers.restbookstore.book.exceptions;
+package com.nullers.restbookstore.rest.book.exceptions;
 
 /**
  * Class BookException

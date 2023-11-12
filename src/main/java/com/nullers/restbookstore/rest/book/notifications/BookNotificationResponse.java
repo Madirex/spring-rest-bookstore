@@ -1,4 +1,4 @@
-package com.nullers.restbookstore.book.notifications;
+package com.nullers.restbookstore.rest.book.notifications;
 
 /**
  * FunkoNotificationResponse
