@@ -2,24 +2,32 @@ package com.nullers.restbookstore.client.services;
 
 import com.nullers.restbookstore.client.dto.ClientCreateDto;
 import com.nullers.restbookstore.client.dto.ClientDto;
-import com.nullers.restbookstore.client.models.Client;
+import com.nullers.restbookstore.client.dto.ClientUpdateDto;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
-import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
 public interface ClientService {
 
-    List<ClientDto> findAll();
+    Page<ClientDto> findAll(
+            Optional<String> name,
+            Optional<String> surname,
+            Optional<String> email,
+            Optional<String> phone,
+            Optional<String> address,
+            Pageable pageable
+    );
 
     ClientDto findById(UUID id);
 
     ClientDto save(ClientCreateDto client);
 
 
-    ClientDto update(UUID id, ClientCreateDto client);
+    ClientDto update(UUID id, ClientUpdateDto client);
 
-    ClientDto findByEmail(String email);
+    Optional<ClientDto> findByEmail(String email);
 
     ClientDto addBookOfClient(UUID id, UUID bookId);
 
