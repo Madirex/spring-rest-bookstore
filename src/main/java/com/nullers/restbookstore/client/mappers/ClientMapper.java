@@ -3,8 +3,21 @@ package com.nullers.restbookstore.client.mappers;
 import com.nullers.restbookstore.client.dto.ClientDto;
 import com.nullers.restbookstore.client.models.Client;
 
+/**
+ * Mapea los datos de un cliente
+ * @author daniel
+ * @see ClientDto
+ * @see Client
+ */
 public class ClientMapper {
 
+    private ClientMapper(){}
+
+    /**
+     * Mapea los datos de un dto a un cliente
+     * @param dto Cliente a mapear
+     * @return Cliente mapeado
+     */
     public static Client toEntity(ClientDto dto){
         return Client.builder()
                 .id(dto.getId())
@@ -14,9 +27,16 @@ public class ClientMapper {
                 .phone(dto.getPhone())
                 .address(dto.getAddress())
                 .books(dto.getBooks())
+                .image(dto.getImage())
                 .build();
     }
 
+
+    /**
+     * Mapea los datos de un cliente a un dto
+     * @param entity Cliente a mapear
+     * @return ClientDto mapeado
+     */
     public static ClientDto toDto(Client entity){
         return ClientDto.builder()
                 .id(entity.getId())
@@ -26,6 +46,7 @@ public class ClientMapper {
                 .phone(entity.getPhone())
                 .address(entity.getAddress())
                 .books(entity.getBooks())
+                .image(entity.getImage())
                 .build();
     }
 
