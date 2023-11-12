@@ -20,6 +20,9 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+/**
+ * entidad User
+ */
 @Entity
 @Data
 @Builder

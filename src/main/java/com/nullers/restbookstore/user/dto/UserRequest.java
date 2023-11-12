@@ -12,6 +12,9 @@ import org.hibernate.validator.constraints.Length;
 
 import java.util.Set;
 
+/**
+ * Peticion de usuario para crear
+ */
 @Data
 @Builder
 @NoArgsConstructor

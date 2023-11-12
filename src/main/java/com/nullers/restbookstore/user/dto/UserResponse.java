@@ -9,6 +9,9 @@ import lombok.NoArgsConstructor;
 import java.util.Set;
 import java.util.UUID;
 
+/**
+ * Respuesta de usuario con info
+ */
 @Data
 @Builder
 @NoArgsConstructor
