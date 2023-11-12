@@ -1,14 +1,14 @@
-package com.nullers.restbookstore.book.controllers;
+package com.nullers.restbookstore.rest.book.controllers;
 
 import com.nullers.restbookstore.NOADD.PublisherNotFoundException;
 import com.nullers.restbookstore.NOADD.PublisherNotValidIDException;
-import com.nullers.restbookstore.book.dto.CreateBookDTO;
-import com.nullers.restbookstore.book.dto.GetBookDTO;
-import com.nullers.restbookstore.book.dto.PatchBookDTO;
-import com.nullers.restbookstore.book.dto.UpdateBookDTO;
-import com.nullers.restbookstore.book.exceptions.BookNotFoundException;
-import com.nullers.restbookstore.book.exceptions.BookNotValidUUIDException;
-import com.nullers.restbookstore.book.services.BookServiceImpl;
+import com.nullers.restbookstore.rest.book.dto.CreateBookDTO;
+import com.nullers.restbookstore.rest.book.dto.GetBookDTO;
+import com.nullers.restbookstore.rest.book.dto.PatchBookDTO;
+import com.nullers.restbookstore.rest.book.dto.UpdateBookDTO;
+import com.nullers.restbookstore.rest.book.exceptions.BookNotFoundException;
+import com.nullers.restbookstore.rest.book.exceptions.BookNotValidUUIDException;
+import com.nullers.restbookstore.rest.book.services.BookServiceImpl;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;

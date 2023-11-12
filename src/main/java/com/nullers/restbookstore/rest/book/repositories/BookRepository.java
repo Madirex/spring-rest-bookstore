@@ -1,6 +1,6 @@
-package com.nullers.restbookstore.book.repositories;
+package com.nullers.restbookstore.rest.book.repositories;
 
-import com.nullers.restbookstore.book.models.Book;
+import com.nullers.restbookstore.rest.book.models.Book;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
