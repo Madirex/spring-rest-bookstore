@@ -17,9 +17,9 @@ public class GlobalExceptionHandler {
                 .body("El tamaño del archivo excede el límite permitido. Máximo permitido: " + ex.getPermittedSize());
     }
 
-    @ExceptionHandler(Exception.class)
-    public ResponseEntity<String> handleInternalServerError(Exception ex) {
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                .body("Error al procesar la solicitud.");
-    }
+//    @ExceptionHandler(Exception.class)
+//    public ResponseEntity<String> handleInternalServerError(Exception ex) {
+//        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+//                .body("Error al procesar la solicitud.");
+//    }
 }
