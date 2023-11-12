@@ -8,16 +8,20 @@ import com.nullers.restbookstore.rest.book.dto.PatchBookDTO;
 import com.nullers.restbookstore.rest.book.dto.UpdateBookDTO;
 import com.nullers.restbookstore.rest.book.exceptions.BookNotFoundException;
 import com.nullers.restbookstore.rest.book.exceptions.BookNotValidUUIDException;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Interface BookService
  */
 public interface BookService {
-    List<GetBookDTO> getAllBook();
+    Page<GetBookDTO> getAllBook(Optional<String> category, Optional<Double> maxPrice, PageRequest pageable);
 
     GetBookDTO getBookById(String id) throws BookNotValidUUIDException, BookNotFoundException;
 
