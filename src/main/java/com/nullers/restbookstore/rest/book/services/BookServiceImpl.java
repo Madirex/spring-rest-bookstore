@@ -6,6 +6,9 @@ import com.nullers.restbookstore.NOADD.Publisher;
 import com.nullers.restbookstore.NOADD.PublisherNotFoundException;
 import com.nullers.restbookstore.NOADD.PublisherNotValidIDException;
 import com.nullers.restbookstore.NOADD.PublisherService;
+import com.nullers.restbookstore.config.websockets.WebSocketConfig;
+import com.nullers.restbookstore.config.websockets.WebSocketHandler;
+import com.nullers.restbookstore.notifications.models.Notification;
 import com.nullers.restbookstore.rest.book.dto.CreateBookDTO;
 import com.nullers.restbookstore.rest.book.dto.GetBookDTO;
 import com.nullers.restbookstore.rest.book.dto.PatchBookDTO;
@@ -17,9 +20,6 @@ import com.nullers.restbookstore.rest.book.mappers.BookNotificationMapper;
 import com.nullers.restbookstore.rest.book.models.Book;
 import com.nullers.restbookstore.rest.book.notifications.BookNotificationResponse;
 import com.nullers.restbookstore.rest.book.repositories.BookRepository;
-import com.nullers.restbookstore.config.websockets.WebSocketConfig;
-import com.nullers.restbookstore.config.websockets.WebSocketHandler;
-import com.nullers.restbookstore.notifications.models.Notification;
 import com.nullers.restbookstore.storage.service.StorageService;
 import com.nullers.restbookstore.utils.Util;
 import lombok.Setter;
@@ -30,6 +30,10 @@ import org.springframework.cache.annotation.CacheConfig;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -37,6 +41,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 /**
@@ -51,7 +56,6 @@ public class BookServiceImpl implements BookService {
 
     public static final String BOOK_NOT_FOUND_MSG = "No se ha encontrado el Book con el UUID indicado";
     public static final String NOT_VALID_FORMAT_UUID_MSG = "El UUID no tiene un formato válido";
-    public static final String PUBLISHER_ID_NOT_FOUND_MSG = "No se ha encontrado el publisher con el ID indicado.";
 
     private final BookRepository bookRepository;
     private final BookMapperImpl bookMapperImpl;
@@ -90,29 +94,40 @@ public class BookServiceImpl implements BookService {
     }
 
     /**
-     * Obtiene todos los Books filtrados por publisher
-     *
-     * @param bookList  Lista de Books a filtrar
-     * @param publisher publisher por la que filtrar
-     * @return Lista de Books filtrados por publisher
-     */
-    @Cacheable
-    public List<GetBookDTO> getAllBookFilterByPublisher(List<GetBookDTO> bookList, String publisher) {
-        return bookList.stream()
-                .filter(f -> f.getPublisher() != null && f.getPublisher().getName().equalsIgnoreCase(publisher))
-                .toList();
-    }
-
-    /**
      * Obtiene todos los Books
      *
+     * @param publisher Publisher por la que filtrar
+     * @param maxPrice  Precio máximo por el que filtrar
+     * @param pageable  Paginación
      * @return Lista de Books
      */
     @Cacheable
     @Override
-    public List<GetBookDTO> getAllBook() {
-        var list = bookRepository.findAll();
-        return bookMapperImpl.toBookList(list);
+    public Page<GetBookDTO> getAllBook(Optional<String> publisher, Optional<Double> maxPrice, PageRequest pageable) {
+        Specification<Book> specType = (root, query, criteriaBuilder) ->
+                publisher.map(m -> {
+                    try {
+                        return criteriaBuilder.equal(criteriaBuilder.upper(root.get("publisher").get("name")),
+                                m.toUpperCase());
+                    } catch (IllegalArgumentException e) {
+                        return criteriaBuilder.isTrue(criteriaBuilder.literal(false));
+                    }
+                }).orElseGet(() -> criteriaBuilder.isTrue(criteriaBuilder.literal(true)));
+
+        Specification<Book> specMaxPrice = (root, query, criteriaBuilder) ->
+                maxPrice.map(p -> criteriaBuilder.lessThanOrEqualTo(root.get("price"), p))
+                        .orElseGet(() -> criteriaBuilder.isTrue(criteriaBuilder.literal(true)));
+
+
+        Specification<Book> criterion = Specification.where(specType)
+                .and(specMaxPrice);
+
+        Page<Book> funkoPage = bookRepository.findAll(criterion, pageable);
+        List<GetBookDTO> dtoList = funkoPage.getContent().stream()
+                .map(bookMapperImpl::toGetBookDTO)
+                .toList();
+
+        return new PageImpl<>(dtoList, funkoPage.getPageable(), funkoPage.getTotalElements());
     }
 
     /**
