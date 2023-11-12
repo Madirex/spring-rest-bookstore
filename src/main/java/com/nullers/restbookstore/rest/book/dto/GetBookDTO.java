@@ -1,6 +1,7 @@
 package com.nullers.restbookstore.rest.book.dto;
 
 import com.nullers.restbookstore.NOADD.Publisher;
+import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
 import java.time.LocalDateTime;
@@ -23,6 +24,7 @@ public class GetBookDTO {
     @Setter
     private String image;
     private String description;
+    private Double price;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 }
