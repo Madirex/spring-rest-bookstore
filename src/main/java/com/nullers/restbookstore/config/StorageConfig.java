@@ -13,8 +13,13 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 @Slf4j
 public class StorageConfig {
+
+    private final StorageService storageService;
+
     @Autowired
-    private StorageService storageService;
+    public StorageConfig(StorageService storageService) {
+        this.storageService = storageService;
+    }
 
     @Value("${upload.delete}")
     private String deleteAll;
