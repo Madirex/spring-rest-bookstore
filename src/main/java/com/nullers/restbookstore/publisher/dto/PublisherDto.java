@@ -17,5 +17,6 @@ public class PublisherDto {
 
     private UUID id;
     private String name;
+    private String image;
     private Set<Book> books;
 }
