@@ -1,7 +1,7 @@
-package com.nullers.restbookstore.publisher.services;
+package com.nullers.restbookstore.rest.publisher.services;
 
-import com.nullers.restbookstore.publisher.dto.CreatePublisherDto;
-import com.nullers.restbookstore.publisher.dto.PublisherDto;
+import com.nullers.restbookstore.rest.publisher.dto.CreatePublisherDto;
+import com.nullers.restbookstore.rest.publisher.dto.PublisherDto;
 
 import java.util.List;
 import java.util.UUID;

@@ -1,10 +1,10 @@
-package com.nullers.restbookstore.publisher.controller;
+package com.nullers.restbookstore.rest.publisher.controller;
 
-import com.nullers.restbookstore.publisher.dto.CreatePublisherDto;
-import com.nullers.restbookstore.publisher.dto.PublisherDto;
-import com.nullers.restbookstore.publisher.exceptions.PublisherNotFound;
-import com.nullers.restbookstore.publisher.models.responses.ErrorResponse;
-import com.nullers.restbookstore.publisher.services.PublisherServiceImpl;
+import com.nullers.restbookstore.rest.publisher.dto.CreatePublisherDto;
+import com.nullers.restbookstore.rest.publisher.dto.PublisherDto;
+import com.nullers.restbookstore.rest.publisher.exceptions.PublisherNotFound;
+import com.nullers.restbookstore.rest.publisher.models.responses.ErrorResponse;
+import com.nullers.restbookstore.rest.publisher.services.PublisherServiceImpl;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -123,7 +123,7 @@ public class PublisherController {
     @ExceptionHandler(PublisherNotFound.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public ErrorResponse handlePublisherNotFound(PublisherNotFound exception){
-        return new com.nullers.restbookstore.publisher.models.responses.ErrorResponse(HttpStatus.NOT_FOUND.value(), exception.getMessage());
+        return new ErrorResponse(HttpStatus.NOT_FOUND.value(), exception.getMessage());
     }
 
     /**

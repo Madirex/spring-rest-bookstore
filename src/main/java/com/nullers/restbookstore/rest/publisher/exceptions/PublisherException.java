@@ -1,4 +1,4 @@
-package com.nullers.restbookstore.publisher.exceptions;
+package com.nullers.restbookstore.rest.publisher.exceptions;
 
 /**
  * Clase PublisherException

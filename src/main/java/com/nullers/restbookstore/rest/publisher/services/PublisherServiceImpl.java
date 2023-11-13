@@ -1,16 +1,15 @@
-package com.nullers.restbookstore.publisher.services;
+package com.nullers.restbookstore.rest.publisher.services;
 
-import com.nullers.restbookstore.publisher.dto.CreatePublisherDto;
-import com.nullers.restbookstore.publisher.dto.PublisherDto;
-import com.nullers.restbookstore.publisher.exceptions.PublisherNotFound;
-import com.nullers.restbookstore.publisher.mappers.CreatePublisherMapper;
-import com.nullers.restbookstore.publisher.mappers.PublisherMapper;
+import com.nullers.restbookstore.rest.publisher.dto.CreatePublisherDto;
+import com.nullers.restbookstore.rest.publisher.dto.PublisherDto;
+import com.nullers.restbookstore.rest.publisher.exceptions.PublisherNotFound;
+import com.nullers.restbookstore.rest.publisher.mappers.CreatePublisherMapper;
+import com.nullers.restbookstore.rest.publisher.mappers.PublisherMapper;
 import com.nullers.restbookstore.publisher.models.Book;
-import com.nullers.restbookstore.publisher.repositories.PublisherRepository;
+import com.nullers.restbookstore.rest.publisher.repositories.PublisherRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 

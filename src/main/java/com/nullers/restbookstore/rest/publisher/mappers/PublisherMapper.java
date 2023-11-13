@@ -1,10 +1,7 @@
-package com.nullers.restbookstore.publisher.mappers;
+package com.nullers.restbookstore.rest.publisher.mappers;
 
-import com.nullers.restbookstore.publisher.dto.CreatePublisherDto;
-import com.nullers.restbookstore.publisher.dto.PublisherDto;
-import com.nullers.restbookstore.publisher.models.Publisher;
-
-import java.time.LocalDateTime;
+import com.nullers.restbookstore.rest.publisher.dto.PublisherDto;
+import com.nullers.restbookstore.rest.publisher.models.Publisher;
 
 /**
  * Clase PublisherMapper

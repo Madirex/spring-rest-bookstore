@@ -1,4 +1,4 @@
-package com.nullers.restbookstore.publisher.models;
+package com.nullers.restbookstore.rest.publisher.models;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
