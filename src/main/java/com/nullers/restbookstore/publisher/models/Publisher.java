@@ -23,12 +23,17 @@ import java.util.UUID;
 @Entity
 @Table(name = "publishers")
 public class Publisher {
+    public static final String DEFAULT_IMAGE = "https://via.placeholder.com/200";
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
     @Column(nullable = false)
     private String name;
+
+    @Column(columnDefinition = "TEXT default '" + DEFAULT_IMAGE + "'")
+    @Builder.Default
+    private String image = DEFAULT_IMAGE;
 
     @OneToMany
     @JoinColumn(name = "book_id")
