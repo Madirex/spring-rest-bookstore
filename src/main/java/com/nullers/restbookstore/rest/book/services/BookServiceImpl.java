@@ -170,7 +170,7 @@ public class BookServiceImpl implements BookService {
     /**
      * Actualiza un Book
      *
-     * @param id   ID del Book a actualizar
+     * @param id   Id del Book a actualizar
      * @param book UpdateBookDTO con los datos a actualizar
      * @return Book actualizado
      * @throws BookNotValidIDException      Si el ID no tiene un formato válido
@@ -200,7 +200,7 @@ public class BookServiceImpl implements BookService {
     /**
      * Actualiza un Book
      *
-     * @param id   ID del Book a actualizar
+     * @param id   Id del Book a actualizar
      * @param book Book con los datos a actualizar
      * @return Book actualizado
      * @throws BookNotValidIDException      Si el ID no tiene un formato válido
@@ -254,7 +254,7 @@ public class BookServiceImpl implements BookService {
     /**
      * Actualiza la imagen de un Book
      *
-     * @param id      ID del Book a actualizar
+     * @param id      Id del Book a actualizar
      * @param image   Imagen a actualizar
      * @param withUrl Si se quiere devolver la URL de la imagen
      * @return Book actualizado
@@ -262,6 +262,7 @@ public class BookServiceImpl implements BookService {
      * @throws BookNotValidIDException      Si el ID no tiene un formato válido
      * @throws PublisherNotFoundException   Si no se ha encontrado la publisher con el ID indicado
      * @throws PublisherNotValidIDException Si el ID no tiene un formato válido
+     * @throws IOException                  Si se produce un error al guardar la imagen
      */
     @Override
     @CachePut(key = "#result.id")
