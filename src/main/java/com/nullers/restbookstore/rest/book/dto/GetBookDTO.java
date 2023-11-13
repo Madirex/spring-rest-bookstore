@@ -1,11 +1,9 @@
 package com.nullers.restbookstore.rest.book.dto;
 
 import com.nullers.restbookstore.NOADD.Publisher;
-import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
 import java.time.LocalDateTime;
-import java.util.UUID;
 
 /**
  * Class GetBookDTO
@@ -17,7 +15,7 @@ import java.util.UUID;
 @AllArgsConstructor
 @NoArgsConstructor
 public class GetBookDTO {
-    private UUID id;
+    private Long id;
     private String name;
     private Publisher publisher;
 
