@@ -7,7 +7,7 @@ import com.nullers.restbookstore.rest.book.dto.GetBookDTO;
 import com.nullers.restbookstore.rest.book.dto.PatchBookDTO;
 import com.nullers.restbookstore.rest.book.dto.UpdateBookDTO;
 import com.nullers.restbookstore.rest.book.exceptions.BookNotFoundException;
-import com.nullers.restbookstore.rest.book.exceptions.BookNotValidUUIDException;
+import com.nullers.restbookstore.rest.book.exceptions.BookNotValidIDException;
 import com.nullers.restbookstore.rest.book.services.BookServiceImpl;
 import com.nullers.restbookstore.utils.pagination.PageResponse;
 import com.nullers.restbookstore.utils.pagination.PaginationLinksUtils;
@@ -85,19 +85,19 @@ public class BookRestControllerImpl implements BookRestController {
     }
 
     /**
-     * Método para obtener un Book por su UUID
+     * Método para obtener un Book por su ID
      *
-     * @param id UUID del Book en formato String
+     * @param id ID del Book en formato String
      * @return ResponseEntity con el código de estado
-     * @throws BookNotFoundException Si no se ha encontrado el Book con el UUID indicado
+     * @throws BookNotFoundException Si no se ha encontrado el Book con el ID indicado
      */
     @GetMapping("/{id}")
     @Override
-    public ResponseEntity<GetBookDTO> getBookById(@Valid @PathVariable String id) throws BookNotFoundException {
+    public ResponseEntity<GetBookDTO> getBookById(@Valid @PathVariable Long id) throws BookNotFoundException {
         try {
             return ResponseEntity.ok(service.getBookById(id));
-        } catch (BookNotValidUUIDException e) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "El UUID del Book no es válido: " + e.getMessage());
+        } catch (BookNotValidIDException e) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "El ID del Book no es válido: " + e.getMessage());
         }
     }
 
@@ -123,16 +123,16 @@ public class BookRestControllerImpl implements BookRestController {
     /**
      * Método para actualizar un Book
      *
-     * @param id   UUID del Book en formato String
+     * @param id   ID del Book en formato String
      * @param book Objeto UpdateBookDTO con los campos a actualizar
      * @return ResponseEntity con el código de estado
-     * @throws BookNotFoundException     Si no se ha encontrado el Book con el UUID indicado
-     * @throws BookNotValidUUIDException Si el UUID del Book no es válido
+     * @throws BookNotFoundException     Si no se ha encontrado el Book con el ID indicado
+     * @throws BookNotValidIDException Si el ID del Book no es válido
      */
     @PutMapping("/{id}")
     @Override
-    public ResponseEntity<GetBookDTO> putBook(@Valid @PathVariable String id, @Valid @RequestBody UpdateBookDTO book)
-            throws BookNotFoundException, BookNotValidUUIDException {
+    public ResponseEntity<GetBookDTO> putBook(@Valid @PathVariable Long id, @Valid @RequestBody UpdateBookDTO book)
+            throws BookNotFoundException, BookNotValidIDException {
         try {
             return ResponseEntity.ok(service.putBook(id, book));
         } catch (PublisherNotFoundException e) {
@@ -145,14 +145,14 @@ public class BookRestControllerImpl implements BookRestController {
     /**
      * Método para actualizar parcialmente un Book
      *
-     * @param id   UUID del Book en formato String
+     * @param id   ID del Book en formato String
      * @param book Objeto PatchBookDTO con los campos a actualizar
      * @return ResponseEntity con el código de estado
      */
     @PatchMapping("/{id}")
     @Override
-    public ResponseEntity<GetBookDTO> patchBook(@Valid @PathVariable String id, @Valid @RequestBody PatchBookDTO book)
-            throws BookNotFoundException, BookNotValidUUIDException {
+    public ResponseEntity<GetBookDTO> patchBook(@Valid @PathVariable Long id, @Valid @RequestBody PatchBookDTO book)
+            throws BookNotFoundException, BookNotValidIDException {
         try {
             return ResponseEntity.ok(service.patchBook(id, book));
         } catch (PublisherNotFoundException e) {
@@ -165,17 +165,17 @@ public class BookRestControllerImpl implements BookRestController {
     /**
      * Método para eliminar un Book
      *
-     * @param id UUID del Book en formato String
+     * @param id ID del Book en formato String
      * @return ResponseEntity con el código de estado
-     * @throws BookNotFoundException Si no se ha encontrado el Book con el UUID indicado
+     * @throws BookNotFoundException Si no se ha encontrado el Book con el ID indicado
      */
     @DeleteMapping("/{id}")
     @Override
-    public ResponseEntity<String> deleteBook(@Valid @PathVariable String id) throws BookNotFoundException {
+    public ResponseEntity<String> deleteBook(@Valid @PathVariable Long id) throws BookNotFoundException {
         try {
             service.deleteBook(id);
-        } catch (BookNotValidUUIDException e) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "El UUID del Book no es válido: " + e.getMessage());
+        } catch (BookNotValidIDException e) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "El ID del Book no es válido: " + e.getMessage());
         }
         return ResponseEntity.noContent().build();
     }
@@ -215,14 +215,14 @@ public class BookRestControllerImpl implements BookRestController {
     /**
      * Método para subir una imagen a un Book
      *
-     * @param id   UUID del Book en formato String
+     * @param id   ID del Book en formato String
      * @param file Fichero a subir
      * @return ResponseEntity con el código de estado
      */
     @PatchMapping(value = "/image/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<GetBookDTO> newBookImg(
-            @PathVariable String id,
-            @RequestPart("file") MultipartFile file) throws BookNotValidUUIDException, PublisherNotFoundException,
+            @PathVariable Long id,
+            @RequestPart("file") MultipartFile file) throws BookNotValidIDException, PublisherNotFoundException,
             BookNotFoundException, PublisherNotValidIDException, IOException {
         if (!file.isEmpty()) {
             return ResponseEntity.ok(service.updateImage(id, file, true));
