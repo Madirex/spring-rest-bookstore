@@ -6,7 +6,7 @@ package com.nullers.restbookstore.rest.book.notifications;
  * @Author Madirex
  */
 public record BookNotificationResponse(
-        String id,
+        Long id,
         String name,
         String publisher,
         String image,
