@@ -6,6 +6,11 @@ import com.nullers.restbookstore.publisher.dto.PublisherDto;
 import java.util.List;
 import java.util.UUID;
 
+/**
+ * Interface PublisherService
+ *
+ * @author jaimesalcedo1
+ * */
 public interface PublisherService {
     List<PublisherDto> findAll();
 
