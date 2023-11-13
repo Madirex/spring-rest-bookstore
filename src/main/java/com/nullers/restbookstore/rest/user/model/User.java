@@ -1,4 +1,4 @@
-package com.nullers.restbookstore.user.model;
+package com.nullers.restbookstore.rest.user.model;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;

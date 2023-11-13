@@ -1,4 +1,4 @@
-package com.nullers.restbookstore.user.model;
+package com.nullers.restbookstore.rest.user.model;
 
 /**
  * Clase enumerada para los roles de usuario

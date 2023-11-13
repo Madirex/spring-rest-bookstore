@@ -1,10 +1,10 @@
-package com.nullers.restbookstore.user.controller;
+package com.nullers.restbookstore.rest.user.controller;
 
-import com.nullers.restbookstore.user.dto.UserInfoResponse;
-import com.nullers.restbookstore.user.dto.UserRequest;
-import com.nullers.restbookstore.user.dto.UserResponse;
-import com.nullers.restbookstore.user.model.User;
-import com.nullers.restbookstore.user.services.UserService;
+import com.nullers.restbookstore.rest.user.dto.UserInfoResponse;
+import com.nullers.restbookstore.rest.user.dto.UserRequest;
+import com.nullers.restbookstore.rest.user.dto.UserResponse;
+import com.nullers.restbookstore.rest.user.model.User;
+import com.nullers.restbookstore.rest.user.services.UserService;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
