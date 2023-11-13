@@ -7,7 +7,18 @@ import java.io.IOException;
  */
 public interface WebSocketSender {
 
+    /**
+     * Envía un mensaje
+     *
+     * @param message Mensaje a enviar
+     * @throws IOException Excepción de E/S
+     */
     void sendMessage(String message) throws IOException;
 
+    /**
+     * Envía mensajes periódicos
+     *
+     * @throws IOException Excepción de E/S
+     */
     void sendPeriodicMessages() throws IOException;
 }
