@@ -7,7 +7,7 @@ import com.nullers.restbookstore.rest.book.dto.GetBookDTO;
 import com.nullers.restbookstore.rest.book.dto.PatchBookDTO;
 import com.nullers.restbookstore.rest.book.dto.UpdateBookDTO;
 import com.nullers.restbookstore.rest.book.exceptions.BookNotFoundException;
-import com.nullers.restbookstore.rest.book.exceptions.BookNotValidUUIDException;
+import com.nullers.restbookstore.rest.book.exceptions.BookNotValidIDException;
 import com.nullers.restbookstore.utils.pagination.PageResponse;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
@@ -37,19 +37,19 @@ public interface BookRestController {
             HttpServletRequest request
     );
 
-    ResponseEntity<GetBookDTO> getBookById(@Valid @PathVariable String id)
-            throws BookNotValidUUIDException, BookNotFoundException;
+    ResponseEntity<GetBookDTO> getBookById(@Valid @PathVariable Long id)
+            throws BookNotValidIDException, BookNotFoundException;
 
     ResponseEntity<GetBookDTO> postBook(@Valid @RequestBody CreateBookDTO book)
             throws PublisherNotFoundException, PublisherNotValidIDException;
 
-    ResponseEntity<GetBookDTO> putBook(@Valid @PathVariable String id, @Valid @RequestBody UpdateBookDTO book)
-            throws BookNotValidUUIDException, BookNotFoundException, PublisherNotFoundException, PublisherNotValidIDException;
+    ResponseEntity<GetBookDTO> putBook(@Valid @PathVariable Long id, @Valid @RequestBody UpdateBookDTO book)
+            throws BookNotValidIDException, BookNotFoundException, PublisherNotFoundException, PublisherNotValidIDException;
 
-    ResponseEntity<GetBookDTO> patchBook(@Valid @PathVariable String id, @Valid @RequestBody PatchBookDTO book)
-            throws BookNotValidUUIDException, BookNotFoundException, PublisherNotFoundException, PublisherNotValidIDException;
+    ResponseEntity<GetBookDTO> patchBook(@Valid @PathVariable Long id, @Valid @RequestBody PatchBookDTO book)
+            throws BookNotValidIDException, BookNotFoundException, PublisherNotFoundException, PublisherNotValidIDException;
 
-    ResponseEntity<String> deleteBook(@Valid @PathVariable String id) throws BookNotValidUUIDException, BookNotFoundException;
+    ResponseEntity<String> deleteBook(@Valid @PathVariable Long id) throws BookNotValidIDException, BookNotFoundException;
 
     Map<String, String> handleValidationExceptions(MethodArgumentNotValidException ex);
 }
