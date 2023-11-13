@@ -20,16 +20,17 @@ import java.util.UUID;
 @ToString
 @Builder
 @Entity
+@Table(name = "publishers")
 public class Publisher {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
-    @NotBlank(message = "el nombre no puede estar vacío")
+    @Column(nullable = false)
     private String name;
 
     @OneToMany
-    @NotNull(message = "el conjunto de libros no puede ser nulo")
+    @JoinColumn(name = "book_id")
     private Set<Book> books;
 
     @CreatedDate
