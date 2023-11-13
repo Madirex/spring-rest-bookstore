@@ -7,6 +7,11 @@ import java.time.LocalDateTime;
 
 public class CreatePublisherMapper {
 
+    /**
+     * Clase CreatePublisherMapper
+     *
+     * @author jaimesalcedo1
+     * */
     private CreatePublisherMapper(){}
     public static Publisher toPublisher(CreatePublisherDto dto){
         return Publisher.builder()

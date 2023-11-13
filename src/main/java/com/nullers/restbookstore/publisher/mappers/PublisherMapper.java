@@ -6,6 +6,11 @@ import com.nullers.restbookstore.publisher.models.Publisher;
 
 import java.time.LocalDateTime;
 
+/**
+ * Clase PublisherMapper
+ *
+ * @author jaimesalcedo1
+ * */
 public class PublisherMapper {
 
     private PublisherMapper(){}
