@@ -14,6 +14,11 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 
+/**
+ * Clase Publisher
+ *
+ * @author jaimesalcedo1
+ * */
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
