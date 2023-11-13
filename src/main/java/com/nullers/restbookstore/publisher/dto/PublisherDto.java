@@ -6,6 +6,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
 import java.util.Set;
 import java.util.UUID;
 
@@ -19,4 +20,6 @@ public class PublisherDto {
     private String name;
     private String image;
     private Set<Book> books;
+    private LocalDateTime created_at;
+    private LocalDateTime updated_at;
 }

@@ -21,19 +21,17 @@ import java.util.UUID;
 @ToString
 @Builder
 @Entity
-@Table(name = "publishers")
 public class Publisher {
-    public static final String DEFAULT_IMAGE = "https://via.placeholder.com/200";
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
-    @Column(nullable = false)
+    @NotBlank(message = "el nombre no puede estar vacío")
     private String name;
 
-    @Column(columnDefinition = "TEXT default '" + DEFAULT_IMAGE + "'")
-    @Builder.Default
-    private String image = DEFAULT_IMAGE;
+
+    @NotBlank(message = "la imagen no puede estar vacía")
+    private String image;
 
     @OneToMany
     @JoinColumn(name = "book_id")
