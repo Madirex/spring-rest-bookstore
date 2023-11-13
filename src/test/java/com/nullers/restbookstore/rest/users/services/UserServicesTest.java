@@ -121,10 +121,11 @@ class UserServicesTest {
     @Test
     void update(){
         // Arrange
+        when(userRepository.findById(any(UUID.class))).thenReturn(Optional.of(user));
         when(userRepository.findByUsernameEqualsIgnoreCaseOrEmailEqualsIgnoreCase(any(String.class),any(String.class))).thenReturn(Optional.empty());
         when(userMapper.toUser(any(UserRequest.class),any(UUID.class))).thenReturn(user);
-        when(userMapper.toUserResponse(any(User.class))).thenReturn(userResponse);
         when(userRepository.save(user)).thenReturn(user);
+        when(userMapper.toUserResponse(any(User.class))).thenReturn(userResponse);
 
         // Act
         UserResponse result = userService.update(UUID.fromString("c671d981-bd6f-4e75-b7cc-fd3ca96582d5"),userRequest);
@@ -139,6 +140,8 @@ class UserServicesTest {
     @Test
     void updateUsernameOrEmailExists(){
         // Arrange
+        UUID id = UUID.fromString("c671d981-bd6f-4e75-b7cc-fd3ca96582d5");
+        when(userRepository.findById(id)).thenReturn(Optional.of(user));
         when(userRepository.findByUsernameEqualsIgnoreCaseOrEmailEqualsIgnoreCase(any(String.class),any(String.class))).thenReturn(Optional.of(user));
 
         // Act
