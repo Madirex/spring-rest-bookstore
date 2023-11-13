@@ -15,6 +15,11 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.*;
 
+/**
+ * Clase Controller
+ *
+ * @author jaimesalcedo1
+ * */
 @RestController
 @RequestMapping("/publishers")
 public class PublisherController {
