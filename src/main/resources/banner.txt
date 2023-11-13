@@ -1,0 +1,20 @@
+ ${AnsiColor.BRIGHT_WHITE} ____              _     ____  _                     ${AnsiColor.BRIGHT_YELLOW}   _____
+ ${AnsiColor.BRIGHT_WHITE}| __ )  ___   ___ | | __/ ___|| |_ ___  _ __ ___   ${AnsiColor.BRIGHT_YELLOW}    /    /|_
+ ${AnsiColor.BRIGHT_WHITE}|  _ \ / _ \ / _ \| |/ /\___ \| __/ _ \| '__/ _ \ ${AnsiColor.BRIGHT_YELLOW}    /    // /|
+ ${AnsiColor.BRIGHT_WHITE}| |_) | (_) | (_) |   <  ___) | || (_) | | |  __/  ${AnsiColor.BRIGHT_YELLOW}  (====|/ //
+ ${AnsiColor.BRIGHT_WHITE}|____/ \___/ \___/|_|\_\|____/ \__\___/|_|  \___| ${AnsiColor.BRIGHT_YELLOW}   (=====|/
+
+           ${AnsiColor.BRIGHT_CYAN}    ${AnsiColor.BLUE}    ${AnsiColor.BRIGHT_WHITE}.--.${AnsiColor.BRIGHT_YELLOW}       ${AnsiColor.BLUE}    ${AnsiColor.BRIGHT_RED}   ${AnsiColor.BRIGHT_MAGENTA}  ${AnsiColor.BRIGHT_CYAN}   ${AnsiColor.BRIGHT_GREEN}.---.${AnsiColor.BRIGHT_CYAN}
+           ${AnsiColor.BRIGHT_CYAN}    ${AnsiColor.BLUE}.---${AnsiColor.BRIGHT_WHITE}|__|${AnsiColor.BRIGHT_YELLOW}       ${AnsiColor.BLUE}    ${AnsiColor.BRIGHT_RED}.-.${AnsiColor.BRIGHT_MAGENTA}  ${AnsiColor.BRIGHT_CYAN}   ${AnsiColor.BRIGHT_GREEN}|~~~|${AnsiColor.BRIGHT_CYAN}
+           ${AnsiColor.BRIGHT_CYAN}.-- ${AnsiColor.BLUE}|===${AnsiColor.BRIGHT_WHITE}|--|${AnsiColor.BRIGHT_YELLOW}_      ${AnsiColor.BLUE}    ${AnsiColor.BRIGHT_RED}|_|${AnsiColor.BRIGHT_MAGENTA}  ${AnsiColor.BRIGHT_CYAN}   ${AnsiColor.BRIGHT_GREEN}|~~~|${AnsiColor.BRIGHT_CYAN}--.
+           ${AnsiColor.BRIGHT_CYAN}|   ${AnsiColor.BLUE}|===${AnsiColor.BRIGHT_WHITE}|  |${AnsiColor.BRIGHT_YELLOW}'\     ${AnsiColor.BLUE}.---${AnsiColor.BRIGHT_RED}!~|${AnsiColor.BRIGHT_MAGENTA}  ${AnsiColor.BRIGHT_CYAN}.--${AnsiColor.BRIGHT_GREEN}|   |${AnsiColor.BRIGHT_CYAN}--|
+           ${AnsiColor.BRIGHT_CYAN}|%% ${AnsiColor.BLUE}|   ${AnsiColor.BRIGHT_WHITE}|  |${AnsiColor.BRIGHT_YELLOW}.'\    ${AnsiColor.BLUE}|===${AnsiColor.BRIGHT_RED}| |${AnsiColor.BRIGHT_MAGENTA}--${AnsiColor.BRIGHT_CYAN}|%%${AnsiColor.BRIGHT_GREEN}|   |${AnsiColor.BRIGHT_CYAN}  |
+           ${AnsiColor.BRIGHT_CYAN}|%% ${AnsiColor.BLUE}|   ${AnsiColor.BRIGHT_WHITE}|  |${AnsiColor.BRIGHT_YELLOW}\.'\   ${AnsiColor.BLUE}|   ${AnsiColor.BRIGHT_RED}| |${AnsiColor.BRIGHT_MAGENTA}__${AnsiColor.BRIGHT_CYAN}|  ${AnsiColor.BRIGHT_GREEN}|   |${AnsiColor.BRIGHT_CYAN}  |
+           ${AnsiColor.BRIGHT_CYAN}|   ${AnsiColor.BLUE}|   ${AnsiColor.BRIGHT_WHITE}|  |${AnsiColor.BRIGHT_YELLOW} \  \  ${AnsiColor.BLUE}|===${AnsiColor.BRIGHT_RED}| |${AnsiColor.BRIGHT_MAGENTA}==${AnsiColor.BRIGHT_CYAN}|  ${AnsiColor.BRIGHT_GREEN}|   |${AnsiColor.BRIGHT_CYAN}  |
+           ${AnsiColor.BRIGHT_CYAN}|   ${AnsiColor.BLUE}|   ${AnsiColor.BRIGHT_WHITE}|__|${AnsiColor.BRIGHT_YELLOW}  \.'\ ${AnsiColor.BLUE}|   ${AnsiColor.BRIGHT_RED}|_|${AnsiColor.BRIGHT_MAGENTA}__${AnsiColor.BRIGHT_CYAN}|  ${AnsiColor.BRIGHT_GREEN}|~~~|${AnsiColor.BRIGHT_CYAN}__|
+           ${AnsiColor.BRIGHT_CYAN}|   ${AnsiColor.BLUE}|===${AnsiColor.BRIGHT_WHITE}|--|${AnsiColor.BRIGHT_YELLOW}   \.'\${AnsiColor.BLUE}|===${AnsiColor.BRIGHT_RED}|~|${AnsiColor.BRIGHT_MAGENTA}--${AnsiColor.BRIGHT_CYAN}|%%${AnsiColor.BRIGHT_GREEN}|~~~|${AnsiColor.BRIGHT_CYAN}--|
+           ${AnsiColor.BRIGHT_CYAN}^-- ${AnsiColor.BLUE}^---${AnsiColor.BRIGHT_WHITE}'--^${AnsiColor.BRIGHT_YELLOW}    `-'${AnsiColor.BLUE}`---${AnsiColor.BRIGHT_RED}^-^${AnsiColor.BRIGHT_MAGENTA}--${AnsiColor.BRIGHT_CYAN}^--${AnsiColor.BRIGHT_GREEN}^---'${AnsiColor.BRIGHT_CYAN}--'
+
+ ${AnsiColor.YELLOW}${application.title} ${application.version}
+ ${AnsiColor.YELLOW}Powered by Spring Boot ${spring-boot.version}
+ NULLERS Team
