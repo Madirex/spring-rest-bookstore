@@ -22,6 +22,8 @@ import java.util.UUID;
 @Builder
 @Entity
 public class Publisher {
+    public static final String DEFAULT_IMAGE = "https://via.placeholder.com/200";
+
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
