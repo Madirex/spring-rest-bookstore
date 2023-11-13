@@ -29,6 +29,12 @@ public class PublisherServiceImpl implements PublisherService{
         this.publisherRepository = publisherRepository;
         this.bookRepository = bookRepository;
     }
+
+    /**
+     * encuentra todos los Publisher
+     *
+     * @return List<PublisherDto> lista de publisher
+     * */
     @Override
     public List<PublisherDto> findAll() {
         return publisherRepository
@@ -37,6 +43,12 @@ public class PublisherServiceImpl implements PublisherService{
                 .map(PublisherMapper::toDto).toList();
     }
 
+    /**
+     * encuentra un publisher dado un id
+     *
+     * @param id id por el que filtrar
+     * @return PublisherDto
+     * */
     @Override
     public PublisherDto findById(UUID id) {
         return publisherRepository.findById(id)
@@ -44,11 +56,24 @@ public class PublisherServiceImpl implements PublisherService{
                 .orElseThrow(() -> new PublisherNotFound("id: " + id));
     }
 
+    /**
+     * crea un publisher
+     *
+     * @param publisher publisher a crear
+     * @return PublisherDto creado
+     * */
     @Override
     public PublisherDto save(CreatePublisherDto publisher) {
         return PublisherMapper.toDto(publisherRepository.save(CreatePublisherMapper.toPublisher(publisher)));
     }
 
+    /**
+     * actualiza un Publisher dado su id
+     *
+     * @param id id del publisher a actualizar
+     * @param publisher publisher con datos actualizados
+     * @return PublisherDto actualizado
+     * */
     @Override
     public PublisherDto update(UUID id, CreatePublisherDto publisher) {
         PublisherDto publisherUpdate = findById(id);
@@ -57,6 +82,13 @@ public class PublisherServiceImpl implements PublisherService{
         return PublisherMapper.toDto(publisherRepository.save(PublisherMapper.toPublisher(publisherUpdate)));
     }
 
+    /**
+     * añade un libro a un publisher
+     *
+     * @param id id del publisher
+     * @param bookId id del libro que se quiere añadir
+     * @return PublisherDto con el libro añadido
+     * */
     @Override
     public PublisherDto addBookPublisher(UUID id, UUID bookId) {
         Book bookToAdd = bookRepository.getById(bookId);
@@ -65,6 +97,13 @@ public class PublisherServiceImpl implements PublisherService{
         return publisherToUpdate;
     }
 
+    /**
+     * añade un libro a un publisher
+     *
+     * @param id id del publisher
+     * @param bookId id del libro que se quiere eliminar
+     * @return PublisherDto con el libro eliminado
+     * */
     @Override
     public PublisherDto removeBookPublisher(UUID id, UUID bookId) {
         Book bookToRemove = bookRepository.getById(bookId);
@@ -73,12 +112,21 @@ public class PublisherServiceImpl implements PublisherService{
         return publisherUpdate;
     }
 
+    /**
+     * borra un publisher dado un id
+     *
+     * @param id id del publisher a eliminar
+     * */
     @Override
     public void deleteById(UUID id) {
         PublisherDto publisherDelete = findById(id);
         publisherRepository.deleteById(id);
     }
 
+    /**
+     * elimina todos los publisher
+     *
+     * */
     @Override
     public void deleteAll() {
         publisherRepository.deleteAll();

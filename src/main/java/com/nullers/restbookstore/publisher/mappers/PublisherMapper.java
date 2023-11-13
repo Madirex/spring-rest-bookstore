@@ -15,6 +15,12 @@ public class PublisherMapper {
 
     private PublisherMapper(){}
 
+    /**
+     * mapea un dto a objeto Publisher
+     *
+     * @param dto dto  a mapear
+     * @return Publisher mapeado
+     * */
     public static Publisher toPublisher(PublisherDto dto){
         return Publisher.builder()
                 .name(dto.getName())
@@ -23,6 +29,12 @@ public class PublisherMapper {
                 .build();
     }
 
+    /**
+     * mapea un Publisher a dto
+     *
+     * @param publisher publisher a mapear
+     * @return PublisherDto mapeado
+     * */
     public static PublisherDto toDto(Publisher publisher){
         return PublisherDto.builder()
                 .id(publisher.getId())
