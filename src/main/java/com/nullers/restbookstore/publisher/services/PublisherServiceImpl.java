@@ -34,7 +34,9 @@ public class PublisherServiceImpl implements PublisherService{
 
     @Override
     public PublisherDto findById(UUID id) {
-        return publisherRepository.findById(id).map(PublisherMapper::toDto).orElseThrow(() -> new PublisherNotFound("id: " + id));
+        return publisherRepository.findById(id)
+                .map(PublisherMapper::toDto)
+                .orElseThrow(() -> new PublisherNotFound("id: " + id));
     }
 
     @Override
@@ -47,7 +49,7 @@ public class PublisherServiceImpl implements PublisherService{
         PublisherDto publisherUpdate = findById(id);
         publisherUpdate.setName(publisher.getName());
         publisherUpdate.setImage(publisher.getImage());
-        return PublisherMapper.toDto(publisherRepository.save(PublisherMapper.toPublisher(publisherToUpdate)));
+        return PublisherMapper.toDto(publisherRepository.save(PublisherMapper.toPublisher(publisherUpdate)));
     }
 
     @Override
