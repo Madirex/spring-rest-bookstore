@@ -10,6 +10,11 @@ import java.time.LocalDateTime;
 import java.util.Set;
 import java.util.UUID;
 
+/**
+ * Clase PublisherDto
+ *
+ * @author jaimesalcedo1
+ * */
 @Builder
 @Data
 @NoArgsConstructor

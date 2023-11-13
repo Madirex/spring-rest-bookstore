@@ -7,7 +7,11 @@ import lombok.Getter;
 
 import java.util.Set;
 
-
+/**
+ * Clase CreatePublisherDto
+ *
+ * @author jaimesalcedo1
+ * */
 @Getter
 @Builder
 public class CreatePublisherDto {
