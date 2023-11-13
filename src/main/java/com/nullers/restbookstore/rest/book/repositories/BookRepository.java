@@ -7,6 +7,8 @@ import org.springframework.stereotype.Repository;
 
 /**
  * Interface BookRepository
+ *
+ * @Author Madirex
  */
 @Repository
 public interface BookRepository extends JpaRepository<Book, Long>, JpaSpecificationExecutor<Book> {
