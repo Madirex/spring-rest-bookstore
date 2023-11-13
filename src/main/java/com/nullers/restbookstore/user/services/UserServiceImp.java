@@ -3,6 +3,7 @@ package com.nullers.restbookstore.user.services;
 import com.nullers.restbookstore.user.dto.UserInfoResponse;
 import com.nullers.restbookstore.user.dto.UserRequest;
 import com.nullers.restbookstore.user.dto.UserResponse;
+import com.nullers.restbookstore.user.exception.UserNameOrEmailExists;
 import com.nullers.restbookstore.user.exception.UserNotFound;
 import com.nullers.restbookstore.user.mappers.UserMapper;
 import com.nullers.restbookstore.user.model.User;
@@ -106,7 +107,7 @@ public class UserServiceImp implements UserService {
         log.info("Guardando usuario: " + userRequest);
         userRepository.findByUsernameEqualsIgnoreCaseOrEmailEqualsIgnoreCase(userRequest.getUsername(), userRequest.getEmail())
                 .ifPresent(user -> {
-                    throw new UsernameNotFoundException("El usuario ya existe");
+                    throw new UserNameOrEmailExists("El usuario ya existe");
                 });
         return userMapper.toUserResponse(userRepository.save(userMapper.toUser(userRequest)));
     }
@@ -122,9 +123,10 @@ public class UserServiceImp implements UserService {
     @CachePut(key = "#result.id")
     public UserResponse update(UUID id, UserRequest userRequest) {
         log.info("Actualizando usuario: " + userRequest);
+        userRepository.findById(id).orElseThrow(() -> new UserNotFound("Usuario no encontrado"));
         userRepository.findByUsernameEqualsIgnoreCaseOrEmailEqualsIgnoreCase(userRequest.getUsername(), userRequest.getEmail())
                 .ifPresent(user -> {
-                    throw new UsernameNotFoundException("El usuario ya existe");
+                    throw new UserNameOrEmailExists("El usuario ya existe");
                 });
         return userMapper.toUserResponse(userRepository.save(userMapper.toUser(userRequest, id)));
     }
