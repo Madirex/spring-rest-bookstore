@@ -10,6 +10,7 @@ import org.springframework.data.annotation.LastModifiedDate;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 
@@ -31,7 +32,8 @@ public class Publisher {
 
     @OneToMany
     @JoinColumn(name = "book_id")
-    private Set<Book> books;
+    @Builder.Default
+    private Set<Book> books = new HashSet<>();
 
     @CreatedDate
     private LocalDateTime created_at;
