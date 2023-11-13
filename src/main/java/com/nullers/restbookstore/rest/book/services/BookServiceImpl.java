@@ -14,7 +14,7 @@ import com.nullers.restbookstore.rest.book.dto.GetBookDTO;
 import com.nullers.restbookstore.rest.book.dto.PatchBookDTO;
 import com.nullers.restbookstore.rest.book.dto.UpdateBookDTO;
 import com.nullers.restbookstore.rest.book.exceptions.BookNotFoundException;
-import com.nullers.restbookstore.rest.book.exceptions.BookNotValidUUIDException;
+import com.nullers.restbookstore.rest.book.exceptions.BookNotValidIDException;
 import com.nullers.restbookstore.rest.book.mappers.BookMapperImpl;
 import com.nullers.restbookstore.rest.book.mappers.BookNotificationMapper;
 import com.nullers.restbookstore.rest.book.models.Book;
@@ -42,7 +42,6 @@ import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 
 /**
  * Clase BookServiceImpl
@@ -54,8 +53,8 @@ import java.util.UUID;
 @CacheConfig(cacheNames = "books")
 public class BookServiceImpl implements BookService {
 
-    public static final String BOOK_NOT_FOUND_MSG = "No se ha encontrado el Book con el UUID indicado";
-    public static final String NOT_VALID_FORMAT_UUID_MSG = "El UUID no tiene un formato válido";
+    public static final String BOOK_NOT_FOUND_MSG = "No se ha encontrado el Book con el ID indicado";
+    public static final String NOT_VALID_FORMAT_ID_MSG = "El ID no tiene un formato válido";
 
     private final BookRepository bookRepository;
     private final BookMapperImpl bookMapperImpl;
@@ -131,23 +130,22 @@ public class BookServiceImpl implements BookService {
     }
 
     /**
-     * Obtiene un Book por su UUID
+     * Obtiene un Book por su ID
      *
-     * @param id UUID del Book a obtener
-     * @return Book con el UUID indicado
-     * @throws BookNotValidUUIDException Si el UUID no tiene un formato válido
-     * @throws BookNotFoundException     Si no se ha encontrado el Book con el UUID indicado
+     * @param id ID del Book a obtener
+     * @return Book con el ID indicado
+     * @throws BookNotValidIDException Si el ID no tiene un formato válido
+     * @throws BookNotFoundException   Si no se ha encontrado el Book con el ID indicado
      */
     @Cacheable(key = "#result.id")
     @Override
-    public GetBookDTO getBookById(String id) throws BookNotValidUUIDException, BookNotFoundException {
+    public GetBookDTO getBookById(Long id) throws BookNotValidIDException, BookNotFoundException {
         try {
-            UUID uuid = UUID.fromString(id);
-            var f = bookRepository.findById(uuid).orElseThrow(() ->
+            var f = bookRepository.findById(id).orElseThrow(() ->
                     new BookNotFoundException(BOOK_NOT_FOUND_MSG));
             return bookMapperImpl.toGetBookDTO(f);
         } catch (IllegalArgumentException e) {
-            throw new BookNotValidUUIDException(NOT_VALID_FORMAT_UUID_MSG);
+            throw new BookNotValidIDException(NOT_VALID_FORMAT_ID_MSG);
         }
     }
 
@@ -172,111 +170,107 @@ public class BookServiceImpl implements BookService {
     /**
      * Actualiza un Book
      *
-     * @param id   UUID del Book a actualizar
+     * @param id   ID del Book a actualizar
      * @param book UpdateBookDTO con los datos a actualizar
      * @return Book actualizado
-     * @throws BookNotValidUUIDException    Si el UUID no tiene un formato válido
+     * @throws BookNotValidIDException      Si el ID no tiene un formato válido
      * @throws PublisherNotFoundException   Si no se ha encontrado el publisher con el ID indicado
      * @throws PublisherNotValidIDException Si el ID no tiene un formato válido
-     * @throws BookNotFoundException        Si no se ha encontrado el Book con el UUID indicado
+     * @throws BookNotFoundException        Si no se ha encontrado el Book con el ID indicado
      */
     @CachePut(key = "#result.id")
     @Override
-    public GetBookDTO putBook(String id, UpdateBookDTO book) throws BookNotValidUUIDException,
+    public GetBookDTO putBook(Long id, UpdateBookDTO book) throws BookNotValidIDException,
             PublisherNotFoundException, PublisherNotValidIDException, BookNotFoundException {
         try {
-            UUID uuid = UUID.fromString(id);
-            Book existingBook = bookRepository.findById(UUID.fromString(id))
+            Book existingBook = bookRepository.findById(id)
                     .orElseThrow(() -> new BookNotFoundException("Book no encontrado"));
             Publisher publisher = publisherService.getPublisherById(book.getPublisherId());
             Book f = bookMapperImpl.toBook(existingBook, book, publisher);
-            f.setId(uuid);
+            f.setId(id);
             var modified = bookRepository.save(f);
             var bookDTO = bookMapperImpl.toGetBookDTO(modified);
             onChange(Notification.Type.UPDATE, bookDTO);
             return bookDTO;
         } catch (IllegalArgumentException e) {
-            throw new BookNotValidUUIDException(NOT_VALID_FORMAT_UUID_MSG);
+            throw new BookNotValidIDException(NOT_VALID_FORMAT_ID_MSG);
         }
     }
 
     /**
      * Actualiza un Book
      *
-     * @param id   UUID del Book a actualizar
+     * @param id   ID del Book a actualizar
      * @param book Book con los datos a actualizar
      * @return Book actualizado
-     * @throws BookNotValidUUIDException    Si el UUID no tiene un formato válido
-     * @throws BookNotFoundException        Si no se ha encontrado el Book con el UUID indicado
+     * @throws BookNotValidIDException      Si el ID no tiene un formato válido
+     * @throws BookNotFoundException        Si no se ha encontrado el Book con el ID indicado
      * @throws PublisherNotFoundException   Si no se ha encontrado la publisher con el ID indicado
      * @throws PublisherNotValidIDException Si el ID no tiene un formato válido
      */
     @CachePut(key = "#result.id")
     @Override
-    public GetBookDTO patchBook(String id, PatchBookDTO book) throws BookNotValidUUIDException, BookNotFoundException,
+    public GetBookDTO patchBook(Long id, PatchBookDTO book) throws BookNotValidIDException, BookNotFoundException,
             PublisherNotFoundException, PublisherNotValidIDException {
         try {
-            UUID uuid = UUID.fromString(id);
-            var opt = bookRepository.findById(uuid);
+            var opt = bookRepository.findById(id);
             if (opt.isEmpty()) {
                 throw new BookNotFoundException(BOOK_NOT_FOUND_MSG);
             }
             BeanUtils.copyProperties(book, opt.get(), Util.getNullPropertyNames(book));
-            opt.get().setId(uuid);
+            opt.get().setId(id);
             opt.get().setUpdatedAt(LocalDateTime.now());
             Book modified = bookRepository.save(opt.get());
             var bookDTO = bookMapperImpl.toGetBookDTO(modified);
             onChange(Notification.Type.UPDATE, bookDTO);
             return bookDTO;
         } catch (IllegalArgumentException e) {
-            throw new BookNotValidUUIDException(NOT_VALID_FORMAT_UUID_MSG);
+            throw new BookNotValidIDException(NOT_VALID_FORMAT_ID_MSG);
         }
     }
 
     /**
      * Elimina un Book
      *
-     * @param id UUID del Book a eliminar
-     * @throws BookNotFoundException     Si no se ha encontrado el Book con el UUID indicado
-     * @throws BookNotValidUUIDException Si el UUID no tiene un formato válido
+     * @param id ID del Book a eliminar
+     * @throws BookNotFoundException   Si no se ha encontrado el Book con el ID indicado
+     * @throws BookNotValidIDException Si el ID no tiene un formato válido
      */
     @CacheEvict(key = "#id")
     @Override
-    public void deleteBook(String id) throws BookNotFoundException, BookNotValidUUIDException {
+    public void deleteBook(Long id) throws BookNotFoundException, BookNotValidIDException {
         try {
-            UUID uuid = UUID.fromString(id);
-            var opt = bookRepository.findById(uuid);
+            var opt = bookRepository.findById(id);
             if (opt.isEmpty()) {
                 throw new BookNotFoundException(BOOK_NOT_FOUND_MSG);
             }
             bookRepository.delete(opt.get());
             onChange(Notification.Type.DELETE, bookMapperImpl.toGetBookDTO(opt.get()));
         } catch (IllegalArgumentException e) {
-            throw new BookNotValidUUIDException(NOT_VALID_FORMAT_UUID_MSG);
+            throw new BookNotValidIDException(NOT_VALID_FORMAT_ID_MSG);
         }
     }
 
     /**
      * Actualiza la imagen de un Book
      *
-     * @param id      UUID del Book a actualizar
+     * @param id      ID del Book a actualizar
      * @param image   Imagen a actualizar
      * @param withUrl Si se quiere devolver la URL de la imagen
      * @return Book actualizado
-     * @throws BookNotFoundException        Si no se ha encontrado el Book con el UUID indicado
-     * @throws BookNotValidUUIDException    Si el UUID no tiene un formato válido
+     * @throws BookNotFoundException        Si no se ha encontrado el Book con el ID indicado
+     * @throws BookNotValidIDException      Si el ID no tiene un formato válido
      * @throws PublisherNotFoundException   Si no se ha encontrado la publisher con el ID indicado
      * @throws PublisherNotValidIDException Si el ID no tiene un formato válido
      */
     @Override
     @CachePut(key = "#result.id")
     @Transactional
-    public GetBookDTO updateImage(String id, MultipartFile image, Boolean withUrl) throws BookNotFoundException,
-            BookNotValidUUIDException, PublisherNotFoundException, PublisherNotValidIDException, IOException {
+    public GetBookDTO updateImage(Long id, MultipartFile image, Boolean withUrl) throws BookNotFoundException,
+            BookNotValidIDException, PublisherNotFoundException, PublisherNotValidIDException, IOException {
         try {
-            UUID uuid = UUID.fromString(id);
-            var actualBook = bookRepository.findById(uuid).orElseThrow(() -> new BookNotFoundException(id));
-            String imageStored = storageService.store(image, List.of("jpg", "jpeg", "png"), id);
+            var actualBook = bookRepository.findById(id).orElseThrow(() -> new BookNotFoundException(String.valueOf(id)));
+            String imageStored = storageService.store(image, List.of("jpg", "jpeg", "png"), String.valueOf(id));
             String imageUrl = Boolean.FALSE.equals(withUrl) ? imageStored : storageService.getUrl(imageStored);
             if (actualBook.getImage() != null && !actualBook.getImage().equals(Book.IMAGE_DEFAULT)) {
                 storageService.delete(actualBook.getImage());
@@ -285,7 +279,7 @@ public class BookServiceImpl implements BookService {
                     .image(imageUrl)
                     .build());
         } catch (IllegalArgumentException e) {
-            throw new BookNotValidUUIDException(NOT_VALID_FORMAT_UUID_MSG);
+            throw new BookNotValidIDException(NOT_VALID_FORMAT_ID_MSG);
         }
     }
 
