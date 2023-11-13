@@ -9,7 +9,6 @@ import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.UUID;
 
 /**
  * Clase BookMapper
@@ -28,7 +27,6 @@ public class BookMapperImpl implements BookMapper {
      */
     public Book toBook(CreateBookDTO dto, Publisher publisher) {
         return Book.builder()
-                .id(UUID.randomUUID())
                 .name(dto.getName())
                 .publisher(publisher)
                 .price(dto.getPrice())

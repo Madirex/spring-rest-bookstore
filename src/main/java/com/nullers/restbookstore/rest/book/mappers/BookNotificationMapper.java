@@ -19,7 +19,7 @@ public class BookNotificationMapper {
      */
     public BookNotificationResponse toBookNotificationDto(GetBookDTO book) {
         return new BookNotificationResponse(
-                book.getId().toString(),
+                book.getId(),
                 book.getName(),
                 book.getPublisher().toString(),
                 book.getImage(),
