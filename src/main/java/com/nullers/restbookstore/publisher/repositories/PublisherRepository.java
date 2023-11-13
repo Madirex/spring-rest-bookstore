@@ -7,6 +7,11 @@ import org.springframework.stereotype.Repository;
 
 import java.util.UUID;
 
+/**
+ * Interface PublisherRepository
+ *
+ * @author jaimesalcedo1
+ * */
 @Repository
 public interface PublisherRepository extends JpaRepository<Publisher, UUID>, JpaSpecificationExecutor<Publisher> {
 
