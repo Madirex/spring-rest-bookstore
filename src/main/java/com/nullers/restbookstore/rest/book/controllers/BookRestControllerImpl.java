@@ -65,7 +65,6 @@ public class BookRestControllerImpl implements BookRestController {
      * @return ResponseEntity con el código de estado
      */
     @GetMapping
-    @Override
     public ResponseEntity<PageResponse<GetBookDTO>> getAllBook(
             @Valid @RequestParam(required = false) Optional<String> publisher,
             @RequestParam(required = false) Optional<Double> maxPrice,
@@ -126,7 +125,7 @@ public class BookRestControllerImpl implements BookRestController {
      * @param id   ID del Book en formato String
      * @param book Objeto UpdateBookDTO con los campos a actualizar
      * @return ResponseEntity con el código de estado
-     * @throws BookNotFoundException     Si no se ha encontrado el Book con el ID indicado
+     * @throws BookNotFoundException   Si no se ha encontrado el Book con el ID indicado
      * @throws BookNotValidIDException Si el ID del Book no es válido
      */
     @PutMapping("/{id}")
@@ -148,6 +147,8 @@ public class BookRestControllerImpl implements BookRestController {
      * @param id   ID del Book en formato String
      * @param book Objeto PatchBookDTO con los campos a actualizar
      * @return ResponseEntity con el código de estado
+     * @throws BookNotFoundException   Si no se ha encontrado el Book con el ID indicado
+     * @throws BookNotValidIDException Si el ID del Book no es válido
      */
     @PatchMapping("/{id}")
     @Override
@@ -203,7 +204,7 @@ public class BookRestControllerImpl implements BookRestController {
      * Método para manejar las excepciones de ResponseStatusException
      *
      * @param ex Excepción
-     * @return Error
+     * @return Error en ResponseEntity (mensaje y código de estado)
      */
     @ExceptionHandler(ResponseStatusException.class)
     public ResponseEntity<String> handleResponseStatusException(ResponseStatusException ex) {
