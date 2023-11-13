@@ -1,10 +1,7 @@
 package com.nullers.restbookstore.rest.book.models;
 
 import com.nullers.restbookstore.NOADD.Publisher;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -13,7 +10,6 @@ import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 
 import java.time.LocalDateTime;
-import java.util.UUID;
 
 /**
  * Clase Book
@@ -30,9 +26,9 @@ import java.util.UUID;
 public class Book {
     public static final String IMAGE_DEFAULT = "https://books.madirex.com/favicon.ico";
 
-    @NotNull
     @Id
-    private UUID id;
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    private Long id;
 
     @NotBlank(message = "El nombre no puede estar vacío")
     private String name;
