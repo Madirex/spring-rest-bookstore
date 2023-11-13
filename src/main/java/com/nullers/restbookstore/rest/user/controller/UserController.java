@@ -29,7 +29,7 @@ import java.util.UUID;
  */
 @RestController
 @Slf4j
-@RequestMapping("${api.version}/users") // Es la ruta del controlador
+@RequestMapping("/users") // Es la ruta del controlador
 @PreAuthorize("hasRole('USER')") // Solo los usuarios pueden acceder
 public class UserController {
     /**
