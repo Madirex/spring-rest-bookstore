@@ -15,7 +15,7 @@ public class PaginationLinksUtils {
      *
      * @param page       Página
      * @param uriBuilder UriComponentsBuilder
-     * @return String
+     * @return resultado
      */
     public String createLinkHeader(Page<?> page, UriComponentsBuilder uriBuilder) {
         final StringBuilder linkHeader = new StringBuilder();
