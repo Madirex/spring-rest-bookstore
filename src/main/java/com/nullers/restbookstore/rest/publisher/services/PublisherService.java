@@ -1,7 +1,7 @@
 package com.nullers.restbookstore.rest.publisher.services;
 
 import com.nullers.restbookstore.rest.publisher.dto.CreatePublisherDto;
-import com.nullers.restbookstore.rest.publisher.dto.PublisherDto;
+import com.nullers.restbookstore.rest.publisher.dto.PublisherDTO;
 
 import java.util.List;
 import java.util.UUID;
@@ -12,19 +12,19 @@ import java.util.UUID;
  * @author jaimesalcedo1
  * */
 public interface PublisherService {
-    List<PublisherDto> findAll();
+    List<PublisherDTO> findAll();
 
-    PublisherDto findById(UUID id);
+    PublisherDTO findById(UUID id);
 
-    PublisherDto save(CreatePublisherDto publisher);
-
-
-    PublisherDto update(UUID id, CreatePublisherDto client);
+    PublisherDTO save(CreatePublisherDto publisher);
 
 
-    PublisherDto addBookPublisher(UUID id, UUID bookId);
+    PublisherDTO update(UUID id, CreatePublisherDto client);
 
-    PublisherDto removeBookPublisher(UUID id, UUID bookId);
+
+    PublisherDTO addBookPublisher(UUID id, Long bookId);
+
+    PublisherDTO removeBookPublisher(UUID id, Long bookId);
 
     void deleteById(UUID id);
 

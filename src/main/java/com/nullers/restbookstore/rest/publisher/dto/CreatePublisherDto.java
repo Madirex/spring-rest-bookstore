@@ -1,17 +1,14 @@
 package com.nullers.restbookstore.rest.publisher.dto;
 
-import com.nullers.restbookstore.publisher.models.Book;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Builder;
 import lombok.Getter;
-
-import java.util.Set;
 
 /**
  * Clase CreatePublisherDto
  *
  * @author jaimesalcedo1
- * */
+ */
 @Getter
 @Builder
 public class CreatePublisherDto {

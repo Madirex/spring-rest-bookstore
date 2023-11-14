@@ -1,15 +1,13 @@
 package com.nullers.restbookstore.rest.publisher.models;
 
+import com.nullers.restbookstore.rest.book.models.Book;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
@@ -18,7 +16,7 @@ import java.util.UUID;
  * Clase Publisher
  *
  * @author jaimesalcedo1
- * */
+ */
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter

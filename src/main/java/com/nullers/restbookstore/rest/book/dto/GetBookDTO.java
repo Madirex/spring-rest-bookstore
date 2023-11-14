@@ -1,6 +1,6 @@
 package com.nullers.restbookstore.rest.book.dto;
 
-import com.nullers.restbookstore.NOADD.Publisher;
+import com.nullers.restbookstore.rest.publisher.models.Publisher;
 import lombok.*;
 
 import java.time.LocalDateTime;

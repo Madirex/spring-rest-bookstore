@@ -1,6 +1,6 @@
 package com.nullers.restbookstore.rest.book.models;
 
-import com.nullers.restbookstore.NOADD.Publisher;
+import com.nullers.restbookstore.rest.publisher.models.Publisher;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;

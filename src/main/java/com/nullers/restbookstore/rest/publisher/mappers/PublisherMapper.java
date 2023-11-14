@@ -1,13 +1,15 @@
 package com.nullers.restbookstore.rest.publisher.mappers;
 
-import com.nullers.restbookstore.rest.publisher.dto.PublisherDto;
+import com.nullers.restbookstore.rest.publisher.dto.PublisherDTO;
 import com.nullers.restbookstore.rest.publisher.models.Publisher;
+import org.springframework.stereotype.Component;
 
 /**
  * Clase PublisherMapper
  *
  * @author jaimesalcedo1
  * */
+@Component
 public class PublisherMapper {
 
     private PublisherMapper(){}
@@ -18,7 +20,7 @@ public class PublisherMapper {
      * @param dto dto  a mapear
      * @return Publisher mapeado
      * */
-    public static Publisher toPublisher(PublisherDto dto){
+    public Publisher toPublisher(PublisherDTO dto){
         return Publisher.builder()
                 .name(dto.getName())
                 .image(dto.getImage())
@@ -27,13 +29,13 @@ public class PublisherMapper {
     }
 
     /**
-     * mapea un Publisher a dto
+     * mapea un Publisher a DTO
      *
      * @param publisher publisher a mapear
      * @return PublisherDto mapeado
      * */
-    public static PublisherDto toDto(Publisher publisher){
-        return PublisherDto.builder()
+    public PublisherDTO toDto(Publisher publisher){
+        return PublisherDTO.builder()
                 .id(publisher.getId())
                 .name(publisher.getName())
                 .image(publisher.getImage())

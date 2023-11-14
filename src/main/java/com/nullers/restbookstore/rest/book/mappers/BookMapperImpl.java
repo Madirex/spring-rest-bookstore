@@ -1,10 +1,10 @@
 package com.nullers.restbookstore.rest.book.mappers;
 
-import com.nullers.restbookstore.NOADD.Publisher;
 import com.nullers.restbookstore.rest.book.dto.CreateBookDTO;
 import com.nullers.restbookstore.rest.book.dto.GetBookDTO;
 import com.nullers.restbookstore.rest.book.dto.UpdateBookDTO;
 import com.nullers.restbookstore.rest.book.models.Book;
+import com.nullers.restbookstore.rest.publisher.models.Publisher;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
