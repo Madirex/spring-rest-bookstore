@@ -24,8 +24,8 @@ public class CreatePublisherMapper {
         return Publisher.builder()
                 .name(dto.getName())
                 .image(dto.getImage())
-                .created_at(LocalDateTime.now())
-                .updated_at(LocalDateTime.now())
+                .createdAt(LocalDateTime.now())
+                .updatedAt(LocalDateTime.now())
                 .build();
     }
 

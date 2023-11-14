@@ -24,6 +24,6 @@ public class PublisherDTO {
     private String name;
     private String image;
     private Set<Book> books;
-    private LocalDateTime created_at;
-    private LocalDateTime updated_at;
+    private LocalDateTime createdAt;
+    private LocalDateTime updatedAt;
 }

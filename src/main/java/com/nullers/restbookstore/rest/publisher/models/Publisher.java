@@ -25,7 +25,7 @@ import java.util.UUID;
 @Builder
 @Entity
 public class Publisher {
-    public static final String DEFAULT_IMAGE = "https://via.placeholder.com/200";
+    public static final String DEFAULT_IMAGE = "https://books.madirex.com/favicon.ico";
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
@@ -38,14 +38,13 @@ public class Publisher {
     @NotBlank(message = "la imagen no puede estar vacía")
     private String image;
 
-    @OneToMany
-    @JoinColumn(name = "book_id")
+    @OneToMany(mappedBy = "publisher", cascade = CascadeType.ALL)
     @Builder.Default
     private Set<Book> books = new HashSet<>();
 
     @CreatedDate
-    private LocalDateTime created_at;
+    private LocalDateTime createdAt;
 
     @LastModifiedDate
-    private LocalDateTime updated_at;
+    private LocalDateTime updatedAt;
 }

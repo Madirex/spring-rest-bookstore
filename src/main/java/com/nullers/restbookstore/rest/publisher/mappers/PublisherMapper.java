@@ -40,8 +40,8 @@ public class PublisherMapper {
                 .name(publisher.getName())
                 .image(publisher.getImage())
                 .books(publisher.getBooks())
-                .created_at(publisher.getCreated_at())
-                .updated_at(publisher.getUpdated_at())
+                .createdAt(publisher.getCreatedAt())
+                .updatedAt(publisher.getUpdatedAt())
                 .build();
     }
 }

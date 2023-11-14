@@ -21,7 +21,7 @@ import java.util.*;
  * @author jaimesalcedo1
  */
 @RestController
-@RequestMapping("/publishers")
+@RequestMapping("/api/publishers")
 public class PublisherController {
     private PublisherServiceImpl publisherService;
 
@@ -111,7 +111,7 @@ public class PublisherController {
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable UUID id) {
         publisherService.deleteById(id);
-        return ResponseEntity.status(HttpStatus.CREATED).build();
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
     /**
