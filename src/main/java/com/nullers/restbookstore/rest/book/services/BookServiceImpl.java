@@ -165,7 +165,13 @@ public class BookServiceImpl implements BookService {
     @CachePut(key = "#result.id")
     @Override
     public GetBookDTO postBook(CreateBookDTO book) throws PublisherNotFound, PublisherUUIDNotValid {
-        var publisher = publisherMapper.toPublisher(publisherService.findById(UUID.fromString(book.getPublisherId())));
+        UUID id;
+        try {
+            id = UUID.fromString(book.getPublisherId());
+        } catch (IllegalArgumentException e) {
+            throw new PublisherUUIDNotValid(BookServiceImpl.NOT_VALID_FORMAT_ID_MSG);
+        }
+        var publisher = publisherMapper.toPublisher(publisherService.findById(id));
         var f = bookRepository.save(bookMapperImpl.toBook(book, publisher));
         var bookDTO = bookMapperImpl.toGetBookDTO(f);
         onChange(Notification.Type.CREATE, bookDTO);
@@ -187,10 +193,16 @@ public class BookServiceImpl implements BookService {
     @Override
     public GetBookDTO putBook(Long id, UpdateBookDTO book) throws BookNotValidIDException,
             PublisherNotFound, PublisherUUIDNotValid, BookNotFoundException {
+        UUID uuid;
+        try {
+            uuid = UUID.fromString(book.getPublisherId());
+        } catch (IllegalArgumentException e) {
+            throw new PublisherUUIDNotValid(BookServiceImpl.NOT_VALID_FORMAT_ID_MSG);
+        }
         try {
             Book existingBook = bookRepository.findById(id)
                     .orElseThrow(() -> new BookNotFoundException("Book no encontrado"));
-            var publisher = publisherMapper.toPublisher(publisherService.findById(UUID.fromString(book.getPublisherId())));
+            var publisher = publisherMapper.toPublisher(publisherService.findById(uuid));
             Book f = bookMapperImpl.toBook(existingBook, book, publisher);
             f.setId(id);
             var modified = bookRepository.save(f);
@@ -217,6 +229,12 @@ public class BookServiceImpl implements BookService {
     @Override
     public GetBookDTO patchBook(Long id, PatchBookDTO book) throws BookNotValidIDException, BookNotFoundException,
             PublisherNotFound, PublisherUUIDNotValid {
+        UUID uuid;
+        try {
+            uuid = UUID.fromString(book.getPublisherId());
+        } catch (IllegalArgumentException e) {
+            throw new PublisherUUIDNotValid(BookServiceImpl.NOT_VALID_FORMAT_ID_MSG);
+        }
         try {
             var opt = bookRepository.findById(id);
             if (opt.isEmpty()) {
@@ -226,7 +244,7 @@ public class BookServiceImpl implements BookService {
             opt.get().setId(id);
             opt.get().setUpdatedAt(LocalDateTime.now());
             opt.get().setPublisher(publisherMapper
-                    .toPublisher(publisherService.findById(UUID.fromString(book.getPublisherId()))));
+                    .toPublisher(publisherService.findById(uuid)));
             Book modified = bookRepository.save(opt.get());
             var bookDTO = bookMapperImpl.toGetBookDTO(modified);
             onChange(Notification.Type.UPDATE, bookDTO);
