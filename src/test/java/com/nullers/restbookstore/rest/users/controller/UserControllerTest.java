@@ -1,0 +1,188 @@
+package com.nullers.restbookstore.rest.users.controller;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import com.nullers.restbookstore.rest.user.dto.UserInfoResponse;
+import com.nullers.restbookstore.rest.user.dto.UserRequest;
+import com.nullers.restbookstore.rest.user.dto.UserResponse;
+import com.nullers.restbookstore.rest.user.model.User;
+import com.nullers.restbookstore.rest.user.services.UserService;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.data.domain.*;
+import org.springframework.http.MediaType;
+import org.springframework.mock.web.MockHttpServletResponse;
+import org.springframework.test.web.servlet.MockMvc;
+
+import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
+
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
+
+@SpringBootTest
+@AutoConfigureMockMvc
+@ExtendWith(MockitoExtension.class)
+public class UserControllerTest {
+    private final UserRequest userRequest = UserRequest.builder()
+            .nombre("test")
+            .apellidos("test")
+            .username("test")
+            .email("test@test.com")
+            .password("tests")
+            .build();
+
+    private final User user = User.builder()
+            .nombre("test")
+            .apellidos("test")
+            .username("test")
+            .email("test@test.com")
+            .password("tests")
+            .build();
+
+    private final UserResponse userResponse = UserResponse.builder()
+            .id(UUID.fromString("c671d981-bd6f-4e75-b7cc-fd3ca96582d5"))
+            .nombre("test")
+            .apellidos("test")
+            .username("test")
+            .email("test@test.com")
+            .build();
+
+    private final UserInfoResponse userInfoResponse = UserInfoResponse.builder()
+            .id(UUID.fromString("c671d981-bd6f-4e75-b7cc-fd3ca96582d5"))
+            .nombre("test")
+            .apellidos("test")
+            .username("test")
+            .email("test@test.com")
+            .build();
+
+    private final String myEndpoint = "/users";
+
+    private final ObjectMapper mapper = new ObjectMapper();
+
+    @Autowired
+    MockMvc mockMvc;
+
+    @MockBean
+    private UserService userService;
+
+    @Autowired
+    public UserControllerTest(UserService userService) {
+        this.userService = userService;
+        mapper.registerModule(new JavaTimeModule());
+    }
+
+    @Test
+    void findAll() throws Exception {
+        // Arrange
+        var listUser = List.of(userResponse, userResponse);
+        Page<UserResponse> page = new PageImpl<>(listUser);
+        Pageable pageable = PageRequest.of(0, 10, Sort.by("id").ascending());
+
+        when(userService.findAll(Optional.empty(), Optional.empty(), Optional.empty(), pageable)).thenReturn(page);
+
+        // Act
+        MockHttpServletResponse response = mockMvc.perform(
+                        get(myEndpoint)
+                                .accept(MediaType.APPLICATION_JSON))
+                .andReturn().getResponse();
+        // Assert
+
+        assertAll(
+                () -> assertEquals(200, response.getStatus()),
+                () -> assertNotNull(response.getContentAsString())
+        );
+    }
+
+    @Test
+    void findById() throws Exception {
+        // Arrange
+        when(userService.findById(UUID.fromString("c671d981-bd6f-4e75-b7cc-fd3ca96582d5"))).thenReturn(userInfoResponse);
+
+        // Act
+        MockHttpServletResponse response = mockMvc.perform(
+                        get(myEndpoint + "/{id}", UUID.fromString("c671d981-bd6f-4e75-b7cc-fd3ca96582d5"))
+                                .accept(MediaType.APPLICATION_JSON))
+                .andReturn().getResponse();
+
+        // Assert
+
+        assertAll(
+                () -> assertEquals(200, response.getStatus()),
+                () -> assertNotNull(response.getContentAsString())
+        );
+    }
+
+    @Test
+    void create() throws Exception {
+        // Arrange
+        when(userService.save(userRequest)).thenReturn(userResponse);
+
+        // Act
+        MockHttpServletResponse response = mockMvc.perform(
+                        post(myEndpoint)
+                                .accept(MediaType.APPLICATION_JSON)
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(mapper.writeValueAsString(userRequest)))
+                .andReturn().getResponse();
+
+        var res = mapper.readValue(response.getContentAsString(), UserResponse.class);
+
+        // Assert
+
+        assertAll(
+                () -> assertEquals(201, response.getStatus()),
+                ()-> assertNotNull(response.getContentAsString()),
+                () -> assertEquals(userResponse, res)
+        );
+    }
+
+    @Test
+    void update() throws Exception {
+        // Arrange
+        when(userService.update(UUID.fromString("c671d981-bd6f-4e75-b7cc-fd3ca96582d5"), userRequest)).thenReturn(userResponse);
+
+        // Act
+        MockHttpServletResponse response = mockMvc.perform(
+                        put(myEndpoint + "/{id}", UUID.fromString("c671d981-bd6f-4e75-b7cc-fd3ca96582d5"))
+                                .accept(MediaType.APPLICATION_JSON)
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(mapper.writeValueAsString(userRequest)))
+                .andReturn().getResponse();
+
+        var res = mapper.readValue(response.getContentAsString(), UserResponse.class);
+
+        // Assert
+        assertAll(
+                () -> assertEquals(200, response.getStatus()),
+                () -> assertEquals(userResponse, res)
+        );
+    }
+
+    @Test
+    void deleteUser() throws Exception {
+        // Arrange
+        doNothing().when(userService).deleteById(UUID.fromString("c671d981-bd6f-4e75-b7cc-fd3ca96582d5"));
+        // Act
+        MockHttpServletResponse response = mockMvc.perform(
+                        delete(myEndpoint + "/{id}", UUID.fromString("c671d981-bd6f-4e75-b7cc-fd3ca96582d5"))
+                                .accept(MediaType.APPLICATION_JSON)
+                                .contentType(MediaType.APPLICATION_JSON))
+                .andReturn().getResponse();
+
+        // Assert
+        assertAll(
+                () -> assertEquals(204, response.getStatus())
+        );
+    }
+
+}
