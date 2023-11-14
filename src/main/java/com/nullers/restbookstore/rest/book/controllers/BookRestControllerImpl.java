@@ -1,7 +1,8 @@
 package com.nullers.restbookstore.rest.book.controllers;
 
-import com.nullers.restbookstore.NOADD.PublisherNotFoundException;
-import com.nullers.restbookstore.NOADD.PublisherNotValidIDException;
+import com.nullers.restbookstore.pagination.exceptions.PageNotValidException;
+import com.nullers.restbookstore.pagination.utils.PageResponse;
+import com.nullers.restbookstore.pagination.utils.PaginationLinksUtils;
 import com.nullers.restbookstore.rest.book.dto.CreateBookDTO;
 import com.nullers.restbookstore.rest.book.dto.GetBookDTO;
 import com.nullers.restbookstore.rest.book.dto.PatchBookDTO;
@@ -9,8 +10,8 @@ import com.nullers.restbookstore.rest.book.dto.UpdateBookDTO;
 import com.nullers.restbookstore.rest.book.exceptions.BookNotFoundException;
 import com.nullers.restbookstore.rest.book.exceptions.BookNotValidIDException;
 import com.nullers.restbookstore.rest.book.services.BookServiceImpl;
-import com.nullers.restbookstore.utils.pagination.PageResponse;
-import com.nullers.restbookstore.utils.pagination.PaginationLinksUtils;
+import com.nullers.restbookstore.rest.publisher.exceptions.PublisherNotFound;
+import com.nullers.restbookstore.rest.publisher.exceptions.PublisherUUIDNotValid;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -74,6 +75,9 @@ public class BookRestControllerImpl implements BookRestController {
             @RequestParam(defaultValue = "asc") String direction,
             HttpServletRequest request
     ) {
+        if (page < 0 || size < 1) {
+            throw new PageNotValidException("La página no puede ser menor que 0 y su tamaño no debe de ser menor a 1.");
+        }
         Sort sort = direction.equalsIgnoreCase(
                 Sort.Direction.ASC.name()) ? Sort.by(sortBy).ascending() : Sort.by(sortBy).descending();
         UriComponentsBuilder uriBuilder = UriComponentsBuilder.fromHttpUrl(request.getRequestURL().toString());
@@ -112,9 +116,9 @@ public class BookRestControllerImpl implements BookRestController {
         try {
             GetBookDTO bookDTO = service.postBook(book);
             return ResponseEntity.status(HttpStatus.CREATED).body(bookDTO);
-        } catch (PublisherNotFoundException e) {
+        } catch (PublisherNotFound e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "El publisher no se encuentra: " + e.getMessage());
-        } catch (PublisherNotValidIDException e) {
+        } catch (PublisherUUIDNotValid e) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, PUBLISHER_ID_NOT_VALID_MSG + e.getMessage());
         }
     }
@@ -134,9 +138,9 @@ public class BookRestControllerImpl implements BookRestController {
             throws BookNotFoundException, BookNotValidIDException {
         try {
             return ResponseEntity.ok(service.putBook(id, book));
-        } catch (PublisherNotFoundException e) {
+        } catch (PublisherNotFound e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "El Publisher no se encuentra: " + e.getMessage());
-        } catch (PublisherNotValidIDException e) {
+        } catch (PublisherUUIDNotValid e) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, PUBLISHER_ID_NOT_VALID_MSG + e.getMessage());
         }
     }
@@ -156,9 +160,9 @@ public class BookRestControllerImpl implements BookRestController {
             throws BookNotFoundException, BookNotValidIDException {
         try {
             return ResponseEntity.ok(service.patchBook(id, book));
-        } catch (PublisherNotFoundException e) {
+        } catch (PublisherNotFound e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "El Publisher no se encuentra: " + e.getMessage());
-        } catch (PublisherNotValidIDException e) {
+        } catch (PublisherUUIDNotValid e) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, PUBLISHER_ID_NOT_VALID_MSG + e.getMessage());
         }
     }
@@ -223,8 +227,8 @@ public class BookRestControllerImpl implements BookRestController {
     @PatchMapping(value = "/image/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<GetBookDTO> newBookImg(
             @PathVariable Long id,
-            @RequestPart("file") MultipartFile file) throws BookNotValidIDException, PublisherNotFoundException,
-            BookNotFoundException, PublisherNotValidIDException, IOException {
+            @RequestPart("file") MultipartFile file) throws BookNotValidIDException, PublisherNotFound,
+            BookNotFoundException, PublisherUUIDNotValid, IOException {
         if (!file.isEmpty()) {
             return ResponseEntity.ok(service.updateImage(id, file, true));
         } else {

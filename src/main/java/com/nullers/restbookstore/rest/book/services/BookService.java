@@ -1,13 +1,13 @@
 package com.nullers.restbookstore.rest.book.services;
 
-import com.nullers.restbookstore.NOADD.PublisherNotFoundException;
-import com.nullers.restbookstore.NOADD.PublisherNotValidIDException;
 import com.nullers.restbookstore.rest.book.dto.CreateBookDTO;
 import com.nullers.restbookstore.rest.book.dto.GetBookDTO;
 import com.nullers.restbookstore.rest.book.dto.PatchBookDTO;
 import com.nullers.restbookstore.rest.book.dto.UpdateBookDTO;
 import com.nullers.restbookstore.rest.book.exceptions.BookNotFoundException;
 import com.nullers.restbookstore.rest.book.exceptions.BookNotValidIDException;
+import com.nullers.restbookstore.rest.publisher.exceptions.PublisherNotFound;
+import com.nullers.restbookstore.rest.publisher.exceptions.PublisherUUIDNotValid;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.web.multipart.MultipartFile;
@@ -46,10 +46,10 @@ public interface BookService {
      *
      * @param book Book
      * @return GetBookDTO
-     * @throws PublisherNotFoundException   Excepción de Publisher no encontrado
-     * @throws PublisherNotValidIDException Excepción de ID de Publisher no válida
+     * @throws PublisherNotFound   Excepción de Publisher no encontrado
+     * @throws PublisherUUIDNotValid Excepción de ID de Publisher no válida
      */
-    GetBookDTO postBook(CreateBookDTO book) throws PublisherNotFoundException, PublisherNotValidIDException;
+    GetBookDTO postBook(CreateBookDTO book) throws PublisherNotFound, PublisherUUIDNotValid;
 
     /**
      * Actualiza un libro
@@ -59,10 +59,10 @@ public interface BookService {
      * @return GetBookDTO
      * @throws BookNotValidIDException      Excepción de ID de Book no válida
      * @throws BookNotFoundException        Excepción de Book no encontrado
-     * @throws PublisherNotFoundException   Excepción de Publisher no encontrado
-     * @throws PublisherNotValidIDException Excepción de ID de Publisher no válida
+     * @throws PublisherNotFound   Excepción de Publisher no encontrado
+     * @throws PublisherUUIDNotValid Excepción de ID de Publisher no válida
      */
-    GetBookDTO putBook(Long id, UpdateBookDTO book) throws BookNotValidIDException, BookNotFoundException, PublisherNotFoundException, PublisherNotValidIDException;
+    GetBookDTO putBook(Long id, UpdateBookDTO book) throws BookNotValidIDException, BookNotFoundException, PublisherNotFound, PublisherUUIDNotValid;
 
     /**
      * Actualiza parcialmente un libro
@@ -72,10 +72,10 @@ public interface BookService {
      * @return GetBookDTO
      * @throws BookNotValidIDException      Excepción de ID de Book no válida
      * @throws BookNotFoundException        Excepción de Book no encontrado
-     * @throws PublisherNotFoundException   Excepción de Publisher no encontrado
-     * @throws PublisherNotValidIDException Excepción de ID de Publisher no válida
+     * @throws PublisherNotFound   Excepción de Publisher no encontrado
+     * @throws PublisherUUIDNotValid Excepción de ID de Publisher no válida
      */
-    GetBookDTO patchBook(Long id, PatchBookDTO book) throws BookNotValidIDException, BookNotFoundException, PublisherNotFoundException, PublisherNotValidIDException;
+    GetBookDTO patchBook(Long id, PatchBookDTO book) throws BookNotValidIDException, BookNotFoundException, PublisherNotFound, PublisherUUIDNotValid;
 
     /**
      * Elimina un libro
@@ -95,9 +95,9 @@ public interface BookService {
      * @return GetBookDTO
      * @throws BookNotFoundException        Excepción de Book no encontrado
      * @throws BookNotValidIDException      Excepción de ID de Book no válida
-     * @throws PublisherNotFoundException   Excepción de Publisher no encontrado
-     * @throws PublisherNotValidIDException Excepción de ID de Publisher no válida
+     * @throws PublisherNotFound   Excepción de Publisher no encontrado
+     * @throws PublisherUUIDNotValid Excepción de ID de Publisher no válida
      * @throws IOException                  Excepción Entrada/Salida
      */
-    GetBookDTO updateImage(Long id, MultipartFile image, Boolean withUrl) throws BookNotFoundException, BookNotValidIDException, PublisherNotFoundException, PublisherNotValidIDException, IOException;
+    GetBookDTO updateImage(Long id, MultipartFile image, Boolean withUrl) throws BookNotFoundException, BookNotValidIDException, PublisherNotFound, PublisherUUIDNotValid, IOException;
 }
