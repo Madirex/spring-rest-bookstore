@@ -1,5 +1,6 @@
-package com.nullers.restbookstore.config;
+package com.nullers.restbookstore.exceptions;
 
+import com.nullers.restbookstore.pagination.exceptions.PageNotValidException;
 import org.apache.tomcat.util.http.fileupload.impl.FileSizeLimitExceededException;
 import org.springframework.data.mapping.PropertyReferenceException;
 import org.springframework.http.HttpStatus;
@@ -38,5 +39,18 @@ public class GlobalExceptionHandler {
     public ResponseEntity<String> handlePropertyReferenceException(PropertyReferenceException ex) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                 .body("Error al procesar la propiedad en la consulta: " + ex.getPropertyName());
+    }
+
+    /**
+     * Manejador de excepciones de paginación
+     *
+     * @param ex Excepción
+     * @return Respuesta
+     */
+    @ExceptionHandler(PageNotValidException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ResponseEntity<String> handlePropertyReferenceException(PageNotValidException ex) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body(ex.getMessage());
     }
 }
