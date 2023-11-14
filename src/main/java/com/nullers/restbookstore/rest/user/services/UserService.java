@@ -1,8 +1,8 @@
-package com.nullers.restbookstore.user.services;
+package com.nullers.restbookstore.rest.user.services;
 
-import com.nullers.restbookstore.user.dto.UserInfoResponse;
-import com.nullers.restbookstore.user.dto.UserRequest;
-import com.nullers.restbookstore.user.dto.UserResponse;
+import com.nullers.restbookstore.rest.user.dto.UserInfoResponse;
+import com.nullers.restbookstore.rest.user.dto.UserRequest;
+import com.nullers.restbookstore.rest.user.dto.UserResponse;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 

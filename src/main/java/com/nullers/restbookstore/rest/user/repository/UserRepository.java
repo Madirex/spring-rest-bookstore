@@ -1,6 +1,6 @@
-package com.nullers.restbookstore.user.repository;
+package com.nullers.restbookstore.rest.user.repository;
 
-import com.nullers.restbookstore.user.model.User;
+import com.nullers.restbookstore.rest.user.model.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Modifying;

@@ -1,13 +1,12 @@
 package com.nullers.restbookstore.rest.users.controller;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import com.nullers.restbookstore.user.dto.UserInfoResponse;
-import com.nullers.restbookstore.user.dto.UserRequest;
-import com.nullers.restbookstore.user.dto.UserResponse;
-import com.nullers.restbookstore.user.model.User;
-import com.nullers.restbookstore.user.services.UserService;
+import com.nullers.restbookstore.rest.user.dto.UserInfoResponse;
+import com.nullers.restbookstore.rest.user.dto.UserRequest;
+import com.nullers.restbookstore.rest.user.dto.UserResponse;
+import com.nullers.restbookstore.rest.user.model.User;
+import com.nullers.restbookstore.rest.user.services.UserService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -20,7 +19,6 @@ import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.test.web.servlet.MockMvc;
 
-import java.io.UnsupportedEncodingException;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;

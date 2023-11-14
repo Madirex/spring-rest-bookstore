@@ -1,9 +1,9 @@
-package com.nullers.restbookstore.user.mappers;
+package com.nullers.restbookstore.rest.user.mappers;
 
-import com.nullers.restbookstore.user.dto.UserInfoResponse;
-import com.nullers.restbookstore.user.dto.UserRequest;
-import com.nullers.restbookstore.user.dto.UserResponse;
-import com.nullers.restbookstore.user.model.User;
+import com.nullers.restbookstore.rest.user.dto.UserInfoResponse;
+import com.nullers.restbookstore.rest.user.dto.UserRequest;
+import com.nullers.restbookstore.rest.user.dto.UserResponse;
+import com.nullers.restbookstore.rest.user.model.User;
 import org.springframework.stereotype.Component;
 
 import java.util.UUID;

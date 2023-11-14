@@ -1,6 +1,6 @@
-package com.nullers.restbookstore.user.dto;
+package com.nullers.restbookstore.rest.user.dto;
 
-import com.nullers.restbookstore.user.model.Role;
+import com.nullers.restbookstore.rest.user.model.Role;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;

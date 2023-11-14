@@ -1,13 +1,13 @@
-package com.nullers.restbookstore.user.services;
+package com.nullers.restbookstore.rest.user.services;
 
-import com.nullers.restbookstore.user.dto.UserInfoResponse;
-import com.nullers.restbookstore.user.dto.UserRequest;
-import com.nullers.restbookstore.user.dto.UserResponse;
-import com.nullers.restbookstore.user.exception.UserNameOrEmailExists;
-import com.nullers.restbookstore.user.exception.UserNotFound;
-import com.nullers.restbookstore.user.mappers.UserMapper;
-import com.nullers.restbookstore.user.model.User;
-import com.nullers.restbookstore.user.repository.UserRepository;
+import com.nullers.restbookstore.rest.user.dto.UserInfoResponse;
+import com.nullers.restbookstore.rest.user.dto.UserRequest;
+import com.nullers.restbookstore.rest.user.dto.UserResponse;
+import com.nullers.restbookstore.rest.user.exception.UserNameOrEmailExists;
+import com.nullers.restbookstore.rest.user.exception.UserNotFound;
+import com.nullers.restbookstore.rest.user.mappers.UserMapper;
+import com.nullers.restbookstore.rest.user.model.User;
+import com.nullers.restbookstore.rest.user.repository.UserRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.annotation.CacheConfig;
 import org.springframework.cache.annotation.CacheEvict;

@@ -1,14 +1,14 @@
 package com.nullers.restbookstore.rest.users.services;
 
-import com.nullers.restbookstore.user.dto.UserInfoResponse;
-import com.nullers.restbookstore.user.dto.UserRequest;
-import com.nullers.restbookstore.user.dto.UserResponse;
-import com.nullers.restbookstore.user.exception.UserNameOrEmailExists;
-import com.nullers.restbookstore.user.exception.UserNotFound;
-import com.nullers.restbookstore.user.mappers.UserMapper;
-import com.nullers.restbookstore.user.model.User;
-import com.nullers.restbookstore.user.repository.UserRepository;
-import com.nullers.restbookstore.user.services.UserServiceImp;
+import com.nullers.restbookstore.rest.user.dto.UserInfoResponse;
+import com.nullers.restbookstore.rest.user.dto.UserRequest;
+import com.nullers.restbookstore.rest.user.dto.UserResponse;
+import com.nullers.restbookstore.rest.user.exception.UserNameOrEmailExists;
+import com.nullers.restbookstore.rest.user.exception.UserNotFound;
+import com.nullers.restbookstore.rest.user.mappers.UserMapper;
+import com.nullers.restbookstore.rest.user.model.User;
+import com.nullers.restbookstore.rest.user.repository.UserRepository;
+import com.nullers.restbookstore.rest.user.services.UserServiceImp;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;

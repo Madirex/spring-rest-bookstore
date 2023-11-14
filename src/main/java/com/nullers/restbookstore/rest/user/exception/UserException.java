@@ -1,4 +1,4 @@
-package com.nullers.restbookstore.user.exception;
+package com.nullers.restbookstore.rest.user.exception;
 
 /**
  * Excepcion de usuario
