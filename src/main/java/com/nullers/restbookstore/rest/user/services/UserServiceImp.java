@@ -1,12 +1,13 @@
 package com.nullers.restbookstore.rest.user.services;
 
-import com.nullers.restbookstore.rest.user.dto.UserResponse;
-import com.nullers.restbookstore.rest.user.exception.UserNotFound;
-import com.nullers.restbookstore.rest.user.model.User;
-import com.nullers.restbookstore.rest.user.repository.UserRepository;
 import com.nullers.restbookstore.rest.user.dto.UserInfoResponse;
 import com.nullers.restbookstore.rest.user.dto.UserRequest;
+import com.nullers.restbookstore.rest.user.dto.UserResponse;
+import com.nullers.restbookstore.rest.user.exception.UserNameOrEmailExists;
+import com.nullers.restbookstore.rest.user.exception.UserNotFound;
 import com.nullers.restbookstore.rest.user.mappers.UserMapper;
+import com.nullers.restbookstore.rest.user.model.User;
+import com.nullers.restbookstore.rest.user.repository.UserRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.annotation.CacheConfig;
 import org.springframework.cache.annotation.CacheEvict;
@@ -15,7 +16,6 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -106,7 +106,7 @@ public class UserServiceImp implements UserService {
         log.info("Guardando usuario: " + userRequest);
         userRepository.findByUsernameEqualsIgnoreCaseOrEmailEqualsIgnoreCase(userRequest.getUsername(), userRequest.getEmail())
                 .ifPresent(user -> {
-                    throw new UsernameNotFoundException("El usuario ya existe");
+                    throw new UserNameOrEmailExists("El usuario ya existe");
                 });
         return userMapper.toUserResponse(userRepository.save(userMapper.toUser(userRequest)));
     }
@@ -122,9 +122,10 @@ public class UserServiceImp implements UserService {
     @CachePut(key = "#result.id")
     public UserResponse update(UUID id, UserRequest userRequest) {
         log.info("Actualizando usuario: " + userRequest);
+        userRepository.findById(id).orElseThrow(() -> new UserNotFound("Usuario no encontrado"));
         userRepository.findByUsernameEqualsIgnoreCaseOrEmailEqualsIgnoreCase(userRequest.getUsername(), userRequest.getEmail())
                 .ifPresent(user -> {
-                    throw new UsernameNotFoundException("El usuario ya existe");
+                    throw new UserNameOrEmailExists("El usuario ya existe");
                 });
         return userMapper.toUserResponse(userRepository.save(userMapper.toUser(userRequest, id)));
     }

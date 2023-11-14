@@ -13,8 +13,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
@@ -29,8 +27,7 @@ import java.util.UUID;
  */
 @RestController
 @Slf4j
-@RequestMapping("${api.version}/users") // Es la ruta del controlador
-@PreAuthorize("hasRole('USER')") // Solo los usuarios pueden acceder
+@RequestMapping("/users") // Es la ruta del controlador
 public class UserController {
     /**
      * Servicio de usuarios
@@ -55,7 +52,6 @@ public class UserController {
      * @return Lista de usuarios
      */
     @GetMapping
-    @PreAuthorize("hasRole('ADMIN')")
     public Page<UserResponse> findAll(
             @RequestParam(required = false) Optional<String> username,
             @RequestParam(required = false) Optional<String> email,
@@ -79,7 +75,6 @@ public class UserController {
      * @return Usuario
      */
     @GetMapping("/{id}")
-    @PreAuthorize("hasRole('ADMIN')") // Solo los admin pueden acceder
     public ResponseEntity<UserInfoResponse> findById(@PathVariable UUID id) {
         log.info("findById: id: {}", id);
         return ResponseEntity.ok(usersService.findById(id));
@@ -92,7 +87,6 @@ public class UserController {
      * @return Usuario creado
      */
     @PostMapping
-    @PreAuthorize("hasRole('ADMIN')") // Solo los admin pueden acceder
     public ResponseEntity<UserResponse> createUser(@Valid @RequestBody UserRequest userRequest) {
         log.info("save: userRequest: {}", userRequest);
         return ResponseEntity.status(HttpStatus.CREATED).body(usersService.save(userRequest));
@@ -106,7 +100,6 @@ public class UserController {
      * @return Usuario actualizado
      */
     @PutMapping("/{id}")
-    @PreAuthorize("hasRole('ADMIN')") // Solo los admin pueden acceder
     public ResponseEntity<UserResponse> updateUser(@PathVariable UUID id, @Valid @RequestBody UserRequest userRequest) {
         log.info("update: id: {}, userRequest: {}", id, userRequest);
         return ResponseEntity.ok(usersService.update(id, userRequest));
@@ -119,7 +112,6 @@ public class UserController {
      * @return Respuesta vacia
      */
     @DeleteMapping("/{id}")
-    @PreAuthorize("hasRole('ADMIN')") // Solo los admin pueden acceder
     public ResponseEntity<Void> deleteUser(@PathVariable UUID id) {
         log.info("delete: id: {}", id);
         usersService.deleteById(id);
@@ -133,8 +125,7 @@ public class UserController {
      * @return Usuario autenticado
      */
     @GetMapping("/me/profile")
-    @PreAuthorize("hasRole('ADMIN')") // Solo los admin pueden acceder
-    public ResponseEntity<UserInfoResponse> me(@AuthenticationPrincipal User user) {
+    public ResponseEntity<UserInfoResponse> me( User user) {
         log.info("Obteniendo usuario");
         // Esta autenticado, por lo que devolvemos sus datos ya sabemos su id
         return ResponseEntity.ok(usersService.findById(user.getId()));
@@ -148,8 +139,7 @@ public class UserController {
      * @return Usuario actualizado
      */
     @PutMapping("/me/profile")
-    @PreAuthorize("hasRole('USER')") // Solo los usuarios pueden acceder
-    public ResponseEntity<UserResponse> updateMe(@AuthenticationPrincipal User user, @Valid @RequestBody UserRequest userRequest) {
+    public ResponseEntity<UserResponse> updateMe( User user, @Valid @RequestBody UserRequest userRequest) {
         log.info("updateMe: user: {}, userRequest: {}", user, userRequest);
         return ResponseEntity.ok(usersService.update(user.getId(), userRequest));
     }
@@ -161,8 +151,7 @@ public class UserController {
      * @return Respuesta vacia
      */
     @DeleteMapping("/me/profile")
-    @PreAuthorize("hasRole('USER')") // Solo los usuarios pueden acceder
-    public ResponseEntity<Void> deleteMe(@AuthenticationPrincipal User user) {
+    public ResponseEntity<Void> deleteMe(User user) {
         log.info("deleteMe: user: {}", user);
         usersService.deleteById(user.getId());
         return ResponseEntity.noContent().build();
