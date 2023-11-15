@@ -17,6 +17,10 @@ import org.springframework.cache.annotation.CacheConfig;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -25,6 +29,7 @@ import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Clase PublisherServiceImpl
@@ -58,11 +63,19 @@ public class PublisherServiceImpl implements PublisherService {
      */
     @Cacheable
     @Override
-    public List<PublisherDTO> findAll() {
-        return publisherRepository
-                .findAll()
-                .stream()
-                .map(publisherMapper::toDto).toList();
+    public Page<PublisherDTO> findAll(Optional<String> name, PageRequest pageable) {
+
+        Specification<Publisher> specNombrePublisher = (root, query, criteriaBuilder) ->
+                name.map(m -> criteriaBuilder.like(criteriaBuilder.lower(root.get("name")), "%" + m + "%"))
+                        .orElseGet(() -> criteriaBuilder.isTrue(criteriaBuilder.literal(true)));
+
+
+        Page<Publisher> publisherPage = publisherRepository.findAll(specNombrePublisher, pageable);
+        List<PublisherDTO> dtoList = publisherPage.getContent().stream()
+                .map(publisherMapper::toDto)
+                .toList();
+
+        return new PageImpl<>(dtoList, publisherPage.getPageable(), publisherPage.getTotalElements());
     }
 
     /**
