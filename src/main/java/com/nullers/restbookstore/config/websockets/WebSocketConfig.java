@@ -44,5 +44,4 @@ public class WebSocketConfig implements WebSocketConfigurer {
     public WebSocketHandler webSocketClientsHandler() {
         return new WebSocketHandler("Clients");
     }
-
 }

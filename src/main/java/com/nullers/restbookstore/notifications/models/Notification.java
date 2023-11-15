@@ -11,15 +11,8 @@ public record Notification<T>(
         T data,
         String createdAt
 ) {
+    /**
+     * Tipo de notificación
+     */
     public enum Type {CREATE, UPDATE, DELETE}
-
-    @Override
-    public String toString() {
-        return "Notification{" +
-                "entity='" + entity + '\'' +
-                ", type=" + type +
-                ", data=" + data +
-                ", createdAt='" + createdAt + '\'' +
-                '}';
-    }
 }

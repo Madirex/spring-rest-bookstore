@@ -4,6 +4,7 @@ import com.nullers.restbookstore.storage.controller.StorageController;
 import com.nullers.restbookstore.storage.exceptions.StorageBadRequest;
 import com.nullers.restbookstore.storage.exceptions.StorageInternal;
 import com.nullers.restbookstore.storage.exceptions.StorageNotFound;
+import com.nullers.restbookstore.utils.Util;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
@@ -21,6 +22,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import java.util.List;
 import java.util.Objects;
 import java.util.stream.Stream;
 
@@ -44,33 +46,35 @@ public class FileSystemStorageService implements StorageService {
     /**
      * Store file
      *
-     * @param file File
+     * @param file      File
+     * @param fileTypes File types
+     * @param name      Name
      * @return Filename
+     * @throws IOException IOException
      */
     @Override
-    public String store(MultipartFile file) {
+    public String store(MultipartFile file, List<String> fileTypes, String name) throws IOException {
         String filename = StringUtils.cleanPath(Objects.requireNonNull(file.getOriginalFilename()));
         String extension = StringUtils.getFilenameExtension(filename);
-        String justFilename = filename.replace("." + extension, "");
-        String storedFilename = System.currentTimeMillis() + "_" + justFilename + "." + extension;
+        String storedFilename = name + "." + extension;
 
-        try {
-            if (file.isEmpty()) {
-                throw new StorageBadRequest("Fichero vacío " + filename);
-            }
-            if (filename.contains("..")) {
-                throw new StorageBadRequest(
-                        "No se puede almacenar un fichero con una ruta relativa fuera del directorio actual "
-                                + filename);
-            }
-            try (InputStream inputStream = file.getInputStream()) {
-                log.info("Almacenando fichero " + filename + " como " + storedFilename);
-                Files.copy(inputStream, this.rootLocation.resolve(storedFilename),
-                        StandardCopyOption.REPLACE_EXISTING);
-                return storedFilename;
-            }
-        } catch (IOException e) {
-            throw new StorageInternal("Fallo al almacenar fichero " + filename + " " + e);
+        if (file.isEmpty()) {
+            throw new StorageBadRequest("Fichero vacío " + filename);
+        }
+        if (filename.contains("..")) {
+            throw new StorageBadRequest(
+                    "No se puede almacenar un fichero con una ruta relativa fuera del directorio actual "
+                            + filename);
+        }
+        if (fileTypes != null && !fileTypes.isEmpty() && (!fileTypes.contains(extension) ||
+                !fileTypes.contains(Util.detectFileType(file.getBytes())))) {
+            throw new StorageBadRequest("Tipo de fichero no permitido " + filename);
+        }
+        try (InputStream inputStream = file.getInputStream()) {
+            log.info("Almacenando fichero " + filename + " como " + storedFilename);
+            Files.copy(inputStream, this.rootLocation.resolve(storedFilename),
+                    StandardCopyOption.REPLACE_EXISTING);
+            return storedFilename;
         }
     }
 
@@ -82,10 +86,10 @@ public class FileSystemStorageService implements StorageService {
     @Override
     public Stream<Path> loadAll() {
         log.info("Cargando todos los ficheros almacenados");
-        try {
-            return Files.walk(this.rootLocation, 1)
-                    .filter(path -> !path.equals(this.rootLocation))
-                    .map(this.rootLocation::relativize);
+        try (Stream<Path> pathStream = Files.walk(this.rootLocation, 1)
+                .filter(path -> !path.equals(this.rootLocation))
+                .map(this.rootLocation::relativize)) {
+            return pathStream.toList().stream();
         } catch (IOException e) {
             throw new StorageInternal("Fallo al leer ficheros almacenados " + e);
         }

@@ -24,6 +24,11 @@ public class WebSocketHandler extends TextWebSocketHandler implements SubProtoco
 
     private final Set<WebSocketSession> sessions = new CopyOnWriteArraySet<>();
 
+    /**
+     * Constructor
+     *
+     * @param entity Entidad que se va a manejar
+     */
     public WebSocketHandler(String entity) {
         this.entity = entity;
     }
@@ -51,7 +56,7 @@ public class WebSocketHandler extends TextWebSocketHandler implements SubProtoco
      * @param status  Estado de la conexión
      */
     @Override
-    public void afterConnectionClosed(WebSocketSession session, CloseStatus status) {
+    public void afterConnectionClosed(@NonNull WebSocketSession session, @NonNull CloseStatus status) {
         log.info("Conexión cerrada con el servidor: " + status);
         sessions.remove(session);
     }
@@ -97,7 +102,7 @@ public class WebSocketHandler extends TextWebSocketHandler implements SubProtoco
      * @param exception Excepción que se ha producido
      */
     @Override
-    public void handleTransportError(WebSocketSession session, Throwable exception) {
+    public void handleTransportError(@NonNull WebSocketSession session, Throwable exception) {
         log.info("Error de transporte con el servidor: " + exception.getMessage());
     }
 
@@ -107,6 +112,7 @@ public class WebSocketHandler extends TextWebSocketHandler implements SubProtoco
      * @return Lista de subprotocolos
      */
     @Override
+    @NonNull
     public List<String> getSubProtocols() {
         return List.of("subprotocol.demo.websocket");
     }

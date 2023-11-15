@@ -30,17 +30,12 @@ dependencies {
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     implementation("com.fasterxml.jackson.dataformat:jackson-dataformat-xml")
     implementation("org.springframework.boot:spring-boot-starter-websocket")
-
-
     implementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.11.3")
 
     runtimeOnly("com.h2database:h2")
 
     compileOnly("org.projectlombok:lombok")
     annotationProcessor("org.projectlombok:lombok")
-
-
-
 }
 
 tasks.withType<Test> {

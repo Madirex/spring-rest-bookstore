@@ -13,23 +13,27 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 @Slf4j
 public class StorageConfig {
-
     private final StorageService storageService;
+    private final String deleteAll;
 
+    /**
+     * Constructor
+     *
+     * @param storageService Servicio de almacenamiento
+     * @param deleteAll      Borrar todos los ficheros
+     */
     @Autowired
-    public StorageConfig(StorageService storageService) {
+    public StorageConfig(StorageService storageService, @Value("${upload.delete}") String deleteAll) {
         this.storageService = storageService;
+        this.deleteAll = deleteAll;
     }
-
-    @Value("${upload.delete}")
-    private String deleteAll;
 
     /**
      * Inicialización
      */
     @PostConstruct
     public void init() {
-        if (deleteAll.equals("true")) {
+        if ("true".equals(deleteAll)) {
             log.info("Borrando ficheros de almacenamiento...");
             storageService.deleteAll();
         }
