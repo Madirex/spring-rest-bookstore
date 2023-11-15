@@ -2,6 +2,7 @@ package com.nullers.restbookstore.rest.publisher.mappers;
 
 import com.nullers.restbookstore.rest.publisher.dto.CreatePublisherDto;
 import com.nullers.restbookstore.rest.publisher.dto.PublisherDTO;
+import com.nullers.restbookstore.rest.publisher.dto.PublisherData;
 import com.nullers.restbookstore.rest.publisher.models.Publisher;
 import org.springframework.stereotype.Component;
 
@@ -26,6 +27,7 @@ public class PublisherMapper {
      */
     public Publisher toPublisher(PublisherDTO dto) {
         return Publisher.builder()
+                .id(dto.getId())
                 .name(dto.getName())
                 .image(dto.getImage())
                 .books(dto.getBooks())
@@ -58,5 +60,15 @@ public class PublisherMapper {
         updatedPublisher.setUpdatedAt(LocalDateTime.now());
         updatedPublisher.setBooks(null);
         return updatedPublisher;
+    }
+
+    public PublisherData toPublisherData(Publisher publisher) {
+        return PublisherData.builder()
+                .id(publisher.getId())
+                .name(publisher.getName())
+                .image(publisher.getImage())
+                .createdAt(publisher.getCreatedAt())
+                .updatedAt(publisher.getUpdatedAt())
+                .build();
     }
 }

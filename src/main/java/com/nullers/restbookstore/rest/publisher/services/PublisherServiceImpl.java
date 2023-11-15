@@ -122,7 +122,7 @@ public class PublisherServiceImpl implements PublisherService {
      */
     @Override
     public PublisherDTO removeBookPublisher(Long id, Long bookId) {
-        Book bookToRemove = bookRepository.getById(bookId);
+        Book bookToRemove = bookRepository.getReferenceById(bookId);
         PublisherDTO publisherUpdate = findById(id);
         publisherUpdate.getBooks().remove(bookToRemove);
         return publisherUpdate;
