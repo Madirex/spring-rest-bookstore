@@ -15,7 +15,10 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 /**
- * Clase ShopRestControllerImpl
+ * Implementación del controlador REST para la gestión de tiendas (Shops).
+ * Provee endpoints para operaciones CRUD sobre tiendas.
+ *
+ * @author alexdor00
  */
 @RestController
 @RequestMapping("/api/shops")
@@ -24,8 +27,8 @@ public class ShopRestControllerImpl implements ShopRestController {
     private final ShopServiceImpl shopService;
 
     /**
-     * Constructor de la clase
-     * @param shopService Servicio de Shop
+     * Constructor que inyecta el servicio de Shop.
+     * @param shopService Servicio de Shop para operaciones de negocio.
      */
     @Autowired
     public ShopRestControllerImpl(ShopServiceImpl shopService) {
@@ -33,8 +36,8 @@ public class ShopRestControllerImpl implements ShopRestController {
     }
 
     /**
-     * Método para obtener todas las tiendas
-     * @return ResponseEntity con la lista de tiendas
+     * Obtiene todas las tiendas disponibles.
+     * @return ResponseEntity con una lista de todas las tiendas en formato DTO.
      */
     @GetMapping
     @Override
@@ -43,10 +46,10 @@ public class ShopRestControllerImpl implements ShopRestController {
     }
 
     /**
-     * Método para obtener una tienda por su ID
-     * @param id ID de la tienda en formato String
-     * @return ResponseEntity con la tienda encontrada
-     * @throws ShopNotFoundException Si no se encuentra la tienda
+     * Obtiene una tienda específica por su ID.
+     * @param id ID de la tienda en formato String.
+     * @return ResponseEntity con los detalles de la tienda en formato DTO.
+     * @throws ShopNotFoundException Si la tienda no se encuentra.
      */
     @GetMapping("/{id}")
     @Override
@@ -59,9 +62,9 @@ public class ShopRestControllerImpl implements ShopRestController {
     }
 
     /**
-     * Método para crear una nueva tienda
-     * @param shopDto DTO con los datos de la tienda a crear
-     * @return ResponseEntity con la tienda creada
+     * Crea una nueva tienda con los datos proporcionados.
+     * @param shopDto DTO con la información de la tienda a crear.
+     * @return ResponseEntity con los detalles de la tienda creada en formato DTO.
      */
     @PostMapping
     @Override
@@ -71,11 +74,11 @@ public class ShopRestControllerImpl implements ShopRestController {
     }
 
     /**
-     * Método para actualizar una tienda
-     * @param id ID de la tienda a actualizar
-     * @param shopDto DTO con los datos actualizados
-     * @return ResponseEntity con la tienda actualizada
-     * @throws ShopNotFoundException Si no se encuentra la tienda
+     * Actualiza una tienda existente con los datos proporcionados.
+     * @param id ID de la tienda a actualizar.
+     * @param shopDto DTO con los datos actualizados de la tienda.
+     * @return ResponseEntity con los detalles de la tienda actualizada en formato DTO.
+     * @throws ShopNotFoundException Si la tienda no se encuentra.
      */
     @PutMapping("/{id}")
     @Override
@@ -89,10 +92,10 @@ public class ShopRestControllerImpl implements ShopRestController {
     }
 
     /**
-     * Método para eliminar una tienda
-     * @param id ID de la tienda a eliminar
-     * @return ResponseEntity sin contenido
-     * @throws ShopNotFoundException Si no se encuentra la tienda
+     * Elimina una tienda específica por su ID.
+     * @param id ID de la tienda a eliminar.
+     * @return ResponseEntity sin contenido indicando que la tienda ha sido eliminada.
+     * @throws ShopNotFoundException Si la tienda no se encuentra.
      */
     @DeleteMapping("/{id}")
     @Override
