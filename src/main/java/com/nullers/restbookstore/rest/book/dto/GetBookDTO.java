@@ -1,5 +1,6 @@
 package com.nullers.restbookstore.rest.book.dto;
 
+import com.nullers.restbookstore.rest.publisher.dto.PublisherData;
 import com.nullers.restbookstore.rest.publisher.models.Publisher;
 import lombok.*;
 
@@ -17,7 +18,7 @@ import java.time.LocalDateTime;
 public class GetBookDTO {
     private Long id;
     private String name;
-    private Publisher publisher;
+    private PublisherData publisher;
 
     @Setter
     private String image;
