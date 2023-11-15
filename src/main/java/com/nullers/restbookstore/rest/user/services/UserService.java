@@ -52,6 +52,8 @@ public interface UserService {
      */
     UserResponse update(UUID id, UserRequest userRequest);
 
+    UserResponse patch(UUID id, UserRequest userRequest);
+
     /**
      * Elimina un usuario por ID
      *
