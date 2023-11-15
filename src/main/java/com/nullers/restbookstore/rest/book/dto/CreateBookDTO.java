@@ -18,7 +18,7 @@ public class CreateBookDTO {
     private String name;
 
     @NotNull(message = "Publisher no puede ser nulo")
-    private String publisherId;
+    private Long publisherId;
 
     @Min(value = 0, message = "El precio no puede estar en negativo")
     @NotNull(message = "El precio no puede ser nulo")

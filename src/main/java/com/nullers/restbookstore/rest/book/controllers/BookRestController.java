@@ -8,7 +8,7 @@ import com.nullers.restbookstore.rest.book.dto.UpdateBookDTO;
 import com.nullers.restbookstore.rest.book.exceptions.BookNotFoundException;
 import com.nullers.restbookstore.rest.book.exceptions.BookNotValidIDException;
 import com.nullers.restbookstore.rest.publisher.exceptions.PublisherNotFound;
-import com.nullers.restbookstore.rest.publisher.exceptions.PublisherUUIDNotValid;
+import com.nullers.restbookstore.rest.publisher.exceptions.PublisherIDNotValid;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -28,13 +28,13 @@ public interface BookRestController {
             throws BookNotValidIDException, BookNotFoundException;
 
     ResponseEntity<GetBookDTO> postBook(@Valid @RequestBody CreateBookDTO book)
-            throws PublisherNotFound, PublisherUUIDNotValid;
+            throws PublisherNotFound, PublisherIDNotValid;
 
     ResponseEntity<GetBookDTO> putBook(@Valid @PathVariable Long id, @Valid @RequestBody UpdateBookDTO book)
-            throws BookNotValidIDException, BookNotFoundException, PublisherNotFound, PublisherUUIDNotValid;
+            throws BookNotValidIDException, BookNotFoundException, PublisherNotFound, PublisherIDNotValid;
 
     ResponseEntity<GetBookDTO> patchBook(@Valid @PathVariable Long id, @Valid @RequestBody PatchBookDTO book)
-            throws BookNotValidIDException, BookNotFoundException, PublisherNotFound, PublisherUUIDNotValid;
+            throws BookNotValidIDException, BookNotFoundException, PublisherNotFound, PublisherIDNotValid;
 
     ResponseEntity<String> deleteBook(@Valid @PathVariable Long id) throws BookNotValidIDException, BookNotFoundException;
 

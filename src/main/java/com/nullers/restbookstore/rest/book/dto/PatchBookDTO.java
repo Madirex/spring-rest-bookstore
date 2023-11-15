@@ -14,7 +14,7 @@ import lombok.Getter;
 public class PatchBookDTO {
     private String name;
 
-    private String publisherId;
+    private Long publisherId;
 
     private String image;
 
