@@ -29,4 +29,7 @@ public class CreateBookDTO {
 
     @NotBlank(message = "La descripción no puede estar vacía")
     private String description;
+
+    @NotBlank(message = "La categoría no puede estar vacía")
+    private String category;
 }

@@ -29,4 +29,7 @@ public class UpdateBookDTO {
 
     @NotBlank(message = "La descripción no puede estar vacía")
     private String description;
+
+    private String category;
+
 }
