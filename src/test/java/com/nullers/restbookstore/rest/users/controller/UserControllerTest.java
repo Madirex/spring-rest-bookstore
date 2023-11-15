@@ -2,6 +2,7 @@ package com.nullers.restbookstore.rest.users.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import com.nullers.restbookstore.rest.user.controller.UserController;
 import com.nullers.restbookstore.rest.user.dto.UserInfoResponse;
 import com.nullers.restbookstore.rest.user.dto.UserRequest;
 import com.nullers.restbookstore.rest.user.dto.UserResponse;
@@ -27,8 +28,12 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 
+/**
+ * Test for {@link UserController}
+ *
+ * @Author: Binwei Wang
+ */
 @SpringBootTest
 @AutoConfigureMockMvc
 @ExtendWith(MockitoExtension.class)
@@ -141,7 +146,7 @@ public class UserControllerTest {
 
         assertAll(
                 () -> assertEquals(201, response.getStatus()),
-                ()-> assertNotNull(response.getContentAsString()),
+                () -> assertNotNull(response.getContentAsString()),
                 () -> assertEquals(userResponse, res)
         );
     }
