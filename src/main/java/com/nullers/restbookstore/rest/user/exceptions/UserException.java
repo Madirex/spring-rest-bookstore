@@ -1,10 +1,15 @@
-package com.nullers.restbookstore.rest.user.exception;
+package com.nullers.restbookstore.rest.user.exceptions;
 
 /**
- * Excepcion de usuario
+ * Excepción de usuario
  */
 public abstract class UserException extends RuntimeException {
-    public UserException(String message) {
+    /**
+     * Constructor
+     *
+     * @param message mensaje de error
+     */
+    UserException(String message) {
         super(message);
     }
 }

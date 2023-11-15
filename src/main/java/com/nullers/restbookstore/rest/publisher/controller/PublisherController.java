@@ -32,7 +32,7 @@ public class PublisherController {
 
 
     /**
-     * Metodo para obtener todas las editoriales
+     * Método para obtener todas las editoriales
      *
      * @return ResponseEntity<List < PublisherDto>> con las editoriales
      */
@@ -42,7 +42,7 @@ public class PublisherController {
     }
 
     /**
-     * Metodo que obtiene una editorial dada su id
+     * Método que obtiene una editorial dada su id
      *
      * @param id id por la que filtrar
      * @return ResponseEntity<PublisherDto>
@@ -53,7 +53,7 @@ public class PublisherController {
     }
 
     /**
-     * Metodo que crea un publisher
+     * Método que crea un publisher
      *
      * @param publisherDto publisher a crear
      * @return ResponseEntity<PublisherDto>
@@ -64,7 +64,7 @@ public class PublisherController {
     }
 
     /**
-     * metodo que actualiza un publisher
+     * Método que actualiza un publisher
      *
      * @param publisherDto Publisher actualizado
      * @param id           id del publisher a actualizar
