@@ -8,8 +8,9 @@ import com.nullers.restbookstore.shop.model.Shop;
 import java.util.List;
 /**
  * Clase ShopMapper
+ *
+ *  @author alexdor00
  */
-
 
 
 

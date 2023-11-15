@@ -12,6 +12,12 @@ import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+/**
+ * Clase ShopMapperImpl
+ *
+ *  @author alexdor00
+ */
+
 @Component
 public class ShopMapperImpl implements ShopMapper {
 
