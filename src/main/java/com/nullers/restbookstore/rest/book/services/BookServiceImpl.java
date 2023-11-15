@@ -16,6 +16,9 @@ import com.nullers.restbookstore.rest.book.mappers.BookNotificationMapper;
 import com.nullers.restbookstore.rest.book.models.Book;
 import com.nullers.restbookstore.rest.book.notifications.BookNotificationResponse;
 import com.nullers.restbookstore.rest.book.repositories.BookRepository;
+import com.nullers.restbookstore.rest.category.exceptions.CategoriaNotFoundException;
+import com.nullers.restbookstore.rest.category.models.Categoria;
+import com.nullers.restbookstore.rest.category.repository.CategoriasRepositoryJpa;
 import com.nullers.restbookstore.rest.publisher.exceptions.PublisherIDNotValid;
 import com.nullers.restbookstore.rest.publisher.exceptions.PublisherNotFound;
 import com.nullers.restbookstore.rest.publisher.mappers.PublisherMapper;
@@ -68,6 +71,8 @@ public class BookServiceImpl implements BookService {
     private final PublisherService publisherService;
     private final ObjectMapper mapper;
     private final BookNotificationMapper bookNotificationMapper;
+    private final CategoriasRepositoryJpa categoriasRepositoryJpa;
+
 
 
     /**
@@ -84,7 +89,7 @@ public class BookServiceImpl implements BookService {
     @Autowired
     public BookServiceImpl(BookRepository bookRepository, BookMapperImpl bookMapperImpl,
                            PublisherMapper publisherMapper, WebSocketConfig webSocketConfig, StorageService storageService,
-                           PublisherService publisherService, BookNotificationMapper bookNotificationMapper) {
+                           PublisherService publisherService, BookNotificationMapper bookNotificationMapper, CategoriasRepositoryJpa categoriasRepositoryJpa) {
         this.bookRepository = bookRepository;
         this.bookMapperImpl = bookMapperImpl;
         this.publisherMapper = publisherMapper;
@@ -94,6 +99,7 @@ public class BookServiceImpl implements BookService {
         this.publisherService = publisherService;
         this.bookNotificationMapper = bookNotificationMapper;
         this.mapper = new ObjectMapper();
+        this.categoriasRepositoryJpa = categoriasRepositoryJpa;
     }
 
     /**
@@ -106,7 +112,7 @@ public class BookServiceImpl implements BookService {
      */
     @Cacheable
     @Override
-    public Page<GetBookDTO> getAllBook(Optional<String> publisher, Optional<Double> maxPrice, PageRequest pageable) {
+    public Page<GetBookDTO> getAllBook(Optional<String> publisher, Optional<Double> maxPrice, Optional<String> category, PageRequest pageable) {
         Specification<Book> specType = (root, query, criteriaBuilder) ->
                 publisher.map(m -> {
                     try {
@@ -121,9 +127,18 @@ public class BookServiceImpl implements BookService {
                 maxPrice.map(p -> criteriaBuilder.lessThanOrEqualTo(root.get("price"), p))
                         .orElseGet(() -> criteriaBuilder.isTrue(criteriaBuilder.literal(true)));
 
+        Specification<Book> specCategory = (root, query, criteriaBuilder) -> category.map(c -> {
+
+                return criteriaBuilder.equal(criteriaBuilder.upper(root.get("category").get("nombre")),
+                        c.toUpperCase());
+
+        }).orElseGet(() -> criteriaBuilder.isTrue(criteriaBuilder.literal(true)));
+
+        System.out.println(specCategory);
 
         Specification<Book> criterion = Specification.where(specType)
-                .and(specMaxPrice);
+                .and(specMaxPrice)
+                .and(specCategory);
 
         Page<Book> bookPage = bookRepository.findAll(criterion, pageable);
         List<GetBookDTO> dtoList = bookPage.getContent().stream()
@@ -165,7 +180,8 @@ public class BookServiceImpl implements BookService {
     @Override
     public GetBookDTO postBook(CreateBookDTO book) throws PublisherNotFound, PublisherIDNotValid {
         var publisher = publisherMapper.toPublisher(publisherService.findById(book.getPublisherId()));
-        var f = bookRepository.save(bookMapperImpl.toBook(book, publisher));
+        var category = checkCategoria(book.getCategory());
+        var f = bookRepository.save(bookMapperImpl.toBook(book, publisher, category));
         var bookDTO = bookMapperImpl.toGetBookDTO(f, publisherMapper.toPublisherData(f.getPublisher()));
         onChange(Notification.Type.CREATE, bookDTO);
         return bookDTO;
@@ -189,8 +205,9 @@ public class BookServiceImpl implements BookService {
         try {
             Book existingBook = bookRepository.findById(id)
                     .orElseThrow(() -> new BookNotFoundException("Book no encontrado"));
+            Categoria category = checkCategoria(book.getCategory());
             var publisher = publisherMapper.toPublisher(publisherService.findById(book.getPublisherId()));
-            Book f = bookMapperImpl.toBook(existingBook, book, publisher);
+            Book f = bookMapperImpl.toBook(existingBook, book, publisher, category);
             f.setId(id);
             var modified = bookRepository.save(f);
             var bookDTO = bookMapperImpl.toGetBookDTO(modified, publisherMapper.toPublisherData(modified.getPublisher()));
@@ -329,5 +346,13 @@ public class BookServiceImpl implements BookService {
         } catch (JsonProcessingException e) {
             log.error("Error al convertir la notificación a JSON", e);
         }
+    }
+
+    public Categoria checkCategoria(String categoria){
+        var res = categoriasRepositoryJpa.findByNombre(categoria);
+        if(res.isEmpty() || !res.get().isActiva()){
+            throw new CategoriaNotFoundException("La categoria no existe o no esta activa");
+        }
+        return res.get();
     }
 }

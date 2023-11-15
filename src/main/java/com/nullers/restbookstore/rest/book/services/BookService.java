@@ -29,7 +29,7 @@ public interface BookService {
      * @param pageable Paginación
      * @return Page<GetBookDTO>
      */
-    Page<GetBookDTO> getAllBook(Optional<String> category, Optional<Double> maxPrice, PageRequest pageable);
+    Page<GetBookDTO> getAllBook(Optional<String> publisher, Optional<Double> maxPrice, Optional<String> category, PageRequest pageable);
 
     /**
      * Obtiene un libro por su id

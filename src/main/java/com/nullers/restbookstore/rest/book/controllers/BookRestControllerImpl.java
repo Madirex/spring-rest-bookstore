@@ -69,6 +69,7 @@ public class BookRestControllerImpl implements BookRestController {
     public ResponseEntity<PageResponse<GetBookDTO>> getAllBook(
             @Valid @RequestParam(required = false) Optional<String> publisher,
             @RequestParam(required = false) Optional<Double> maxPrice,
+            @RequestParam(required = false) Optional<String> category,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size,
             @RequestParam(defaultValue = "id") String sortBy,
@@ -81,7 +82,7 @@ public class BookRestControllerImpl implements BookRestController {
         Sort sort = direction.equalsIgnoreCase(
                 Sort.Direction.ASC.name()) ? Sort.by(sortBy).ascending() : Sort.by(sortBy).descending();
         UriComponentsBuilder uriBuilder = UriComponentsBuilder.fromHttpUrl(request.getRequestURL().toString());
-        Page<GetBookDTO> pageResult = service.getAllBook(publisher, maxPrice, PageRequest.of(page, size, sort));
+        Page<GetBookDTO> pageResult = service.getAllBook(publisher, maxPrice, category, PageRequest.of(page, size, sort));
         return ResponseEntity.ok()
                 .header("link", paginationLinksUtils.createLinkHeader(pageResult, uriBuilder))
                 .body(PageResponse.of(pageResult, sortBy, direction));
