@@ -12,6 +12,6 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 public class PublisherNotFound extends PublisherException{
 
     public PublisherNotFound(String message) {
-        super("Editioral no encontrada: " + message);
+        super("Editorial no encontrada: " + message);
     }
 }

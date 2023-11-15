@@ -1,5 +1,6 @@
 package com.nullers.restbookstore.rest.publisher.dto;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.nullers.restbookstore.rest.book.models.Book;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -8,7 +9,6 @@ import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 import java.util.Set;
-import java.util.UUID;
 
 /**
  * Clase PublisherDto
@@ -19,11 +19,12 @@ import java.util.UUID;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class PublisherDTO {
-    private UUID id;
+    private Long id;
     private String name;
     private String image;
     private Set<Book> books;
-    private LocalDateTime created_at;
-    private LocalDateTime updated_at;
+    private LocalDateTime createdAt;
+    private LocalDateTime updatedAt;
 }

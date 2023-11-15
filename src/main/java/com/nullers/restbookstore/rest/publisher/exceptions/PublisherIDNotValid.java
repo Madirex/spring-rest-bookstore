@@ -4,14 +4,14 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
 /**
- * Clase PublisherUUIDNotValid
+ * Clase PublisherIDNotValid
  *
  * @author jaimesalcedo1
- * */
+ */
 @ResponseStatus(HttpStatus.BAD_REQUEST)
-public class PublisherUUIDNotValid extends PublisherException{
+public class PublisherIDNotValid extends PublisherException {
 
-    public PublisherUUIDNotValid(String message) {
-        super("El UUID no es válido: " + message);
+    public PublisherIDNotValid(String message) {
+        super("El ID no es válido: " + message);
     }
 }

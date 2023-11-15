@@ -2,30 +2,33 @@ package com.nullers.restbookstore.rest.publisher.mappers;
 
 import com.nullers.restbookstore.rest.publisher.dto.CreatePublisherDto;
 import com.nullers.restbookstore.rest.publisher.models.Publisher;
+import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
 
+@Component
 public class CreatePublisherMapper {
 
     /**
      * Clase CreatePublisherMapper
      *
      * @author jaimesalcedo1
-     * */
-    private CreatePublisherMapper(){}
+     */
+    private CreatePublisherMapper() {
+    }
 
     /**
      * mapea un dto a objeto Publisher
      *
      * @param dto dto con los datos de CreatePublisherDto a mapear
      * @return Publisher mapeado
-     * */
-    public static Publisher toPublisher(CreatePublisherDto dto){
+     */
+    public Publisher toPublisher(CreatePublisherDto dto) {
         return Publisher.builder()
                 .name(dto.getName())
                 .image(dto.getImage())
-                .created_at(LocalDateTime.now())
-                .updated_at(LocalDateTime.now())
+                .createdAt(LocalDateTime.now())
+                .updatedAt(LocalDateTime.now())
                 .build();
     }
 
@@ -34,11 +37,18 @@ public class CreatePublisherMapper {
      *
      * @param publisher publisher a mapear
      * @return CreatePublisherDto mapeado
-     * */
-    public static CreatePublisherDto toDto(Publisher publisher){
+     */
+    public CreatePublisherDto toDto(Publisher publisher) {
         return CreatePublisherDto.builder()
                 .name(publisher.getName())
                 .image(publisher.getImage())
+                .build();
+    }
+
+    public CreatePublisherDto toDtoOnlyImage(Publisher publisher, String image) {
+        return CreatePublisherDto.builder()
+                .name(publisher.getName())
+                .image(image)
                 .build();
     }
 }

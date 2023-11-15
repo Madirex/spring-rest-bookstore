@@ -10,7 +10,6 @@ import org.springframework.data.annotation.LastModifiedDate;
 import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
-import java.util.UUID;
 
 /**
  * Clase Publisher
@@ -25,11 +24,11 @@ import java.util.UUID;
 @Builder
 @Entity
 public class Publisher {
-    public static final String DEFAULT_IMAGE = "https://via.placeholder.com/200";
+    public static final String DEFAULT_IMAGE = "https://books.madirex.com/favicon.ico";
 
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
-    private UUID id;
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    private Long id;
 
     @NotBlank(message = "el nombre no puede estar vacío")
     private String name;
@@ -38,14 +37,13 @@ public class Publisher {
     @NotBlank(message = "la imagen no puede estar vacía")
     private String image;
 
-    @OneToMany
-    @JoinColumn(name = "book_id")
+    @OneToMany(mappedBy = "publisher")
     @Builder.Default
     private Set<Book> books = new HashSet<>();
 
     @CreatedDate
-    private LocalDateTime created_at;
+    private LocalDateTime createdAt;
 
     @LastModifiedDate
-    private LocalDateTime updated_at;
+    private LocalDateTime updatedAt;
 }
