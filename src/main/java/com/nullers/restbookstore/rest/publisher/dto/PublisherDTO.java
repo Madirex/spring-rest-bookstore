@@ -1,5 +1,6 @@
 package com.nullers.restbookstore.rest.publisher.dto;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.nullers.restbookstore.rest.book.models.Book;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -18,6 +19,7 @@ import java.util.Set;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class PublisherDTO {
     private Long id;
     private String name;
