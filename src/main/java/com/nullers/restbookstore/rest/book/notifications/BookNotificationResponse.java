@@ -14,6 +14,8 @@ public record BookNotificationResponse(
         String createdAt,
         String updatedAt,
 
-        Boolean active
+        Boolean active,
+
+        String category
 ) {
 }
