@@ -30,7 +30,7 @@ import java.util.Map;
 @RestController
 @RequestMapping("/api/publishers")
 public class PublisherController {
-    private PublisherServiceImpl publisherService;
+    private final PublisherServiceImpl publisherService;
 
     @Autowired
     public PublisherController(PublisherServiceImpl publisherService) {
@@ -103,7 +103,7 @@ public class PublisherController {
      * @return ResponseEntity<PublisherDto>
      */
     @PatchMapping("/books/remove/{id}")
-    public ResponseEntity<PublisherDTO> updatePatchBookDelete(@PathVariable Long id, @PathVariable Long bookId) {
+    public ResponseEntity<PublisherDTO> updatePatchBookDelete(@PathVariable Long id, @RequestParam Long bookId) {
         return ResponseEntity.ok(publisherService.removeBookPublisher(id, bookId));
     }
 

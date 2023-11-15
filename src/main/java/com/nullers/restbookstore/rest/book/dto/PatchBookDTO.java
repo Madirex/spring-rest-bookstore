@@ -22,4 +22,6 @@ public class PatchBookDTO {
 
     @Min(value = 0, message = "El precio no puede estar en negativo")
     private Double price;
+
+    private Boolean active;
 }

@@ -68,6 +68,9 @@ public class PublisherServiceImpl implements PublisherService {
      */
     @Override
     public PublisherDTO findById(Long id) {
+        if (id == null) {
+            throw new PublisherIDNotValid("El ID del Publisher no es válido");
+        }
         return publisherRepository.findById(id)
                 .map(publisherMapper::toDto)
                 .orElseThrow(() -> new PublisherNotFound("id " + id));
@@ -122,7 +125,7 @@ public class PublisherServiceImpl implements PublisherService {
      */
     @Override
     public PublisherDTO removeBookPublisher(Long id, Long bookId) {
-        Book bookToRemove = bookRepository.getById(bookId);
+        Book bookToRemove = bookRepository.getReferenceById(bookId);
         PublisherDTO publisherUpdate = findById(id);
         publisherUpdate.getBooks().remove(bookToRemove);
         return publisherUpdate;
