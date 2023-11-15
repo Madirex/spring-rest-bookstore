@@ -34,16 +34,16 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 @ExtendWith(MockitoExtension.class)
 public class UserControllerTest {
     private final UserRequest userRequest = UserRequest.builder()
-            .nombre("test")
-            .apellidos("test")
+            .name("test")
+            .surnames("test")
             .username("test")
             .email("test@test.com")
             .password("tests")
             .build();
 
     private final User user = User.builder()
-            .nombre("test")
-            .apellidos("test")
+            .name("test")
+            .surnames("test")
             .username("test")
             .email("test@test.com")
             .password("tests")
@@ -51,16 +51,16 @@ public class UserControllerTest {
 
     private final UserResponse userResponse = UserResponse.builder()
             .id(UUID.fromString("c671d981-bd6f-4e75-b7cc-fd3ca96582d5"))
-            .nombre("test")
-            .apellidos("test")
+            .name("test")
+            .surnames("test")
             .username("test")
             .email("test@test.com")
             .build();
 
     private final UserInfoResponse userInfoResponse = UserInfoResponse.builder()
             .id(UUID.fromString("c671d981-bd6f-4e75-b7cc-fd3ca96582d5"))
-            .nombre("test")
-            .apellidos("test")
+            .name("test")
+            .surnames("test")
             .username("test")
             .email("test@test.com")
             .build();

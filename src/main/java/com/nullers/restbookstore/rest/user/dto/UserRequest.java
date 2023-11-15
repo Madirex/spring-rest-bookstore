@@ -13,7 +13,7 @@ import org.hibernate.validator.constraints.Length;
 import java.util.Set;
 
 /**
- * Peticion de usuario para crear
+ * Petición de usuario para crear
  */
 @Data
 @Builder
@@ -21,10 +21,10 @@ import java.util.Set;
 @AllArgsConstructor
 public class UserRequest {
     @NotBlank(message = "Nombre no puede estar vacío")
-    private String nombre;
+    private String name;
 
     @NotBlank(message = "Apellidos no puede estar vacío")
-    private String apellidos;
+    private String surnames;
 
     @NotBlank(message = "Username no puede estar vacío")
     private String username;

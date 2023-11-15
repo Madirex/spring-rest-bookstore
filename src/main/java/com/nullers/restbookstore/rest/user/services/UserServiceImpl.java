@@ -3,8 +3,8 @@ package com.nullers.restbookstore.rest.user.services;
 import com.nullers.restbookstore.rest.user.dto.UserInfoResponse;
 import com.nullers.restbookstore.rest.user.dto.UserRequest;
 import com.nullers.restbookstore.rest.user.dto.UserResponse;
-import com.nullers.restbookstore.rest.user.exception.UserNameOrEmailExists;
-import com.nullers.restbookstore.rest.user.exception.UserNotFound;
+import com.nullers.restbookstore.rest.user.exceptions.UserNameOrEmailExists;
+import com.nullers.restbookstore.rest.user.exceptions.UserNotFound;
 import com.nullers.restbookstore.rest.user.mappers.UserMapper;
 import com.nullers.restbookstore.rest.user.model.User;
 import com.nullers.restbookstore.rest.user.repository.UserRepository;
@@ -50,9 +50,10 @@ public class UserServiceImp implements UserService {
      * @param email     email del usuario
      * @param isDeleted si el usuario está borrado
      * @param pageable  paginación
-     * @return
+     * @return Page de UserResponse
      */
     @Override
+    @Cacheable
     public Page<UserResponse> findAll(Optional<String> username, Optional<String> email, Optional<Boolean> isDeleted, Pageable pageable) {
         log.info("Buscando todos los usuarios con username: " + username + " y borrados: " + isDeleted);
         // Criterio de búsqueda por nombre
@@ -104,7 +105,8 @@ public class UserServiceImp implements UserService {
     @Cacheable(key = "#result.id")
     public UserResponse save(UserRequest userRequest) {
         log.info("Guardando usuario: " + userRequest);
-        userRepository.findByUsernameEqualsIgnoreCaseOrEmailEqualsIgnoreCase(userRequest.getUsername(), userRequest.getEmail())
+        userRepository.findByUsernameEqualsIgnoreCaseOrEmailEqualsIgnoreCase(userRequest.getUsername(),
+                        userRequest.getEmail())
                 .ifPresent(user -> {
                     throw new UserNameOrEmailExists("El usuario ya existe");
                 });
