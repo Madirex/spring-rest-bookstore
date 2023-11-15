@@ -1,7 +1,7 @@
-package com.nullers.restbookstore.client.mappers;
+package com.nullers.restbookstore.rest.client.mappers;
 
-import com.nullers.restbookstore.client.dto.ClientCreateDto;
-import com.nullers.restbookstore.client.models.Client;
+import com.nullers.restbookstore.rest.client.dto.ClientCreateDto;
+import com.nullers.restbookstore.rest.client.models.Client;
 
 /**
  * Mapea los datos de un cliente a un dto y viceversa
@@ -10,8 +10,6 @@ import com.nullers.restbookstore.client.models.Client;
  * @author daniel
  */
 public class ClientCreateMapper {
-
-    private ClientCreateMapper() {}
 
     /**
      * Mapea los datos de un dto a una entidad
