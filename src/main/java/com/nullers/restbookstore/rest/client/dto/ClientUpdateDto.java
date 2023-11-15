@@ -1,6 +1,7 @@
-package com.nullers.restbookstore.client.dto;
+package com.nullers.restbookstore.rest.client.dto;
 
 import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
@@ -19,11 +20,12 @@ public class ClientUpdateDto {
     @Length(min = 3, max = 80, message = "El apellido debe tener entre 3 y 80 caracteres")
     private String surname;
 
-    @Email(message = "El email no es valido")
+    @Email(message = "El email debe tener un formato valido")
+    @NotBlank(message = "El email no puede estar vacio")
     private String email;
 
-    @Size(max = 11, message = "El teléfono debe tener como máximo 11 caracteres")
-    @Pattern(regexp = "^\\d*$", message = "El teléfono debe contener solo dígitos")
+    @Size(max = 11, min =3, message = "El telefono debe tener como maximo 11 caracteres y como minimo 3")
+    @Pattern(regexp = "^\\d*$", message = "El telefono debe contener solo digitos")
     private String phone;
 
     @Length(min = 3, max = 150, message = "La direccion debe tener entre 3 y 150 caracteres")
