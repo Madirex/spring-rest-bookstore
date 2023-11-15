@@ -97,7 +97,7 @@ class ClientControllerTest {
             .image("https://via.placeholder.com/150")
             .build();
 
-    private final String endpoint = "/clients";
+    private final String endpoint = "/api/clients";
 
     @Autowired
     public ClientControllerTest(ClientServiceImpl clientService){
