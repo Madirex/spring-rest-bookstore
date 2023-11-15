@@ -13,7 +13,14 @@ import com.nullers.restbookstore.rest.publisher.models.Publisher;
 import com.nullers.restbookstore.rest.publisher.repositories.PublisherRepository;
 import com.nullers.restbookstore.storage.service.StorageService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheConfig;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -22,6 +29,7 @@ import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Clase PublisherServiceImpl
@@ -29,6 +37,7 @@ import java.util.List;
  * @author jaimesalcedo1
  */
 @Service
+@CacheConfig(cacheNames = "publishers")
 public class PublisherServiceImpl implements PublisherService {
     private final PublisherRepository publisherRepository;
     private final BookRepository bookRepository;
@@ -52,12 +61,21 @@ public class PublisherServiceImpl implements PublisherService {
      *
      * @return List<PublisherDto> lista de publisher
      */
+    @Cacheable
     @Override
-    public List<PublisherDTO> findAll() {
-        return publisherRepository
-                .findAll()
-                .stream()
-                .map(publisherMapper::toDto).toList();
+    public Page<PublisherDTO> findAll(Optional<String> name, PageRequest pageable) {
+
+        Specification<Publisher> specNombrePublisher = (root, query, criteriaBuilder) ->
+                name.map(m -> criteriaBuilder.like(criteriaBuilder.lower(root.get("name")), "%" + m + "%"))
+                        .orElseGet(() -> criteriaBuilder.isTrue(criteriaBuilder.literal(true)));
+
+
+        Page<Publisher> publisherPage = publisherRepository.findAll(specNombrePublisher, pageable);
+        List<PublisherDTO> dtoList = publisherPage.getContent().stream()
+                .map(publisherMapper::toDto)
+                .toList();
+
+        return new PageImpl<>(dtoList, publisherPage.getPageable(), publisherPage.getTotalElements());
     }
 
     /**
@@ -66,6 +84,7 @@ public class PublisherServiceImpl implements PublisherService {
      * @param id id por el que filtrar
      * @return PublisherDto
      */
+    @Cacheable(key = "#result.id")
     @Override
     public PublisherDTO findById(Long id) {
         if (id == null) {
@@ -73,7 +92,7 @@ public class PublisherServiceImpl implements PublisherService {
         }
         return publisherRepository.findById(id)
                 .map(publisherMapper::toDto)
-                .orElseThrow(() -> new PublisherNotFound("id " + id));
+                .orElseThrow(() -> new PublisherNotFound("id :" + id));
     }
 
     /**
@@ -82,6 +101,7 @@ public class PublisherServiceImpl implements PublisherService {
      * @param publisher publisher a crear
      * @return PublisherDto creado
      */
+    @CachePut(key = "#result.id")
     @Override
     public PublisherDTO save(CreatePublisherDto publisher) {
         return publisherMapper.toDto(publisherRepository.save(createPublisherMapper.toPublisher(publisher)));
@@ -94,6 +114,7 @@ public class PublisherServiceImpl implements PublisherService {
      * @param publisher publisher con datos actualizados
      * @return PublisherDto actualizado
      */
+    @CachePut(key = "#result.id")
     @Override
     public PublisherDTO update(Long id, CreatePublisherDto publisher) {
         PublisherDTO publisherUpdate = findById(id);
@@ -109,6 +130,7 @@ public class PublisherServiceImpl implements PublisherService {
      * @return PublisherDto con el libro añadido
      */
     @Override
+    @CachePut(key = "#id")
     public PublisherDTO addBookPublisher(Long id, Long bookId) {
         Book bookToAdd = bookRepository.getById(bookId);
         PublisherDTO publisherToUpdate = findById(id);
@@ -117,12 +139,13 @@ public class PublisherServiceImpl implements PublisherService {
     }
 
     /**
-     * Añade un libro a un publisher
+     * Elimina un libro de un publisher
      *
      * @param id     id del publisher
      * @param bookId id del libro que se quiere eliminar
      * @return PublisherDto con el libro eliminado
      */
+    @CachePut(key = "#id")
     @Override
     public PublisherDTO removeBookPublisher(Long id, Long bookId) {
         Book bookToRemove = bookRepository.getReferenceById(bookId);
@@ -136,6 +159,7 @@ public class PublisherServiceImpl implements PublisherService {
      *
      * @param id id del publisher a eliminar
      */
+    @CacheEvict("#id")
     @Override
     public void deleteById(Long id) {
         findById(id);
