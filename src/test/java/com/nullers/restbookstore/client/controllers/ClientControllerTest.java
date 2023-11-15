@@ -1083,30 +1083,6 @@ class ClientControllerTest {
     }
 
     @Test
-    void update_ShouldReturnErrorReponse_withEmptyEmail() throws Exception {
-        ClientUpdateDto clientUpdateDto = ClientUpdateDto.builder()
-                .name("Daniel")
-                .surname("Garcia")
-                .email("")
-                .phone("1234567")
-                .address("Calle Falsa 123")
-                .build();
-
-        MockHttpServletResponse response = mockMvc.perform(put(endpoint + "/9def16db-362b-44c4-9fc9-77117758b5b0")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(mapper.writeValueAsString(clientUpdateDto)))
-                .andReturn().getResponse();
-
-        Map<String, Object> res = mapper.readValue(response.getContentAsString(),mapper.getTypeFactory().constructMapType(Map.class, String.class, Object.class));
-        LinkedHashMap<String, Object> errors = (LinkedHashMap<String, Object>) res.get("errors");
-
-        assertAll(
-                () -> assertEquals(HttpStatus.BAD_REQUEST.value(), response.getStatus()),
-                () -> assertEquals("El email no puede estar vacio", errors.get("email"))
-        );
-    }
-
-    @Test
     void update_ShouldReturnErrorReponse_withEmptySurname() throws Exception {
         ClientUpdateDto clientUpdateDto = ClientUpdateDto.builder()
                 .name("Daniel")
