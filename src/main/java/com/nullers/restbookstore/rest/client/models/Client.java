@@ -1,4 +1,4 @@
-package com.nullers.restbookstore.client.models;
+package com.nullers.restbookstore.rest.client.models;
 
 import com.nullers.restbookstore.NOADD.models.Book;
 import jakarta.persistence.*;
