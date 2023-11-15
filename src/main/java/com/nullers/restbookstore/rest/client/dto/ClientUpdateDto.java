@@ -21,7 +21,6 @@ public class ClientUpdateDto {
     private String surname;
 
     @Email(message = "El email debe tener un formato valido")
-    @NotBlank(message = "El email no puede estar vacio")
     private String email;
 
     @Size(max = 11, min =3, message = "El telefono debe tener como maximo 11 caracteres y como minimo 3")
