@@ -65,7 +65,7 @@ public class UserControllerTest {
             .email("test@test.com")
             .build();
 
-    private final String myEndpoint = "/users";
+    private final String myEndpoint = "/api/users";
 
     private final ObjectMapper mapper = new ObjectMapper();
 
