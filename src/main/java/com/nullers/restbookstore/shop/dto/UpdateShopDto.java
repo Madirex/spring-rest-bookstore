@@ -4,14 +4,8 @@ import jakarta.validation.constraints.NotBlank;
 import lombok.Builder;
 import lombok.Getter;
 
-package com.nullers.restbookstore.shop.dto;
-
-import jakarta.validation.constraints.NotBlank;
-import lombok.Builder;
-import lombok.Getter;
-
 /**
- * Clase UpdateShopDto 
+ * Clase UpdateShopDto
  *
  * @author alexdor00
  */
