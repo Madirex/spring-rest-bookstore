@@ -1,5 +1,6 @@
 package com.nullers.restbookstore.rest.user.controller;
 
+import com.nullers.restbookstore.pagination.exceptions.PageNotValidException;
 import com.nullers.restbookstore.rest.user.dto.UserInfoResponse;
 import com.nullers.restbookstore.rest.user.dto.UserRequest;
 import com.nullers.restbookstore.rest.user.dto.UserResponse;
@@ -27,13 +28,18 @@ import java.util.UUID;
  */
 @RestController
 @Slf4j
-@RequestMapping("/users") // Es la ruta del controlador
+@RequestMapping("/api/users") // Es la ruta del controlador
 public class UserController {
     /**
      * Servicio de usuarios
      */
     private final UserService usersService;
 
+    /**
+     * Constructor de la clase
+     *
+     * @param userService Servicio de usuarios
+     */
     @Autowired
     public UserController(UserService userService) {
         this.usersService = userService;
@@ -44,11 +50,11 @@ public class UserController {
      *
      * @param username  Nombre de usuario
      * @param email     Email del usuario
-     * @param isDeleted Si el usuario esta borrado
-     * @param page      Pagina
-     * @param size      Tamaño de la pagina
+     * @param isDeleted Si el usuario está borrado
+     * @param page      Página
+     * @param size      Tamaño de la página
      * @param sortBy    Campo por el que ordenar
-     * @param direction Direccion de la ordenacion
+     * @param direction Dirección de la ordenación
      * @return Lista de usuarios
      */
     @GetMapping
@@ -61,6 +67,9 @@ public class UserController {
             @RequestParam(defaultValue = "id") String sortBy,
             @RequestParam(defaultValue = "asc") String direction
     ) {
+        if (page < 0 || size < 1) {
+            throw new PageNotValidException("La página no puede ser menor que 0 y su tamaño no debe de ser menor a 1.");
+        }
         log.info("findAll: username: {}, email: {}, isDeleted: {}, page: {}, size: {}, sortBy: {}, direction: {}",
                 username, email, isDeleted, page, size, sortBy, direction);
         Sort sort = direction.equalsIgnoreCase(Sort.Direction.ASC.name()) ? Sort.by(sortBy).ascending() : Sort.by(sortBy).descending();
@@ -109,7 +118,7 @@ public class UserController {
      * Borra un usuario
      *
      * @param id Id del usuario
-     * @return Respuesta vacia
+     * @return Respuesta vacía
      */
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteUser(@PathVariable UUID id) {
@@ -125,7 +134,7 @@ public class UserController {
      * @return Usuario autenticado
      */
     @GetMapping("/me/profile")
-    public ResponseEntity<UserInfoResponse> me( User user) {
+    public ResponseEntity<UserInfoResponse> me(User user) {
         log.info("Obteniendo usuario");
         // Esta autenticado, por lo que devolvemos sus datos ya sabemos su id
         return ResponseEntity.ok(usersService.findById(user.getId()));
@@ -139,7 +148,7 @@ public class UserController {
      * @return Usuario actualizado
      */
     @PutMapping("/me/profile")
-    public ResponseEntity<UserResponse> updateMe( User user, @Valid @RequestBody UserRequest userRequest) {
+    public ResponseEntity<UserResponse> updateMe(User user, @Valid @RequestBody UserRequest userRequest) {
         log.info("updateMe: user: {}, userRequest: {}", user, userRequest);
         return ResponseEntity.ok(usersService.update(user.getId(), userRequest));
     }
@@ -148,7 +157,7 @@ public class UserController {
      * Borra el usuario autenticado
      *
      * @param user Usuario autenticado
-     * @return Respuesta vacia
+     * @return Respuesta vacía
      */
     @DeleteMapping("/me/profile")
     public ResponseEntity<Void> deleteMe(User user) {
@@ -158,17 +167,17 @@ public class UserController {
     }
 
     /**
-     * Maneja las excepciones de validacion
+     * Maneja las excepciones de validación
      *
-     * @param ex Excepcion de validacion
-     * @return Mapa de errores de validacion
+     * @param ex Excepción de validación
+     * @return Mapa de errores de validación
      */
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public Map<String, String> handleValidationExceptions(
             MethodArgumentNotValidException ex) {
         Map<String, String> errors = new HashMap<>();
-        ex.getBindingResult().getAllErrors().forEach((error) -> {
+        ex.getBindingResult().getAllErrors().forEach(error -> {
             String fieldName = ((FieldError) error).getField();
             String errorMessage = error.getDefaultMessage();
             errors.put(fieldName, errorMessage);
