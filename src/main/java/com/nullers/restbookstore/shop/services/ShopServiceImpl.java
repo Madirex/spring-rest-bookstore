@@ -9,6 +9,7 @@ import com.nullers.restbookstore.shop.mappers.ShopMapperImpl;
 import com.nullers.restbookstore.shop.model.Shop;
 import com.nullers.restbookstore.shop.repositories.ShopRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -40,8 +41,10 @@ public class ShopServiceImpl implements ShopService {
 
     /**
      * Obtiene todas las tiendas y las convierte a DTOs.
+     * Los resultados se almacenan en caché para mejorar el rendimiento.
      * @return Lista de tiendas en forma de DTOs.
      */
+    @Cacheable("shops")
     @Override
     public List<GetShopDto> getAllShops() {
         return shopRepository.findAll().stream()

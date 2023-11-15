@@ -52,4 +52,6 @@ public interface ShopService {
      * @throws ShopNotValidUUIDException Si el identificador proporcionado no es válido.
      */
     void deleteShop(String id) throws ShopNotFoundException, ShopNotValidUUIDException;
+
+
 }
