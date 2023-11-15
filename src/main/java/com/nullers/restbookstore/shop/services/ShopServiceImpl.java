@@ -11,6 +11,7 @@ import com.nullers.restbookstore.shop.repositories.ShopRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
+import org.springframework.cache.annotation.CacheEvict;
 
 import java.util.List;
 import java.util.UUID;
@@ -110,11 +111,12 @@ public class ShopServiceImpl implements ShopService {
     }
 
     /**
-     * Elimina una tienda de la base de datos por su UUID.
+     * Elimina una tienda de la base de datos por su UUID y evita la caché relacionada.
      * @param id Identificador UUID de la tienda a eliminar.
      * @throws ShopNotFoundException Si la tienda no se encuentra.
      * @throws ShopNotValidUUIDException Si el UUID proporcionado no es válido.
      */
+    @CacheEvict(value = "shops", allEntries = true)
     @Override
     public void deleteShop(String id) throws ShopNotFoundException, ShopNotValidUUIDException {
         UUID uuid;
@@ -128,4 +130,5 @@ public class ShopServiceImpl implements ShopService {
                 .orElseThrow(() -> new ShopNotFoundException("Tienda no encontrada con ID: " + id));
         shopRepository.delete(shop);
     }
+
 }
