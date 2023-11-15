@@ -1,27 +1,33 @@
 package com.nullers.restbookstore.rest.publisher.mappers;
 
+import com.nullers.restbookstore.rest.publisher.dto.CreatePublisherDto;
 import com.nullers.restbookstore.rest.publisher.dto.PublisherDTO;
+import com.nullers.restbookstore.rest.publisher.dto.PublisherData;
 import com.nullers.restbookstore.rest.publisher.models.Publisher;
 import org.springframework.stereotype.Component;
+
+import java.time.LocalDateTime;
 
 /**
  * Clase PublisherMapper
  *
  * @author jaimesalcedo1
- * */
+ */
 @Component
 public class PublisherMapper {
 
-    private PublisherMapper(){}
+    private PublisherMapper() {
+    }
 
     /**
      * mapea un dto a objeto Publisher
      *
      * @param dto dto  a mapear
      * @return Publisher mapeado
-     * */
-    public Publisher toPublisher(PublisherDTO dto){
+     */
+    public Publisher toPublisher(PublisherDTO dto) {
         return Publisher.builder()
+                .id(dto.getId())
                 .name(dto.getName())
                 .image(dto.getImage())
                 .books(dto.getBooks())
@@ -33,13 +39,34 @@ public class PublisherMapper {
      *
      * @param publisher publisher a mapear
      * @return PublisherDto mapeado
-     * */
-    public PublisherDTO toDto(Publisher publisher){
+     */
+    public PublisherDTO toDto(Publisher publisher) {
         return PublisherDTO.builder()
                 .id(publisher.getId())
                 .name(publisher.getName())
                 .image(publisher.getImage())
                 .books(publisher.getBooks())
+                .createdAt(publisher.getCreatedAt())
+                .updatedAt(publisher.getUpdatedAt())
+                .build();
+    }
+
+    public Publisher toPublisherModification(CreatePublisherDto publisher, PublisherDTO publisherUpdate) {
+        var updatedPublisher = new Publisher();
+        updatedPublisher.setId(publisherUpdate.getId());
+        updatedPublisher.setName(publisher.getName());
+        updatedPublisher.setImage(publisher.getImage());
+        updatedPublisher.setCreatedAt(publisherUpdate.getCreatedAt());
+        updatedPublisher.setUpdatedAt(LocalDateTime.now());
+        updatedPublisher.setBooks(null);
+        return updatedPublisher;
+    }
+
+    public PublisherData toPublisherData(Publisher publisher) {
+        return PublisherData.builder()
+                .id(publisher.getId())
+                .name(publisher.getName())
+                .image(publisher.getImage())
                 .createdAt(publisher.getCreatedAt())
                 .updatedAt(publisher.getUpdatedAt())
                 .build();

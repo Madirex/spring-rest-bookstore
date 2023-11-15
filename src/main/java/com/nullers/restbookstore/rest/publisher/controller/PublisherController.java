@@ -8,12 +8,19 @@ import com.nullers.restbookstore.rest.publisher.services.PublisherServiceImpl;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.server.ResponseStatusException;
 
-import java.util.*;
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Clase Controller
@@ -23,7 +30,7 @@ import java.util.*;
 @RestController
 @RequestMapping("/api/publishers")
 public class PublisherController {
-    private PublisherServiceImpl publisherService;
+    private final PublisherServiceImpl publisherService;
 
     @Autowired
     public PublisherController(PublisherServiceImpl publisherService) {
@@ -48,7 +55,7 @@ public class PublisherController {
      * @return ResponseEntity<PublisherDto>
      */
     @GetMapping("/{id}")
-    public ResponseEntity<PublisherDTO> getById(@PathVariable UUID id) {
+    public ResponseEntity<PublisherDTO> getById(@PathVariable Long id) {
         return ResponseEntity.ok(publisherService.findById(id));
     }
 
@@ -71,7 +78,7 @@ public class PublisherController {
      * @return ResponseEntity<PublisherDto>
      */
     @PutMapping("/{id}")
-    public ResponseEntity<PublisherDTO> update(@PathVariable UUID id, @Valid @RequestBody CreatePublisherDto publisherDto) {
+    public ResponseEntity<PublisherDTO> update(@PathVariable Long id, @Valid @RequestBody CreatePublisherDto publisherDto) {
         return ResponseEntity.ok(publisherService.update(id, publisherDto));
     }
 
@@ -83,11 +90,9 @@ public class PublisherController {
      * @return ResponseEntity<PublisherDto>
      */
     @PatchMapping("/books/{id}")
-    public ResponseEntity<PublisherDTO> updatePatchBook(@PathVariable UUID id, @RequestParam Long bookId) {
+    public ResponseEntity<PublisherDTO> updatePatchBook(@PathVariable Long id, @RequestParam Long bookId) {
         PublisherDTO publisherDto = publisherService.addBookPublisher(id, bookId);
-        ResponseEntity<PublisherDTO> publisher = ResponseEntity.ok(publisherDto);
-        System.out.println(publisher);
-        return publisher;
+        return ResponseEntity.ok(publisherDto);
     }
 
     /**
@@ -98,7 +103,7 @@ public class PublisherController {
      * @return ResponseEntity<PublisherDto>
      */
     @PatchMapping("/books/remove/{id}")
-    public ResponseEntity<PublisherDTO> updatePatchBookDelete(@PathVariable UUID id, @PathVariable Long bookId) {
+    public ResponseEntity<PublisherDTO> updatePatchBookDelete(@PathVariable Long id, @RequestParam Long bookId) {
         return ResponseEntity.ok(publisherService.removeBookPublisher(id, bookId));
     }
 
@@ -109,7 +114,7 @@ public class PublisherController {
      * @return ResponseEntity<Void>
      */
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> delete(@PathVariable UUID id) {
+    public ResponseEntity<Void> delete(@PathVariable Long id) {
         publisherService.deleteById(id);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
@@ -124,6 +129,25 @@ public class PublisherController {
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public ErrorResponse handlePublisherNotFound(PublisherNotFound exception) {
         return new ErrorResponse(HttpStatus.NOT_FOUND.value(), exception.getMessage());
+    }
+
+    /**
+     * Método para subir una imagen a un Publisher
+     *
+     * @param id   ID del Publisher
+     * @param file Fichero a subir
+     * @return ResponseEntity con el código de estado
+     * @throws IOException Si no se ha podido subir la imagen
+     */
+    @PatchMapping(value = "/image/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<PublisherDTO> newPublisherImg(
+            @PathVariable Long id,
+            @RequestPart("file") MultipartFile file) throws IOException {
+        if (!file.isEmpty()) {
+            return ResponseEntity.ok(publisherService.updateImage(id, file, true));
+        } else {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "No se ha enviado una imagen para el Publisher");
+        }
     }
 
     /**

@@ -4,6 +4,7 @@ import com.nullers.restbookstore.rest.book.dto.CreateBookDTO;
 import com.nullers.restbookstore.rest.book.dto.GetBookDTO;
 import com.nullers.restbookstore.rest.book.dto.UpdateBookDTO;
 import com.nullers.restbookstore.rest.book.models.Book;
+import com.nullers.restbookstore.rest.publisher.dto.PublisherData;
 import com.nullers.restbookstore.rest.publisher.models.Publisher;
 
 import java.util.List;
@@ -36,16 +37,18 @@ public interface BookMapper {
     /**
      * Mapea un Book en GetBookDTO
      *
-     * @param book Book a mapear
+     * @param book          Book a mapear
+     * @param publisherData PublisherData
      * @return GetBookDTO mapeado
      */
-    GetBookDTO toGetBookDTO(Book book);
+    GetBookDTO toGetBookDTO(Book book, PublisherData publisherData);
 
     /**
      * Mapea una lista de Book en una lista de GetBookDTO
      *
-     * @param dto Book a mapear
+     * @param dto           Book a mapear
+     * @param publisherData PublisherData
      * @return GetBookDTO mapeado
      */
-    List<GetBookDTO> toBookList(List<Book> dto);
+    List<GetBookDTO> toBookList(List<Book> dto, List<PublisherData> publisherData);
 }

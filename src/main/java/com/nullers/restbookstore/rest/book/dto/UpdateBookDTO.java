@@ -18,7 +18,7 @@ public class UpdateBookDTO {
     private String name;
 
     @NotNull(message = "publisher no puede ser nulo")
-    private String publisherId;
+    private Long publisherId;
 
     @Min(value = 0, message = "El precio no puede estar en negativo")
     @NotNull(message = "El precio no puede ser nulo")
@@ -29,4 +29,7 @@ public class UpdateBookDTO {
 
     @NotBlank(message = "La descripción no puede estar vacía")
     private String description;
+
+    private String category;
+
 }
