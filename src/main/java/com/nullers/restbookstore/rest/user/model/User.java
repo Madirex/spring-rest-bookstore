@@ -14,6 +14,8 @@ import java.util.UUID;
 
 /**
  * Entidad User
+ *
+ * @Author: Binwei Wang
  */
 @Entity
 @Getter
