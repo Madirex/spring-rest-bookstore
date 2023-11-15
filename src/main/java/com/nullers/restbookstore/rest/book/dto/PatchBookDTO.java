@@ -14,7 +14,7 @@ import lombok.Getter;
 public class PatchBookDTO {
     private String name;
 
-    private String publisherId;
+    private Long publisherId;
 
     private String image;
 
@@ -22,4 +22,6 @@ public class PatchBookDTO {
 
     @Min(value = 0, message = "El precio no puede estar en negativo")
     private Double price;
+
+    private Boolean active;
 }

@@ -10,8 +10,8 @@ import com.nullers.restbookstore.rest.book.dto.UpdateBookDTO;
 import com.nullers.restbookstore.rest.book.exceptions.BookNotFoundException;
 import com.nullers.restbookstore.rest.book.exceptions.BookNotValidIDException;
 import com.nullers.restbookstore.rest.book.services.BookServiceImpl;
+import com.nullers.restbookstore.rest.publisher.exceptions.PublisherIDNotValid;
 import com.nullers.restbookstore.rest.publisher.exceptions.PublisherNotFound;
-import com.nullers.restbookstore.rest.publisher.exceptions.PublisherUUIDNotValid;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -69,6 +69,7 @@ public class BookRestControllerImpl implements BookRestController {
     public ResponseEntity<PageResponse<GetBookDTO>> getAllBook(
             @Valid @RequestParam(required = false) Optional<String> publisher,
             @RequestParam(required = false) Optional<Double> maxPrice,
+            @RequestParam(required = false) Optional<String> category,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size,
             @RequestParam(defaultValue = "id") String sortBy,
@@ -81,7 +82,7 @@ public class BookRestControllerImpl implements BookRestController {
         Sort sort = direction.equalsIgnoreCase(
                 Sort.Direction.ASC.name()) ? Sort.by(sortBy).ascending() : Sort.by(sortBy).descending();
         UriComponentsBuilder uriBuilder = UriComponentsBuilder.fromHttpUrl(request.getRequestURL().toString());
-        Page<GetBookDTO> pageResult = service.getAllBook(publisher, maxPrice, PageRequest.of(page, size, sort));
+        Page<GetBookDTO> pageResult = service.getAllBook(publisher, maxPrice, category, PageRequest.of(page, size, sort));
         return ResponseEntity.ok()
                 .header("link", paginationLinksUtils.createLinkHeader(pageResult, uriBuilder))
                 .body(PageResponse.of(pageResult, sortBy, direction));
@@ -90,7 +91,7 @@ public class BookRestControllerImpl implements BookRestController {
     /**
      * Método para obtener un Book por su ID
      *
-     * @param id ID del Book en formato String
+     * @param id ID del Book
      * @return ResponseEntity con el código de estado
      * @throws BookNotFoundException Si no se ha encontrado el Book con el ID indicado
      */
@@ -118,7 +119,7 @@ public class BookRestControllerImpl implements BookRestController {
             return ResponseEntity.status(HttpStatus.CREATED).body(bookDTO);
         } catch (PublisherNotFound e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "El publisher no se encuentra: " + e.getMessage());
-        } catch (PublisherUUIDNotValid e) {
+        } catch (PublisherIDNotValid e) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, PUBLISHER_ID_NOT_VALID_MSG + e.getMessage());
         }
     }
@@ -126,7 +127,7 @@ public class BookRestControllerImpl implements BookRestController {
     /**
      * Método para actualizar un Book
      *
-     * @param id   ID del Book en formato String
+     * @param id   ID del Book
      * @param book Objeto UpdateBookDTO con los campos a actualizar
      * @return ResponseEntity con el código de estado
      * @throws BookNotFoundException   Si no se ha encontrado el Book con el ID indicado
@@ -140,7 +141,7 @@ public class BookRestControllerImpl implements BookRestController {
             return ResponseEntity.ok(service.putBook(id, book));
         } catch (PublisherNotFound e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "El Publisher no se encuentra: " + e.getMessage());
-        } catch (PublisherUUIDNotValid e) {
+        } catch (PublisherIDNotValid e) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, PUBLISHER_ID_NOT_VALID_MSG + e.getMessage());
         }
     }
@@ -148,7 +149,7 @@ public class BookRestControllerImpl implements BookRestController {
     /**
      * Método para actualizar parcialmente un Book
      *
-     * @param id   ID del Book en formato String
+     * @param id   ID del Book
      * @param book Objeto PatchBookDTO con los campos a actualizar
      * @return ResponseEntity con el código de estado
      * @throws BookNotFoundException   Si no se ha encontrado el Book con el ID indicado
@@ -162,7 +163,7 @@ public class BookRestControllerImpl implements BookRestController {
             return ResponseEntity.ok(service.patchBook(id, book));
         } catch (PublisherNotFound e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "El Publisher no se encuentra: " + e.getMessage());
-        } catch (PublisherUUIDNotValid e) {
+        } catch (PublisherIDNotValid e) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, PUBLISHER_ID_NOT_VALID_MSG + e.getMessage());
         }
     }
@@ -170,7 +171,7 @@ public class BookRestControllerImpl implements BookRestController {
     /**
      * Método para eliminar un Book
      *
-     * @param id ID del Book en formato String
+     * @param id ID del Book
      * @return ResponseEntity con el código de estado
      * @throws BookNotFoundException Si no se ha encontrado el Book con el ID indicado
      */
@@ -220,15 +221,20 @@ public class BookRestControllerImpl implements BookRestController {
     /**
      * Método para subir una imagen a un Book
      *
-     * @param id   ID del Book en formato String
+     * @param id   ID del Book
      * @param file Fichero a subir
      * @return ResponseEntity con el código de estado
+     * @throws BookNotFoundException Si no se ha encontrado el Book con el ID indicado
+     * @throws PublisherNotFound     Si no se ha encontrado el Publisher con el ID indicado
+     * @throws BookNotFoundException Si no se ha encontrado el Book con el ID indicado
+     * @throws PublisherIDNotValid   Si el ID del Publisher no es válido
+     * @throws IOException           Si ha habido un error al subir la imagen
      */
     @PatchMapping(value = "/image/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<GetBookDTO> newBookImg(
             @PathVariable Long id,
             @RequestPart("file") MultipartFile file) throws BookNotValidIDException, PublisherNotFound,
-            BookNotFoundException, PublisherUUIDNotValid, IOException {
+            BookNotFoundException, PublisherIDNotValid, IOException {
         if (!file.isEmpty()) {
             return ResponseEntity.ok(service.updateImage(id, file, true));
         } else {

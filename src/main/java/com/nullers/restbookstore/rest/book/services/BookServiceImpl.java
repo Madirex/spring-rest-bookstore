@@ -16,8 +16,11 @@ import com.nullers.restbookstore.rest.book.mappers.BookNotificationMapper;
 import com.nullers.restbookstore.rest.book.models.Book;
 import com.nullers.restbookstore.rest.book.notifications.BookNotificationResponse;
 import com.nullers.restbookstore.rest.book.repositories.BookRepository;
+import com.nullers.restbookstore.rest.category.exceptions.CategoriaNotFoundException;
+import com.nullers.restbookstore.rest.category.models.Categoria;
+import com.nullers.restbookstore.rest.category.repository.CategoriasRepositoryJpa;
+import com.nullers.restbookstore.rest.publisher.exceptions.PublisherIDNotValid;
 import com.nullers.restbookstore.rest.publisher.exceptions.PublisherNotFound;
-import com.nullers.restbookstore.rest.publisher.exceptions.PublisherUUIDNotValid;
 import com.nullers.restbookstore.rest.publisher.mappers.PublisherMapper;
 import com.nullers.restbookstore.rest.publisher.services.PublisherService;
 import com.nullers.restbookstore.storage.service.StorageService;
@@ -43,7 +46,6 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 
 /**
  * Clase BookServiceImpl
@@ -69,6 +71,8 @@ public class BookServiceImpl implements BookService {
     private final PublisherService publisherService;
     private final ObjectMapper mapper;
     private final BookNotificationMapper bookNotificationMapper;
+    private final CategoriasRepositoryJpa categoriasRepositoryJpa;
+
 
 
     /**
@@ -85,7 +89,7 @@ public class BookServiceImpl implements BookService {
     @Autowired
     public BookServiceImpl(BookRepository bookRepository, BookMapperImpl bookMapperImpl,
                            PublisherMapper publisherMapper, WebSocketConfig webSocketConfig, StorageService storageService,
-                           PublisherService publisherService, BookNotificationMapper bookNotificationMapper) {
+                           PublisherService publisherService, BookNotificationMapper bookNotificationMapper, CategoriasRepositoryJpa categoriasRepositoryJpa) {
         this.bookRepository = bookRepository;
         this.bookMapperImpl = bookMapperImpl;
         this.publisherMapper = publisherMapper;
@@ -95,6 +99,7 @@ public class BookServiceImpl implements BookService {
         this.publisherService = publisherService;
         this.bookNotificationMapper = bookNotificationMapper;
         this.mapper = new ObjectMapper();
+        this.categoriasRepositoryJpa = categoriasRepositoryJpa;
     }
 
     /**
@@ -107,7 +112,7 @@ public class BookServiceImpl implements BookService {
      */
     @Cacheable
     @Override
-    public Page<GetBookDTO> getAllBook(Optional<String> publisher, Optional<Double> maxPrice, PageRequest pageable) {
+    public Page<GetBookDTO> getAllBook(Optional<String> publisher, Optional<Double> maxPrice, Optional<String> category, PageRequest pageable) {
         Specification<Book> specType = (root, query, criteriaBuilder) ->
                 publisher.map(m -> {
                     try {
@@ -122,16 +127,25 @@ public class BookServiceImpl implements BookService {
                 maxPrice.map(p -> criteriaBuilder.lessThanOrEqualTo(root.get("price"), p))
                         .orElseGet(() -> criteriaBuilder.isTrue(criteriaBuilder.literal(true)));
 
+        Specification<Book> specCategory = (root, query, criteriaBuilder) -> category.map(c -> {
+
+                return criteriaBuilder.equal(criteriaBuilder.upper(root.get("category").get("nombre")),
+                        c.toUpperCase());
+
+        }).orElseGet(() -> criteriaBuilder.isTrue(criteriaBuilder.literal(true)));
+
+        System.out.println(specCategory);
 
         Specification<Book> criterion = Specification.where(specType)
-                .and(specMaxPrice);
+                .and(specMaxPrice)
+                .and(specCategory);
 
-        Page<Book> funkoPage = bookRepository.findAll(criterion, pageable);
-        List<GetBookDTO> dtoList = funkoPage.getContent().stream()
-                .map(bookMapperImpl::toGetBookDTO)
+        Page<Book> bookPage = bookRepository.findAll(criterion, pageable);
+        List<GetBookDTO> dtoList = bookPage.getContent().stream()
+                .map(e -> bookMapperImpl.toGetBookDTO(e, publisherMapper.toPublisherData(e.getPublisher())))
                 .toList();
 
-        return new PageImpl<>(dtoList, funkoPage.getPageable(), funkoPage.getTotalElements());
+        return new PageImpl<>(dtoList, bookPage.getPageable(), bookPage.getTotalElements());
     }
 
     /**
@@ -148,7 +162,7 @@ public class BookServiceImpl implements BookService {
         try {
             var f = bookRepository.findById(id).orElseThrow(() ->
                     new BookNotFoundException(BOOK_NOT_FOUND_MSG));
-            return bookMapperImpl.toGetBookDTO(f);
+            return bookMapperImpl.toGetBookDTO(f, publisherMapper.toPublisherData(f.getPublisher()));
         } catch (IllegalArgumentException e) {
             throw new BookNotValidIDException(NOT_VALID_FORMAT_ID_MSG);
         }
@@ -159,21 +173,16 @@ public class BookServiceImpl implements BookService {
      *
      * @param book CreateBookDTO con los datos del Book a crear
      * @return Book creado
-     * @throws PublisherNotFound     Si no se ha encontrado la publisher con el ID indicado
-     * @throws PublisherUUIDNotValid Si el ID no tiene un formato válido
+     * @throws PublisherNotFound   Si no se ha encontrado la publisher con el ID indicado
+     * @throws PublisherIDNotValid Si el ID no tiene un formato válido
      */
     @CachePut(key = "#result.id")
     @Override
-    public GetBookDTO postBook(CreateBookDTO book) throws PublisherNotFound, PublisherUUIDNotValid {
-        UUID id;
-        try {
-            id = UUID.fromString(book.getPublisherId());
-        } catch (IllegalArgumentException e) {
-            throw new PublisherUUIDNotValid(BookServiceImpl.NOT_VALID_FORMAT_ID_MSG);
-        }
-        var publisher = publisherMapper.toPublisher(publisherService.findById(id));
-        var f = bookRepository.save(bookMapperImpl.toBook(book, publisher));
-        var bookDTO = bookMapperImpl.toGetBookDTO(f);
+    public GetBookDTO postBook(CreateBookDTO book) throws PublisherNotFound, PublisherIDNotValid {
+        var publisher = publisherMapper.toPublisher(publisherService.findById(book.getPublisherId()));
+        var category = checkCategoria(book.getCategory());
+        var f = bookRepository.save(bookMapperImpl.toBook(book, publisher, category));
+        var bookDTO = bookMapperImpl.toGetBookDTO(f, publisherMapper.toPublisherData(f.getPublisher()));
         onChange(Notification.Type.CREATE, bookDTO);
         return bookDTO;
     }
@@ -186,27 +195,22 @@ public class BookServiceImpl implements BookService {
      * @return Book actualizado
      * @throws BookNotValidIDException Si el ID no tiene un formato válido
      * @throws PublisherNotFound       Si no se ha encontrado el publisher con el ID indicado
-     * @throws PublisherUUIDNotValid   Si el ID no tiene un formato válido
+     * @throws PublisherIDNotValid     Si el ID no tiene un formato válido
      * @throws BookNotFoundException   Si no se ha encontrado el Book con el ID indicado
      */
     @CachePut(key = "#result.id")
     @Override
     public GetBookDTO putBook(Long id, UpdateBookDTO book) throws BookNotValidIDException,
-            PublisherNotFound, PublisherUUIDNotValid, BookNotFoundException {
-        UUID uuid;
-        try {
-            uuid = UUID.fromString(book.getPublisherId());
-        } catch (IllegalArgumentException e) {
-            throw new PublisherUUIDNotValid(BookServiceImpl.NOT_VALID_FORMAT_ID_MSG);
-        }
+            PublisherNotFound, PublisherIDNotValid, BookNotFoundException {
         try {
             Book existingBook = bookRepository.findById(id)
                     .orElseThrow(() -> new BookNotFoundException("Book no encontrado"));
-            var publisher = publisherMapper.toPublisher(publisherService.findById(uuid));
-            Book f = bookMapperImpl.toBook(existingBook, book, publisher);
+            Categoria category = checkCategoria(book.getCategory());
+            var publisher = publisherMapper.toPublisher(publisherService.findById(book.getPublisherId()));
+            Book f = bookMapperImpl.toBook(existingBook, book, publisher, category);
             f.setId(id);
             var modified = bookRepository.save(f);
-            var bookDTO = bookMapperImpl.toGetBookDTO(modified);
+            var bookDTO = bookMapperImpl.toGetBookDTO(modified, publisherMapper.toPublisherData(modified.getPublisher()));
             onChange(Notification.Type.UPDATE, bookDTO);
             return bookDTO;
         } catch (IllegalArgumentException e) {
@@ -223,18 +227,12 @@ public class BookServiceImpl implements BookService {
      * @throws BookNotValidIDException Si el ID no tiene un formato válido
      * @throws BookNotFoundException   Si no se ha encontrado el Book con el ID indicado
      * @throws PublisherNotFound       Si no se ha encontrado la publisher con el ID indicado
-     * @throws PublisherUUIDNotValid   Si el ID no tiene un formato válido
+     * @throws PublisherIDNotValid     Si el ID no tiene un formato válido
      */
     @CachePut(key = "#result.id")
     @Override
     public GetBookDTO patchBook(Long id, PatchBookDTO book) throws BookNotValidIDException, BookNotFoundException,
-            PublisherNotFound, PublisherUUIDNotValid {
-        UUID uuid;
-        try {
-            uuid = UUID.fromString(book.getPublisherId());
-        } catch (IllegalArgumentException e) {
-            throw new PublisherUUIDNotValid(BookServiceImpl.NOT_VALID_FORMAT_ID_MSG);
-        }
+            PublisherNotFound, PublisherIDNotValid {
         try {
             var opt = bookRepository.findById(id);
             if (opt.isEmpty()) {
@@ -244,9 +242,9 @@ public class BookServiceImpl implements BookService {
             opt.get().setId(id);
             opt.get().setUpdatedAt(LocalDateTime.now());
             opt.get().setPublisher(publisherMapper
-                    .toPublisher(publisherService.findById(uuid)));
+                    .toPublisher(publisherService.findById(book.getPublisherId())));
             Book modified = bookRepository.save(opt.get());
-            var bookDTO = bookMapperImpl.toGetBookDTO(modified);
+            var bookDTO = bookMapperImpl.toGetBookDTO(modified, publisherMapper.toPublisherData(modified.getPublisher()));
             onChange(Notification.Type.UPDATE, bookDTO);
             return bookDTO;
         } catch (IllegalArgumentException e) {
@@ -269,8 +267,10 @@ public class BookServiceImpl implements BookService {
             if (opt.isEmpty()) {
                 throw new BookNotFoundException(BOOK_NOT_FOUND_MSG);
             }
-            bookRepository.delete(opt.get());
-            onChange(Notification.Type.DELETE, bookMapperImpl.toGetBookDTO(opt.get()));
+            patchBook(id, PatchBookDTO.builder().active(false).build());
+            var result = opt.get();
+            onChange(Notification.Type.DELETE, bookMapperImpl.toGetBookDTO(result,
+                    publisherMapper.toPublisherData(result.getPublisher())));
         } catch (IllegalArgumentException e) {
             throw new BookNotValidIDException(NOT_VALID_FORMAT_ID_MSG);
         }
@@ -286,14 +286,14 @@ public class BookServiceImpl implements BookService {
      * @throws BookNotFoundException   Si no se ha encontrado el Book con el ID indicado
      * @throws BookNotValidIDException Si el ID no tiene un formato válido
      * @throws PublisherNotFound       Si no se ha encontrado la publisher con el ID indicado
-     * @throws PublisherUUIDNotValid   Si el ID no tiene un formato válido
+     * @throws PublisherIDNotValid     Si el ID no tiene un formato válido
      * @throws IOException             Si se produce un error al guardar la imagen
      */
     @Override
     @CachePut(key = "#result.id")
     @Transactional
     public GetBookDTO updateImage(Long id, MultipartFile image, Boolean withUrl) throws BookNotFoundException,
-            BookNotValidIDException, PublisherNotFound, PublisherUUIDNotValid, IOException {
+            BookNotValidIDException, PublisherNotFound, PublisherIDNotValid, IOException {
         try {
             var actualBook = bookRepository.findById(id).orElseThrow(() -> new BookNotFoundException(String.valueOf(id)));
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd-HH-mm-ss-SSSSSS");
@@ -346,5 +346,13 @@ public class BookServiceImpl implements BookService {
         } catch (JsonProcessingException e) {
             log.error("Error al convertir la notificación a JSON", e);
         }
+    }
+
+    public Categoria checkCategoria(String categoria){
+        var res = categoriasRepositoryJpa.findByNombre(categoria);
+        if(res.isEmpty() || !res.get().isActiva()){
+            throw new CategoriaNotFoundException("La categoria no existe o no esta activa");
+        }
+        return res.get();
     }
 }
