@@ -1,4 +1,4 @@
-package com.nullers.restbookstore.client.models.responses;
+package com.nullers.restbookstore.rest.client.models.responses;
 
 import org.springframework.data.domain.Page;
 
