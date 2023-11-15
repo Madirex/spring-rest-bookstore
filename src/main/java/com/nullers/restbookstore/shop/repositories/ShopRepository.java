@@ -8,6 +8,12 @@ import org.springframework.stereotype.Repository;
 
 import java.util.UUID;
 
+/**
+ * Clase ShopRepository
+ *
+ *  @author alexdor00
+ */
+
 @Repository
 public interface ShopRepository extends JpaRepository<Shop, UUID> {
 
