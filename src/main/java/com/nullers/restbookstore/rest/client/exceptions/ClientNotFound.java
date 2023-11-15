@@ -1,6 +1,4 @@
-package com.nullers.restbookstore.client.exceptions;
-
-import java.util.UUID;
+package com.nullers.restbookstore.rest.client.exceptions;
 
 public class ClientNotFound extends ClientException{
     public ClientNotFound(String key, Object value) {
