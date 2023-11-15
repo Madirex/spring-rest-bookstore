@@ -35,7 +35,7 @@ import java.util.*;
 @RestController
 @RequestMapping("/api/publishers")
 public class PublisherController {
-    private PublisherServiceImpl publisherService;
+    private final PublisherServiceImpl publisherService;
     private final PaginationLinksUtils paginationLinksUtils;
 
     @Autowired
