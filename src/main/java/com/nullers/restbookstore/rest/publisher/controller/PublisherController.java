@@ -1,12 +1,19 @@
 package com.nullers.restbookstore.rest.publisher.controller;
 
+import com.nullers.restbookstore.pagination.exceptions.PageNotValidException;
+import com.nullers.restbookstore.pagination.utils.PageResponse;
+import com.nullers.restbookstore.pagination.utils.PaginationLinksUtils;
 import com.nullers.restbookstore.rest.publisher.dto.CreatePublisherDto;
 import com.nullers.restbookstore.rest.publisher.dto.PublisherDTO;
 import com.nullers.restbookstore.rest.publisher.exceptions.PublisherNotFound;
 import com.nullers.restbookstore.rest.publisher.models.responses.ErrorResponse;
 import com.nullers.restbookstore.rest.publisher.services.PublisherServiceImpl;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -15,12 +22,10 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
+import org.springframework.web.util.UriComponentsBuilder;
 
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Clase Controller
@@ -31,10 +36,12 @@ import java.util.Map;
 @RequestMapping("/api/publishers")
 public class PublisherController {
     private PublisherServiceImpl publisherService;
+    private final PaginationLinksUtils paginationLinksUtils;
 
     @Autowired
-    public PublisherController(PublisherServiceImpl publisherService) {
+    public PublisherController(PublisherServiceImpl publisherService, PaginationLinksUtils paginationLinksUtils) {
         this.publisherService = publisherService;
+        this.paginationLinksUtils = paginationLinksUtils;
     }
 
 
@@ -44,8 +51,25 @@ public class PublisherController {
      * @return ResponseEntity<List < PublisherDto>> con las editoriales
      */
     @GetMapping
-    public ResponseEntity<List<PublisherDTO>> getAll() {
-        return ResponseEntity.ok(publisherService.findAll());
+    public ResponseEntity<PageResponse<PublisherDTO>> getAll(
+            @Valid @RequestParam(required = false) Optional<String> name,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(defaultValue = "id") String sortBy,
+            @RequestParam(defaultValue = "asc") String direction,
+            HttpServletRequest request
+    ) {
+        if (page < 0 || size < 1) {
+            throw new PageNotValidException("La página no debe ser menor que 0 y su tamaño menor que 1.");
+        }
+        Sort sort = direction.equalsIgnoreCase(
+                Sort.Direction.ASC.name()) ? Sort.by(sortBy).ascending() : Sort.by(sortBy).descending();
+        UriComponentsBuilder uriBuilder = UriComponentsBuilder.fromHttpUrl(request.getRequestURL().toString());
+        Page<PublisherDTO> pageRes = publisherService.findAll(name, PageRequest.of(page, size, sort));
+
+        return ResponseEntity.ok()
+                .header("link", paginationLinksUtils.createLinkHeader(pageRes, uriBuilder))
+                .body(PageResponse.of(pageRes, sortBy, direction));
     }
 
     /**
