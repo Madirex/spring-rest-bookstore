@@ -1,23 +1,23 @@
-package com.nullers.restbookstore.client.services;
+package com.nullers.restbookstore.rest.client.services;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nullers.restbookstore.NOADD.exceptions.BookNotFoundException;
 import com.nullers.restbookstore.NOADD.models.Book;
 import com.nullers.restbookstore.NOADD.services.BookService;
-import com.nullers.restbookstore.client.dto.ClientCreateDto;
-import com.nullers.restbookstore.client.dto.ClientDto;
-import com.nullers.restbookstore.client.dto.ClientUpdateDto;
-import com.nullers.restbookstore.client.exceptions.ClientAlreadyExists;
-import com.nullers.restbookstore.client.exceptions.ClientNotFound;
-import com.nullers.restbookstore.client.mappers.ClientCreateMapper;
-import com.nullers.restbookstore.client.mappers.ClientMapper;
-import com.nullers.restbookstore.client.models.Client;
-import com.nullers.restbookstore.client.repositories.ClientRepository;
+import com.nullers.restbookstore.rest.client.dto.ClientCreateDto;
+import com.nullers.restbookstore.rest.client.dto.ClientDto;
+import com.nullers.restbookstore.rest.client.dto.ClientUpdateDto;
+import com.nullers.restbookstore.rest.client.exceptions.ClientAlreadyExists;
+import com.nullers.restbookstore.rest.client.exceptions.ClientNotFound;
+import com.nullers.restbookstore.rest.client.mappers.ClientCreateMapper;
+import com.nullers.restbookstore.rest.client.mappers.ClientMapper;
+import com.nullers.restbookstore.rest.client.models.Client;
+import com.nullers.restbookstore.rest.client.repositories.ClientRepository;
 import com.nullers.restbookstore.config.websockets.WebSocketConfig;
 import com.nullers.restbookstore.config.websockets.WebSocketHandler;
-import com.nullers.restbookstore.notifications.dto.ClientNotificationResponse;
-import com.nullers.restbookstore.notifications.mapper.ClientNotificationMapper;
+import com.nullers.restbookstore.rest.client.notifications.dto.ClientNotificationResponse;
+import com.nullers.restbookstore.rest.client.notifications.mapper.ClientNotificationMapper;
 import com.nullers.restbookstore.notifications.models.Notification;
 import com.nullers.restbookstore.storage.service.StorageService;
 import lombok.extern.slf4j.Slf4j;
@@ -34,10 +34,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 
 /**
  * @author Daniel
@@ -99,26 +96,16 @@ public class ClientServiceImpl implements ClientService{
             Pageable pageable) {
 
         log.info("Buscando clientes con los criterios: name: " + name + ", surname: " + surname + ", email: " + email + ", phone: " + phone + ", address: " + address);
-        Specification<Client> specName = ((root, query, criteriaBuilder) ->  name.map(m -> criteriaBuilder.like(
-                        criteriaBuilder.lower(root.get("name")), "%"+ m + "%"))
-                .orElseGet(() -> criteriaBuilder.isTrue(criteriaBuilder.literal(true)))
-        );
-        Specification<Client> specSurName = ((root, query, criteriaBuilder) -> surname.map(m -> criteriaBuilder.like(
-                criteriaBuilder.lower(root.get("surname")), "%"+ m + "%"))
-                .orElseGet(() -> criteriaBuilder.isTrue(criteriaBuilder.literal(true)))
-        );
-        Specification<Client> specEmail = ((root, query, criteriaBuilder) -> email.map(m -> criteriaBuilder.like(
-                criteriaBuilder.lower(root.get("email")), "%"+ m + "%"))
-                .orElseGet(() -> criteriaBuilder.isTrue(criteriaBuilder.literal(true)))
-        );
-        Specification<Client> specPhone = ((root, query, criteriaBuilder) -> phone.map(m -> criteriaBuilder.like(
-                criteriaBuilder.lower(root.get("phone")), "%"+ m + "%"))
-                .orElseGet(() -> criteriaBuilder.isTrue(criteriaBuilder.literal(true)))
-        );
-        Specification<Client> specAddress = ((root, query, criteriaBuilder) -> address.map(m -> criteriaBuilder.like(
-                criteriaBuilder.lower(root.get("address")), "%"+ m + "%"))
-                .orElseGet(() -> criteriaBuilder.isTrue(criteriaBuilder.literal(true)))
-        );
+        Specification<Client> specName = ((root, query, criteriaBuilder) ->  name.map(m -> criteriaBuilder.like(criteriaBuilder.lower(root.get("name")), "%"+ m + "%")).orElseGet(() -> criteriaBuilder.isTrue(criteriaBuilder.literal(true))));
+
+        Specification<Client> specSurName = ((root, query, criteriaBuilder) -> surname.map(m -> criteriaBuilder.like(criteriaBuilder.lower(root.get("surname")), "%"+ m + "%")).orElseGet(() -> criteriaBuilder.isTrue(criteriaBuilder.literal(true))));
+
+        Specification<Client> specEmail = ((root, query, criteriaBuilder) -> email.map(m -> criteriaBuilder.like(criteriaBuilder.lower(root.get("email")), "%"+ m + "%")).orElseGet(() -> criteriaBuilder.isTrue(criteriaBuilder.literal(true))));
+
+        Specification<Client> specPhone = ((root, query, criteriaBuilder) -> phone.map(m -> criteriaBuilder.like(criteriaBuilder.lower(root.get("phone")), "%"+ m + "%")).orElseGet(() -> criteriaBuilder.isTrue(criteriaBuilder.literal(true))));
+
+        Specification<Client> specAddress = ((root, query, criteriaBuilder) -> address.map(m -> criteriaBuilder.like(criteriaBuilder.lower(root.get("address")), "%"+ m + "%")).orElseGet(() -> criteriaBuilder.isTrue(criteriaBuilder.literal(true))));
+
         Specification<Client> criterio = Specification.where(specName)
                 .and(specSurName)
                 .and(specEmail)
@@ -184,6 +171,11 @@ public class ClientServiceImpl implements ClientService{
     @CachePut(key = "#id")
     public ClientDto update(UUID id, ClientUpdateDto client) {
         log.info("Actualizando cliente "+ client);
+        Optional<ClientDto> clientDto = findByEmail(client.getEmail());
+        if(clientDto.isPresent() && !clientDto.get().getId().equals(id)){
+            log.error("El cliente con email: " + client.getEmail() + " ya existe");
+            throw new ClientAlreadyExists("email",client.getEmail());
+        }
         ClientDto clientToUpdate = findById(id);
         String name = client.getName() != null ? client.getName() : clientToUpdate.getName();
         String surname = client.getSurname() != null ? client.getSurname() : clientToUpdate.getSurname();
@@ -263,11 +255,13 @@ public class ClientServiceImpl implements ClientService{
      */
     @Override
     @CachePut(key = "#id")
-    public ClientDto addBookOfClient(UUID id, UUID bookId) {
+    public ClientDto addBookToClient(UUID id, UUID bookId) {
         log.info("Añadiendo libro con id: " + bookId + " al cliente con id: " + id);
         Book bookToAdd = bookService.getById(bookId);
         ClientDto clientToUpdate = findById(id);
-        clientToUpdate.getBooks().add(bookToAdd);
+        List<Book> books = new ArrayList<>(clientToUpdate.getBooks());
+        books.add(bookToAdd);
+        clientToUpdate.setBooks(books);
         ClientDto clientUpdate = ClientMapper.toDto(clientRepository.save(ClientMapper.toEntity(clientToUpdate)));
         onChange(Notification.Type.UPDATE, ClientMapper.toEntity(clientUpdate));
         return clientUpdate;
@@ -287,7 +281,9 @@ public class ClientServiceImpl implements ClientService{
         log.info("Eliminando libro con id: " + bookId + " del cliente con id: " + id);
         Book bookToRemove = bookService.getById(bookId);
         ClientDto clientToUpdate = findById(id);
-        clientToUpdate.getBooks().remove(bookToRemove);
+        List<Book> books = new ArrayList<>(clientToUpdate.getBooks());
+        books.remove(bookToRemove);
+        clientToUpdate.setBooks(books);
         ClientDto clientUpdate = ClientMapper.toDto(clientRepository.save(ClientMapper.toEntity(clientToUpdate)));
         onChange(Notification.Type.UPDATE, ClientMapper.toEntity(clientUpdate));
         return  clientUpdate;
@@ -305,7 +301,7 @@ public class ClientServiceImpl implements ClientService{
         log.info("Actualizando imagen del cliente con id: " + id);
         ClientDto clientDto = findById(id);
 
-        if(clientDto.getImage() != null && clientDto.getImage().equals(Client.DEFAULT_IMAGE)){
+        if(clientDto.getImage() != null && !clientDto.getImage().equals(Client.DEFAULT_IMAGE)){
             storageService.delete(clientDto.getImage());
         }
 
@@ -319,14 +315,21 @@ public class ClientServiceImpl implements ClientService{
         return clientUpdated;
     }
 
+    /**
+     * Añadir websocket
+     * @param webSocketHandlerMock
+     */
+    public void setWebSocketService(WebSocketHandler webSocketHandlerMock) {
+        this.webSocketService = webSocketHandlerMock;
+    }
+
 
     /**
      * @param tipo tipo de notificacion
      * @param data datos de la notificacion
      * Envia una notificacion a los clientes conectados
      */
-    void onChange(Notification.Type tipo, Client data) {
-
+    public void onChange(Notification.Type tipo, Client data) {
         if (webSocketService == null) {
             log.warn("No se ha podido enviar la notificación a los clientes ws, no se ha encontrado el servicio");
             webSocketService = this.webSocketConfig.webSocketClientsHandler();
