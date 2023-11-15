@@ -94,9 +94,7 @@ public class PublisherServiceImpl implements PublisherService {
     @Override
     public PublisherDTO update(Long id, CreatePublisherDto publisher) {
         PublisherDTO publisherUpdate = findById(id);
-        Publisher updatedPublisher = publisherMapper.toPublisher(publisherUpdate);
-        updatedPublisher.setName(publisher.getName());
-        updatedPublisher.setImage(publisher.getImage());
+        Publisher updatedPublisher = publisherMapper.toPublisherModification(publisher, publisherUpdate);
         return publisherMapper.toDto(publisherRepository.save(updatedPublisher));
     }
 

@@ -92,9 +92,7 @@ public class PublisherController {
     @PatchMapping("/books/{id}")
     public ResponseEntity<PublisherDTO> updatePatchBook(@PathVariable Long id, @RequestParam Long bookId) {
         PublisherDTO publisherDto = publisherService.addBookPublisher(id, bookId);
-        ResponseEntity<PublisherDTO> publisher = ResponseEntity.ok(publisherDto);
-        System.out.println(publisher);
-        return publisher;
+        return ResponseEntity.ok(publisherDto);
     }
 
     /**
