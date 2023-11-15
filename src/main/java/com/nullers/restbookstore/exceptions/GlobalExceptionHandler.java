@@ -1,6 +1,8 @@
 package com.nullers.restbookstore.exceptions;
 
 import com.nullers.restbookstore.pagination.exceptions.PageNotValidException;
+import com.nullers.restbookstore.rest.category.exceptions.CategoriaNotFoundException;
+import com.nullers.restbookstore.rest.publisher.models.responses.ErrorResponse;
 import org.apache.tomcat.util.http.fileupload.impl.FileSizeLimitExceededException;
 import org.springframework.data.mapping.PropertyReferenceException;
 import org.springframework.http.HttpStatus;
@@ -16,6 +18,12 @@ import org.springframework.web.bind.annotation.ResponseStatus;
  */
 @ControllerAdvice
 public class GlobalExceptionHandler {
+
+    @ExceptionHandler(CategoriaNotFoundException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ErrorResponse handleFunkoNotFound(CategoriaNotFoundException exception){
+        return new ErrorResponse(HttpStatus.BAD_REQUEST.value(), exception.getMessage());
+    }
 
     /**
      * Manejador de excepciones de tamaño de fichero excedido
@@ -79,4 +87,5 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                 .body("No has enviado todos los parámetros necesarios para la consulta en el Path");
     }
+
 }
