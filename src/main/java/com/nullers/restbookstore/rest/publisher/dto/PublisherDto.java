@@ -8,7 +8,6 @@ import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 import java.util.Set;
-import java.util.UUID;
 
 /**
  * Clase PublisherDto
@@ -20,7 +19,7 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 public class PublisherDTO {
-    private UUID id;
+    private Long id;
     private String name;
     private String image;
     private Set<Book> books;
