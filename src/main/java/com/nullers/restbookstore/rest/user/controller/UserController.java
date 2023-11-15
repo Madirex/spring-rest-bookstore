@@ -128,6 +128,12 @@ public class UserController {
         return ResponseEntity.noContent().build();
     }
 
+    @PatchMapping("/{id}")
+    public ResponseEntity<UserResponse> patchUser(@PathVariable UUID id, @RequestBody UserRequest userRequest) {
+        log.info("patch: id: {}, userRequest: {}", id, userRequest);
+        return ResponseEntity.ok(usersService.patch(id, userRequest));
+    }
+
 
     /**
      * Obtiene el usuario autenticado
