@@ -1,9 +1,10 @@
-package com.nullers.restbookstore.client.exceptions;
+package com.nullers.restbookstore.rest.client.exceptions;
 
-import com.nullers.restbookstore.client.models.responses.ErrorResponse;
+import com.nullers.restbookstore.rest.client.models.responses.ErrorResponse;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
