@@ -17,7 +17,7 @@ import java.util.UUID;
 /**
  * Clase Shop
  *
- * @Author alexdor00
+ *  @author alexdor00
  */
 @Data
 @Builder
