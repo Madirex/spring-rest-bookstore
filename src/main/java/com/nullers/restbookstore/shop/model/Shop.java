@@ -14,11 +14,11 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
-
 /**
  * Clase Shop
+ *
+ * @Author alexdor00
  */
-
 @Data
 @Builder
 @NoArgsConstructor
@@ -28,25 +28,28 @@ import java.util.UUID;
 public class Shop {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private UUID id;
+    private UUID id;  // Identificador único para la tienda.
 
-    private String name;
-    private String location;
+    private String name;  // Nombre de la tienda.
+    private String location;  // Ubicación de la tienda.
 
     @CreatedDate
-    private LocalDateTime createdAt;
+    private LocalDateTime createdAt;  // Fecha y hora de creación de la tienda.
 
     @LastModifiedDate
-    private LocalDateTime updatedAt;
+    private LocalDateTime updatedAt;  // Fecha y hora de la última actualización de la tienda.
 
-
-    // Lista de libros asociados con la tienda
+    /**
+     * Lista de libros asociados con la tienda.
+     * La relación es de uno a muchos, indicando que una tienda puede tener varios libros.
+     */
     @OneToMany(mappedBy = "shop")
-    private Book book;
+    private List<Book> books;
 
-    // Lista de clientes asociados con la tienda
+    /**
+     * Lista de clientes asociados con la tienda.
+     * La relación es de uno a muchos, indicando que una tienda puede tener varios clientes.
+     */
     @OneToMany(mappedBy = "shop")
     private List<Client> clients;
-
-
 }
