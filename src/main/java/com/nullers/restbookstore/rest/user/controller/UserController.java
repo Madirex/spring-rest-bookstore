@@ -4,7 +4,6 @@ import com.nullers.restbookstore.pagination.exceptions.PageNotValidException;
 import com.nullers.restbookstore.rest.user.dto.UserInfoResponse;
 import com.nullers.restbookstore.rest.user.dto.UserRequest;
 import com.nullers.restbookstore.rest.user.dto.UserResponse;
-import com.nullers.restbookstore.rest.user.model.User;
 import com.nullers.restbookstore.rest.user.services.UserService;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
@@ -25,6 +24,8 @@ import java.util.UUID;
 
 /**
  * Controlador de usuarios
+ *
+ * @Author: Binwei Wang
  */
 @RestController
 @Slf4j
@@ -126,7 +127,7 @@ public class UserController {
         usersService.deleteById(id);
         return ResponseEntity.noContent().build();
     }
-    
+
 
     /**
      * Obtiene el usuario autenticado
