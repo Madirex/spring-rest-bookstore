@@ -50,6 +50,7 @@ public class FileSystemStorageService implements StorageService {
      * @param fileTypes File types
      * @param name      Name
      * @return Filename
+     * @throws IOException IOException
      */
     @Override
     public String store(MultipartFile file, List<String> fileTypes, String name) throws IOException {
@@ -85,10 +86,10 @@ public class FileSystemStorageService implements StorageService {
     @Override
     public Stream<Path> loadAll() {
         log.info("Cargando todos los ficheros almacenados");
-        try {
-            return Files.walk(this.rootLocation, 1)
-                    .filter(path -> !path.equals(this.rootLocation))
-                    .map(this.rootLocation::relativize);
+        try (Stream<Path> pathStream = Files.walk(this.rootLocation, 1)
+                .filter(path -> !path.equals(this.rootLocation))
+                .map(this.rootLocation::relativize)) {
+            return pathStream.toList().stream();
         } catch (IOException e) {
             throw new StorageInternal("Fallo al leer ficheros almacenados " + e);
         }

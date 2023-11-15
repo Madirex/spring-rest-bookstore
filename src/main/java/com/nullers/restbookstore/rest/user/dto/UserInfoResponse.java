@@ -18,14 +18,12 @@ import java.util.UUID;
 @AllArgsConstructor
 public class UserInfoResponse {
     private UUID id;
-    private String nombre;
-    private String apellidos;
+    private String name;
+    private String surnames;
     private String username;
     private String email;
     @Builder.Default
     private Set<Role> roles = Set.of(Role.USER);
     @Builder.Default
     private Boolean isDeleted = false;
-//    @Builder.Default
-//    private List<String> pedidos = new ArrayList<>();
 }

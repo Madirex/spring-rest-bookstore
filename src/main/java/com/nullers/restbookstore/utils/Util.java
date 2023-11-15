@@ -11,10 +11,10 @@ import java.util.Set;
  */
 public class Util {
     /**
-     * Constructor privado para evitar instanciación
+     * Constructor privado para evitar instancias
      */
     private Util() {
-        // Constructor privado para evitar instanciación
+        // Constructor privado para evitar instancias
     }
 
     /**

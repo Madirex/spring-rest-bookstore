@@ -1,4 +1,4 @@
-package com.nullers.restbookstore.utils.pagination;
+package com.nullers.restbookstore.pagination.utils;
 
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Component;
@@ -15,7 +15,7 @@ public class PaginationLinksUtils {
      *
      * @param page       Página
      * @param uriBuilder UriComponentsBuilder
-     * @return String
+     * @return resultado
      */
     public String createLinkHeader(Page<?> page, UriComponentsBuilder uriBuilder) {
         final StringBuilder linkHeader = new StringBuilder();
