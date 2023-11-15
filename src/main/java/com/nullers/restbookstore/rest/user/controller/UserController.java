@@ -126,6 +126,7 @@ public class UserController {
         usersService.deleteById(id);
         return ResponseEntity.noContent().build();
     }
+    
 
     /**
      * Obtiene el usuario autenticado
@@ -133,12 +134,12 @@ public class UserController {
      * @param user Usuario autenticado
      * @return Usuario autenticado
      */
-    @GetMapping("/me/profile")
-    public ResponseEntity<UserInfoResponse> me(User user) {
-        log.info("Obteniendo usuario");
-        // Esta autenticado, por lo que devolvemos sus datos ya sabemos su id
-        return ResponseEntity.ok(usersService.findById(user.getId()));
-    }
+//    @GetMapping("/me/profile")
+//    public ResponseEntity<UserInfoResponse> me(User user) {
+//        log.info("Obteniendo usuario");
+//        // Esta autenticado, por lo que devolvemos sus datos ya sabemos su id
+//        return ResponseEntity.ok(usersService.findById(user.getId()));
+//    }
 
     /**
      * Actualiza el usuario autenticado
@@ -147,11 +148,11 @@ public class UserController {
      * @param userRequest Usuario a actualizar
      * @return Usuario actualizado
      */
-    @PutMapping("/me/profile")
-    public ResponseEntity<UserResponse> updateMe(User user, @Valid @RequestBody UserRequest userRequest) {
-        log.info("updateMe: user: {}, userRequest: {}", user, userRequest);
-        return ResponseEntity.ok(usersService.update(user.getId(), userRequest));
-    }
+//    @PutMapping("/me/profile")
+//    public ResponseEntity<UserResponse> updateMe(User user, @Valid @RequestBody UserRequest userRequest) {
+//        log.info("updateMe: user: {}, userRequest: {}", user, userRequest);
+//        return ResponseEntity.ok(usersService.update(user.getId(), userRequest));
+//    }
 
     /**
      * Borra el usuario autenticado
@@ -159,12 +160,12 @@ public class UserController {
      * @param user Usuario autenticado
      * @return Respuesta vacía
      */
-    @DeleteMapping("/me/profile")
-    public ResponseEntity<Void> deleteMe(User user) {
-        log.info("deleteMe: user: {}", user);
-        usersService.deleteById(user.getId());
-        return ResponseEntity.noContent().build();
-    }
+//    @DeleteMapping("/me/profile")
+//    public ResponseEntity<Void> deleteMe(User user) {
+//        log.info("deleteMe: user: {}", user);
+//        usersService.deleteById(user.getId());
+//        return ResponseEntity.noContent().build();
+//    }
 
     /**
      * Maneja las excepciones de validación
