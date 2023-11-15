@@ -4,6 +4,7 @@ import com.nullers.restbookstore.rest.book.dto.CreateBookDTO;
 import com.nullers.restbookstore.rest.book.dto.GetBookDTO;
 import com.nullers.restbookstore.rest.book.dto.UpdateBookDTO;
 import com.nullers.restbookstore.rest.book.models.Book;
+import com.nullers.restbookstore.rest.category.models.Categoria;
 import com.nullers.restbookstore.rest.publisher.dto.PublisherData;
 import com.nullers.restbookstore.rest.publisher.models.Publisher;
 import org.springframework.stereotype.Component;
@@ -39,6 +40,20 @@ public class BookMapperImpl implements BookMapper {
                 .build();
     }
 
+    public Book toBook(CreateBookDTO dto, Publisher publisher, Categoria category) {
+        return Book.builder()
+                .name(dto.getName())
+                .publisher(publisher)
+                .price(dto.getPrice())
+                .image(dto.getImage())
+                .description(dto.getDescription())
+                .createdAt(LocalDateTime.now())
+                .updatedAt(LocalDateTime.now())
+                .active(true)
+                .category(category)
+                .build();
+    }
+
     /**
      * Mapea un UpdateBookDTO en Book
      *
@@ -61,6 +76,21 @@ public class BookMapperImpl implements BookMapper {
                 .build();
     }
 
+    public Book toBook(Book book, UpdateBookDTO dto, Publisher publisher, Categoria category) {
+        return Book.builder()
+                .id(book.getId())
+                .name(dto.getName())
+                .publisher(publisher)
+                .price(dto.getPrice())
+                .image(dto.getImage())
+                .description(dto.getDescription())
+                .createdAt(book.getCreatedAt())
+                .updatedAt(LocalDateTime.now())
+                .active(book.getActive())
+                .category(category)
+                .build();
+    }
+
     /**
      * Mapea un Book en GetBookDTO
      *
@@ -78,6 +108,7 @@ public class BookMapperImpl implements BookMapper {
                 .createdAt(book.getCreatedAt())
                 .updatedAt(book.getUpdatedAt())
                 .active(book.getActive())
+                .category(book.getCategory().getNombre())
                 .build();
     }
 
@@ -93,4 +124,8 @@ public class BookMapperImpl implements BookMapper {
                 .mapToObj(index -> toGetBookDTO(books.get(index), publisherData.get(index)))
                 .toList();
     }
+
+
+
+
 }
