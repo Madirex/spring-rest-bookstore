@@ -4,7 +4,6 @@ import com.nullers.restbookstore.pagination.exceptions.PageNotValidException;
 import com.nullers.restbookstore.rest.user.dto.UserInfoResponse;
 import com.nullers.restbookstore.rest.user.dto.UserRequest;
 import com.nullers.restbookstore.rest.user.dto.UserResponse;
-import com.nullers.restbookstore.rest.user.model.User;
 import com.nullers.restbookstore.rest.user.services.UserService;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
@@ -25,6 +24,8 @@ import java.util.UUID;
 
 /**
  * Controlador de usuarios
+ *
+ * @Author: Binwei Wang
  */
 @RestController
 @Slf4j
@@ -127,18 +128,25 @@ public class UserController {
         return ResponseEntity.noContent().build();
     }
 
+    @PatchMapping("/{id}")
+    public ResponseEntity<UserResponse> patchUser(@PathVariable UUID id, @RequestBody UserRequest userRequest) {
+        log.info("patch: id: {}, userRequest: {}", id, userRequest);
+        return ResponseEntity.ok(usersService.patch(id, userRequest));
+    }
+
+
     /**
      * Obtiene el usuario autenticado
      *
      * @param user Usuario autenticado
      * @return Usuario autenticado
      */
-    @GetMapping("/me/profile")
-    public ResponseEntity<UserInfoResponse> me(User user) {
-        log.info("Obteniendo usuario");
-        // Esta autenticado, por lo que devolvemos sus datos ya sabemos su id
-        return ResponseEntity.ok(usersService.findById(user.getId()));
-    }
+//    @GetMapping("/me/profile")
+//    public ResponseEntity<UserInfoResponse> me(User user) {
+//        log.info("Obteniendo usuario");
+//        // Esta autenticado, por lo que devolvemos sus datos ya sabemos su id
+//        return ResponseEntity.ok(usersService.findById(user.getId()));
+//    }
 
     /**
      * Actualiza el usuario autenticado
@@ -147,11 +155,11 @@ public class UserController {
      * @param userRequest Usuario a actualizar
      * @return Usuario actualizado
      */
-    @PutMapping("/me/profile")
-    public ResponseEntity<UserResponse> updateMe(User user, @Valid @RequestBody UserRequest userRequest) {
-        log.info("updateMe: user: {}, userRequest: {}", user, userRequest);
-        return ResponseEntity.ok(usersService.update(user.getId(), userRequest));
-    }
+//    @PutMapping("/me/profile")
+//    public ResponseEntity<UserResponse> updateMe(User user, @Valid @RequestBody UserRequest userRequest) {
+//        log.info("updateMe: user: {}, userRequest: {}", user, userRequest);
+//        return ResponseEntity.ok(usersService.update(user.getId(), userRequest));
+//    }
 
     /**
      * Borra el usuario autenticado
@@ -159,12 +167,12 @@ public class UserController {
      * @param user Usuario autenticado
      * @return Respuesta vacía
      */
-    @DeleteMapping("/me/profile")
-    public ResponseEntity<Void> deleteMe(User user) {
-        log.info("deleteMe: user: {}", user);
-        usersService.deleteById(user.getId());
-        return ResponseEntity.noContent().build();
-    }
+//    @DeleteMapping("/me/profile")
+//    public ResponseEntity<Void> deleteMe(User user) {
+//        log.info("deleteMe: user: {}", user);
+//        usersService.deleteById(user.getId());
+//        return ResponseEntity.noContent().build();
+//    }
 
     /**
      * Maneja las excepciones de validación

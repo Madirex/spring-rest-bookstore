@@ -5,6 +5,8 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 
 /**
  * Excepción de usuario no encontrado
+ *
+ * @Author: Binwei Wang
  */
 @ResponseStatus(HttpStatus.NOT_FOUND)
 public class UserNotFound extends UserException {

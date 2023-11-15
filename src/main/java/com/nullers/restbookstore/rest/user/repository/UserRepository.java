@@ -13,6 +13,8 @@ import java.util.UUID;
 
 /**
  * Repository for User entity
+ *
+ * @Author: Binwei Wang
  */
 @Repository
 public interface UserRepository extends JpaRepository<User, UUID>, JpaSpecificationExecutor<User> {
