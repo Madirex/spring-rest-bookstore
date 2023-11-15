@@ -1,7 +1,7 @@
-package com.nullers.restbookstore.notifications.mapper;
+package com.nullers.restbookstore.rest.client.notifications.mapper;
 
-import com.nullers.restbookstore.client.models.Client;
-import com.nullers.restbookstore.notifications.dto.ClientNotificationResponse;
+import com.nullers.restbookstore.rest.client.models.Client;
+import com.nullers.restbookstore.rest.client.notifications.dto.ClientNotificationResponse;
 import org.springframework.stereotype.Component;
 
 /**
