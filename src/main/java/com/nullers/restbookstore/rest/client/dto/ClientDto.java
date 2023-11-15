@@ -1,4 +1,4 @@
-package com.nullers.restbookstore.client.dto;
+package com.nullers.restbookstore.rest.client.dto;
 
 import com.nullers.restbookstore.NOADD.models.Book;
 import lombok.*;
