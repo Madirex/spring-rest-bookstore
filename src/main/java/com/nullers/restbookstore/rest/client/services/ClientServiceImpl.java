@@ -87,6 +87,7 @@ public class ClientServiceImpl implements ClientService{
      * Busca todos los clientes que coincidan con los criterios de busqueda
      */
     @Override
+    @Cacheable
     public Page<ClientDto> findAll(
             Optional<String> name,
             Optional<String> surname,
@@ -223,6 +224,7 @@ public class ClientServiceImpl implements ClientService{
      * @throws ClientNotFound si no existe el cliente
      * Busca todos los libros de un cliente
      */
+    @Cacheable
     public Page<Book> getAllBooksOfClient(UUID id, Pageable pageable){
         log.info("Buscando libros del cliente con id: " + id);
         ClientDto client = findById(id);
