@@ -30,7 +30,6 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-websocket")
     implementation("com.fasterxml.jackson.dataformat:jackson-dataformat-xml")
     implementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.11.3")
-    implementation("org.springframework.boot:spring-boot-starter-security")
 
     runtimeOnly("com.h2database:h2")
 
