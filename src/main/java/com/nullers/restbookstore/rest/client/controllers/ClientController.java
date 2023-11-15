@@ -1,17 +1,17 @@
-package com.nullers.restbookstore.client.controllers;
+package com.nullers.restbookstore.rest.client.controllers;
 
 import com.nullers.restbookstore.NOADD.exceptions.BookNotFoundException;
 import com.nullers.restbookstore.NOADD.models.Book;
-import com.nullers.restbookstore.client.dto.ClientCreateDto;
-import com.nullers.restbookstore.client.dto.ClientDto;
-import com.nullers.restbookstore.client.dto.ClientUpdateDto;
-import com.nullers.restbookstore.client.exceptions.ClientAlreadyExists;
-import com.nullers.restbookstore.client.exceptions.ClientBadRequest;
-import com.nullers.restbookstore.client.exceptions.ClientNotFound;
-import com.nullers.restbookstore.client.models.responses.ErrorResponse;
-import com.nullers.restbookstore.client.models.responses.PageResponse;
-import com.nullers.restbookstore.client.services.ClientServiceImpl;
-import com.nullers.restbookstore.client.utils.PaginationLinksUtils;
+import com.nullers.restbookstore.rest.client.dto.ClientCreateDto;
+import com.nullers.restbookstore.rest.client.dto.ClientDto;
+import com.nullers.restbookstore.rest.client.dto.ClientUpdateDto;
+import com.nullers.restbookstore.rest.client.exceptions.ClientAlreadyExists;
+import com.nullers.restbookstore.rest.client.exceptions.ClientBadRequest;
+import com.nullers.restbookstore.rest.client.exceptions.ClientNotFound;
+import com.nullers.restbookstore.rest.client.models.responses.ErrorResponse;
+import com.nullers.restbookstore.rest.client.models.responses.PageResponse;
+import com.nullers.restbookstore.rest.client.services.ClientServiceImpl;
+import com.nullers.restbookstore.rest.client.utils.PaginationLinksUtils;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +21,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.mapping.PropertyReferenceException;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -85,7 +86,7 @@ public class ClientController {
             HttpServletRequest request
     ) {
         if(page < 0 || size <= 0){
-            throw new IllegalArgumentException("El número de página no debe ser menor a 0 y el tamaño de la página debe ser mayor que 0");
+            throw new IllegalArgumentException("El numero de pagina no debe ser menor a 0 y el tamano de la pagina debe ser mayor que 0");
         }
         Sort sort = order.equalsIgnoreCase(Sort.Direction.ASC.name()) ? Sort.by(sortBy).ascending() : Sort.by(sortBy).descending();
         Pageable pageable = PageRequest.of(page, size, sort);
@@ -124,7 +125,7 @@ public class ClientController {
      */
     @PostMapping
     public ResponseEntity<ClientDto> create(@Valid @RequestBody ClientCreateDto clientDto) {
-        return ResponseEntity.ok(clientService.save(clientDto));
+        return ResponseEntity.status(HttpStatus.CREATED).body(clientService.save(clientDto));
     }
 
     /**
@@ -169,7 +170,7 @@ public class ClientController {
             HttpServletRequest request
     ) {
         if(page < 0 || size <= 0){
-            throw new IllegalArgumentException("El número de página no debe ser menor a 0 y el tamaño de la página debe ser mayor que 0");
+            throw new IllegalArgumentException("El numero de pagina no debe ser menor a 0 y el tamano de la pagina debe ser mayor que 0");
         }
         Sort sort = order.equalsIgnoreCase(Sort.Direction.ASC.name()) ? Sort.by(sortBy).ascending() : Sort.by(sortBy).descending();
         Pageable pageable = PageRequest.of(page, size, sort);
@@ -210,12 +211,12 @@ public class ClientController {
      * @param file imagen del cliente
      * @return ResponseEntity<ClientDto> con el cliente
      */
-    @PatchMapping( value = "{id}/image", consumes = "multipart/form-data")
+    @PatchMapping( value = "{id}/image",  consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<ClientDto> updatePatchImage(@PathVariable UUID id, @RequestPart("file") MultipartFile file) {
         if(!file.isEmpty() && contentTypesAllowed.contains(file.getContentType())){
             return ResponseEntity.ok(clientService.updateImage(id, file));
         }else{
-            throw new ClientBadRequest("El archivo no es una imagen o está vacío");
+            throw new ClientBadRequest("El archivo no es una imagen o esta vacio");
         }
     }
 
