@@ -2,6 +2,7 @@ package com.nullers.restbookstore.rest.book.models;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.nullers.restbookstore.rest.category.models.Categoria;
 import com.nullers.restbookstore.rest.publisher.models.Publisher;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Min;
@@ -79,4 +80,8 @@ public class Book {
             updatedAt = LocalDateTime.now();
         }
     }
+
+    @ManyToOne
+    @JoinColumn(name = "categoria_id")
+    private Categoria category;
 }
