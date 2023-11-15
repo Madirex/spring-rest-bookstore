@@ -1,2 +1,11 @@
-package com.nullers.restbookstore.shop.dto;public class PatchShopDto {
+package com.nullers.restbookstore.shop.dto;
+
+import lombok.Builder;
+import lombok.Getter;
+
+@Getter
+@Builder
+public class PatchShopDto {
+    private String name;
+    private String location;
 }
