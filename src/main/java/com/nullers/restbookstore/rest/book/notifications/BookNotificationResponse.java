@@ -1,7 +1,7 @@
 package com.nullers.restbookstore.rest.book.notifications;
 
 /**
- * FunkoNotificationResponse
+ * BookNotificationResponse
  *
  * @Author Madirex
  */
@@ -12,6 +12,8 @@ public record BookNotificationResponse(
         String image,
         String description,
         String createdAt,
-        String updatedAt
+        String updatedAt,
+
+        Boolean active
 ) {
 }

@@ -125,12 +125,12 @@ public class BookServiceImpl implements BookService {
         Specification<Book> criterion = Specification.where(specType)
                 .and(specMaxPrice);
 
-        Page<Book> funkoPage = bookRepository.findAll(criterion, pageable);
-        List<GetBookDTO> dtoList = funkoPage.getContent().stream()
+        Page<Book> bookPage = bookRepository.findAll(criterion, pageable);
+        List<GetBookDTO> dtoList = bookPage.getContent().stream()
                 .map(e -> bookMapperImpl.toGetBookDTO(e, publisherMapper.toPublisherData(e.getPublisher())))
                 .toList();
 
-        return new PageImpl<>(dtoList, funkoPage.getPageable(), funkoPage.getTotalElements());
+        return new PageImpl<>(dtoList, bookPage.getPageable(), bookPage.getTotalElements());
     }
 
     /**
@@ -250,10 +250,10 @@ public class BookServiceImpl implements BookService {
             if (opt.isEmpty()) {
                 throw new BookNotFoundException(BOOK_NOT_FOUND_MSG);
             }
-            var book = opt.get();
-            bookRepository.delete(book);
-            onChange(Notification.Type.DELETE, bookMapperImpl.toGetBookDTO(book,
-                    publisherMapper.toPublisherData(book.getPublisher())));
+            patchBook(id, PatchBookDTO.builder().active(false).build());
+            var result = opt.get();
+            onChange(Notification.Type.DELETE, bookMapperImpl.toGetBookDTO(result,
+                    publisherMapper.toPublisherData(result.getPublisher())));
         } catch (IllegalArgumentException e) {
             throw new BookNotValidIDException(NOT_VALID_FORMAT_ID_MSG);
         }

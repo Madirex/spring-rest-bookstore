@@ -35,6 +35,7 @@ public class BookMapperImpl implements BookMapper {
                 .description(dto.getDescription())
                 .createdAt(LocalDateTime.now())
                 .updatedAt(LocalDateTime.now())
+                .active(true)
                 .build();
     }
 
@@ -56,6 +57,7 @@ public class BookMapperImpl implements BookMapper {
                 .description(dto.getDescription())
                 .createdAt(book.getCreatedAt())
                 .updatedAt(LocalDateTime.now())
+                .active(book.getActive())
                 .build();
     }
 
@@ -75,6 +77,7 @@ public class BookMapperImpl implements BookMapper {
                 .description(book.getDescription())
                 .createdAt(book.getCreatedAt())
                 .updatedAt(book.getUpdatedAt())
+                .active(book.getActive())
                 .build();
     }
 

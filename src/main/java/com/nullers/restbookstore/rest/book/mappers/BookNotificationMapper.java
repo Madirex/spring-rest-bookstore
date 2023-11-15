@@ -25,7 +25,8 @@ public class BookNotificationMapper {
                 book.getImage(),
                 book.getDescription(),
                 book.getCreatedAt().toString(),
-                book.getUpdatedAt().toString()
+                book.getUpdatedAt().toString(),
+                book.getActive()
         );
     }
 }

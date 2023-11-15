@@ -11,6 +11,7 @@ import lombok.*;
 import org.hibernate.annotations.ColumnDefault;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.lang.NonNull;
 
 import java.time.LocalDateTime;
 
@@ -61,6 +62,9 @@ public class Book {
 
     @LastModifiedDate
     private LocalDateTime updatedAt;
+
+    @NonNull
+    private Boolean active;
 
     /**
      * Método que se ejecuta antes de persistir un objeto
