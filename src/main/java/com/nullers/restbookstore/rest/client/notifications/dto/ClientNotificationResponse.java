@@ -1,4 +1,4 @@
-package com.nullers.restbookstore.notifications.dto;
+package com.nullers.restbookstore.rest.client.notifications.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.nullers.restbookstore.NOADD.models.Book;
