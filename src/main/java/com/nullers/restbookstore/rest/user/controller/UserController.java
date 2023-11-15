@@ -128,6 +128,13 @@ public class UserController {
         return ResponseEntity.noContent().build();
     }
 
+    /**
+     * Actualiza un usuario parcialmente
+     * @param id Id del usuario a actualizar
+     * @param userRequest Usuario a actualizar parcialmente
+     * @return Usuario actualizado parcialmente
+     */
+
     @PatchMapping("/{id}")
     public ResponseEntity<UserResponse> patchUser(@PathVariable UUID id, @RequestBody UserRequest userRequest) {
         log.info("patch: id: {}, userRequest: {}", id, userRequest);
