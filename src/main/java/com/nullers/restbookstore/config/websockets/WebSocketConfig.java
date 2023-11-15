@@ -21,6 +21,8 @@ public class WebSocketConfig implements WebSocketConfigurer {
     @Override
     public void registerWebSocketHandlers(WebSocketHandlerRegistry registry) {
         registry.addHandler(webSocketHandler(), "/ws/" + "api" + "/books");
+        registry.addHandler(webSocketClientsHandler(), "/ws/" + "api" + "/clients");
+
     }
 
     /**
@@ -33,4 +35,13 @@ public class WebSocketConfig implements WebSocketConfigurer {
         return new WebSocketHandler("Books");
     }
 
+    /**
+     * Bean para el WebSocketHandler
+     *
+     * @return WebSocketHandler
+     */
+    @Bean
+    public WebSocketHandler webSocketClientsHandler() {
+        return new WebSocketHandler("Clients");
+    }
 }
