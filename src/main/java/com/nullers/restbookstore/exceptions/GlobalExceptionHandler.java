@@ -1,10 +1,14 @@
 package com.nullers.restbookstore.exceptions;
 
 import com.nullers.restbookstore.pagination.exceptions.PageNotValidException;
+import com.nullers.restbookstore.rest.category.exceptions.CategoriaNotFoundException;
+import com.nullers.restbookstore.rest.publisher.models.responses.ErrorResponse;
 import org.apache.tomcat.util.http.fileupload.impl.FileSizeLimitExceededException;
 import org.springframework.data.mapping.PropertyReferenceException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotWritableException;
+import org.springframework.web.bind.MissingPathVariableException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -14,6 +18,12 @@ import org.springframework.web.bind.annotation.ResponseStatus;
  */
 @ControllerAdvice
 public class GlobalExceptionHandler {
+
+    @ExceptionHandler(CategoriaNotFoundException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ErrorResponse handleFunkoNotFound(CategoriaNotFoundException exception){
+        return new ErrorResponse(HttpStatus.BAD_REQUEST.value(), exception.getMessage());
+    }
 
     /**
      * Manejador de excepciones de tamaño de fichero excedido
@@ -49,8 +59,33 @@ public class GlobalExceptionHandler {
      */
     @ExceptionHandler(PageNotValidException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ResponseEntity<String> handlePropertyReferenceException(PageNotValidException ex) {
+    public ResponseEntity<String> handlePageNotValidException(PageNotValidException ex) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                 .body(ex.getMessage());
     }
+
+    /**
+     * Manejador de excepciones de HttpMessageNotWritableException
+     *
+     * @param ex Excepción
+     * @return Respuesta
+     */
+    @ExceptionHandler(HttpMessageNotWritableException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ResponseEntity<String> handleHttpMessageNotWritableException(HttpMessageNotWritableException ex) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("");
+    }
+
+    /**
+     * Manejador de excepciones de MissingPathVariableException
+     *
+     * @param ex Excepción
+     * @return Respuesta
+     */
+    @ExceptionHandler(MissingPathVariableException.class)
+    public ResponseEntity<String> handleMissingPathVariable(MissingPathVariableException ex) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body("No has enviado todos los parámetros necesarios para la consulta en el Path");
+    }
+
 }
