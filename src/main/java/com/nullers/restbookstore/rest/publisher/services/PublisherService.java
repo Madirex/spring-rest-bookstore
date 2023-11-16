@@ -1,8 +1,11 @@
 package com.nullers.restbookstore.rest.publisher.services;
 
 import com.nullers.restbookstore.rest.book.dto.GetBookDTO;
+import com.nullers.restbookstore.rest.book.dto.PatchBookDTO;
 import com.nullers.restbookstore.rest.book.exceptions.BookNotFoundException;
+import com.nullers.restbookstore.rest.book.exceptions.BookNotValidIDException;
 import com.nullers.restbookstore.rest.publisher.dto.CreatePublisherDto;
+import com.nullers.restbookstore.rest.publisher.dto.PatchPublisherDto;
 import com.nullers.restbookstore.rest.publisher.dto.PublisherDTO;
 import com.nullers.restbookstore.rest.publisher.exceptions.PublisherIDNotValid;
 import com.nullers.restbookstore.rest.publisher.exceptions.PublisherNotFound;
@@ -31,6 +34,7 @@ public interface PublisherService {
 
     PublisherDTO update(Long id, CreatePublisherDto client);
 
+    PublisherDTO patchPublisher(Long id, PatchPublisherDto book) throws PublisherNotFound, PublisherIDNotValid;
 
     PublisherDTO addBookPublisher(Long id, Long bookId);
 

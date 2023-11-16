@@ -41,6 +41,9 @@ public class Publisher {
     @Builder.Default
     private Set<Book> books = new HashSet<>();
 
+    @Builder.Default
+    private Boolean active = true;
+
     @CreatedDate
     private LocalDateTime createdAt;
 
