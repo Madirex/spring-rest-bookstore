@@ -55,12 +55,6 @@ public class Util {
                 bytes[6] == (byte) 0x1A &&
                 bytes[7] == (byte) 0x0A) {
             return "png";
-        } else if (bytes.length >= 6 &&
-                bytes[0] == (byte) 0x47 &&
-                bytes[1] == (byte) 0x49 &&
-                bytes[2] == (byte) 0x46 &&
-                bytes[3] == (byte) 0x38) {
-            return "gif";
         } else {
             return "application/octet-stream";
         }
