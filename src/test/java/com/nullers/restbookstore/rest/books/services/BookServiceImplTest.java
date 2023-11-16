@@ -15,7 +15,9 @@ import com.nullers.restbookstore.rest.book.mappers.BookNotificationMapper;
 import com.nullers.restbookstore.rest.book.models.Book;
 import com.nullers.restbookstore.rest.book.repositories.BookRepository;
 import com.nullers.restbookstore.rest.book.services.BookServiceImpl;
+import com.nullers.restbookstore.rest.category.exceptions.CategoriaNotFoundException;
 import com.nullers.restbookstore.rest.category.models.Categoria;
+import com.nullers.restbookstore.rest.category.repository.CategoriasRepositoryJpa;
 import com.nullers.restbookstore.rest.publisher.dto.PublisherDTO;
 import com.nullers.restbookstore.rest.publisher.dto.PublisherData;
 import com.nullers.restbookstore.rest.publisher.mappers.PublisherMapper;
@@ -59,6 +61,9 @@ class BookServiceImplTest {
 
     @Mock
     private PublisherService publisherService;
+
+    @Mock
+    private CategoriasRepositoryJpa categoriasRepositoryJpa;
 
     @Mock
     private StorageService storageService;
@@ -225,6 +230,8 @@ class BookServiceImplTest {
         when(bookRepository.save(inserted)).thenReturn(inserted);
         when(bookMapperImpl.toBook(insert, publisher)).thenReturn(inserted);
         when(publisherMapper.toPublisherData(any())).thenReturn(publisherData);
+        when(categoriasRepositoryJpa.findByNombre(any()))
+                .thenReturn(Optional.of(Categoria.builder().nombre("category").build()));
         when(bookMapperImpl.toGetBookDTO(inserted, publisherData))
                 .thenReturn(GetBookDTO.builder().name("nombre").price(2.2).image("imagen")
                         .category("category")
@@ -237,6 +244,23 @@ class BookServiceImplTest {
                 () -> assertEquals(insert.getImage(), inserted2.getImage(), "La imagen debe coincidir")
         );
         verify(bookRepository, times(1)).save(any(Book.class));
+    }
+
+    /**
+     * Test para comprobar que no se ha encontrado la categoría al hacer una consulta POST
+     */
+    @Test
+    void testPostBookNotFoundCategory() {
+        var insert = CreateBookDTO.builder()
+                .name("nombre").price(2.2).image("imagen").publisherId(1L).build();
+        var publisher = Publisher.builder().id(1L).createdAt(LocalDateTime.now())
+                .updatedAt(LocalDateTime.now()).build();
+        var publisherDTO = PublisherDTO.builder().id(1L).build();
+        when(publisherService.findById(1L)).thenReturn(any());
+        when(publisherMapper.toPublisher(publisherDTO)).thenReturn(publisher);
+        when(categoriasRepositoryJpa.findByNombre(any()))
+                .thenReturn(Optional.of(Categoria.builder().nombre("category").build()));
+        assertThrows(CategoriaNotFoundException.class, () -> bookService.postBook(insert));
     }
 
     /**
