@@ -112,33 +112,18 @@ public class BookServiceImpl implements BookService {
     @Cacheable
     @Override
     public Page<GetBookDTO> getAllBook(Optional<String> publisher, Optional<Double> maxPrice, Optional<String> category, PageRequest pageable) {
-        Specification<Book> specType = (root, query, criteriaBuilder) ->
-                publisher.map(m -> {
+        Specification<Book> specType = (root, query, criteriaBuilder) -> publisher.map(m -> {
                     try {
-                        return criteriaBuilder.equal(criteriaBuilder.upper(root.get("publisher").get("name")),
-                                m.toUpperCase());
+                        return criteriaBuilder.equal(criteriaBuilder.upper(root.get("publisher").get("name")), m.toUpperCase());
                     } catch (IllegalArgumentException e) {
                         return criteriaBuilder.isTrue(criteriaBuilder.literal(false));
-                    }
-                }).orElseGet(() -> criteriaBuilder.isTrue(criteriaBuilder.literal(true)));
-
-        Specification<Book> specMaxPrice = (root, query, criteriaBuilder) ->
-                maxPrice.map(p -> criteriaBuilder.lessThanOrEqualTo(root.get("price"), p))
-                        .orElseGet(() -> criteriaBuilder.isTrue(criteriaBuilder.literal(true)));
-
-        Specification<Book> specCategory = (root, query, criteriaBuilder) -> category.map(c -> {
-
-            return criteriaBuilder.equal(criteriaBuilder.upper(root.get("category").get("nombre")),
-                    c.toUpperCase());
-
+                    }}).orElseGet(() -> criteriaBuilder.isTrue(criteriaBuilder.literal(true)));
+        Specification<Book> specMaxPrice = (root, query, criteriaBuilder) -> maxPrice.map(p -> criteriaBuilder.lessThanOrEqualTo(root.get("price"), p)).orElseGet(() -> criteriaBuilder.isTrue(criteriaBuilder.literal(true)));
+        Specification<Book> specCategory = (root, query, criteriaBuilder) -> category.map(c -> { return criteriaBuilder.equal(criteriaBuilder.upper(root.get("category").get("nombre")), c.toUpperCase());
         }).orElseGet(() -> criteriaBuilder.isTrue(criteriaBuilder.literal(true)));
-
-        System.out.println(specCategory);
-
         Specification<Book> criterion = Specification.where(specType)
                 .and(specMaxPrice)
                 .and(specCategory);
-
         Page<Book> bookPage = bookRepository.findAll(criterion, pageable);
         List<GetBookDTO> dtoList = bookPage.getContent().stream()
                 .map(e -> bookMapperImpl.toGetBookDTO(e, publisherMapper.toPublisherData(e.getPublisher())))

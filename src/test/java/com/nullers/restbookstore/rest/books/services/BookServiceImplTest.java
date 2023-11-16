@@ -280,17 +280,20 @@ class BookServiceImplTest {
                 .build();
         var publisher = Publisher.builder().id(1L).createdAt(LocalDateTime.now())
                 .updatedAt(LocalDateTime.now()).build();
+        var category = Categoria.builder().activa(true).nombre("category").build();
         var publisherDTO = PublisherDTO.builder().id(1L).build();
         var publisherData = PublisherData.builder().id(1L).build();
         var inserted = Book.builder().id(1L).name("nombre").price(2.2).image("imagen")
                 .publisher(publisher).description("descripción")
-                .category(Categoria.builder().nombre("category").build())
+                .category(category)
                 .createdAt(LocalDateTime.now()).updatedAt(LocalDateTime.now()).active(true).build();
         when(publisherService.findById(1L)).thenReturn(any());
         when(publisherMapper.toPublisher(publisherDTO)).thenReturn(publisher);
         when(bookRepository.save(inserted)).thenReturn(inserted);
+        when(categoriasRepositoryJpa.findByNombre(any()))
+                .thenReturn(Optional.of(category));
         when(bookRepository.findById(inserted.getId())).thenReturn(Optional.of(inserted));
-        when(bookMapperImpl.toBook(inserted, update, publisher)).thenReturn(inserted);
+        when(bookMapperImpl.toBook(inserted, update, publisher, category)).thenReturn(inserted);
         when(publisherMapper.toPublisherData(any())).thenReturn(publisherData);
         when(bookMapperImpl.toGetBookDTO(inserted, publisherData))
                 .thenReturn(GetBookDTO.builder().name("nombre").price(2.2).image("imagen")
