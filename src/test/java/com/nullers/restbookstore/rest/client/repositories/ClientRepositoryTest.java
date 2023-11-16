@@ -1,4 +1,4 @@
-package com.nullers.restbookstore.client.repositories;
+package com.nullers.restbookstore.rest.client.repositories;
 
 import com.nullers.restbookstore.rest.client.models.Client;
 import com.nullers.restbookstore.rest.client.repositories.ClientRepository;
