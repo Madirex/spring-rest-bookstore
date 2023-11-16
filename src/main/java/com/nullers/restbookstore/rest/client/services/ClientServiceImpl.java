@@ -5,7 +5,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.nullers.restbookstore.rest.book.dto.GetBookDTO;
 import com.nullers.restbookstore.rest.book.mappers.BookMapperImpl;
-import com.nullers.restbookstore.rest.book.models.Book;
 import com.nullers.restbookstore.rest.book.services.BookServiceImpl;
 import com.nullers.restbookstore.rest.client.dto.ClientCreateDto;
 import com.nullers.restbookstore.rest.client.dto.ClientDto;
@@ -68,7 +67,7 @@ public class ClientServiceImpl implements ClientService{
 
     private final WebSocketConfig webSocketConfig;
     private WebSocketHandler webSocketService;
-    private final ClientNotificationMapper funkoNotificationMapper;
+    private final ClientNotificationMapper clientNotificationMapper;
 
     private final ObjectMapper mapper;
 
@@ -76,12 +75,12 @@ public class ClientServiceImpl implements ClientService{
 
 
     @Autowired
-    public ClientServiceImpl(ClientRepository clientRepository, BookServiceImpl bookService, StorageService storageService, WebSocketConfig webSocketConfig, ClientNotificationMapper funkoNotificationMapper, BookMapperImpl bookMapper) {
+    public ClientServiceImpl(ClientRepository clientRepository, BookServiceImpl bookService, StorageService storageService, WebSocketConfig webSocketConfig, ClientNotificationMapper clientNotificationMapper, BookMapperImpl bookMapper) {
         this.clientRepository = clientRepository;
         this.bookService = bookService;
         this.storageService = storageService;
         this.webSocketConfig = webSocketConfig;
-        this.funkoNotificationMapper = funkoNotificationMapper;
+        this.clientNotificationMapper = clientNotificationMapper;
         webSocketService = webSocketConfig.webSocketClientsHandler();
         mapper = new ObjectMapper();
         this.bookMapper = bookMapper;
@@ -370,7 +369,7 @@ public class ClientServiceImpl implements ClientService{
             Notification<ClientNotificationResponse> notificacion = new Notification<>(
                     "CLIENT",
                     tipo,
-                    funkoNotificationMapper.toClientNotificationResponse(data),
+                    clientNotificationMapper.toClientNotificationResponse(data),
                     LocalDateTime.now().toString()
             );
 
