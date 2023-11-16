@@ -1,7 +1,9 @@
 package com.nullers.restbookstore.rest.client.controllers;
 
-import com.nullers.restbookstore.NOADD.exceptions.BookNotFoundException;
-import com.nullers.restbookstore.NOADD.models.Book;
+import com.nullers.restbookstore.pagination.utils.PaginationLinksUtils;
+import com.nullers.restbookstore.rest.book.dto.GetBookDTO;
+import com.nullers.restbookstore.rest.book.exceptions.BookNotFoundException;
+import com.nullers.restbookstore.rest.book.models.Book;
 import com.nullers.restbookstore.rest.client.dto.ClientCreateDto;
 import com.nullers.restbookstore.rest.client.dto.ClientDto;
 import com.nullers.restbookstore.rest.client.dto.ClientUpdateDto;
@@ -11,7 +13,7 @@ import com.nullers.restbookstore.rest.client.exceptions.ClientNotFound;
 import com.nullers.restbookstore.rest.client.models.responses.ErrorResponse;
 import com.nullers.restbookstore.rest.client.models.responses.PageResponse;
 import com.nullers.restbookstore.rest.client.services.ClientServiceImpl;
-import com.nullers.restbookstore.rest.client.utils.PaginationLinksUtils;
+import com.nullers.restbookstore.storage.exceptions.StorageBadRequest;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,6 +31,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import java.io.IOException;
 import java.util.*;
 
 /**
@@ -161,7 +164,7 @@ public class ClientController {
      * @return ResponseEntity<PageResponse<Book>> con los libros
      */
     @GetMapping("{id}/books")
-    public ResponseEntity<PageResponse<Book>> getAllBooks(
+    public ResponseEntity<PageResponse<GetBookDTO>> getAllBooks(
             @PathVariable UUID id,
             @RequestParam(defaultValue = "0") Integer page,
             @RequestParam(defaultValue = "10") Integer size,
@@ -175,7 +178,7 @@ public class ClientController {
         Sort sort = order.equalsIgnoreCase(Sort.Direction.ASC.name()) ? Sort.by(sortBy).ascending() : Sort.by(sortBy).descending();
         Pageable pageable = PageRequest.of(page, size, sort);
         UriComponentsBuilder uriBuilder = UriComponentsBuilder.fromHttpUrl(request.getRequestURL().toString());
-        Page<Book> pageResult = clientService.getAllBooksOfClient(id, pageable);
+        Page<GetBookDTO> pageResult = clientService.getAllBooksOfClient(id, pageable);
         return ResponseEntity.ok()
                 .header("link", paginationLinksUtils.createLinkHeader(pageResult, uriBuilder))
                 .body(PageResponse.of(pageResult, sortBy, order));
@@ -189,7 +192,7 @@ public class ClientController {
      * @return ResponseEntity<ClientDto> con el cliente
      */
     @PatchMapping("{id}/books/add")
-    public ResponseEntity<ClientDto> updatePatchBook(@PathVariable UUID id, @RequestParam UUID idBook) {
+    public ResponseEntity<ClientDto> updatePatchBook(@PathVariable UUID id, @RequestParam Long idBook) {
         return ResponseEntity.ok(clientService.addBookToClient(id, idBook));
     }
 
@@ -200,7 +203,7 @@ public class ClientController {
      * @return ResponseEntity<ClientDto> con el cliente
      */
     @PatchMapping("{id}/books/remove")
-    public ResponseEntity<ClientDto> updatePatchBookDelete(@PathVariable UUID id, @RequestParam UUID idBook) {
+    public ResponseEntity<ClientDto> updatePatchBookDelete(@PathVariable UUID id, @RequestParam Long idBook) {
         return ResponseEntity.ok(clientService.removeBookOfClient(id, idBook));
     }
 
@@ -212,7 +215,7 @@ public class ClientController {
      * @return ResponseEntity<ClientDto> con el cliente
      */
     @PatchMapping( value = "{id}/image",  consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<ClientDto> updatePatchImage(@PathVariable UUID id, @RequestPart("file") MultipartFile file) {
+    public ResponseEntity<ClientDto> updatePatchImage(@PathVariable UUID id, @RequestPart("file") MultipartFile file) throws IOException {
         if(!file.isEmpty() && contentTypesAllowed.contains(file.getContentType())){
             return ResponseEntity.ok(clientService.updateImage(id, file));
         }else{
@@ -231,6 +234,7 @@ public class ClientController {
         return new ErrorResponse(HttpStatus.NOT_FOUND.value(), exception.getMessage());
     }
 
+
     /**
      * Manejador de excepciones de ClientAlreadyExists
      * @param exception excepción
@@ -241,6 +245,8 @@ public class ClientController {
     public ErrorResponse handleClientAlreadyExists(ClientAlreadyExists exception){
         return new ErrorResponse(HttpStatus.CONFLICT.value(), exception.getMessage());
     }
+
+
 
     /**
      * Manejador de excepciones de BookNotFoundException

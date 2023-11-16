@@ -2,9 +2,11 @@ package com.nullers.restbookstore.rest.client.services;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.nullers.restbookstore.NOADD.exceptions.BookNotFoundException;
-import com.nullers.restbookstore.NOADD.models.Book;
-import com.nullers.restbookstore.NOADD.services.BookService;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import com.nullers.restbookstore.rest.book.dto.GetBookDTO;
+import com.nullers.restbookstore.rest.book.mappers.BookMapperImpl;
+import com.nullers.restbookstore.rest.book.models.Book;
+import com.nullers.restbookstore.rest.book.services.BookServiceImpl;
 import com.nullers.restbookstore.rest.client.dto.ClientCreateDto;
 import com.nullers.restbookstore.rest.client.dto.ClientDto;
 import com.nullers.restbookstore.rest.client.dto.ClientUpdateDto;
@@ -33,13 +35,15 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 /**
  * @author Daniel
  * @see ClientRepository
- * @see BookService
+ * @see BookServiceImpl
  * @see StorageService
  * @see WebSocketConfig
  * @see WebSocketHandler
@@ -51,9 +55,12 @@ import java.util.*;
 @CacheConfig(cacheNames = "clients")
 public class ClientServiceImpl implements ClientService{
 
+    private final List<String> contentTypesAllowed = List.of("png", "jpeg", "gif", "jpg");
+
+
     private final ClientRepository clientRepository;
 
-    private final BookService bookService;
+    private final BookServiceImpl bookService;
 
     private final StorageService storageService;
 
@@ -63,9 +70,11 @@ public class ClientServiceImpl implements ClientService{
 
     private final ObjectMapper mapper;
 
+    private final BookMapperImpl bookMapper;
+
 
     @Autowired
-    public ClientServiceImpl(ClientRepository clientRepository, BookService bookService, StorageService storageService, WebSocketConfig webSocketConfig, ClientNotificationMapper funkoNotificationMapper) {
+    public ClientServiceImpl(ClientRepository clientRepository, BookServiceImpl bookService, StorageService storageService, WebSocketConfig webSocketConfig, ClientNotificationMapper funkoNotificationMapper, BookMapperImpl bookMapper) {
         this.clientRepository = clientRepository;
         this.bookService = bookService;
         this.storageService = storageService;
@@ -73,7 +82,8 @@ public class ClientServiceImpl implements ClientService{
         this.funkoNotificationMapper = funkoNotificationMapper;
         webSocketService = webSocketConfig.webSocketClientsHandler();
         mapper = new ObjectMapper();
-
+        this.bookMapper = bookMapper;
+        mapper.registerModule(new JavaTimeModule());
     }
 
     /**
@@ -225,16 +235,16 @@ public class ClientServiceImpl implements ClientService{
      * Busca todos los libros de un cliente
      */
     @Cacheable
-    public Page<Book> getAllBooksOfClient(UUID id, Pageable pageable){
+    public Page<GetBookDTO> getAllBooksOfClient(UUID id, Pageable pageable){
         log.info("Buscando libros del cliente con id: " + id);
         ClientDto client = findById(id);
-        List<Book> books = client.getBooks();
+        List<GetBookDTO> books = client.getBooks();
 
         int pageSize = pageable.getPageSize();
         int currentPage = pageable.getPageNumber();
         int startItem = pageSize * currentPage;
 
-        List<Book> pagedBooks;
+        List<GetBookDTO> pagedBooks;
 
         if (books.size() < startItem) {
             pagedBooks = Collections.emptyList();
@@ -252,19 +262,21 @@ public class ClientServiceImpl implements ClientService{
      * @param bookId id del libro
      * @return ClientDto cliente actualizado
      * @throws ClientNotFound si no existe el cliente
-     * @throws BookNotFoundException si no existe el libro
+     * @throws com.nullers.restbookstore.rest.book.exceptions.BookNotFoundException si no existe el libro
      * Añade un libro a un cliente
      */
     @Override
     @CachePut(key = "#id")
-    public ClientDto addBookToClient(UUID id, UUID bookId) {
+    public ClientDto addBookToClient(UUID id, Long bookId) {
         log.info("Añadiendo libro con id: " + bookId + " al cliente con id: " + id);
-        Book bookToAdd = bookService.getById(bookId);
+        GetBookDTO bookToAdd = bookService.getBookById(bookId);
         ClientDto clientToUpdate = findById(id);
-        List<Book> books = new ArrayList<>(clientToUpdate.getBooks());
+        List<GetBookDTO> books = new ArrayList<>(clientToUpdate.getBooks());
         books.add(bookToAdd);
         clientToUpdate.setBooks(books);
-        ClientDto clientUpdate = ClientMapper.toDto(clientRepository.save(ClientMapper.toEntity(clientToUpdate)));
+        Client client = clientRepository.save(ClientMapper.toEntity(clientToUpdate, books.stream().map(bookMapper::toBook).toList()));
+        ClientDto clientUpdate = ClientMapper.toDto(client);
+        System.out.println(client.getBooks().get(0).getPublisher() + " prueba");
         onChange(Notification.Type.UPDATE, ClientMapper.toEntity(clientUpdate));
         return clientUpdate;
     }
@@ -274,16 +286,16 @@ public class ClientServiceImpl implements ClientService{
      * @param bookId id del libro
      * @return ClientDto cliente actualizado
      * @throws ClientNotFound si no existe el cliente
-     * @throws BookNotFoundException si no existe el libro
+     * @throws com.nullers.restbookstore.rest.book.exceptions.BookNotFoundException si no existe el libro
      * Elimina un libro de un cliente
      */
     @Override
     @CachePut(key = "#id")
-    public ClientDto removeBookOfClient(UUID id, UUID bookId) {
+    public ClientDto removeBookOfClient(UUID id, Long bookId) {
         log.info("Eliminando libro con id: " + bookId + " del cliente con id: " + id);
-        Book bookToRemove = bookService.getById(bookId);
+        GetBookDTO bookToRemove = bookService.getBookById(bookId);
         ClientDto clientToUpdate = findById(id);
-        List<Book> books = new ArrayList<>(clientToUpdate.getBooks());
+        List<GetBookDTO> books = new ArrayList<>(clientToUpdate.getBooks());
         books.remove(bookToRemove);
         clientToUpdate.setBooks(books);
         ClientDto clientUpdate = ClientMapper.toDto(clientRepository.save(ClientMapper.toEntity(clientToUpdate)));
@@ -299,16 +311,17 @@ public class ClientServiceImpl implements ClientService{
      * Actualiza la imagen de un cliente
      */
     @CachePut(key = "#id")
-    public ClientDto updateImage(UUID id, MultipartFile file) {
+    public ClientDto updateImage(UUID id, MultipartFile file) throws IOException {
         log.info("Actualizando imagen del cliente con id: " + id);
         ClientDto clientDto = findById(id);
-
         if(clientDto.getImage() != null && !clientDto.getImage().equals(Client.DEFAULT_IMAGE)){
             storageService.delete(clientDto.getImage());
         }
 
-        String fileName = storageService.store(file);
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd-HH-mm-ss-SSSSSS");
+        String fileName = storageService.store(file, contentTypesAllowed, id + "-" + LocalDateTime.now().format(formatter));
         String urlImg = storageService.getUrl(fileName);
+
 
         Client clientToUpdate = ClientMapper.toEntity(clientDto);
         clientToUpdate.setImage(urlImg);
@@ -344,6 +357,8 @@ public class ClientServiceImpl implements ClientService{
                     funkoNotificationMapper.toClientNotificationResponse(data),
                     LocalDateTime.now().toString()
             );
+
+            System.out.println(notificacion);
 
             String json = mapper.writeValueAsString(notificacion);
 
