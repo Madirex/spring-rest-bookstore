@@ -34,7 +34,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
  *
  * @Author: Binwei Wang
  */
-@SpringBootTest
+@SpringBootTest(properties = "spring.config.name=application-test")
 @AutoConfigureMockMvc
 @ExtendWith(MockitoExtension.class)
 public class UserControllerTest {
