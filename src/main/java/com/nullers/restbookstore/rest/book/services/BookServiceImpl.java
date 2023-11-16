@@ -300,7 +300,7 @@ public class BookServiceImpl implements BookService {
      * @param type Tipo de notificación
      * @param data Datos de la notificación
      */
-    void onChange(Notification.Type type, GetBookDTO data) {
+    public void onChange(Notification.Type type, GetBookDTO data) {
         log.debug("Servicio de productos onChange con tipo: " + type + " y datos: " + data);
         if (webSocketService == null) {
             log.warn("No se ha podido enviar la notificación a los clientes ws, no se ha encontrado el servicio");
