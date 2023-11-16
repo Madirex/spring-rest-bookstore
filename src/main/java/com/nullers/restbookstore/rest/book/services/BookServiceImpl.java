@@ -218,7 +218,9 @@ public class BookServiceImpl implements BookService {
         BeanUtils.copyProperties(book, opt.get(), Util.getNullPropertyNames(book));
         opt.get().setId(id);
         opt.get().setUpdatedAt(LocalDateTime.now());
-        opt.get().setPublisher(publisherMapper.toPublisher(publisherService.findById(book.getPublisherId())));
+        if (book.getPublisherId() != null){
+            opt.get().setPublisher(publisherMapper.toPublisher(publisherService.findById(book.getPublisherId())));
+        }
         Book modified = bookRepository.save(opt.get());
         var bookDTO = bookMapperImpl.toGetBookDTO(modified, publisherMapper.toPublisherData(modified.getPublisher()));
         onChange(Notification.Type.UPDATE, bookDTO);
