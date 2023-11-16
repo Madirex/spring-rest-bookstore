@@ -1,11 +1,11 @@
-package com.nullers.restbookstore.shop.controllers;
+package com.nullers.restbookstore.rest.shop.controllers;
 
-import com.nullers.restbookstore.shop.dto.CreateShopDto;
-import com.nullers.restbookstore.shop.dto.GetShopDto;
-import com.nullers.restbookstore.shop.dto.UpdateShopDto;
-import com.nullers.restbookstore.shop.exceptions.ShopNotFoundException;
-import com.nullers.restbookstore.shop.exceptions.ShopNotValidUUIDException;
-import com.nullers.restbookstore.shop.services.ShopServiceImpl;
+import com.nullers.restbookstore.rest.shop.dto.CreateShopDto;
+import com.nullers.restbookstore.rest.shop.dto.GetShopDto;
+import com.nullers.restbookstore.rest.shop.dto.UpdateShopDto;
+import com.nullers.restbookstore.rest.shop.services.ShopServiceImpl;
+import com.nullers.restbookstore.rest.shop.exceptions.ShopNotFoundException;
+import com.nullers.restbookstore.rest.shop.exceptions.ShopNotValidUUIDException;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
