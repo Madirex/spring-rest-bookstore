@@ -31,6 +31,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Optional;
 
@@ -43,7 +44,6 @@ import java.util.Optional;
 @RequestMapping("/api/books")
 public class BookRestControllerImpl implements BookRestController {
 
-    public static final String PUBLISHER_ID_NOT_VALID_MSG = "ID de publisher no válido: ";
     private final BookServiceImpl service;
     private final PaginationLinksUtils paginationLinksUtils;
 
@@ -98,11 +98,7 @@ public class BookRestControllerImpl implements BookRestController {
     @GetMapping("/{id}")
     @Override
     public ResponseEntity<GetBookDTO> getBookById(@Valid @PathVariable Long id) throws BookNotFoundException {
-        try {
-            return ResponseEntity.ok(service.getBookById(id));
-        } catch (BookNotValidIDException e) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "El ID del Book no es válido: " + e.getMessage());
-        }
+        return ResponseEntity.ok(service.getBookById(id));
     }
 
     /**
@@ -114,14 +110,8 @@ public class BookRestControllerImpl implements BookRestController {
     @PostMapping
     @Override
     public ResponseEntity<GetBookDTO> postBook(@Valid @RequestBody CreateBookDTO book) {
-        try {
             GetBookDTO bookDTO = service.postBook(book);
             return ResponseEntity.status(HttpStatus.CREATED).body(bookDTO);
-        } catch (PublisherNotFound e) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "El publisher no se encuentra: " + e.getMessage());
-        } catch (PublisherIDNotValid e) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, PUBLISHER_ID_NOT_VALID_MSG + e.getMessage());
-        }
     }
 
     /**
@@ -137,13 +127,7 @@ public class BookRestControllerImpl implements BookRestController {
     @Override
     public ResponseEntity<GetBookDTO> putBook(@Valid @PathVariable Long id, @Valid @RequestBody UpdateBookDTO book)
             throws BookNotFoundException, BookNotValidIDException {
-        try {
             return ResponseEntity.ok(service.putBook(id, book));
-        } catch (PublisherNotFound e) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "El Publisher no se encuentra: " + e.getMessage());
-        } catch (PublisherIDNotValid e) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, PUBLISHER_ID_NOT_VALID_MSG + e.getMessage());
-        }
     }
 
     /**
@@ -159,13 +143,7 @@ public class BookRestControllerImpl implements BookRestController {
     @Override
     public ResponseEntity<GetBookDTO> patchBook(@Valid @PathVariable Long id, @Valid @RequestBody PatchBookDTO book)
             throws BookNotFoundException, BookNotValidIDException {
-        try {
             return ResponseEntity.ok(service.patchBook(id, book));
-        } catch (PublisherNotFound e) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "El Publisher no se encuentra: " + e.getMessage());
-        } catch (PublisherIDNotValid e) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, PUBLISHER_ID_NOT_VALID_MSG + e.getMessage());
-        }
     }
 
     /**
@@ -178,11 +156,7 @@ public class BookRestControllerImpl implements BookRestController {
     @DeleteMapping("/{id}")
     @Override
     public ResponseEntity<String> deleteBook(@Valid @PathVariable Long id) throws BookNotFoundException {
-        try {
-            service.deleteBook(id);
-        } catch (BookNotValidIDException e) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "El ID del Book no es válido: " + e.getMessage());
-        }
+        service.deleteBook(id);
         return ResponseEntity.noContent().build();
     }
 
@@ -194,15 +168,20 @@ public class BookRestControllerImpl implements BookRestController {
      */
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    @Override
-    public Map<String, String> handleValidationExceptions(MethodArgumentNotValidException ex) {
+    public ResponseEntity<Map<String, Object>> handleValidationExceptions(
+            MethodArgumentNotValidException ex) {
         Map<String, String> errors = new HashMap<>();
-        ex.getBindingResult().getAllErrors().forEach(error -> {
+        ex.getBindingResult().getAllErrors().forEach((error) -> {
             String fieldName = ((FieldError) error).getField();
             String errorMessage = error.getDefaultMessage();
             errors.put(fieldName, errorMessage);
         });
-        return errors;
+
+        Map<String, Object> response = new LinkedHashMap<>();
+        response.put("code", HttpStatus.BAD_REQUEST.value());
+        response.put("errors", errors);
+
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
     }
 
     /**
