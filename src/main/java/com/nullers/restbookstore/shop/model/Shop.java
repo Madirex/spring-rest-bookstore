@@ -11,13 +11,14 @@ import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
 /**
  * Clase Shop
  *
- *  @author alexdor00
+ * @author alexdor00
  */
 @Data
 @Builder
@@ -34,22 +35,43 @@ public class Shop {
     private String location;  // Ubicación de la tienda.
 
     @CreatedDate
-    private LocalDateTime createdAt;  // Fecha y hora de creación de la tienda.
+    private LocalDateTime createdAt;  // Fecha de creación de la tienda.
 
     @LastModifiedDate
-    private LocalDateTime updatedAt;  // Fecha y hora de la última actualización de la tienda.
+    private LocalDateTime updatedAt;  // Fecha de última modificación de la tienda.
+
+    @Builder.Default
+    private Boolean active = true;  // Estado activo de la tienda.
+
+    /**
+     * Método que se ejecuta antes de persistir un objeto.
+     * Soluciona los problemas de generación de fecha.
+     */
+    @PrePersist
+    protected void onCreate() {
+        if (createdAt == null) {
+            createdAt = LocalDateTime.now();
+        }
+        if (updatedAt == null) {
+            updatedAt = LocalDateTime.now();
+        }
+    }
 
     /**
      * Lista de libros asociados con la tienda.
      * La relación es de uno a muchos, indicando que una tienda puede tener varios libros.
      */
-    @OneToMany(mappedBy = "shop")
-    private List<Book> books;
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinColumn(name = "shop_id")  // shop_id es la columna en la tabla de Book que referencia a Shop.
+    @Builder.Default
+    private List<Book> books = new ArrayList<>();
 
     /**
      * Lista de clientes asociados con la tienda.
      * La relación es de uno a muchos, indicando que una tienda puede tener varios clientes.
      */
-    @OneToMany(mappedBy = "shop")
-    private List<Client> clients;
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinColumn(name = "shop_id")  // shop_id es la columna en la tabla de Client que referencia a Shop.
+    @Builder.Default
+    private List<Client> clients = new ArrayList<>();
 }
