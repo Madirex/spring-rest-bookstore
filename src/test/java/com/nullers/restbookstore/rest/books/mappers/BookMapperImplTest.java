@@ -6,6 +6,7 @@ import com.nullers.restbookstore.rest.book.dto.UpdateBookDTO;
 import com.nullers.restbookstore.rest.book.mappers.BookMapperImpl;
 import com.nullers.restbookstore.rest.book.mappers.BookNotificationMapper;
 import com.nullers.restbookstore.rest.book.models.Book;
+import com.nullers.restbookstore.rest.category.models.Categoria;
 import com.nullers.restbookstore.rest.publisher.dto.PublisherData;
 import com.nullers.restbookstore.rest.publisher.models.Publisher;
 import org.junit.jupiter.api.BeforeEach;
@@ -107,6 +108,7 @@ class BookMapperImplTest {
                 .createdAt(LocalDateTime.now())
                 .updatedAt(LocalDateTime.now())
                 .active(true)
+                .category(Categoria.builder().nombre("test").build())
                 .build();
         var mapped = bookMapperImpl.toGetBookDTO(book, PublisherData.builder().id(1L).build());
         assertAll("Book properties",
@@ -131,6 +133,7 @@ class BookMapperImplTest {
                 .price(2.2)
                 .image("imagen")
                 .description("descripción")
+                .category(Categoria.builder().nombre("test").build())
                 .createdAt(LocalDateTime.now())
                 .updatedAt(LocalDateTime.now())
                 .active(true)

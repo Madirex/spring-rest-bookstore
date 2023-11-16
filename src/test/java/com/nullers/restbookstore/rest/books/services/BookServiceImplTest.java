@@ -15,6 +15,7 @@ import com.nullers.restbookstore.rest.book.mappers.BookNotificationMapper;
 import com.nullers.restbookstore.rest.book.models.Book;
 import com.nullers.restbookstore.rest.book.repositories.BookRepository;
 import com.nullers.restbookstore.rest.book.services.BookServiceImpl;
+import com.nullers.restbookstore.rest.category.models.Categoria;
 import com.nullers.restbookstore.rest.publisher.dto.PublisherDTO;
 import com.nullers.restbookstore.rest.publisher.dto.PublisherData;
 import com.nullers.restbookstore.rest.publisher.mappers.PublisherMapper;
@@ -142,7 +143,8 @@ class BookServiceImplTest {
         when(bookRepository.findAll(anySpecification, any(Pageable.class))).thenReturn(expectedPage);
         when(bookMapperImpl.toGetBookDTO(any(Book.class), any())).thenReturn(list2.get(0));
         when(publisherMapper.toPublisherData(any(Publisher.class))).thenReturn(PublisherData.builder().id(1L).build());
-        Page<GetBookDTO> actualPage = bookService.getAllBook(Optional.empty(), Optional.empty(), pageable);
+        Page<GetBookDTO> actualPage = bookService.getAllBook(Optional.empty(), Optional.empty(),
+                Optional.empty(), pageable);
         var list3 = actualPage.getContent();
         assertAll("Book properties",
                 () -> assertEquals(2, list.size(), "La lista debe contener 2 elementos"),
@@ -216,6 +218,7 @@ class BookServiceImplTest {
         var publisherData = PublisherData.builder().id(1L).build();
         inserted = Book.builder().id(1L).name("nombre").price(2.2).image("imagen")
                 .publisher(publisher).description("descripción")
+                .category(Categoria.builder().nombre("category").build())
                 .createdAt(LocalDateTime.now()).updatedAt(LocalDateTime.now()).active(true).build();
         when(publisherService.findById(1L)).thenReturn(any());
         when(publisherMapper.toPublisher(publisherDTO)).thenReturn(publisher);
@@ -224,6 +227,7 @@ class BookServiceImplTest {
         when(publisherMapper.toPublisherData(any())).thenReturn(publisherData);
         when(bookMapperImpl.toGetBookDTO(inserted, publisherData))
                 .thenReturn(GetBookDTO.builder().name("nombre").price(2.2).image("imagen")
+                        .category("category")
                         .publisher(any()).build());
         GetBookDTO inserted2 = bookService.postBook(insert);
         assertNotNull(inserted2);
@@ -247,6 +251,7 @@ class BookServiceImplTest {
                 .publisherId(1L)
                 .price(2.2)
                 .image("imagen")
+                .category("category")
                 .description("descripción")
                 .build();
         var publisher = Publisher.builder().id(1L).createdAt(LocalDateTime.now())
@@ -255,6 +260,7 @@ class BookServiceImplTest {
         var publisherData = PublisherData.builder().id(1L).build();
         var inserted = Book.builder().id(1L).name("nombre").price(2.2).image("imagen")
                 .publisher(publisher).description("descripción")
+                .category(Categoria.builder().nombre("category").build())
                 .createdAt(LocalDateTime.now()).updatedAt(LocalDateTime.now()).active(true).build();
         when(publisherService.findById(1L)).thenReturn(any());
         when(publisherMapper.toPublisher(publisherDTO)).thenReturn(publisher);
