@@ -44,9 +44,9 @@ public class Shop {
      * Lista de libros asociados con la tienda.
      * La relación es de uno a muchos, indicando que una tienda puede tener varios libros.
      */
-    @OneToMany
-    @JoinColumn(name = "book_id")
-    private List<Book> books;
+//    @OneToMany
+//    @JoinColumn(name = "book_id")
+//    private List<Book> books;
 
     /**
      * Lista de clientes asociados con la tienda.
