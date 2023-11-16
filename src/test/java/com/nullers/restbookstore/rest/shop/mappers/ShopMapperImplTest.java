@@ -15,6 +15,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Clase ShopMapperImplTest
+ *
  */
 class ShopMapperImplTest {
     private ShopMapperImpl shopMapper;
@@ -33,8 +34,8 @@ class ShopMapperImplTest {
     @Test
     void testCreateShopDtoToShop() {
         CreateShopDto createShopDto = CreateShopDto.builder()
-                .name("Tienda Test")
-                .location("Ubicación Test")
+                .name("Tienda ")
+                .location("Ubicación ")
                 .build();
         Shop mapped = shopMapper.toShop(createShopDto);
         assertAll("Shop properties",
