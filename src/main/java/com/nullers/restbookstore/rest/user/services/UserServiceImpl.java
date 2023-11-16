@@ -145,7 +145,6 @@ public class UserServiceImpl implements UserService {
      * @return Usuario actualizado parcialmente
      */
 
-    @Override
     public UserResponse patch(UUID id, UserRequest userRequest) {
         log.info("Actualizando usuario: " + userRequest);
         userRepository.findById(id).orElseThrow(() -> new UserNotFound(USER_NOT_FOUND_MSG));
