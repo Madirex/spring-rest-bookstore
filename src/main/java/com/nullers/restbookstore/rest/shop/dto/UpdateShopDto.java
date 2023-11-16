@@ -1,4 +1,4 @@
-package com.nullers.restbookstore.shop.dto;
+package com.nullers.restbookstore.rest.shop.dto;
 
 import jakarta.validation.constraints.NotBlank;
 import lombok.Builder;

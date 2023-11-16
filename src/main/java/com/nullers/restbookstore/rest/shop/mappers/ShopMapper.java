@@ -1,9 +1,9 @@
-package com.nullers.restbookstore.shop.mappers;
+package com.nullers.restbookstore.rest.shop.mappers;
 
-import com.nullers.restbookstore.shop.dto.CreateShopDto;
-import com.nullers.restbookstore.shop.dto.GetShopDto;
-import com.nullers.restbookstore.shop.dto.UpdateShopDto;
-import com.nullers.restbookstore.shop.model.Shop;
+import com.nullers.restbookstore.rest.shop.dto.CreateShopDto;
+import com.nullers.restbookstore.rest.shop.dto.GetShopDto;
+import com.nullers.restbookstore.rest.shop.dto.UpdateShopDto;
+import com.nullers.restbookstore.rest.shop.model.Shop;
 
 import java.util.List;
 /**

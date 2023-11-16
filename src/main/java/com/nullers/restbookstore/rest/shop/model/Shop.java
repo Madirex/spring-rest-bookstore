@@ -1,7 +1,8 @@
-package com.nullers.restbookstore.shop.model;
+package com.nullers.restbookstore.rest.shop.model;
 
-import com.nullers.restbookstore.book.models.Book;
-import com.nullers.restbookstore.client.models.Client;
+
+import com.nullers.restbookstore.rest.book.models.Book;
+import com.nullers.restbookstore.rest.client.models.Client;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -43,13 +44,15 @@ public class Shop {
      * Lista de libros asociados con la tienda.
      * La relación es de uno a muchos, indicando que una tienda puede tener varios libros.
      */
-    @OneToMany(mappedBy = "shop")
+    @OneToMany
+    @JoinColumn(name = "book_id")
     private List<Book> books;
 
     /**
      * Lista de clientes asociados con la tienda.
      * La relación es de uno a muchos, indicando que una tienda puede tener varios clientes.
      */
-    @OneToMany(mappedBy = "shop")
+    @OneToMany
+    @JoinColumn(name = "client_id")
     private List<Client> clients;
 }

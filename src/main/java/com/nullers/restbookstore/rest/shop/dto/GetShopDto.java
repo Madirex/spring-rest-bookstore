@@ -1,4 +1,4 @@
-package com.nullers.restbookstore.shop.dto;
+package com.nullers.restbookstore.rest.shop.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

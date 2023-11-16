@@ -41,7 +41,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 /**
  * Clase BookControllerImplTest
  */
-@SpringBootTest
+@SpringBootTest(properties = "spring.config.name=application-test")
 @AutoConfigureMockMvc
 @AutoConfigureJsonTesters
 class BookControllerImplTest {

@@ -1,13 +1,13 @@
-package com.nullers.restbookstore.shop.services;
+package com.nullers.restbookstore.rest.shop.services;
 
-import com.nullers.restbookstore.shop.dto.CreateShopDto;
-import com.nullers.restbookstore.shop.dto.GetShopDto;
-import com.nullers.restbookstore.shop.dto.UpdateShopDto;
-import com.nullers.restbookstore.shop.exceptions.ShopNotFoundException;
-import com.nullers.restbookstore.shop.exceptions.ShopNotValidUUIDException;
-import com.nullers.restbookstore.shop.mappers.ShopMapperImpl;
-import com.nullers.restbookstore.shop.model.Shop;
-import com.nullers.restbookstore.shop.repositories.ShopRepository;
+import com.nullers.restbookstore.rest.shop.dto.CreateShopDto;
+import com.nullers.restbookstore.rest.shop.dto.GetShopDto;
+import com.nullers.restbookstore.rest.shop.dto.UpdateShopDto;
+import com.nullers.restbookstore.rest.shop.exceptions.ShopNotFoundException;
+import com.nullers.restbookstore.rest.shop.exceptions.ShopNotValidUUIDException;
+import com.nullers.restbookstore.rest.shop.mappers.ShopMapperImpl;
+import com.nullers.restbookstore.rest.shop.model.Shop;
+import com.nullers.restbookstore.rest.shop.repositories.ShopRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;

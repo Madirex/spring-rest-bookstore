@@ -1,4 +1,4 @@
-package com.nullers.restbookstore.shop.exceptions;
+package com.nullers.restbookstore.rest.shop.exceptions;
 
 /**
  * Clase abstracta ShopExceptio
