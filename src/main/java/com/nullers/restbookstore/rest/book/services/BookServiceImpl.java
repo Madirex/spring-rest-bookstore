@@ -347,6 +347,12 @@ public class BookServiceImpl implements BookService {
         }
     }
 
+    /**
+     * Comprueba si existe una categoría
+     *
+     * @param category nombre de la categoría
+     * @return categoría
+     */
     public Categoria checkCategory(String category) {
         var res = categoriasRepositoryJpa.findByNombre(category);
         if (res.isEmpty() || !res.get().isActiva()) {
