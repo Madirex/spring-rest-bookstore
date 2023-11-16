@@ -5,42 +5,45 @@ import com.nullers.restbookstore.shop.dto.GetShopDto;
 import com.nullers.restbookstore.shop.dto.UpdateShopDto;
 import com.nullers.restbookstore.shop.exceptions.ShopNotFoundException;
 import com.nullers.restbookstore.shop.exceptions.ShopNotValidUUIDException;
-
-import java.util.List;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 /**
- * Interfaz ShopService
+ * Clase ShopService
+ *
  * @author alexdor00
  */
 public interface ShopService {
-    /**
-     * Obtiene una lista de todas las tiendas.
-     * @return Lista de GetShopDto con la información de las tiendas.
-     */
-    List<GetShopDto> getAllShops();
 
     /**
-     * Obtiene los detalles de una tienda específica por su identificador.
+     * Obtiene una página de tiendas.
+     * @param pageable Contiene la información de paginación y ordenación.
+     * @return Una página de tiendas en formato GetShopDto.
+     */
+    Page<GetShopDto> getAllShops(Pageable pageable);
+
+    /**
+     * Obtiene una tienda específica por su identificador.
      * @param id El identificador de la tienda.
-     * @return GetShopDto con los detalles de la tienda.
-     * @throws ShopNotValidUUIDException Si el identificador proporcionado no es válido.
+     * @return Un GetShopDto con los detalles de la tienda.
+     * @throws ShopNotValidUUIDException Si el identificador no es un UUID válido.
      * @throws ShopNotFoundException Si la tienda no se encuentra.
      */
     GetShopDto getShopById(String id) throws ShopNotValidUUIDException, ShopNotFoundException;
 
     /**
-     * Crea una nueva tienda basada en los datos proporcionados.
-     * @param shopDto DTO con la información para crear la tienda.
-     * @return GetShopDto con los detalles de la tienda creada.
+     * Crea una nueva tienda con la información proporcionada.
+     * @param shopDto Información de la nueva tienda.
+     * @return Un GetShopDto con los detalles de la tienda creada.
      */
     GetShopDto createShop(CreateShopDto shopDto);
 
     /**
-     * Actualiza una tienda existente con los datos proporcionados.
+     * Actualiza una tienda existente con la información proporcionada.
      * @param id El identificador de la tienda a actualizar.
-     * @param shopDto DTO con los datos actualizados para la tienda.
-     * @return GetShopDto con los detalles de la tienda actualizada.
-     * @throws ShopNotValidUUIDException Si el identificador proporcionado no es válido.
+     * @param shopDto Información actualizada de la tienda.
+     * @return Un GetShopDto con los detalles de la tienda actualizada.
+     * @throws ShopNotValidUUIDException Si el identificador no es un UUID válido.
      * @throws ShopNotFoundException Si la tienda no se encuentra.
      */
     GetShopDto updateShop(String id, UpdateShopDto shopDto) throws ShopNotValidUUIDException, ShopNotFoundException;
@@ -49,9 +52,7 @@ public interface ShopService {
      * Elimina una tienda por su identificador.
      * @param id El identificador de la tienda a eliminar.
      * @throws ShopNotFoundException Si la tienda no se encuentra.
-     * @throws ShopNotValidUUIDException Si el identificador proporcionado no es válido.
+     * @throws ShopNotValidUUIDException Si el identificador no es un UUID válido.
      */
     void deleteShop(String id) throws ShopNotFoundException, ShopNotValidUUIDException;
-
-
 }
