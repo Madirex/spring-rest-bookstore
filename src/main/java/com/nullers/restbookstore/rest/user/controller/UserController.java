@@ -135,11 +135,11 @@ public class UserController {
      * @return Usuario actualizado parcialmente
      */
 
-    @PatchMapping("/{id}")
-    public ResponseEntity<UserResponse> patchUser(@PathVariable UUID id, @RequestBody UserRequest userRequest) {
-        log.info("patch: id: {}, userRequest: {}", id, userRequest);
-        return ResponseEntity.ok(usersService.patch(id, userRequest));
-    }
+//    @PatchMapping("/{id}")
+//    public ResponseEntity<UserResponse> patchUser(@PathVariable UUID id, @RequestBody UserRequest userRequest) {
+//        log.info("patch: id: {}, userRequest: {}", id, userRequest);
+//        return ResponseEntity.ok(usersService.patch(id, userRequest));
+//    }
 
 
     /**
