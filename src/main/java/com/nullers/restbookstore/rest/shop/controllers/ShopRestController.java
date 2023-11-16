@@ -19,11 +19,6 @@ import java.util.List;
  * @author alexdor00
  */
 public interface ShopRestController {
-    /**
-     * Obtiene todas las tiendas disponibles.
-     * @return ResponseEntity con una lista de tiendas en formato DTO.
-     */
-    ResponseEntity<List<GetShopDto>> getAllShops();
 
     /**
      * Obtiene una tienda específica por su identificador.

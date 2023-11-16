@@ -1,5 +1,7 @@
 package com.nullers.restbookstore.rest.shop.services;
 
+import com.nullers.restbookstore.rest.book.dto.GetBookDTO;
+import com.nullers.restbookstore.rest.book.models.Book;
 import com.nullers.restbookstore.rest.shop.dto.CreateShopDto;
 import com.nullers.restbookstore.rest.shop.dto.GetShopDto;
 import com.nullers.restbookstore.rest.shop.dto.UpdateShopDto;
@@ -10,10 +12,15 @@ import com.nullers.restbookstore.rest.shop.model.Shop;
 import com.nullers.restbookstore.rest.shop.repositories.ShopRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.cache.annotation.CacheEvict;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -46,11 +53,18 @@ public class ShopServiceImpl implements ShopService {
      * @return Lista de tiendas en forma de DTOs.
      */
     @Cacheable("shops")
-    @Override
-    public List<GetShopDto> getAllShops() {
-        return shopRepository.findAll().stream()
+    public Page<GetShopDto> getAllShops(Optional<String> name, Optional<String> locate, PageRequest pageable) {
+        Specification<Shop> nameType = (root, query, criteriaBuilder) -> name.map(m -> {try {return criteriaBuilder.equal(criteriaBuilder.upper(root.get("name")), m.toUpperCase());} catch (IllegalArgumentException e) {return criteriaBuilder.isTrue(criteriaBuilder.literal(false));}}).orElseGet(() -> criteriaBuilder.isTrue(criteriaBuilder.literal(true)));
+        Specification<Shop> locateType = (root, query, criteriaBuilder) -> locate.map(m -> {try {return criteriaBuilder.equal(criteriaBuilder.upper(root.get("name")), m.toUpperCase());} catch (IllegalArgumentException e) {return criteriaBuilder.isTrue(criteriaBuilder.literal(false));}}).orElseGet(() -> criteriaBuilder.isTrue(criteriaBuilder.literal(true)));
+
+        Specification<Shop> criterion = Specification.where(nameType)
+                .and(locateType);
+        Page<Shop> shopPage = shopRepository.findAll(criterion, pageable);
+        List<GetShopDto> dtoList = shopPage.getContent().stream()
                 .map(shopMapper::toGetShopDto)
-                .collect(Collectors.toList());
+                .toList();
+
+        return new PageImpl<>(dtoList, shopPage.getPageable(), shopPage.getTotalElements());
     }
 
     /**

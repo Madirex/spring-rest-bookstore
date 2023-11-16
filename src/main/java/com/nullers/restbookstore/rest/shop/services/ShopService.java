@@ -13,11 +13,6 @@ import java.util.List;
  * @author alexdor00
  */
 public interface ShopService {
-    /**
-     * Obtiene una lista de todas las tiendas.
-     * @return Lista de GetShopDto con la información de las tiendas.
-     */
-    List<GetShopDto> getAllShops();
 
     /**
      * Obtiene los detalles de una tienda específica por su identificador.
