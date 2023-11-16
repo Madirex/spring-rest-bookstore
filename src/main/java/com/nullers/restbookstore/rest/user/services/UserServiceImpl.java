@@ -148,7 +148,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserResponse patch(UUID id, UserRequest userRequest) {
         log.info("Actualizando usuario: " + userRequest);
-        var actualUser = userRepository.findById(id).orElseThrow(() -> new UserNotFound(USER_NOT_FOUND_MSG));
+        userRepository.findById(id).orElseThrow(() -> new UserNotFound(USER_NOT_FOUND_MSG));
         return userMapper.toUserResponse(userRepository.save(userMapper.toUser(userRequest, id)));
     }
 
