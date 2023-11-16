@@ -113,13 +113,15 @@ public class BookServiceImpl implements BookService {
     @Override
     public Page<GetBookDTO> getAllBook(Optional<String> publisher, Optional<Double> maxPrice, Optional<String> category, PageRequest pageable) {
         Specification<Book> specType = (root, query, criteriaBuilder) -> publisher.map(m -> {
-                    try {
-                        return criteriaBuilder.equal(criteriaBuilder.upper(root.get("publisher").get("name")), m.toUpperCase());
-                    } catch (IllegalArgumentException e) {
-                        return criteriaBuilder.isTrue(criteriaBuilder.literal(false));
-                    }}).orElseGet(() -> criteriaBuilder.isTrue(criteriaBuilder.literal(true)));
+            try {
+                return criteriaBuilder.equal(criteriaBuilder.upper(root.get("publisher").get("name")), m.toUpperCase());
+            } catch (IllegalArgumentException e) {
+                return criteriaBuilder.isTrue(criteriaBuilder.literal(false));
+            }
+        }).orElseGet(() -> criteriaBuilder.isTrue(criteriaBuilder.literal(true)));
         Specification<Book> specMaxPrice = (root, query, criteriaBuilder) -> maxPrice.map(p -> criteriaBuilder.lessThanOrEqualTo(root.get("price"), p)).orElseGet(() -> criteriaBuilder.isTrue(criteriaBuilder.literal(true)));
-        Specification<Book> specCategory = (root, query, criteriaBuilder) -> category.map(c -> { return criteriaBuilder.equal(criteriaBuilder.upper(root.get("category").get("nombre")), c.toUpperCase());
+        Specification<Book> specCategory = (root, query, criteriaBuilder) -> category.map(c -> {
+            return criteriaBuilder.equal(criteriaBuilder.upper(root.get("category").get("nombre")), c.toUpperCase());
         }).orElseGet(() -> criteriaBuilder.isTrue(criteriaBuilder.literal(true)));
         Specification<Book> criterion = Specification.where(specType)
                 .and(specMaxPrice)
@@ -143,13 +145,9 @@ public class BookServiceImpl implements BookService {
     @Cacheable(key = "#result.id")
     @Override
     public GetBookDTO getBookById(Long id) throws BookNotValidIDException, BookNotFoundException {
-        try {
-            var f = bookRepository.findById(id).orElseThrow(() ->
-                    new BookNotFoundException(BOOK_NOT_FOUND_MSG));
-            return bookMapperImpl.toGetBookDTO(f, publisherMapper.toPublisherData(f.getPublisher()));
-        } catch (IllegalArgumentException e) {
-            throw new BookNotValidIDException(NOT_VALID_FORMAT_ID_MSG);
-        }
+        var f = bookRepository.findById(id).orElseThrow(() ->
+                new BookNotFoundException(BOOK_NOT_FOUND_MSG));
+        return bookMapperImpl.toGetBookDTO(f, publisherMapper.toPublisherData(f.getPublisher()));
     }
 
     /**
@@ -186,20 +184,16 @@ public class BookServiceImpl implements BookService {
     @Override
     public GetBookDTO putBook(Long id, UpdateBookDTO book) throws BookNotValidIDException,
             PublisherNotFound, PublisherIDNotValid, BookNotFoundException {
-        try {
-            Book existingBook = bookRepository.findById(id)
-                    .orElseThrow(() -> new BookNotFoundException("Book no encontrado"));
-            Categoria category = checkCategory(book.getCategory());
-            var publisher = publisherMapper.toPublisher(publisherService.findById(book.getPublisherId()));
-            Book f = bookMapperImpl.toBook(existingBook, book, publisher, category);
-            f.setId(id);
-            var modified = bookRepository.save(f);
-            var bookDTO = bookMapperImpl.toGetBookDTO(modified, publisherMapper.toPublisherData(modified.getPublisher()));
-            onChange(Notification.Type.UPDATE, bookDTO);
-            return bookDTO;
-        } catch (IllegalArgumentException e) {
-            throw new BookNotValidIDException(NOT_VALID_FORMAT_ID_MSG);
-        }
+        Book existingBook = bookRepository.findById(id)
+                .orElseThrow(() -> new BookNotFoundException("Book no encontrado"));
+        Categoria category = checkCategory(book.getCategory());
+        var publisher = publisherMapper.toPublisher(publisherService.findById(book.getPublisherId()));
+        Book f = bookMapperImpl.toBook(existingBook, book, publisher, category);
+        f.setId(id);
+        var modified = bookRepository.save(f);
+        var bookDTO = bookMapperImpl.toGetBookDTO(modified, publisherMapper.toPublisherData(modified.getPublisher()));
+        onChange(Notification.Type.UPDATE, bookDTO);
+        return bookDTO;
     }
 
     /**
@@ -217,23 +211,18 @@ public class BookServiceImpl implements BookService {
     @Override
     public GetBookDTO patchBook(Long id, PatchBookDTO book) throws BookNotValidIDException, BookNotFoundException,
             PublisherNotFound, PublisherIDNotValid {
-        try {
-            var opt = bookRepository.findById(id);
-            if (opt.isEmpty()) {
-                throw new BookNotFoundException(BOOK_NOT_FOUND_MSG);
-            }
-            BeanUtils.copyProperties(book, opt.get(), Util.getNullPropertyNames(book));
-            opt.get().setId(id);
-            opt.get().setUpdatedAt(LocalDateTime.now());
-            opt.get().setPublisher(publisherMapper
-                    .toPublisher(publisherService.findById(book.getPublisherId())));
-            Book modified = bookRepository.save(opt.get());
-            var bookDTO = bookMapperImpl.toGetBookDTO(modified, publisherMapper.toPublisherData(modified.getPublisher()));
-            onChange(Notification.Type.UPDATE, bookDTO);
-            return bookDTO;
-        } catch (IllegalArgumentException e) {
-            throw new BookNotValidIDException(NOT_VALID_FORMAT_ID_MSG);
+        var opt = bookRepository.findById(id);
+        if (opt.isEmpty()) {
+            throw new BookNotFoundException(BOOK_NOT_FOUND_MSG);
         }
+        BeanUtils.copyProperties(book, opt.get(), Util.getNullPropertyNames(book));
+        opt.get().setId(id);
+        opt.get().setUpdatedAt(LocalDateTime.now());
+        opt.get().setPublisher(publisherMapper.toPublisher(publisherService.findById(book.getPublisherId())));
+        Book modified = bookRepository.save(opt.get());
+        var bookDTO = bookMapperImpl.toGetBookDTO(modified, publisherMapper.toPublisherData(modified.getPublisher()));
+        onChange(Notification.Type.UPDATE, bookDTO);
+        return bookDTO;
     }
 
     /**
@@ -246,18 +235,13 @@ public class BookServiceImpl implements BookService {
     @CacheEvict(key = "#id")
     @Override
     public void deleteBook(Long id) throws BookNotFoundException, BookNotValidIDException {
-        try {
-            var opt = bookRepository.findById(id);
-            if (opt.isEmpty()) {
-                throw new BookNotFoundException(BOOK_NOT_FOUND_MSG);
-            }
-            patchBook(id, PatchBookDTO.builder().active(false).build());
-            var result = opt.get();
-            onChange(Notification.Type.DELETE, bookMapperImpl.toGetBookDTO(result,
-                    publisherMapper.toPublisherData(result.getPublisher())));
-        } catch (IllegalArgumentException e) {
-            throw new BookNotValidIDException(NOT_VALID_FORMAT_ID_MSG);
+        var opt = bookRepository.findById(id);
+        if (opt.isEmpty()) {
+            throw new BookNotFoundException(BOOK_NOT_FOUND_MSG);
         }
+        patchBook(id, PatchBookDTO.builder().active(false).build());
+        var result = opt.get();
+        onChange(Notification.Type.DELETE, bookMapperImpl.toGetBookDTO(result, publisherMapper.toPublisherData(result.getPublisher())));
     }
 
     /**
@@ -278,21 +262,15 @@ public class BookServiceImpl implements BookService {
     @Transactional
     public GetBookDTO updateImage(Long id, MultipartFile image, Boolean withUrl) throws BookNotFoundException,
             BookNotValidIDException, PublisherNotFound, PublisherIDNotValid, IOException {
-        try {
-            var actualBook = bookRepository.findById(id).orElseThrow(() -> new BookNotFoundException(String.valueOf(id)));
-            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd-HH-mm-ss-SSSSSS");
-            String imageStored = storageService.store(image, List.of("jpg", "jpeg", "png"), id
-                    + "-" + LocalDateTime.now().format(formatter));
-            String imageUrl = Boolean.FALSE.equals(withUrl) ? imageStored : storageService.getUrl(imageStored);
-            if (actualBook.getImage() != null && !actualBook.getImage().equals(Book.IMAGE_DEFAULT)) {
-                storageService.delete(actualBook.getImage());
-            }
-            return patchBook(id, PatchBookDTO.builder()
-                    .image(imageUrl)
-                    .build());
-        } catch (IllegalArgumentException e) {
-            throw new BookNotValidIDException(NOT_VALID_FORMAT_ID_MSG);
+        var actualBook = bookRepository.findById(id).orElseThrow(() -> new BookNotFoundException(String.valueOf(id)));
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd-HH-mm-ss-SSSSSS");
+        String imageStored = storageService.store(image, List.of("jpg", "jpeg", "png"), id
+                + "-" + LocalDateTime.now().format(formatter));
+        String imageUrl = Boolean.FALSE.equals(withUrl) ? imageStored : storageService.getUrl(imageStored);
+        if (actualBook.getImage() != null && !actualBook.getImage().equals(Book.IMAGE_DEFAULT)) {
+            storageService.delete(actualBook.getImage());
         }
+        return patchBook(id, PatchBookDTO.builder().image(imageUrl).build());
     }
 
     /**
