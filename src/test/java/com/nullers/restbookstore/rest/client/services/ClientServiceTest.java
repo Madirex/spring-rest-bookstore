@@ -1,13 +1,18 @@
-package com.nullers.restbookstore.client.services;
+package com.nullers.restbookstore.rest.client.services;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.nullers.restbookstore.NOADD.exceptions.BookNotFoundException;
-import com.nullers.restbookstore.NOADD.models.Book;
-import com.nullers.restbookstore.NOADD.services.BookService;
+import com.nullers.restbookstore.rest.book.dto.GetBookDTO;
+import com.nullers.restbookstore.rest.book.exceptions.BookNotFoundException;
+import com.nullers.restbookstore.rest.book.mappers.BookMapperImpl;
+import com.nullers.restbookstore.rest.book.models.Book;
+import com.nullers.restbookstore.rest.book.services.BookServiceImpl;
+import com.nullers.restbookstore.rest.category.models.Categoria;
 import com.nullers.restbookstore.rest.client.dto.ClientCreateDto;
 import com.nullers.restbookstore.rest.client.dto.ClientDto;
 import com.nullers.restbookstore.rest.client.dto.ClientUpdateDto;
 import com.nullers.restbookstore.rest.client.exceptions.ClientAlreadyExists;
+import com.nullers.restbookstore.rest.client.exceptions.ClientBadRequest;
+import com.nullers.restbookstore.rest.client.exceptions.ClientBookAlreadyExists;
 import com.nullers.restbookstore.rest.client.exceptions.ClientNotFound;
 import com.nullers.restbookstore.rest.client.models.Client;
 import com.nullers.restbookstore.rest.client.repositories.ClientRepository;
@@ -16,6 +21,7 @@ import com.nullers.restbookstore.config.websockets.WebSocketHandler;
 import com.nullers.restbookstore.rest.client.notifications.mapper.ClientNotificationMapper;
 import com.nullers.restbookstore.notifications.models.Notification;
 import com.nullers.restbookstore.rest.client.services.ClientServiceImpl;
+import com.nullers.restbookstore.rest.publisher.models.Publisher;
 import com.nullers.restbookstore.storage.service.StorageService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -29,10 +35,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
@@ -47,7 +50,10 @@ class ClientServiceTest {
     private ClientRepository clientRepository;
 
     @Mock
-    private BookService bookService;
+    private BookServiceImpl bookService;
+
+    @Mock
+    private BookMapperImpl bookMapper;
 
     @Mock
     private StorageService storageService;
@@ -61,6 +67,19 @@ class ClientServiceTest {
     @InjectMocks
     private ClientServiceImpl clientService;
 
+    private Publisher publisher = Publisher.builder()
+            .id(1L)
+            .name("Planeta")
+            .books(Set.of(Book.builder().id(1L).name("hobbit").active(true).description("prueba desc").build()))
+            .updatedAt(LocalDateTime.now())
+            .createdAt(LocalDateTime.now())
+            .build();
+
+    private Categoria categoria = Categoria.builder()
+            .id(UUID.fromString("9def16db-362b-44c4-9fc9-77117758b5c8"))
+            .build();
+
+
 
     private final Client clientTest = Client.builder()
             .id(UUID.fromString("9def16db-362b-44c4-9fc9-77117758b5b0"))
@@ -70,7 +89,7 @@ class ClientServiceTest {
             .phone("123456789")
             .address("Calle Falsa 123")
             .image("https://via.placeholder.com/150")
-            .books(List.of(Book.builder().id(UUID.fromString("9def16db-362b-44c4-9fc9-77117758b5e2")).name("hobbit").description("prueba desc").build()))
+            .books(List.of(Book.builder().id(1L).name("hobbit").active(true).category(categoria).price(50.0).updatedAt(LocalDateTime.now()).createdAt(LocalDateTime.now()).image("http://img.jpg").publisher(publisher).description("prueba desc").build()))
             .createdAt(LocalDateTime.now())
             .build();
 
@@ -986,7 +1005,17 @@ class ClientServiceTest {
 
     @Test
     void delete() throws IOException, InterruptedException {
-        when(clientRepository.findById(any(UUID.class))).thenReturn(Optional.of(clientTest));
+        when(clientRepository.findById(any(UUID.class))).thenReturn(Optional.of(
+                Client.builder()
+                        .id(UUID.fromString("9def16db-362b-44c4-9fc9-77117758b5b0"))
+                        .name("Daniel")
+                        .surname("García")
+                        .email("daniel@gmail.com")
+                        .address("Calle Falsa 123")
+                        .phone("123456789")
+                        .image("http://imag.jpg")
+                        .build()
+        ));
         doNothing().when(webSocketHandler).sendMessage(any(String.class));
 
         clientService.deleteById(UUID.fromString("9def16db-362b-44c4-9fc9-77117758b5b0"));
@@ -997,6 +1026,18 @@ class ClientServiceTest {
 
         verify(webSocketHandler, times(1)).sendMessage(any(String.class));
 
+    }
+
+    @Test
+    void deleteError_HasBooks() throws IOException, InterruptedException {
+        when(clientRepository.findById(any(UUID.class))).thenReturn(Optional.of(clientTest));
+
+        var res = assertThrows(ClientBadRequest.class, () -> clientService.deleteById(UUID.fromString("9def16db-362b-44c4-9fc9-77117758b5b0")));
+        assertAll(
+                () -> assertNotNull(res),
+                () -> assertEquals("El cliente con id: 9def16db-362b-44c4-9fc9-77117758b5b0 tiene libros asociados", res.getMessage())
+        );
+        verify(clientRepository, times(1)).findById(any(UUID.class));
     }
 
     @Test
@@ -1026,7 +1067,7 @@ class ClientServiceTest {
 
         Pageable pageable = PageRequest.of(0, 10, Sort.by("id").ascending());
 
-        Page<Book> result = clientService.getAllBooksOfClient(UUID.fromString("9def16db-362b-44c4-9fc9-77117758b5b0"), pageable);
+        Page<GetBookDTO> result = clientService.getAllBooksOfClient(UUID.fromString("9def16db-362b-44c4-9fc9-77117758b5b0"), pageable);
 
 
         assertAll(
@@ -1061,7 +1102,7 @@ class ClientServiceTest {
 
         Pageable pageable = PageRequest.of(0, 10, Sort.by("id").ascending());
 
-        Page<Book> result = clientService.getAllBooksOfClient(UUID.fromString("6dbcbf5e-8e1c-47cc-8578-7b0a33ebc154"), pageable);
+        Page<GetBookDTO> result = clientService.getAllBooksOfClient(UUID.fromString("6dbcbf5e-8e1c-47cc-8578-7b0a33ebc154"), pageable);
 
         assertAll(
                 () -> assertNotNull(result),
@@ -1074,12 +1115,21 @@ class ClientServiceTest {
 
     @Test
     void addBookToClient() throws IOException {
-        when(clientRepository.findById(any(UUID.class))).thenReturn(Optional.of(clientTest));
-        when(bookService.getById(any(UUID.class))).thenReturn(Book.builder().id(UUID.fromString("9def16db-362b-44c4-9fc9-77117758b5e2")).name("hobbit").description("prueba desc").build());
+        when(clientRepository.findById(any(UUID.class))).thenReturn(Optional.of(
+                Client.builder()
+                        .id(UUID.fromString("9def16db-362b-44c4-9fc9-77117758b5b0"))
+                        .name("Daniel")
+                        .surname("García")
+                        .email("daniel@gmail.com")
+                        .phone("123456789")
+                        .address("Calle Falsa 123")
+                        .build()
+        ));
+        when(bookService.getBookById(any(Long.class))).thenReturn(GetBookDTO.builder().id(1L).name("hobbit").description("prueba desc").build());
         when(clientRepository.save(any(Client.class))).thenReturn(clientTest);
         doNothing().when(webSocketHandler).sendMessage(any(String.class));
 
-        ClientDto result = clientService.addBookToClient(UUID.fromString("9def16db-362b-44c4-9fc9-77117758b5b0"), UUID.fromString("9def16db-362b-44c4-9fc9-77117758b5e2"));
+        ClientDto result = clientService.addBookToClient(UUID.fromString("9def16db-362b-44c4-9fc9-77117758b5b0"), 1L);
 
         assertAll(
                 () -> assertNotNull(result),
@@ -1091,9 +1141,27 @@ class ClientServiceTest {
         );
 
         verify(clientRepository, times(1)).findById(any(UUID.class));
-        verify(bookService, times(1)).getById(any(UUID.class));
+        verify(bookService, times(1)).getBookById(any(Long.class));
         verify(clientRepository, times(1)).save(any(Client.class));
         doNothing().when(webSocketHandler).sendMessage(any(String.class));
+
+    }
+
+    @Test
+    void addBookToClientAlreadyExistsBook() throws IOException {
+        when(clientRepository.findById(any(UUID.class))).thenReturn(Optional.of(clientTest));
+        when(bookService.getBookById(any(Long.class))).thenReturn(GetBookDTO.builder().id(1L).name("hobbit").description("prueba desc").build());
+
+
+        var res = assertThrows(ClientBookAlreadyExists.class, () ->  clientService.addBookToClient(UUID.fromString("9def16db-362b-44c4-9fc9-77117758b5b0"), 1L));
+
+        assertAll(
+                () -> assertNotNull(res),
+                () -> assertEquals("El libro con id: 1 ya existe en el cliente con id: 9def16db-362b-44c4-9fc9-77117758b5b0", res.getMessage())
+        );
+
+        verify(clientRepository, times(1)).findById(any(UUID.class));
+        verify(bookService, times(1)).getBookById(any(Long.class));
 
     }
 
@@ -1101,7 +1169,7 @@ class ClientServiceTest {
     void addBookToClient_shouldThrowExceptionClientNotFound() {
         when(clientRepository.findById(any(UUID.class))).thenThrow(new ClientNotFound("id", UUID.fromString("9def16db-362b-44c4-9fc9-77117758b5b0")));
 
-        var res = assertThrows(ClientNotFound.class, () -> clientService.addBookToClient(UUID.fromString("9def16db-362b-44c4-9fc9-77117758b5b0"), UUID.fromString("9def16db-362b-44c4-9fc9-77117758b5e2")));
+        var res = assertThrows(ClientNotFound.class, () -> clientService.addBookToClient(UUID.fromString("9def16db-362b-44c4-9fc9-77117758b5b0"),1L));
 
         assertAll(
                 () -> assertNotNull(res),
@@ -1113,22 +1181,22 @@ class ClientServiceTest {
 
     @Test
     void addBookToClient_shouldThrowExceptionBookNotFound() {
-        when(bookService.getById(any(UUID.class))).thenThrow(new BookNotFoundException("Book with id 9def16db-362b-44c4-9fc9-77117758b5e2 was not found"));
+        when(bookService.getBookById(any(Long.class))).thenThrow(new BookNotFoundException("No se ha encontrado el Book con el ID indicado"));
 
-        var res = assertThrows(BookNotFoundException.class, () -> clientService.addBookToClient(UUID.fromString("9def16db-362b-44c4-9fc9-77117758b5b0"), UUID.fromString("9def16db-362b-44c4-9fc9-77117758b5e2")));
+        var res = assertThrows(BookNotFoundException.class, () -> clientService.addBookToClient(UUID.fromString("9def16db-362b-44c4-9fc9-77117758b5b0"), 1L));
 
         assertAll(
                 () -> assertNotNull(res),
-                () -> assertEquals("Book with id 9def16db-362b-44c4-9fc9-77117758b5e2 was not found", res.getMessage())
+                () -> assertEquals("Libro no encontrado - No se ha encontrado el Book con el ID indicado", res.getMessage())
         );
 
-        verify(bookService, times(1)).getById(any(UUID.class));
+        verify(bookService, times(1)).getBookById(any(Long.class));
     }
 
     @Test
     void removeBookOfClient() throws IOException {
         when(clientRepository.findById(any(UUID.class))).thenReturn(Optional.of(clientTest));
-        when(bookService.getById(any(UUID.class))).thenReturn(Book.builder().id(UUID.fromString("9def16db-362b-44c4-9fc9-77117758b5e2")).name("hobbit").description("prueba desc").build());
+        when(bookService.getBookById(any(Long.class))).thenReturn(GetBookDTO.builder().id(1L).name("hobbit").description("prueba desc").build());
         when(clientRepository.save(any(Client.class))).thenReturn(Client.builder()
                 .id(UUID.fromString("9def16db-362b-44c4-9fc9-77117758b5b0"))
                 .name("Daniel")
@@ -1141,7 +1209,7 @@ class ClientServiceTest {
         doNothing().when(webSocketHandler).sendMessage(any(String.class));
 
 
-        ClientDto result = clientService.removeBookOfClient(UUID.fromString("9def16db-362b-44c4-9fc9-77117758b5b0"), UUID.fromString("9def16db-362b-44c4-9fc9-77117758b5e2"));
+        ClientDto result = clientService.removeBookOfClient(UUID.fromString("9def16db-362b-44c4-9fc9-77117758b5b0"), 1L);
         assertAll(
                 () -> assertNotNull(result),
                 () -> assertEquals(clientTest.getName(), result.getName()),
@@ -1151,7 +1219,7 @@ class ClientServiceTest {
         );
 
         verify(clientRepository, times(1)).findById(any(UUID.class));
-        verify(bookService, times(1)).getById(any(UUID.class));
+        verify(bookService, times(1)).getBookById(any(Long.class));
         verify(clientRepository, times(1)).save(any(Client.class));
         doNothing().when(webSocketHandler).sendMessage(any(String.class));
     }
@@ -1160,7 +1228,7 @@ class ClientServiceTest {
     void removeBookOfClient_shouldThrowExceptionClientNotFound() {
         when(clientRepository.findById(any(UUID.class))).thenThrow(new ClientNotFound("id", UUID.fromString("9def16db-362b-44c4-9fc9-77117758b5b0")));
 
-        var res = assertThrows(ClientNotFound.class, () -> clientService.removeBookOfClient(UUID.fromString("9def16db-362b-44c4-9fc9-77117758b5b0"), UUID.fromString("9def16db-362b-44c4-9fc9-77117758b5e2")));
+        var res = assertThrows(ClientNotFound.class, () -> clientService.removeBookOfClient(UUID.fromString("9def16db-362b-44c4-9fc9-77117758b5b0"), 1L));
 
         assertAll(
                 () -> assertNotNull(res),
@@ -1172,16 +1240,16 @@ class ClientServiceTest {
 
     @Test
     void removeBookOfClient_shouldThrowExceptionBookNotFound() {
-        when(bookService.getById(any(UUID.class))).thenThrow(new BookNotFoundException("Book with id 9def16db-362b-44c4-9fc9-77117758b5e2 was not found"));
+        when(bookService.getBookById(any(Long.class))).thenThrow(new BookNotFoundException("No se ha encontrado el Book con el ID indicado"));
 
-        var res = assertThrows(BookNotFoundException.class, () -> clientService.removeBookOfClient(UUID.fromString("9def16db-362b-44c4-9fc9-77117758b5b0"), UUID.fromString("9def16db-362b-44c4-9fc9-77117758b5e2")));
+        var res = assertThrows(BookNotFoundException.class, () -> clientService.removeBookOfClient(UUID.fromString("9def16db-362b-44c4-9fc9-77117758b5b0"), 1L));
 
         assertAll(
                 () -> assertNotNull(res),
-                () -> assertEquals("Book with id 9def16db-362b-44c4-9fc9-77117758b5e2 was not found", res.getMessage())
+                () -> assertEquals("Libro no encontrado - No se ha encontrado el Book con el ID indicado", res.getMessage())
         );
 
-        verify(bookService, times(1)).getById(any(UUID.class));
+        verify(bookService, times(1)).getBookById(any(Long.class));
     }
 
     @Test
@@ -1190,7 +1258,7 @@ class ClientServiceTest {
         MultipartFile multipartFile = mock(MultipartFile.class);
 
         when(clientRepository.findById(any(UUID.class))).thenReturn(Optional.of(clientTest));
-        when(storageService.store(any(MultipartFile.class))).thenReturn(imgrl);
+        when(storageService.store(any(MultipartFile.class), any(List.class), any(String.class))).thenReturn(imgrl);
         when(clientRepository.save(any(Client.class))).thenReturn(Client.builder()
                 .id(UUID.fromString("9def16db-362b-44c4-9fc9-77117758b5b0"))
                 .name("Daniel")
@@ -1215,7 +1283,7 @@ class ClientServiceTest {
         );
 
         verify(clientRepository, times(1)).findById(any(UUID.class));
-        verify(storageService, times(1)).store(any(MultipartFile.class));
+        verify(storageService, times(1)).store(any(MultipartFile.class), any(List.class), any(String.class));
         verify(clientRepository, times(1)).save(any(Client.class));
         verify(storageService, times(1)).getUrl(any(String.class));
         verify(webSocketHandler, times(1)).sendMessage(any(String.class));
@@ -1257,7 +1325,7 @@ class ClientServiceTest {
                         .image("https://via.placeholder.com/250")
                         .build()
         ));
-        when(storageService.store(any(MultipartFile.class))).thenReturn(imgrl);
+        when(storageService.store(any(MultipartFile.class), any(List.class), any(String.class))).thenReturn(imgrl);
         when(clientRepository.save(any(Client.class))).thenReturn(Client.builder()
                 .id(UUID.fromString("9def16db-362b-44c4-9fc9-77117758b5b0"))
                 .name("Daniel")
@@ -1282,7 +1350,7 @@ class ClientServiceTest {
         );
 
         verify(clientRepository, times(1)).findById(any(UUID.class));
-        verify(storageService, times(1)).store(any(MultipartFile.class));
+        verify(storageService, times(1)).store(any(MultipartFile.class), any(List.class), any(String.class));
         verify(clientRepository, times(1)).save(any(Client.class));
         verify(storageService, times(1)).getUrl(any(String.class));
         verify(storageService, times(1)).delete(any(String.class));
@@ -1339,7 +1407,7 @@ class ClientServiceTest {
         Pageable pageable = PageRequest.of(1, 10, Sort.by("id").ascending());
         Page<Book> expectedPage = new PageImpl<>(List.of());
 
-        Page<Book> result = clientService.getAllBooksOfClient(UUID.fromString("9def16db-362b-44c4-9fc9-77117758b5b0"), pageable);
+        Page<GetBookDTO> result = clientService.getAllBooksOfClient(UUID.fromString("9def16db-362b-44c4-9fc9-77117758b5b0"), pageable);
 
         assertAll(
                 () -> assertNotNull(result),
