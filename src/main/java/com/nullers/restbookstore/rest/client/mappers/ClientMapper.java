@@ -5,9 +5,14 @@ import com.nullers.restbookstore.rest.book.mappers.BookMapperImpl;
 import com.nullers.restbookstore.rest.book.models.Book;
 import com.nullers.restbookstore.rest.client.dto.ClientDto;
 import com.nullers.restbookstore.rest.client.models.Client;
+import com.nullers.restbookstore.rest.publisher.dto.PublisherData;
+import com.nullers.restbookstore.rest.publisher.mappers.PublisherMapper;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import java.util.List;
 
+@Component
 /**
  * Mapea los datos de un cliente
  * @author daniel
@@ -17,6 +22,7 @@ import java.util.List;
 public class ClientMapper {
 
     private static BookMapperImpl bookMapper = new BookMapperImpl();
+    private static PublisherMapper publisherMapper = new PublisherMapper();
 
     /**
      * Mapea los datos de un dto a un cliente
@@ -34,6 +40,7 @@ public class ClientMapper {
                 .image(dto.getImage())
                 .build();
     }
+
 
     public static Client toEntity(ClientDto dto, List<Book> books){
         return Client.builder()
@@ -63,7 +70,10 @@ public class ClientMapper {
                 .phone(entity.getPhone())
                 .address(entity.getAddress())
                 .image(entity.getImage())
-                .books(entity.getBooks().stream().map((b) -> bookMapper.toGetBookDTO(b)).toList())
+                .books(entity.getBooks().stream().map((b) -> {
+                    var publisher = publisherMapper.toPublisherData(b.getPublisher());
+                    return bookMapper.toGetBookDTO(b, publisher);
+                }).toList())
                 .build();
     }
 
@@ -79,5 +89,7 @@ public class ClientMapper {
                 .books(books)
                 .build();
     }
+
+
 
 }
