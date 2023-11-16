@@ -8,7 +8,7 @@ import org.springframework.cache.annotation.EnableCaching;
  * Clase RestBookstoreApplication
  */
 @SpringBootApplication
-@EnableCaching
+//@EnableCaching
 public class RestBookstoreApplication {
 
     /**

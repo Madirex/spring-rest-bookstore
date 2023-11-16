@@ -74,7 +74,6 @@ public class BookServiceImpl implements BookService {
     private final CategoriasRepositoryJpa categoriasRepositoryJpa;
 
 
-
     /**
      * Constructor BookServiceImpl
      *
@@ -129,8 +128,8 @@ public class BookServiceImpl implements BookService {
 
         Specification<Book> specCategory = (root, query, criteriaBuilder) -> category.map(c -> {
 
-                return criteriaBuilder.equal(criteriaBuilder.upper(root.get("category").get("nombre")),
-                        c.toUpperCase());
+            return criteriaBuilder.equal(criteriaBuilder.upper(root.get("category").get("nombre")),
+                    c.toUpperCase());
 
         }).orElseGet(() -> criteriaBuilder.isTrue(criteriaBuilder.literal(true)));
 
@@ -180,7 +179,7 @@ public class BookServiceImpl implements BookService {
     @Override
     public GetBookDTO postBook(CreateBookDTO book) throws PublisherNotFound, PublisherIDNotValid {
         var publisher = publisherMapper.toPublisher(publisherService.findById(book.getPublisherId()));
-        var category = checkCategoria(book.getCategory());
+        var category = checkCategory(book.getCategory());
         var f = bookRepository.save(bookMapperImpl.toBook(book, publisher, category));
         var bookDTO = bookMapperImpl.toGetBookDTO(f, publisherMapper.toPublisherData(f.getPublisher()));
         onChange(Notification.Type.CREATE, bookDTO);
@@ -205,7 +204,7 @@ public class BookServiceImpl implements BookService {
         try {
             Book existingBook = bookRepository.findById(id)
                     .orElseThrow(() -> new BookNotFoundException("Book no encontrado"));
-            Categoria category = checkCategoria(book.getCategory());
+            Categoria category = checkCategory(book.getCategory());
             var publisher = publisherMapper.toPublisher(publisherService.findById(book.getPublisherId()));
             Book f = bookMapperImpl.toBook(existingBook, book, publisher, category);
             f.setId(id);
@@ -348,10 +347,10 @@ public class BookServiceImpl implements BookService {
         }
     }
 
-    public Categoria checkCategoria(String categoria){
-        var res = categoriasRepositoryJpa.findByNombre(categoria);
-        if(res.isEmpty() || !res.get().isActiva()){
-            throw new CategoriaNotFoundException("La categoria no existe o no esta activa");
+    public Categoria checkCategory(String category) {
+        var res = categoriasRepositoryJpa.findByNombre(category);
+        if (res.isEmpty() || !res.get().isActiva()) {
+            throw new CategoriaNotFoundException("La categoría no existe o no esta activa");
         }
         return res.get();
     }
