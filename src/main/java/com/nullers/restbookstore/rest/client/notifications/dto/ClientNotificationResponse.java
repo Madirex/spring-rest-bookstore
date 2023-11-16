@@ -17,17 +17,5 @@ public record ClientNotificationResponse(
         @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
         List<Book> books
 ) {
-    @Override
-    public String toString() {
-        return "ClientNotificationResponse{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                ", surname='" + surname + '\'' +
-                ", email='" + email + '\'' +
-                ", phone='" + phone + '\'' +
-                ", address='" + address + '\'' +
-                ", image='" + image + '\'' +
-                ", books=" + books +
-                '}';
-    }
+
 }

@@ -1,5 +1,6 @@
-package com.nullers.restbookstore.client.mappers;
+package com.nullers.restbookstore.rest.client.mappers;
 
+import com.nullers.restbookstore.rest.book.mappers.BookMapperImpl;
 import com.nullers.restbookstore.rest.client.dto.ClientDto;
 import com.nullers.restbookstore.rest.client.mappers.ClientMapper;
 import com.nullers.restbookstore.rest.client.models.Client;
@@ -50,6 +51,22 @@ class ClientMapperTest {
                 () -> assertEquals(clientDto.getPhone(), clientDtoMapped.getPhone()),
                 () -> assertEquals(clientDto.getAddress(), clientDtoMapped.getAddress()),
                 () -> assertEquals(clientDto.getImage(), clientDtoMapped.getImage())
+        );
+    }
+
+    @Test
+    void toDtoAndBooks(){
+        BookMapperImpl bookMapper = new BookMapperImpl();
+
+        ClientDto clientDtoMapped = ClientMapper.toDto(client, client.getBooks().stream().map((b) -> bookMapper.toGetBookDTO(b)).toList());
+        assertAll(
+                () -> assertEquals(clientDto.getName(), clientDtoMapped.getName()),
+                () -> assertEquals(clientDto.getSurname(), clientDtoMapped.getSurname()),
+                () -> assertEquals(clientDto.getEmail(), clientDtoMapped.getEmail()),
+                () -> assertEquals(clientDto.getPhone(), clientDtoMapped.getPhone()),
+                () -> assertEquals(clientDto.getAddress(), clientDtoMapped.getAddress()),
+                () -> assertEquals(clientDto.getImage(), clientDtoMapped.getImage()),
+                () -> assertEquals(clientDto.getBooks(), clientDtoMapped.getBooks())
         );
     }
 

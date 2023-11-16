@@ -9,6 +9,7 @@ import com.nullers.restbookstore.rest.client.dto.ClientDto;
 import com.nullers.restbookstore.rest.client.dto.ClientUpdateDto;
 import com.nullers.restbookstore.rest.client.exceptions.ClientAlreadyExists;
 import com.nullers.restbookstore.rest.client.exceptions.ClientBadRequest;
+import com.nullers.restbookstore.rest.client.exceptions.ClientBookAlreadyExists;
 import com.nullers.restbookstore.rest.client.exceptions.ClientNotFound;
 import com.nullers.restbookstore.rest.client.models.responses.ErrorResponse;
 import com.nullers.restbookstore.rest.client.models.responses.PageResponse;
@@ -258,6 +259,13 @@ public class ClientController {
     public ErrorResponse handleBookException(BookNotFoundException exception){
         return new ErrorResponse(HttpStatus.NOT_FOUND.value(), exception.getMessage());
     }
+
+    @ExceptionHandler(ClientBookAlreadyExists.class)
+    @ResponseStatus(HttpStatus.CONFLICT)
+    public ErrorResponse handleBookException(ClientBookAlreadyExists exception){
+        return new ErrorResponse(HttpStatus.NOT_FOUND.value(), exception.getMessage());
+    }
+
 
     /**
      * Manejador de excepciones de ClientBadRequest

@@ -1,17 +1,20 @@
-package com.nullers.restbookstore.client.controllers;
+package com.nullers.restbookstore.rest.client.controllers;
 
-import com.nullers.restbookstore.NOADD.models.Book;
+import com.nullers.restbookstore.pagination.utils.PaginationLinksUtils;
+import com.nullers.restbookstore.rest.book.dto.GetBookDTO;
+import com.nullers.restbookstore.rest.book.exceptions.BookNotFoundException;
+import com.nullers.restbookstore.rest.book.models.Book;
+import com.nullers.restbookstore.rest.category.models.Categoria;
 import com.nullers.restbookstore.rest.client.controllers.ClientController;
 import com.nullers.restbookstore.rest.client.dto.ClientCreateDto;
 import com.nullers.restbookstore.rest.client.dto.ClientDto;
+import com.nullers.restbookstore.rest.client.dto.ClientUpdateDto;
 import com.nullers.restbookstore.rest.client.exceptions.ClientAlreadyExists;
+import com.nullers.restbookstore.rest.client.exceptions.ClientBookAlreadyExists;
 import com.nullers.restbookstore.rest.client.exceptions.ClientNotFound;
 import com.nullers.restbookstore.rest.client.models.Client;
 import com.nullers.restbookstore.rest.client.services.ClientServiceImpl;
-import com.nullers.restbookstore.rest.client.utils.PaginationLinksUtils;
-import jakarta.servlet.http.HttpServletRequest;
-import org.apache.catalina.connector.Connector;
-import org.apache.catalina.connector.Request;
+import com.nullers.restbookstore.rest.publisher.models.Publisher;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -19,21 +22,22 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.data.domain.Pageable;
+import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockHttpServletRequest;
-import org.springframework.web.util.UriBuilder;
-import org.springframework.web.util.UriComponentsBuilder;
+import org.springframework.mock.web.MockMultipartFile;
+import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.multipart.MultipartFile;
 
-import javax.swing.text.html.Option;
+import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.UUID;
 
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
@@ -52,6 +56,19 @@ public class ClientControllerTestWithoutMockMvc {
     @InjectMocks
     private ClientController clientController;
 
+
+    private Publisher publisher = Publisher.builder()
+            .id(1L)
+            .name("Planeta")
+            .books(Set.of(Book.builder().id(1L).name("hobbit").active(true).description("prueba desc").build()))
+            .updatedAt(LocalDateTime.now())
+            .createdAt(LocalDateTime.now())
+            .build();
+
+    private Categoria categoria = Categoria.builder()
+            .id(UUID.fromString("9def16db-362b-44c4-9fc9-77117758b5c8"))
+            .build();
+
     private final Client clientTest = Client.builder()
             .id(UUID.fromString("9def16db-362b-44c4-9fc9-77117758b5b0"))
             .name("Daniel")
@@ -60,7 +77,7 @@ public class ClientControllerTestWithoutMockMvc {
             .phone("123456789")
             .address("Calle Falsa 123")
             .image("https://via.placeholder.com/150")
-            .books(List.of(Book.builder().id(UUID.fromString("9def16db-362b-44c4-9fc9-77117758b5e2")).name("hobbit").description("prueba desc").build()))
+            .books(List.of(Book.builder().id(1L).name("hobbit").active(true).category(categoria).price(50.0).updatedAt(LocalDateTime.now()).createdAt(LocalDateTime.now()).image("http://img.jpg").publisher(publisher).description("prueba desc").build()))
             .build();
 
 
@@ -83,6 +100,7 @@ public class ClientControllerTestWithoutMockMvc {
             .phone("123456789")
             .address("Calle Falsa 123")
             .image("https://via.placeholder.com/150")
+            .books(List.of(GetBookDTO.builder().id(1L).name("hobbit").active(true).category(categoria.getNombre()).price(50.0).updatedAt(LocalDateTime.now()).createdAt(LocalDateTime.now()).image("http://img.jpg").description("prueba desc").build()))
             .build();
 
     private final ClientDto clientDtoTest2 = ClientDto.builder()
@@ -117,7 +135,6 @@ public class ClientControllerTestWithoutMockMvc {
                 requestMock
         );
 
-        System.out.println(res.getBody());
 
         assertAll(
                 () -> assertEquals(2, res.getBody().content().size()),
@@ -561,26 +578,371 @@ public class ClientControllerTestWithoutMockMvc {
         verify(clientService, times(1)).save(any(ClientCreateDto.class));
     }
 
-    /*@Test
-    void createClient_ShouldReturnErrorResponse_WithEmptyName(){
-        ClientCreateDto clientCreateDto = ClientCreateDto.builder()
-                .surname("Garcia")
-                .email("daniel@gmail.com")
-                .phone("123456789")
-                .address("Calle Falsa 123")
-                .build();
+    @Test
+    void update_ShouldReturnClient(){
+        when(clientService.update(any(UUID.class),any(ClientUpdateDto.class))).thenReturn(clientDtoTest);
 
-        var res = clientController.create(clientCreateDto);
-
-        System.out.println(res);
+        var res = clientController.update(
+                clientTest.getId(),
+                ClientUpdateDto.builder()
+                        .name("Daniel")
+                        .surname("Garcia")
+                        .email("daniel@gmail.com")
+                        .phone("123456789")
+                        .address("Calle Falsa 123")
+                        .build()
+        );
 
         assertAll(
+                () -> assertEquals(clientDtoTest, res.getBody()),
+                () -> assertEquals(200, res.getStatusCodeValue()),
+                () -> assertEquals(clientDtoTest.getName(), res.getBody().getName()),
+                () -> assertEquals(clientDtoTest.getSurname(), res.getBody().getSurname()),
+                () -> assertEquals(clientDtoTest.getEmail(), res.getBody().getEmail()),
+                () -> assertEquals(clientDtoTest.getPhone(), res.getBody().getPhone()),
+                () -> assertEquals(clientDtoTest.getAddress(), res.getBody().getAddress()),
+                () -> assertEquals(clientDtoTest.getImage(), res.getBody().getImage())
+        );
+
+        verify(clientService, times(1)).update(any(UUID.class),any(ClientUpdateDto.class));
+    }
+
+    @Test
+    void update_ShouldReturnClientNotFound(){
+        when(clientService.update(any(UUID.class),any(ClientUpdateDto.class))).thenThrow(new ClientNotFound("id", clientTest.getId()));
+
+        var res = assertThrows(ClientNotFound.class, () -> clientController.update(
+                        clientTest.getId(),
+                        ClientUpdateDto.builder()
+                                .name("Daniel")
+                                .surname("Garcia")
+                                .email("daniel@gmail.com")
+                                .phone("123456789")
+                                .address("Calle Falsa 123")
+                                .build()
+                ));
+
+        assertAll(
+                () -> assertEquals("Client con id: 9def16db-362b-44c4-9fc9-77117758b5b0 no existe", res.getMessage())
+        );
+
+        verify(clientService, times(1)).update(any(UUID.class),any(ClientUpdateDto.class));
+    }
+
+    @Test
+    void update_ShouldReturnErrorResponse_withDuplicateEmail(){
+
+        when(clientService.update(any(UUID.class),any(ClientUpdateDto.class))).thenThrow(new ClientAlreadyExists("email", clientTest.getEmail()));
+
+        var res = assertThrows(ClientAlreadyExists.class, () -> clientController.update(
+                clientTest.getId(),
+                ClientUpdateDto.builder()
+                        .name("Daniel")
+                        .surname("Garcia")
+                        .email("daniel@gmail.com")
+                        .phone("123456789")
+                        .address("Calle Falsa 123")
+                        .build()
+        ));
+
+        assertAll(
+                () -> assertEquals("Client con email: daniel@gmail.com ya existe", res.getMessage())
+        );
+
+        verify(clientService, times(1)).update(any(UUID.class),any(ClientUpdateDto.class));
+    }
+
+    @Test
+    void deleteClient(){
+        doNothing().when(clientService).deleteById(any(UUID.class));
+
+        var res = clientController.delete(clientTest.getId());
+
+        assertAll(
+                () -> assertEquals(201, res.getStatusCodeValue())
+        );
+
+        verify(clientService, times(1)).deleteById(any(UUID.class));
+    }
+
+    @Test
+    void deleteClient_ShouldThrowClientNotFound(){
+        doThrow(new ClientNotFound("id", clientTest.getId())).when(clientService).deleteById(any(UUID.class));
+
+        var res = assertThrows(ClientNotFound.class, () -> clientController.delete(clientTest.getId()));
+
+        assertAll(
+                () -> assertEquals("Client con id: 9def16db-362b-44c4-9fc9-77117758b5b0 no existe", res.getMessage())
+        );
+
+        verify(clientService, times(1)).deleteById(any(UUID.class));
+    }
+
+    @Test
+    void getAllBooks(){
+        when(clientService.getAllBooksOfClient(any(UUID.class), any(Pageable.class))).thenReturn(new PageImpl<>(List.of(GetBookDTO.builder().id(1L).name("hobbit").active(true).description("prueba desc").build())));
+        MockHttpServletRequest requestMock = new MockHttpServletRequest();
+        requestMock.setRequestURI("/clients/"+clientTest.getId()+"/books");
+        requestMock.setServerPort(8080);
+        var res = clientController.getAllBooks(
+                clientTest.getId(),
+                0, 10, "id", "asc",
+                requestMock
+        );
+
+        assertAll(
+                () -> assertEquals(1, res.getBody().content().size()),
+                () -> assertEquals(200, res.getStatusCodeValue()),
+                () -> assertEquals(1L, res.getBody().content().get(0).getId()),
+                () -> assertEquals("hobbit", res.getBody().content().get(0).getName()),
+                () -> assertEquals(true, res.getBody().content().get(0).getActive()),
+                () -> assertEquals("prueba desc", res.getBody().content().get(0).getDescription())
+        );
+
+        verify(clientService, times(1)).getAllBooksOfClient(any(UUID.class), any(Pageable.class));
+    }
+
+
+    @Test
+    void getAllBooks_ShouldThrowClientNotFound(){
+        when(clientService.getAllBooksOfClient(any(UUID.class), any(Pageable.class))).thenThrow(new ClientNotFound("id", clientTest.getId()));
+        MockHttpServletRequest requestMock = new MockHttpServletRequest();
+        requestMock.setRequestURI("/clients/"+clientTest.getId()+"/books");
+        requestMock.setServerPort(8080);
+        var res = assertThrows(ClientNotFound.class, () -> clientController.getAllBooks(
+                clientTest.getId(),
+                0, 10, "id", "asc",
+                requestMock
+        ));
+
+        assertAll(
+                () -> assertEquals("Client con id: 9def16db-362b-44c4-9fc9-77117758b5b0 no existe", res.getMessage())
+        );
+
+        verify(clientService, times(1)).getAllBooksOfClient(any(UUID.class), any(Pageable.class));
+    }
+
+    @Test
+    void getAllBooks_ShouldReturnEmptyList(){
+        when(clientService.getAllBooksOfClient(any(UUID.class), any(Pageable.class))).thenReturn(new PageImpl<>(List.of()));
+        MockHttpServletRequest requestMock = new MockHttpServletRequest();
+        requestMock.setRequestURI("/clients/"+clientTest.getId()+"/books");
+        requestMock.setServerPort(8080);
+        var res = clientController.getAllBooks(
+                clientTest.getId(),
+                0, 10, "id", "asc",
+                requestMock
+        );
+
+        assertAll(
+                () -> assertEquals(0, res.getBody().content().size()),
                 () -> assertEquals(200, res.getStatusCodeValue())
         );
-    }*/
+
+        verify(clientService, times(1)).getAllBooksOfClient(any(UUID.class), any(Pageable.class));
+    }
+
+    @Test
+    void getAllBooks_ShouldReturnErrorReponse_withInvalidPage(){
+        MockHttpServletRequest requestMock = new MockHttpServletRequest();
+        requestMock.setRequestURI("/clients/"+clientTest.getId()+"/books");
+        requestMock.setServerPort(8080);
+        var res = assertThrows(IllegalArgumentException.class, () -> clientController.getAllBooks(
+                clientTest.getId(),
+                -1, 10, "id", "asc",
+                requestMock
+        ));
+
+        assertAll(
+                () -> assertEquals("El numero de pagina no debe ser menor a 0 y el tamano de la pagina debe ser mayor que 0", res.getMessage())
+        );
+    }
+
+    @Test
+    void getAllBooks_ShouldReturnErrorReponse_withInvalidSize(){
+        MockHttpServletRequest requestMock = new MockHttpServletRequest();
+        requestMock.setRequestURI("/clients/"+clientTest.getId()+"/books");
+        requestMock.setServerPort(8080);
+        var res = assertThrows(IllegalArgumentException.class, () -> clientController.getAllBooks(
+                clientTest.getId(),
+                0, 0, "id", "asc",
+                requestMock
+        ));
+
+        assertAll(
+                () -> assertEquals("El numero de pagina no debe ser menor a 0 y el tamano de la pagina debe ser mayor que 0", res.getMessage())
+        );
+    }
 
 
+    @Test
+    void updatePatchBook_ShouldReturnClientDto(){
+        when(clientService.addBookToClient(any(UUID.class), any(Long.class))).thenReturn(clientDtoTest);
 
+        var res = clientController.updatePatchBook(clientTest.getId(), 1L);
+
+        System.out.println(res);
+        assertAll(
+                () -> assertEquals(clientDtoTest, res.getBody()),
+                () -> assertEquals(200, res.getStatusCodeValue()),
+                () -> assertEquals(clientDtoTest.getName(), res.getBody().getName()),
+                () -> assertEquals(clientDtoTest.getSurname(), res.getBody().getSurname()),
+                () -> assertEquals(clientDtoTest.getEmail(), res.getBody().getEmail()),
+                () -> assertEquals(clientDtoTest.getPhone(), res.getBody().getPhone()),
+                () -> assertEquals(clientDtoTest.getAddress(), res.getBody().getAddress()),
+                () -> assertEquals(clientDtoTest.getImage(), res.getBody().getImage()),
+                () -> assertEquals(clientDtoTest.getBooks().get(0).getName(), res.getBody().getBooks().get(0).getName()),
+                () -> assertEquals(clientDtoTest.getBooks().get(0).getActive(), res.getBody().getBooks().get(0).getActive()),
+                () -> assertEquals(clientDtoTest.getBooks().get(0).getDescription(), res.getBody().getBooks().get(0).getDescription()),
+                () -> assertEquals(clientDtoTest.getBooks().get(0).getId(), res.getBody().getBooks().get(0).getId())
+        );
+
+        verify(clientService, times(1)).addBookToClient(any(UUID.class), any(Long.class));
+    }
+
+
+    @Test
+    void updatePatchBook_ShouldReturnClientNotFound(){
+        when(clientService.addBookToClient(any(UUID.class), any(Long.class))).thenThrow(new ClientNotFound("id", clientTest.getId()));
+
+        var res = assertThrows(ClientNotFound.class, () -> clientController.updatePatchBook(clientTest.getId(), 1L));
+
+        assertAll(
+                () -> assertEquals("Client con id: 9def16db-362b-44c4-9fc9-77117758b5b0 no existe", res.getMessage())
+        );
+
+        verify(clientService, times(1)).addBookToClient(any(UUID.class), any(Long.class));
+    }
+
+
+    @Test
+    void updatePatchBook_ShouldReturnBookNotFound(){
+        when(clientService.addBookToClient(any(UUID.class), any(Long.class))).thenThrow(new BookNotFoundException("No se ha encontrado el Book con el ID indicado"));
+
+        var res = assertThrows(BookNotFoundException.class, () -> clientController.updatePatchBook(clientTest.getId(), 1L));
+
+        assertAll(
+                () -> assertEquals("Libro no encontrado - No se ha encontrado el Book con el ID indicado", res.getMessage())
+        );
+
+        verify(clientService, times(1)).addBookToClient(any(UUID.class), any(Long.class));
+    }
+
+
+    @Test
+    void updatePatchBookDelete(){
+        when(clientService.removeBookOfClient(any(UUID.class), any(Long.class))).thenReturn(
+                ClientDto.builder()
+                        .id(clientTest.getId())
+                        .name(clientTest.getName())
+                        .surname(clientTest.getSurname())
+                        .email(clientTest.getEmail())
+                        .phone(clientTest.getPhone())
+                        .address(clientTest.getAddress())
+                        .image(clientTest.getImage())
+                        .build()
+        );
+
+        var res = clientController.updatePatchBookDelete(clientTest.getId(), 1L);
+
+        System.out.println(res);
+        assertAll(
+                () -> assertEquals(200, res.getStatusCodeValue()),
+                () -> assertEquals(clientDtoTest.getName(), res.getBody().getName()),
+                () -> assertEquals(clientDtoTest.getSurname(), res.getBody().getSurname()),
+                () -> assertEquals(clientDtoTest.getEmail(), res.getBody().getEmail()),
+                () -> assertEquals(clientDtoTest.getPhone(), res.getBody().getPhone()),
+                () -> assertEquals(clientDtoTest.getAddress(), res.getBody().getAddress()),
+                () -> assertEquals(clientDtoTest.getImage(), res.getBody().getImage()),
+                () -> assertTrue(res.getBody().getBooks().isEmpty())
+        );
+
+        verify(clientService, times(1)).removeBookOfClient(any(UUID.class), any(Long.class));
+    }
+
+    @Test
+    void updatePatchBookDelete_ShouldReturnClientNotFound(){
+        when(clientService.removeBookOfClient(any(UUID.class), any(Long.class))).thenThrow(new ClientNotFound("id", clientTest.getId()));
+
+        var res = assertThrows(ClientNotFound.class, () -> clientController.updatePatchBookDelete(clientTest.getId(), 1L));
+
+        assertAll(
+                () -> assertEquals("Client con id: 9def16db-362b-44c4-9fc9-77117758b5b0 no existe", res.getMessage())
+        );
+
+        verify(clientService, times(1)).removeBookOfClient(any(UUID.class), any(Long.class));
+    }
+
+    @Test
+    void updatePatchBookDelete_ShouldReturnBookNotFound(){
+        when(clientService.removeBookOfClient(any(UUID.class), any(Long.class))).thenThrow(new BookNotFoundException("No se ha encontrado el Book con el ID indicado"));
+
+        var res = assertThrows(BookNotFoundException.class, () -> clientController.updatePatchBookDelete(clientTest.getId(), 1L));
+
+        assertAll(
+                () -> assertEquals("Libro no encontrado - No se ha encontrado el Book con el ID indicado", res.getMessage())
+        );
+
+        verify(clientService, times(1)).removeBookOfClient(any(UUID.class), any(Long.class));
+    }
+
+
+    @Test
+    void updatePatchImage() throws IOException {
+        ClientDto dto = ClientDto.builder()
+                .id(clientTest.getId())
+                .name(clientTest.getName())
+                .surname(clientTest.getSurname())
+                .email(clientTest.getEmail())
+                .phone(clientTest.getPhone())
+                .address(clientTest.getAddress())
+                .image("image.jpg")
+                .build();
+        when(clientService.updateImage(any(UUID.class), any(MultipartFile.class))).thenReturn(
+                dto
+        );
+
+        var res = clientController.updatePatchImage(clientTest.getId(), new MockMultipartFile("image", "image.jpg", "image/jpeg", "image".getBytes()));
+
+        System.out.println(res);
+        assertAll(
+                () -> assertEquals(200, res.getStatusCodeValue()),
+                () -> assertEquals(dto.getName(), res.getBody().getName()),
+                () -> assertEquals(dto.getSurname(), res.getBody().getSurname()),
+                () -> assertEquals(dto.getEmail(), res.getBody().getEmail()),
+                () -> assertEquals(dto.getPhone(), res.getBody().getPhone()),
+                () -> assertEquals(dto.getAddress(), res.getBody().getAddress()),
+                () -> assertEquals(dto.getImage(), res.getBody().getImage())
+        );
+
+        verify(clientService, times(1)).updateImage(any(UUID.class), any(MultipartFile.class));
+    }
+
+    @Test
+    void updatePatchImage_ShouldReturnClientNotFound() throws IOException {
+        when(clientService.updateImage(any(UUID.class), any(MultipartFile.class))).thenThrow(new ClientNotFound("id", clientTest.getId()));
+
+        var res = assertThrows(ClientNotFound.class, () -> clientController.updatePatchImage(clientTest.getId(), new MockMultipartFile("image", "image.jpg", "image/jpeg", "image".getBytes())));
+
+        assertAll(
+                () -> assertEquals("Client con id: 9def16db-362b-44c4-9fc9-77117758b5b0 no existe", res.getMessage())
+        );
+
+        verify(clientService, times(1)).updateImage(any(UUID.class), any(MultipartFile.class));
+    }
+
+    @Test
+    void addBookToClientAlreadyExistBook(){
+        when(clientService.addBookToClient(any(UUID.class), any(Long.class))).thenThrow(new ClientBookAlreadyExists("El libro con id: 1 ya existe en el cliente con id: "+clientTest.getId()));
+
+        var res = assertThrows(ClientBookAlreadyExists.class, () -> clientController.updatePatchBook(clientTest.getId(), 1L));
+
+        assertAll(
+                () -> assertEquals("El libro con id: 1 ya existe en el cliente con id: "+clientTest.getId(), res.getMessage())
+        );
+
+        verify(clientService, times(1)).addBookToClient(any(UUID.class), any(Long.class));
+    }
 
 
 }

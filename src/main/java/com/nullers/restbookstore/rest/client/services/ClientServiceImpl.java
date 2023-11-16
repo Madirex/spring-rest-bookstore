@@ -11,6 +11,8 @@ import com.nullers.restbookstore.rest.client.dto.ClientCreateDto;
 import com.nullers.restbookstore.rest.client.dto.ClientDto;
 import com.nullers.restbookstore.rest.client.dto.ClientUpdateDto;
 import com.nullers.restbookstore.rest.client.exceptions.ClientAlreadyExists;
+import com.nullers.restbookstore.rest.client.exceptions.ClientBadRequest;
+import com.nullers.restbookstore.rest.client.exceptions.ClientBookAlreadyExists;
 import com.nullers.restbookstore.rest.client.exceptions.ClientNotFound;
 import com.nullers.restbookstore.rest.client.mappers.ClientCreateMapper;
 import com.nullers.restbookstore.rest.client.mappers.ClientMapper;
@@ -193,12 +195,16 @@ public class ClientServiceImpl implements ClientService{
         String email = client.getEmail() != null ? client.getEmail() : clientToUpdate.getEmail();
         String phone = client.getPhone() != null ? client.getPhone() : clientToUpdate.getPhone();
         String address = client.getAddress() != null ? client.getAddress() : clientToUpdate.getAddress();
+        String image = clientToUpdate.getImage();
+        List<GetBookDTO> books = clientToUpdate.getBooks();
         clientToUpdate.setName(name);
         clientToUpdate.setSurname(surname);
         clientToUpdate.setEmail(email);
         clientToUpdate.setPhone(phone);
         clientToUpdate.setAddress(address);
-        ClientDto clientUpdate = ClientMapper.toDto(clientRepository.save(ClientMapper.toEntity(clientToUpdate)));
+        clientToUpdate.setImage(image);
+        clientToUpdate.setBooks(books);
+        ClientDto clientUpdate = ClientMapper.toDto(clientRepository.save(ClientMapper.toEntity(clientToUpdate, clientToUpdate.getBooks().stream().map(bookMapper::toBook).toList())));
         onChange(Notification.Type.UPDATE, ClientMapper.toEntity(clientUpdate));
         return clientUpdate;
     }
@@ -212,6 +218,9 @@ public class ClientServiceImpl implements ClientService{
     @CachePut(key = "#id")
     public void deleteById(UUID id) {
         ClientDto clientToDelete = findById(id);
+        if(!clientToDelete.getBooks().isEmpty()){
+            throw new ClientBadRequest("El cliente con id: " + id + " tiene libros asociados");
+        }
         log.info("Eliminando cliente con id: " + id);
         onChange(Notification.Type.DELETE, ClientMapper.toEntity(clientToDelete));
         clientRepository.deleteById(id);
@@ -272,7 +281,13 @@ public class ClientServiceImpl implements ClientService{
         GetBookDTO bookToAdd = bookService.getBookById(bookId);
         ClientDto clientToUpdate = findById(id);
         List<GetBookDTO> books = new ArrayList<>(clientToUpdate.getBooks());
-        books.add(bookToAdd);
+        books.stream().filter(book -> book.getId().equals(bookId)).findFirst().ifPresentOrElse(
+                book -> {
+                    log.error("El libro con id: " + bookId + " ya existe en el cliente con id: " + id);
+                    throw new ClientBookAlreadyExists("El libro con id: " + bookId + " ya existe en el cliente con id: " + id );
+                } ,
+                () -> books.add(bookToAdd)
+        );
         clientToUpdate.setBooks(books);
         Client client = clientRepository.save(ClientMapper.toEntity(clientToUpdate, books.stream().map(bookMapper::toBook).toList()));
         ClientDto clientUpdate = ClientMapper.toDto(client);
@@ -325,6 +340,7 @@ public class ClientServiceImpl implements ClientService{
 
         Client clientToUpdate = ClientMapper.toEntity(clientDto);
         clientToUpdate.setImage(urlImg);
+        clientToUpdate.setBooks(clientDto.getBooks().stream().map(bookMapper::toBook).toList());
         ClientDto clientUpdated = ClientMapper.toDto(clientRepository.save(clientToUpdate));
         onChange(Notification.Type.UPDATE, ClientMapper.toEntity(clientUpdated));
         return clientUpdated;

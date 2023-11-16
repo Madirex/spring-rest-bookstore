@@ -1,13 +1,14 @@
-package com.nullers.restbookstore.client.controllers;
+package com.nullers.restbookstore.rest.client.controllers;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.nullers.restbookstore.NOADD.exceptions.BookNotFoundException;
-import com.nullers.restbookstore.NOADD.models.Book;
-import com.nullers.restbookstore.notifications.models.Notification;
+import com.nullers.restbookstore.rest.book.dto.GetBookDTO;
+import com.nullers.restbookstore.rest.book.exceptions.BookNotFoundException;
+import com.nullers.restbookstore.rest.book.models.Book;
 import com.nullers.restbookstore.rest.client.dto.ClientCreateDto;
 import com.nullers.restbookstore.rest.client.dto.ClientDto;
 import com.nullers.restbookstore.rest.client.dto.ClientUpdateDto;
 import com.nullers.restbookstore.rest.client.exceptions.ClientAlreadyExists;
+import com.nullers.restbookstore.rest.client.exceptions.ClientBookAlreadyExists;
 import com.nullers.restbookstore.rest.client.exceptions.ClientNotFound;
 import com.nullers.restbookstore.rest.client.models.Client;
 import com.nullers.restbookstore.rest.client.models.responses.ErrorResponse;
@@ -62,7 +63,7 @@ class ClientControllerTest {
             .phone("123456789")
             .address("Calle Falsa 123")
             .image("https://via.placeholder.com/150")
-            .books(List.of(Book.builder().id(UUID.fromString("9def16db-362b-44c4-9fc9-77117758b5e2")).name("hobbit").description("prueba desc").build()))
+            .books(List.of(Book.builder().id(1L).name("hobbit").description("prueba desc").active(true).build()))
             .build();
 
 
@@ -1162,12 +1163,13 @@ class ClientControllerTest {
 
     @Test
     void getAllBooks() throws Exception {
-        List<Book> books = List.of(
-                Book.builder()
-                        .id(UUID.fromString("9def16db-362b-44c4-9fc9-77117758b6a2"))
+        List<GetBookDTO> books = List.of(
+                GetBookDTO.builder()
+                        .id(1L)
                         .name("El senor de los anillos")
                         .description("Libro de fantasia")
                         .image("https://images-na.ssl-images-amazon.com/images/I/51ZkLkaZ3OL._SX331_BO1,204,203,200_.jpg")
+                        .active(true)
                         .build()
         );
 
@@ -1178,6 +1180,7 @@ class ClientControllerTest {
                 .andReturn().getResponse();
 
 
+        System.out.println(response.getContentAsString());
         PageResponse<Book> res = mapper.readValue(response.getContentAsString(), mapper.getTypeFactory().constructParametricType(PageResponse.class, Book.class));
 
         assertAll(
@@ -1265,9 +1268,9 @@ class ClientControllerTest {
 
     @Test
     void updatePatchBook_ShouldReturnClientDto() throws Exception {
-        when(clientService.addBookToClient(any(UUID.class), any(UUID.class))).thenReturn(clientDtoTest);
+        when(clientService.addBookToClient(any(UUID.class), any(Long.class))).thenReturn(clientDtoTest);
 
-        MockHttpServletResponse response = mockMvc.perform(patch(endpoint + "/9def16db-362b-44c4-9fc9-77117758b5b0/books/add?idBook=9def16db-362b-44c4-9fc9-77117758b6a2")
+        MockHttpServletResponse response = mockMvc.perform(patch(endpoint + "/9def16db-362b-44c4-9fc9-77117758b5b0/books/add?idBook=1")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andReturn().getResponse();
 
@@ -1283,14 +1286,14 @@ class ClientControllerTest {
                 () -> assertEquals(clientDtoTest.getImage(), res.getImage())
         );
 
-        verify(clientService, times(1)).addBookToClient(any(UUID.class), any(UUID.class));
+        verify(clientService, times(1)).addBookToClient(any(UUID.class), any(Long.class));
     }
 
     @Test
     void updatePatchBook_ShouldReturnClientNotFound() throws Exception {
-        when(clientService.addBookToClient(any(UUID.class), any(UUID.class))).thenThrow(new ClientNotFound("id", UUID.fromString("9def16db-362b-44c4-9fc9-77117758b5b9")));
+        when(clientService.addBookToClient(any(UUID.class), any(Long.class))).thenThrow(new ClientNotFound("id", UUID.fromString("9def16db-362b-44c4-9fc9-77117758b5b9")));
 
-        MockHttpServletResponse response = mockMvc.perform(patch(endpoint + "/9def16db-362b-44c4-9fc9-77117758b5b9/books/add?idBook=9def16db-362b-44c4-9fc9-77117758b6a2")
+        MockHttpServletResponse response = mockMvc.perform(patch(endpoint + "/9def16db-362b-44c4-9fc9-77117758b5b9/books/add?idBook=1")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andReturn().getResponse();
 
@@ -1301,14 +1304,14 @@ class ClientControllerTest {
                 () -> assertEquals("Client con id: 9def16db-362b-44c4-9fc9-77117758b5b9 no existe", res.msg())
         );
 
-        verify(clientService, times(1)).addBookToClient(any(UUID.class), any(UUID.class));
+        verify(clientService, times(1)).addBookToClient(any(UUID.class), any(Long.class));
     }
 
     @Test
     void updatePatchBook_ShouldReturnBookNotFound() throws Exception {
-        when(clientService.addBookToClient(any(UUID.class), any(UUID.class))).thenThrow(new BookNotFoundException("Book with id 9def16db-362b-44c4-9fc9-77117758b6a2 was not found"));
+        when(clientService.addBookToClient(any(UUID.class), any(Long.class))).thenThrow(new BookNotFoundException("No se ha encontrado el Book con el ID indicado"));
 
-        MockHttpServletResponse response = mockMvc.perform(patch(endpoint + "/9def16db-362b-44c4-9fc9-77117758b5b0/books/add?idBook=9def16db-362b-44c4-9fc9-77117758b6a2")
+        MockHttpServletResponse response = mockMvc.perform(patch(endpoint + "/9def16db-362b-44c4-9fc9-77117758b5b0/books/add?idBook=1")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andReturn().getResponse();
 
@@ -1316,17 +1319,17 @@ class ClientControllerTest {
 
         assertAll(
                 () -> assertEquals(HttpStatus.NOT_FOUND.value(), response.getStatus()),
-                () -> assertEquals("Book with id 9def16db-362b-44c4-9fc9-77117758b6a2 was not found", res.msg())
+                () -> assertEquals("Libro no encontrado - No se ha encontrado el Book con el ID indicado", res.msg())
         );
 
-        verify(clientService, times(1)).addBookToClient(any(UUID.class), any(UUID.class));
+        verify(clientService, times(1)).addBookToClient(any(UUID.class), any(Long.class));
     }
 
     @Test
     void updatePatchBookDelete() throws Exception {
-        when(clientService.removeBookOfClient(any(UUID.class), any(UUID.class))).thenReturn(clientDtoTest);
+        when(clientService.removeBookOfClient(any(UUID.class), any(Long.class))).thenReturn(clientDtoTest);
 
-        MockHttpServletResponse response = mockMvc.perform(patch(endpoint + "/9def16db-362b-44c4-9fc9-77117758b5b0/books/remove?idBook=9def16db-362b-44c4-9fc9-77117758b6a2")
+        MockHttpServletResponse response = mockMvc.perform(patch(endpoint + "/9def16db-362b-44c4-9fc9-77117758b5b0/books/remove?idBook=1")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andReturn().getResponse();
 
@@ -1342,14 +1345,14 @@ class ClientControllerTest {
                 () -> assertEquals(clientDtoTest.getImage(), res.getImage())
         );
 
-        verify(clientService, times(1)).removeBookOfClient(any(UUID.class), any(UUID.class));
+        verify(clientService, times(1)).removeBookOfClient(any(UUID.class), any(Long.class));
     }
 
     @Test
     void updatePatchBookDelete_ShouldReturnClientNotFound() throws Exception {
-        when(clientService.removeBookOfClient(any(UUID.class), any(UUID.class))).thenThrow(new ClientNotFound("id", UUID.fromString("9def16db-362b-44c4-9fc9-77117758b5b9")));
+        when(clientService.removeBookOfClient(any(UUID.class), any(Long.class))).thenThrow(new ClientNotFound("id", UUID.fromString("9def16db-362b-44c4-9fc9-77117758b5b9")));
 
-        MockHttpServletResponse response = mockMvc.perform(patch(endpoint + "/9def16db-362b-44c4-9fc9-77117758b5b9/books/remove?idBook=9def16db-362b-44c4-9fc9-77117758b6a2")
+        MockHttpServletResponse response = mockMvc.perform(patch(endpoint + "/9def16db-362b-44c4-9fc9-77117758b5b9/books/remove?idBook=1")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andReturn().getResponse();
 
@@ -1360,14 +1363,14 @@ class ClientControllerTest {
                 () -> assertEquals("Client con id: 9def16db-362b-44c4-9fc9-77117758b5b9 no existe", res.msg())
         );
 
-        verify(clientService, times(1)).removeBookOfClient(any(UUID.class), any(UUID.class));
+        verify(clientService, times(1)).removeBookOfClient(any(UUID.class), any(Long.class));
     }
 
     @Test
     void updatePatchBookDelete_ShouldReturnBookNotFound() throws Exception {
-        when(clientService.removeBookOfClient(any(UUID.class), any(UUID.class))).thenThrow(new BookNotFoundException("Book with id 9def16db-362b-44c4-9fc9-77117758b6a2 was not found"));
+        when(clientService.removeBookOfClient(any(UUID.class), any(Long.class))).thenThrow(new BookNotFoundException("No se ha encontrado el Book con el ID indicado"));
 
-        MockHttpServletResponse response = mockMvc.perform(patch(endpoint + "/9def16db-362b-44c4-9fc9-77117758b5b0/books/remove?idBook=9def16db-362b-44c4-9fc9-77117758b6a2")
+        MockHttpServletResponse response = mockMvc.perform(patch(endpoint + "/9def16db-362b-44c4-9fc9-77117758b5b0/books/remove?idBook=1")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andReturn().getResponse();
 
@@ -1375,10 +1378,10 @@ class ClientControllerTest {
 
         assertAll(
                 () -> assertEquals(HttpStatus.NOT_FOUND.value(), response.getStatus()),
-                () -> assertEquals("Book with id 9def16db-362b-44c4-9fc9-77117758b6a2 was not found", res.msg())
+                () -> assertEquals("Libro no encontrado - No se ha encontrado el Book con el ID indicado", res.msg())
         );
 
-        verify(clientService, times(1)).removeBookOfClient(any(UUID.class), any(UUID.class));
+        verify(clientService, times(1)).removeBookOfClient(any(UUID.class), any(Long.class));
     }
 
 
@@ -1531,6 +1534,25 @@ class ClientControllerTest {
                 () -> assertEquals("El tamaño del archivo supera el límite permitido. (10MB)", res.msg())
         );
     }
+
+    @Test
+    void addBookToClientAlreadyExistBook() throws Exception {
+        when(clientService.addBookToClient(any(UUID.class), any(Long.class))).thenThrow(new ClientBookAlreadyExists("El libro con id: 1 ya existe en el cliente con id: 9def16db-362b-44c4-9fc9-77117758b5b9"));
+
+        MockHttpServletResponse response = mockMvc.perform(patch(endpoint + "/9def16db-362b-44c4-9fc9-77117758b5b9/books/add?idBook=1")
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andReturn().getResponse();
+
+        ErrorResponse res = mapper.readValue(response.getContentAsString(), ErrorResponse.class);
+
+        assertAll(
+                () -> assertEquals(HttpStatus.CONFLICT.value(), response.getStatus()),
+                () -> assertEquals("El libro con id: 1 ya existe en el cliente con id: 9def16db-362b-44c4-9fc9-77117758b5b9", res.msg())
+        );
+
+        verify(clientService, times(1)).addBookToClient(any(UUID.class), any(Long.class));
+    }
+
 
 
 
