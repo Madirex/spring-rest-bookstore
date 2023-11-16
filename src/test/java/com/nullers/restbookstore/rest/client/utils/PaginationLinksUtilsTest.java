@@ -1,6 +1,6 @@
-package com.nullers.restbookstore.client.utils;
+package com.nullers.restbookstore.rest.client.utils;
 
-import com.nullers.restbookstore.rest.client.utils.PaginationLinksUtils;
+import com.nullers.restbookstore.pagination.utils.PaginationLinksUtils;
 import org.junit.jupiter.api.Test;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
