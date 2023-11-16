@@ -35,6 +35,7 @@ import org.springframework.data.domain.*;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -372,31 +373,56 @@ class BookServiceImplTest {
         assertThrows(BookNotFoundException.class, () -> bookService.patchBook(data, update));
     }
 
-//    /**
-//     * Test para comprobar que se elimina un Book
-//     *
-//     * @throws BookNotValidUUIDException excepción cuando el Book no es válido
-//     * @throws BookNotFoundException     excepción cuando el Book no se encuentra
-//     * @throws IOException               excepción de entrada/salida
-//     */
-//    @Test
-//    void testDeleteBook() throws BookNotValidUUIDException, BookNotFoundException, IOException {
-//        when(bookRepository.findById(list.get(0).getId())).thenReturn(Optional.ofNullable(list.get(0)));
-//        doNothing().when(bookRepository).delete(any(Book.class));
-//        bookService.deleteBook(String.valueOf(list.get(0).getId()));
-//
-//        Pageable pageable = PageRequest.of(0, 10, Sort.by("id").ascending());
-//        Page<Book> expectedPage = new PageImpl<>(new ArrayList<>());
-//        Specification<Book> anySpecification = any();
-//        when(bookRepository.findAll(anySpecification, any(Pageable.class))).thenReturn(expectedPage);
-//        Page<GetBookDTO> actualPage = bookService.getAllBook(Optional.empty(), Optional.empty(),
-//                Optional.empty(), pageable);
-//        var list3 = actualPage.getContent();
-//        assertNotNull(list3);
-//        assertEquals(0, actualPage.getContent().size());
-//        verify(bookRepository, times(1)).delete(any(Book.class));
-//    }
-//
+    /**
+     * Test para comprobar que se elimina un Book
+     *
+     * @throws BookNotValidIDException excepción cuando el Book no es válido
+     * @throws BookNotFoundException   excepción cuando el Book no se encuentra
+     */
+    @Test
+    void testDeleteBook() throws BookNotValidIDException, BookNotFoundException {
+        when(bookRepository.findById(list.get(0).getId())).thenReturn(Optional.ofNullable(list.get(0)));
+
+        //previus patch
+        var update = PatchBookDTO.builder()
+                .name("nombre")
+                .publisherId(1L)
+                .price(2.2)
+                .image("imagen")
+                .description("descripción")
+                .build();
+        var publisher = Publisher.builder().id(1L).createdAt(LocalDateTime.now())
+                .updatedAt(LocalDateTime.now()).build();
+        var publisherDTO = PublisherDTO.builder().id(1L).build();
+        var publisherData = PublisherData.builder().id(1L).build();
+        var inserted = Book.builder().id(1L).name("nombre").price(2.2).image("imagen")
+                .publisher(publisher).description("descripción")
+                .createdAt(LocalDateTime.now()).updatedAt(LocalDateTime.now()).active(true).build();
+        when(publisherService.findById(1L)).thenReturn(any());
+        when(publisherMapper.toPublisher(publisherDTO)).thenReturn(publisher);
+        when(bookRepository.save(inserted)).thenReturn(inserted);
+        when(bookRepository.findById(inserted.getId())).thenReturn(Optional.of(inserted));
+        when(publisherMapper.toPublisherData(any())).thenReturn(publisherData);
+        when(bookMapperImpl.toGetBookDTO(inserted, publisherData))
+                .thenReturn(GetBookDTO.builder().name("nombre").price(2.2).image("imagen")
+                        .publisher(any()).build());
+        GetBookDTO updated2 = bookService.patchBook(list.get(0).getId(), update);
+        assertNotNull(updated2);
+
+        //delete
+        bookService.deleteBook(list.get(0).getId());
+
+        var pageable = PageRequest.of(0, 10, Sort.by("id").ascending());
+        Page<Book> expectedPage = new PageImpl<>(new ArrayList<>());
+        Specification<Book> anySpecification = any();
+        when(bookRepository.findAll(anySpecification, any(Pageable.class))).thenReturn(expectedPage);
+        Page<GetBookDTO> actualPage = bookService.getAllBook(Optional.empty(), Optional.empty(),
+                Optional.empty(), pageable);
+        var list3 = actualPage.getContent();
+        assertNotNull(list3);
+        assertEquals(0, actualPage.getContent().size());
+    }
+
 
     /**
      * Test para comprobar que el Book no se encuentra cuando se intenta eliminar
@@ -407,55 +433,65 @@ class BookServiceImplTest {
         assertThrows(BookNotFoundException.class, () -> bookService.deleteBook(data));
     }
 
-//    /**
-//     * Test que comprueba que se puede actualizar una imagen
-//     *
-//     * @throws CategoryNotFoundException No se ha encontrado la categoría
-//     * @throws CategoryNotValidException La categoría no es válida
-//     * @throws IOException               Problema Entrada/Salida
-//     */
-//    @Test
-//    void testUpdateImageSuccess() throws CategoryNotFoundException, CategoryNotValidException, IOException {
-//        String existingBookId = list.get(0).getId().toString();
-//        String imageUrl = "https://www.madirex.com/favicon.ico";
-//        MultipartFile multipartFile = mock(MultipartFile.class);
-//        GetBookDTO expectedBookDTO = GetBookDTO.builder()
-//                .id(UUID.randomUUID())
-//                .name("Test")
-//                .price(2.2)
-//                .quantity(2)
-//                .image(imageUrl)
-//                .category(Category.builder().id(1L).type(Category.Type.MOVIE).active(true).build())
-//                .createdAt(LocalDateTime.now())
-//                .updatedAt(LocalDateTime.now())
-//                .build();
-//        expectedBookDTO.setImage(imageUrl);
-//
-//        when(bookRepository.findById(list.get(0).getId()))
-//                .thenReturn(Optional.of(list.get(0)));
-//        when(storageService.store(multipartFile, List.of("jpg", "jpeg", "png"), list.get(0).getId().toString()))
-//                .thenReturn(imageUrl);
-//
-//        //path
-//        var update = PatchBookDTO.builder().image(imageUrl).build();
-//        when(bookRepository.findById(list.get(0).getId())).thenReturn(Optional.of(list.get(0)));
-//        when(bookRepository.save(list.get(0))).thenReturn(any());
-//        when(bookMapperImpl.toGetBookDTO(list.get(0))).thenReturn(expectedBookDTO);
-//        GetBookDTO updated2 = bookService.patchBook(list.get(0).getId().toString(), update);
-//
-//        //check
-//        GetBookDTO resultBookDTO = bookService.updateImage(existingBookId, multipartFile, false);
-//        assertAll(
-//                () -> assertNotNull(updated2),
-//                () -> assertNotNull(resultBookDTO),
-//                () -> assertEquals(expectedBookDTO.getImage(), resultBookDTO.getImage())
-//        );
-//        verify(bookRepository, times(3)).findById(list.get(0).getId());
-//        verify(bookRepository, times(2)).save(list.get(0));
-//        verify(storageService, times(1)).store(multipartFile, List.of("jpg", "jpeg", "png"),
-//                list.get(0).getId().toString());
-//    }
-//
+    /**
+     * Test que comprueba que se puede actualizar una imagen
+     *
+     * @throws IOException Problema Entrada/Salida
+     */
+    @Test
+    void testUpdateImageSuccess() throws IOException {
+        long existingBookId = list.get(0).getId();
+        String imageUrl = "https://www.madirex.com/favicon.ico";
+        MultipartFile multipartFile = mock(MultipartFile.class);
+        GetBookDTO expectedBookDTO = GetBookDTO.builder()
+                .id(1L)
+                .name("nombre")
+                .publisher(PublisherData.builder().id(1L).build())
+                .price(2.2)
+                .image("imagen")
+                .description("descripción")
+                .createdAt(LocalDateTime.now())
+                .updatedAt(LocalDateTime.now())
+                .active(true)
+                .build();
+
+        Book book = Book.builder()
+                .id(1L)
+                .name("nombre")
+                .publisher(Publisher.builder().id(1L).build())
+                .price(2.2)
+                .image("imagen")
+                .description("descripción")
+                .createdAt(LocalDateTime.now())
+                .updatedAt(LocalDateTime.now())
+                .active(true)
+                .build();
+        expectedBookDTO.setImage(imageUrl);
+
+        when(bookRepository.findById(list.get(0).getId()))
+                .thenReturn(Optional.of(list.get(0)));
+        when(storageService.store(any(), any(), any()))
+                .thenReturn(imageUrl);
+
+        //path
+        var update = PatchBookDTO.builder().image(imageUrl).build();
+        when(bookRepository.findById(list.get(0).getId())).thenReturn(Optional.of(list.get(0)));
+        when(bookRepository.save(list.get(0))).thenReturn(book);
+        when(bookMapperImpl.toGetBookDTO(any(), any())).thenReturn(expectedBookDTO);
+        when(publisherMapper.toPublisherData(any(Publisher.class))).thenReturn(PublisherData.builder().id(1L).build());
+        GetBookDTO updated2 = bookService.patchBook(list.get(0).getId(), update);
+
+        //check
+        GetBookDTO resultBookDTO = bookService.updateImage(existingBookId, multipartFile, false);
+        assertAll(
+                () -> assertNotNull(updated2),
+                () -> assertNotNull(resultBookDTO),
+                () -> assertEquals(expectedBookDTO.getImage(), resultBookDTO.getImage())
+        );
+        verify(bookRepository, times(3)).findById(list.get(0).getId());
+        verify(bookRepository, times(2)).save(list.get(0));
+    }
+
 
     /**
      * Test que comprueba que el Book no se ha encontrado al intentar actualizar la imagen
