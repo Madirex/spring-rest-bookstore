@@ -6,6 +6,7 @@ import com.nullers.restbookstore.rest.book.dto.UpdateBookDTO;
 import com.nullers.restbookstore.rest.book.models.Book;
 import com.nullers.restbookstore.rest.category.models.Categoria;
 import com.nullers.restbookstore.rest.publisher.dto.PublisherData;
+import com.nullers.restbookstore.rest.publisher.mappers.PublisherMapper;
 import com.nullers.restbookstore.rest.publisher.models.Publisher;
 import org.springframework.stereotype.Component;
 
@@ -20,6 +21,7 @@ import java.util.stream.IntStream;
  */
 @Component
 public class BookMapperImpl implements BookMapper {
+
     /**
      * Mapea un CreateBookDTO en Book
      *
@@ -31,6 +33,19 @@ public class BookMapperImpl implements BookMapper {
         return Book.builder()
                 .name(dto.getName())
                 .publisher(publisher)
+                .price(dto.getPrice())
+                .image(dto.getImage())
+                .description(dto.getDescription())
+                .createdAt(LocalDateTime.now())
+                .updatedAt(LocalDateTime.now())
+                .active(true)
+                .build();
+    }
+
+    public Book toBook(GetBookDTO dto) {
+        return Book.builder()
+                .id(dto.getId())
+                .name(dto.getName())
                 .price(dto.getPrice())
                 .image(dto.getImage())
                 .description(dto.getDescription())
@@ -102,6 +117,20 @@ public class BookMapperImpl implements BookMapper {
                 .id(book.getId())
                 .name(book.getName())
                 .publisher(publisherData)
+                .price(book.getPrice())
+                .image(book.getImage())
+                .description(book.getDescription())
+                .createdAt(book.getCreatedAt())
+                .updatedAt(book.getUpdatedAt())
+                .active(book.getActive())
+                .category(book.getCategory().getNombre())
+                .build();
+    }
+
+    public GetBookDTO toGetBookDTO(Book book) {
+        return GetBookDTO.builder()
+                .id(book.getId())
+                .name(book.getName())
                 .price(book.getPrice())
                 .image(book.getImage())
                 .description(book.getDescription())
