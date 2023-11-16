@@ -66,7 +66,8 @@ public class PublisherServiceImpl implements PublisherService {
     public Page<PublisherDTO> findAll(Optional<String> name, PageRequest pageable) {
 
         Specification<Publisher> specNombrePublisher = (root, query, criteriaBuilder) ->
-                name.map(m -> criteriaBuilder.like(criteriaBuilder.lower(root.get("name")), "%" + m + "%"))
+                name.map(m -> criteriaBuilder.like(criteriaBuilder.lower(root.get("name")), "%" +
+                                m.toLowerCase() + "%"))
                         .orElseGet(() -> criteriaBuilder.isTrue(criteriaBuilder.literal(true)));
 
 
@@ -92,7 +93,7 @@ public class PublisherServiceImpl implements PublisherService {
         }
         return publisherRepository.findById(id)
                 .map(publisherMapper::toDto)
-                .orElseThrow(() -> new PublisherNotFound("id :" + id));
+                .orElseThrow(() -> new PublisherNotFound("id " + id));
     }
 
     /**
