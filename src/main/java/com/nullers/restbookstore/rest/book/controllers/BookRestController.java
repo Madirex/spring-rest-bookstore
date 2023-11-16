@@ -38,5 +38,4 @@ public interface BookRestController {
 
     ResponseEntity<String> deleteBook(@Valid @PathVariable Long id) throws BookNotValidIDException, BookNotFoundException;
 
-    Map<String, String> handleValidationExceptions(MethodArgumentNotValidException ex);
 }

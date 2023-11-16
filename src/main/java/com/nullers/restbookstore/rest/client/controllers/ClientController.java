@@ -3,7 +3,6 @@ package com.nullers.restbookstore.rest.client.controllers;
 import com.nullers.restbookstore.pagination.utils.PaginationLinksUtils;
 import com.nullers.restbookstore.rest.book.dto.GetBookDTO;
 import com.nullers.restbookstore.rest.book.exceptions.BookNotFoundException;
-import com.nullers.restbookstore.rest.book.models.Book;
 import com.nullers.restbookstore.rest.client.dto.ClientCreateDto;
 import com.nullers.restbookstore.rest.client.dto.ClientDto;
 import com.nullers.restbookstore.rest.client.dto.ClientUpdateDto;
@@ -14,7 +13,6 @@ import com.nullers.restbookstore.rest.client.exceptions.ClientNotFound;
 import com.nullers.restbookstore.rest.client.models.responses.ErrorResponse;
 import com.nullers.restbookstore.rest.client.models.responses.PageResponse;
 import com.nullers.restbookstore.rest.client.services.ClientServiceImpl;
-import com.nullers.restbookstore.storage.exceptions.StorageBadRequest;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,6 +35,7 @@ import java.util.*;
 
 /**
  * Controlador de Clientes
+ *
  * @author daniel
  * @see ClientServiceImpl
  * @see PaginationLinksUtils
@@ -54,7 +53,6 @@ public class ClientController {
     private final List<String> contentTypesAllowed = List.of("image/png", "image/jpeg", "image/gif");
 
 
-
     @Autowired
     public ClientController(ClientServiceImpl clientService, PaginationLinksUtils paginationLinksUtils) {
         this.clientService = clientService;
@@ -64,17 +62,18 @@ public class ClientController {
 
     /**
      * Obtiene todos los clientes
-     * @param name nombre del cliente
+     *
+     * @param name    nombre del cliente
      * @param surname apellido del cliente
-     * @param email email del cliente
-     * @param phone teléfono del cliente
+     * @param email   email del cliente
+     * @param phone   teléfono del cliente
      * @param address dirección del cliente
-     * @param page número de página
-     * @param size tamaño de la página
-     * @param sortBy campo por el que se ordena
-     * @param order orden de la página
+     * @param page    número de página
+     * @param size    tamaño de la página
+     * @param sortBy  campo por el que se ordena
+     * @param order   orden de la página
      * @param request petición
-     * @return ResponseEntity<PageResponse<ClientDto>> con los clientes
+     * @return ResponseEntity<PageResponse < ClientDto>> con los clientes
      */
     @GetMapping
     public ResponseEntity<PageResponse<ClientDto>> getAll(
@@ -89,7 +88,7 @@ public class ClientController {
             @RequestParam(defaultValue = "asc") String order,
             HttpServletRequest request
     ) {
-        if(page < 0 || size <= 0){
+        if (page < 0 || size <= 0) {
             throw new IllegalArgumentException("El numero de pagina no debe ser menor a 0 y el tamano de la pagina debe ser mayor que 0");
         }
         Sort sort = order.equalsIgnoreCase(Sort.Direction.ASC.name()) ? Sort.by(sortBy).ascending() : Sort.by(sortBy).descending();
@@ -104,6 +103,7 @@ public class ClientController {
 
     /**
      * Obtiene un cliente por su id
+     *
      * @param id id del cliente
      * @return ResponseEntity<ClientDto> con el cliente
      */
@@ -114,6 +114,7 @@ public class ClientController {
 
     /**
      * Obtiene un cliente por su email
+     *
      * @param email email del cliente
      * @return ResponseEntity<ClientDto> con el cliente
      */
@@ -124,6 +125,7 @@ public class ClientController {
 
     /**
      * Crear un cliente
+     *
      * @param clientDto cliente a crear
      * @return ResponseEntity<ClientDto> con el cliente creado
      */
@@ -134,17 +136,19 @@ public class ClientController {
 
     /**
      * Actualiza un cliente
-     * @param id id del cliente
+     *
+     * @param id        id del cliente
      * @param clientDto datos del cliente a actualizar
      * @return ResponseEntity<ClientDto> con el cliente actualizado
      */
     @PutMapping("/{id}")
-    public ResponseEntity<ClientDto> update(@PathVariable UUID id,@Valid @RequestBody ClientUpdateDto clientDto) {
+    public ResponseEntity<ClientDto> update(@PathVariable UUID id, @Valid @RequestBody ClientUpdateDto clientDto) {
         return ResponseEntity.ok(clientService.update(id, clientDto));
     }
 
     /**
      * Elimina un cliente
+     *
      * @param id id del cliente
      * @return ResponseEntity<Void>
      */
@@ -156,13 +160,14 @@ public class ClientController {
 
     /**
      * Obtiene todos los libros de un cliente
-     * @param id id del cliente
-     * @param page número de página
-     * @param size tamaño de la página
-     * @param sortBy campo por el que se ordena
-     * @param order orden de la página
+     *
+     * @param id      id del cliente
+     * @param page    número de página
+     * @param size    tamaño de la página
+     * @param sortBy  campo por el que se ordena
+     * @param order   orden de la página
      * @param request petición
-     * @return ResponseEntity<PageResponse<Book>> con los libros
+     * @return ResponseEntity<PageResponse < Book>> con los libros
      */
     @GetMapping("{id}/books")
     public ResponseEntity<PageResponse<GetBookDTO>> getAllBooks(
@@ -173,7 +178,7 @@ public class ClientController {
             @RequestParam(defaultValue = "asc") String order,
             HttpServletRequest request
     ) {
-        if(page < 0 || size <= 0){
+        if (page < 0 || size <= 0) {
             throw new IllegalArgumentException("El numero de pagina no debe ser menor a 0 y el tamano de la pagina debe ser mayor que 0");
         }
         Sort sort = order.equalsIgnoreCase(Sort.Direction.ASC.name()) ? Sort.by(sortBy).ascending() : Sort.by(sortBy).descending();
@@ -188,7 +193,8 @@ public class ClientController {
 
     /**
      * Añade un libro a un cliente
-     * @param id id del cliente
+     *
+     * @param id     id del cliente
      * @param idBook id del libro
      * @return ResponseEntity<ClientDto> con el cliente
      */
@@ -199,7 +205,8 @@ public class ClientController {
 
     /**
      * Elimina un libro de un cliente
-     * @param id id del cliente
+     *
+     * @param id     id del cliente
      * @param idBook id del libro
      * @return ResponseEntity<ClientDto> con el cliente
      */
@@ -211,100 +218,107 @@ public class ClientController {
 
     /**
      * Actualiza la imagen de un cliente
-     * @param id id del cliente
+     *
+     * @param id   id del cliente
      * @param file imagen del cliente
      * @return ResponseEntity<ClientDto> con el cliente
      */
-    @PatchMapping( value = "{id}/image",  consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PatchMapping(value = "{id}/image", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<ClientDto> updatePatchImage(@PathVariable UUID id, @RequestPart("file") MultipartFile file) throws IOException {
-        if(!file.isEmpty() && contentTypesAllowed.contains(file.getContentType())){
+        if (!file.isEmpty() && contentTypesAllowed.contains(file.getContentType())) {
             return ResponseEntity.ok(clientService.updateImage(id, file));
-        }else{
+        } else {
             throw new ClientBadRequest("El archivo no es una imagen o esta vacio");
         }
     }
 
     /**
      * Manejador de excepciones de ClientNotFound
+     *
      * @param exception excepción
      * @return ErrorResponse con el mensaje de error
      */
     @ExceptionHandler(ClientNotFound.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
-    public ErrorResponse handleClientNotFound(ClientNotFound exception){
+    public ErrorResponse handleClientNotFound(ClientNotFound exception) {
         return new ErrorResponse(HttpStatus.NOT_FOUND.value(), exception.getMessage());
     }
 
 
     /**
      * Manejador de excepciones de ClientAlreadyExists
+     *
      * @param exception excepción
      * @return ErrorResponse con el mensaje de error
      */
     @ExceptionHandler(ClientAlreadyExists.class)
     @ResponseStatus(HttpStatus.CONFLICT)
-    public ErrorResponse handleClientAlreadyExists(ClientAlreadyExists exception){
+    public ErrorResponse handleClientAlreadyExists(ClientAlreadyExists exception) {
         return new ErrorResponse(HttpStatus.CONFLICT.value(), exception.getMessage());
     }
 
 
-
     /**
      * Manejador de excepciones de BookNotFoundException
+     *
      * @param exception excepción
      * @return ErrorResponse con el mensaje de error
      */
     @ExceptionHandler(BookNotFoundException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
-    public ErrorResponse handleBookException(BookNotFoundException exception){
+    public ErrorResponse handleBookException(BookNotFoundException exception) {
         return new ErrorResponse(HttpStatus.NOT_FOUND.value(), exception.getMessage());
     }
 
     @ExceptionHandler(ClientBookAlreadyExists.class)
     @ResponseStatus(HttpStatus.CONFLICT)
-    public ErrorResponse handleBookException(ClientBookAlreadyExists exception){
+    public ErrorResponse handleBookException(ClientBookAlreadyExists exception) {
         return new ErrorResponse(HttpStatus.NOT_FOUND.value(), exception.getMessage());
     }
 
 
     /**
      * Manejador de excepciones de ClientBadRequest
+     *
      * @param exception excepción
      * @return ErrorResponse con el mensaje de error
      */
     @ExceptionHandler(ClientBadRequest.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ErrorResponse handleClientBadRequest(ClientBadRequest exception){
+    public ErrorResponse handleClientBadRequest(ClientBadRequest exception) {
         return new ErrorResponse(HttpStatus.BAD_REQUEST.value(), exception.getMessage());
     }
 
     /**
      * Manejador de excepciones de PropertyReferenceException
+     *
      * @param exception excepción
      * @return ErrorResponse con el mensaje de error
      */
     @ExceptionHandler(PropertyReferenceException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ErrorResponse handlePropertyReferenceException(PropertyReferenceException exception){
+    public ErrorResponse handlePropertyReferenceException(PropertyReferenceException exception) {
         return new ErrorResponse(HttpStatus.BAD_REQUEST.value(), exception.getMessage());
     }
 
 
     /**
      * Manejador de excepciones de IllegalArgumentException
+     *
      * @param exception excepción
      * @return ErrorResponse con el mensaje de error
      */
     @ExceptionHandler(IllegalArgumentException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ErrorResponse handleIllegelAlrgumentException(IllegalArgumentException exception){
+    public ErrorResponse handleIllegelAlrgumentException(IllegalArgumentException exception) {
         return new ErrorResponse(HttpStatus.BAD_REQUEST.value(), exception.getMessage());
     }
 
     /**
      * Manejador de excepciones de MethodArgumentNotValidException
+     *
      * @param ex excepción
-     * @return ResponseEntity<Map<String, Object>> con el mensaje de error
+     * @return ResponseEntity<Map < String, Object>> con el mensaje de error
      */
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(MethodArgumentNotValidException.class)
@@ -323,6 +337,5 @@ public class ClientController {
 
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
     }
-
 
 }

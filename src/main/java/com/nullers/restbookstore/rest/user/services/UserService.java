@@ -59,7 +59,7 @@ public interface UserService {
      * @param userRequest petición de usuario con los campos a actualizar
      * @return usuario actualizado parcialmente
      */
-    UserResponse patch(UUID id, UserRequest userRequest);
+//    UserResponse patch(UUID id, UserRequest userRequest);
 
     /**
      * Elimina un usuario por ID
