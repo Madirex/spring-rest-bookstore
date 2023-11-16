@@ -50,7 +50,7 @@ public class ClientController {
     private ClientServiceImpl clientService;
     private final PaginationLinksUtils paginationLinksUtils;
 
-    private final List<String> contentTypesAllowed = List.of("image/png", "image/jpeg", "image/gif");
+    private final List<String> contentTypesAllowed = List.of("image/png", "image/jpeg");
 
 
     @Autowired

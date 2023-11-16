@@ -56,7 +56,7 @@ import java.util.*;
 @CacheConfig(cacheNames = "clients")
 public class ClientServiceImpl implements ClientService{
 
-    private final List<String> contentTypesAllowed = List.of("png", "jpeg", "gif", "jpg");
+    private final List<String> contentTypesAllowed = List.of("png", "jpeg", "jpg");
 
 
     private final ClientRepository clientRepository;
