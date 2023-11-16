@@ -28,6 +28,7 @@ public class BookNotificationMapper {
                 book.getUpdatedAt().toString(),
                 book.getPrice(),
                 book.getActive()
+                book.getCategory()
         );
     }
 }

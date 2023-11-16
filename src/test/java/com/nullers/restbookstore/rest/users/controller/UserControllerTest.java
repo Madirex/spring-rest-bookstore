@@ -2,6 +2,7 @@ package com.nullers.restbookstore.rest.users.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import com.nullers.restbookstore.rest.user.controller.UserController;
 import com.nullers.restbookstore.rest.user.dto.UserInfoResponse;
 import com.nullers.restbookstore.rest.user.dto.UserRequest;
 import com.nullers.restbookstore.rest.user.dto.UserResponse;
@@ -27,8 +28,12 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 
+/**
+ * Test for {@link UserController}
+ *
+ * @Author: Binwei Wang
+ */
 @SpringBootTest
 @AutoConfigureMockMvc
 @ExtendWith(MockitoExtension.class)
@@ -65,7 +70,7 @@ public class UserControllerTest {
             .email("test@test.com")
             .build();
 
-    private final String myEndpoint = "/users";
+    private final String myEndpoint = "/api/users";
 
     private final ObjectMapper mapper = new ObjectMapper();
 
@@ -141,7 +146,7 @@ public class UserControllerTest {
 
         assertAll(
                 () -> assertEquals(201, response.getStatus()),
-                ()-> assertNotNull(response.getContentAsString()),
+                () -> assertNotNull(response.getContentAsString()),
                 () -> assertEquals(userResponse, res)
         );
     }
@@ -154,6 +159,28 @@ public class UserControllerTest {
         // Act
         MockHttpServletResponse response = mockMvc.perform(
                         put(myEndpoint + "/{id}", UUID.fromString("c671d981-bd6f-4e75-b7cc-fd3ca96582d5"))
+                                .accept(MediaType.APPLICATION_JSON)
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(mapper.writeValueAsString(userRequest)))
+                .andReturn().getResponse();
+
+        var res = mapper.readValue(response.getContentAsString(), UserResponse.class);
+
+        // Assert
+        assertAll(
+                () -> assertEquals(200, response.getStatus()),
+                () -> assertEquals(userResponse, res)
+        );
+    }
+
+    @Test
+    void patchUser() throws Exception {
+        // Arrange
+        when(userService.patch(UUID.fromString("c671d981-bd6f-4e75-b7cc-fd3ca96582d5"), userRequest)).thenReturn(userResponse);
+
+        // Act
+        MockHttpServletResponse response = mockMvc.perform(
+                        patch(myEndpoint + "/{id}", UUID.fromString("c671d981-bd6f-4e75-b7cc-fd3ca96582d5"))
                                 .accept(MediaType.APPLICATION_JSON)
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .content(mapper.writeValueAsString(userRequest)))

@@ -18,6 +18,8 @@ public class GetBookDTO {
     private Long id;
     private String name;
     private PublisherData publisher;
+    private String category;
+
 
     @Setter
     private String image;

@@ -24,6 +24,8 @@ import java.util.UUID;
 
 /**
  * Servicio para la entidad User
+ *
+ * @Author: Binwei Wang
  */
 @Service
 @Slf4j
@@ -132,6 +134,21 @@ public class UserServiceImpl implements UserService {
                         throw new UserNameOrEmailExists("El usuario ya existe");
                     });
         }
+        return userMapper.toUserResponse(userRepository.save(userMapper.toUser(userRequest, id)));
+    }
+
+    /**
+     * Actualiza parcialmente un usuario en la base de datos
+     *
+     * @param id          ID del usuario a actualizar
+     * @param userRequest Usuario a actualizar parcialmente
+     * @return Usuario actualizado parcialmente
+     */
+
+    @Override
+    public UserResponse patch(UUID id, UserRequest userRequest) {
+        log.info("Actualizando usuario: " + userRequest);
+        var actualUser = userRepository.findById(id).orElseThrow(() -> new UserNotFound(USER_NOT_FOUND_MSG));
         return userMapper.toUserResponse(userRepository.save(userMapper.toUser(userRequest, id)));
     }
 

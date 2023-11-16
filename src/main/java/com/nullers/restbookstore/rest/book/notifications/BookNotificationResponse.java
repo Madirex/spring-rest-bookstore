@@ -15,5 +15,6 @@ public record BookNotificationResponse(
         String updatedAt,
         Double price,
         Boolean active
+        String category
 ) {
 }

@@ -11,6 +11,8 @@ import java.util.UUID;
 
 /**
  * Respuesta de usuario con info
+ *
+ * @Author: Binwei Wang
  */
 @Data
 @Builder
