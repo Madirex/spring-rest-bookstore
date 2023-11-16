@@ -16,7 +16,7 @@ import java.time.LocalDateTime;
 @Component
 public class PublisherMapper {
 
-    private PublisherMapper() {
+    public PublisherMapper() {
     }
 
     /**
