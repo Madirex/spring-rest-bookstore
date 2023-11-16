@@ -872,7 +872,7 @@ class ClientServiceTest {
 
     @Test
     void findByEmail(){
-        when(clientRepository.getClientByEmail(any(String.class))).thenReturn(Optional.of(clientTest));
+        when(clientRepository.getClientByEmailEqualsIgnoreCase(any(String.class))).thenReturn(Optional.of(clientTest));
 
         Optional<ClientDto> result = clientService.findByEmail("dani@gmail.com");
 
@@ -883,12 +883,12 @@ class ClientServiceTest {
                 () -> assertEquals(clientTest.getEmail(), result.get().getEmail())
         );
 
-        verify(clientRepository, times(1)).getClientByEmail(any(String.class));
+        verify(clientRepository, times(1)).getClientByEmailEqualsIgnoreCase(any(String.class));
     }
 
     @Test
     void findByEmail_shouldReturnEmpty() {
-        when(clientRepository.getClientByEmail(any(String.class))).thenReturn(Optional.empty());
+        when(clientRepository.getClientByEmailEqualsIgnoreCase(any(String.class))).thenReturn(Optional.empty());
 
         Optional<ClientDto> result = clientService.findByEmail("rubi@gmail.com");
 
@@ -897,7 +897,7 @@ class ClientServiceTest {
                 () -> assertTrue(result.isEmpty())
         );
 
-        verify(clientRepository, times(1)).getClientByEmail(any(String.class));
+        verify(clientRepository, times(1)).getClientByEmailEqualsIgnoreCase(any(String.class));
 
     }
 
@@ -931,7 +931,7 @@ class ClientServiceTest {
 
     @Test
     void save_shouldThrowExceptionClientAlreadyExist() {
-        when(clientRepository.getClientByEmail(any(String.class))).thenReturn(Optional.of(clientTest));
+        when(clientRepository.getClientByEmailEqualsIgnoreCase(any(String.class))).thenReturn(Optional.of(clientTest));
 
         ClientCreateDto clientCreateDto = ClientCreateDto.builder()
                 .name("Daniel")
@@ -947,7 +947,7 @@ class ClientServiceTest {
                 () -> assertEquals("Client con email: dani@gmail.com ya existe", res.getMessage())
         );
 
-        verify(clientRepository, times(1)).getClientByEmail(any(String.class));
+        verify(clientRepository, times(1)).getClientByEmailEqualsIgnoreCase(any(String.class));
     }
 
 
@@ -1375,7 +1375,7 @@ class ClientServiceTest {
 
     @Test
     void update_ShouldReturnClientAlreadyExists(){
-        when(clientRepository.getClientByEmail(any(String.class))).thenReturn(Optional.of(clientTest));
+        when(clientRepository.getClientByEmailEqualsIgnoreCase(any(String.class))).thenReturn(Optional.of(clientTest));
 
         ClientUpdateDto client = ClientUpdateDto.builder()
                 .name(clientTest.getName())
@@ -1392,7 +1392,7 @@ class ClientServiceTest {
                 () -> assertEquals("Client con email: daniel@gmail.com ya existe", res.getMessage())
         );
 
-        verify(clientRepository, times(1)).getClientByEmail(any(String.class));
+        verify(clientRepository, times(1)).getClientByEmailEqualsIgnoreCase(any(String.class));
     }
 
     @Test

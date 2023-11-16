@@ -92,7 +92,7 @@ class ClientRepositoryTest {
         var res = entityManager.merge(clientTest);
         entityManager.flush();
 
-        var client = clientRepository.getClientByEmail(res.getEmail());
+        var client = clientRepository.getClientByEmailEqualsIgnoreCase(res.getEmail());
 
         assertAll(
                 () -> assertNotNull(client),
@@ -110,7 +110,7 @@ class ClientRepositoryTest {
         var res = entityManager.merge(clientTest);
         entityManager.flush();
 
-        var client = clientRepository.getClientByEmail("eppe@gmail.com");
+        var client = clientRepository.getClientByEmailEqualsIgnoreCase("eppe@gmail.com");
 
         assertAll(
                 () -> assertNotNull(client),
