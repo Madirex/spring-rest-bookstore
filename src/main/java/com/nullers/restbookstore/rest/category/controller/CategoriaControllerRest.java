@@ -81,7 +81,7 @@ public class CategoriaControllerRest {
 
     @ExceptionHandler(CategoriaNotFoundException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
-    public ErrorResponse handleFunkoNotFound(CategoriaNotFoundException exception){
+    public ErrorResponse handleCategoryNotFound(CategoriaNotFoundException exception){
         return new ErrorResponse(HttpStatus.NOT_FOUND.value(), exception.getMessage());
     }
 

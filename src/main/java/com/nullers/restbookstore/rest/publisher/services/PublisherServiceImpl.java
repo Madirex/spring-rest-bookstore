@@ -1,9 +1,13 @@
 package com.nullers.restbookstore.rest.publisher.services;
 
+import com.nullers.restbookstore.notifications.models.Notification;
+import com.nullers.restbookstore.rest.book.dto.PatchBookDTO;
 import com.nullers.restbookstore.rest.book.exceptions.BookNotFoundException;
+import com.nullers.restbookstore.rest.book.exceptions.BookNotValidIDException;
 import com.nullers.restbookstore.rest.book.models.Book;
 import com.nullers.restbookstore.rest.book.repositories.BookRepository;
 import com.nullers.restbookstore.rest.publisher.dto.CreatePublisherDto;
+import com.nullers.restbookstore.rest.publisher.dto.PatchPublisherDto;
 import com.nullers.restbookstore.rest.publisher.dto.PublisherDTO;
 import com.nullers.restbookstore.rest.publisher.exceptions.PublisherIDNotValid;
 import com.nullers.restbookstore.rest.publisher.exceptions.PublisherNotFound;
@@ -12,6 +16,8 @@ import com.nullers.restbookstore.rest.publisher.mappers.PublisherMapper;
 import com.nullers.restbookstore.rest.publisher.models.Publisher;
 import com.nullers.restbookstore.rest.publisher.repositories.PublisherRepository;
 import com.nullers.restbookstore.storage.service.StorageService;
+import com.nullers.restbookstore.utils.Util;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheConfig;
 import org.springframework.cache.annotation.CacheEvict;
@@ -163,8 +169,33 @@ public class PublisherServiceImpl implements PublisherService {
     @CacheEvict("#id")
     @Override
     public void deleteById(Long id) {
-        findById(id);
-        publisherRepository.deleteById(id);
+        try {
+            var opt = publisherRepository.findById(id);
+            if (opt.isEmpty()) {
+                throw new PublisherNotFound("No se ha encontrado el Publisher con dicho id");
+            }
+            patchPublisher(id, PatchPublisherDto.builder().active(false).build());
+        } catch (IllegalArgumentException e) {
+            throw new PublisherIDNotValid("El ID no es válido");
+        }
+    }
+
+    @Override
+    @CachePut(key = "#result.id")
+    public PublisherDTO patchPublisher(Long id, PatchPublisherDto publisher) throws PublisherNotFound, PublisherIDNotValid{
+        try {
+            var opt = publisherRepository.findById(id);
+            if (opt.isEmpty()) {
+                throw new PublisherNotFound("No se ha encontrado el Publisher con dicho id");
+            }
+            BeanUtils.copyProperties(publisher, opt.get(), Util.getNullPropertyNames(publisher));
+            opt.get().setId(id);
+            opt.get().setUpdatedAt(LocalDateTime.now());
+            Publisher modified = publisherRepository.save(opt.get());
+            return publisherMapper.toDto(modified);
+        } catch (IllegalArgumentException e) {
+            throw new PublisherIDNotValid("El ID no es válido");
+        }
     }
 
     /**

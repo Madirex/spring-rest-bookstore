@@ -1,10 +1,7 @@
 package com.nullers.restbookstore.rest.user.dto;
 
 import com.nullers.restbookstore.rest.user.model.Role;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.util.Set;
 import java.util.UUID;
@@ -14,9 +11,8 @@ import java.util.UUID;
  *
  * @Author: Binwei Wang
  */
-@Data
+@Getter
 @Builder
-@NoArgsConstructor
 @AllArgsConstructor
 public class UserInfoResponse {
     private UUID id;

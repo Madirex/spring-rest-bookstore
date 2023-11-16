@@ -27,4 +27,5 @@ public class PublisherDTO {
     private Set<Book> books;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
+    private Boolean active;
 }

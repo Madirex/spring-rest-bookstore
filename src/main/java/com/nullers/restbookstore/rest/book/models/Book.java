@@ -73,12 +73,8 @@ public class Book {
      */
     @PrePersist
     protected void onCreate() {
-        if (createdAt == null) {
-            createdAt = LocalDateTime.now();
-        }
-        if (updatedAt == null) {
-            updatedAt = LocalDateTime.now();
-        }
+        if (createdAt == null) {createdAt = LocalDateTime.now();}
+        if (updatedAt == null) {updatedAt = LocalDateTime.now();}
     }
 
     @ManyToOne

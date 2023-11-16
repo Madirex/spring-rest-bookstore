@@ -42,6 +42,11 @@ public class BookMapperImpl implements BookMapper {
                 .build();
     }
 
+    /**
+     * Mapea un GetBookDTO en Book
+     * @param dto GetBookDTO a mapear
+     * @return Book mapeado
+     */
     public Book toBook(GetBookDTO dto) {
         return Book.builder()
                 .id(dto.getId())
@@ -55,6 +60,13 @@ public class BookMapperImpl implements BookMapper {
                 .build();
     }
 
+    /**
+     * Mapea un CreateBookDTO en Book
+     * @param dto CreateBookDTO a mapear
+     * @param publisher Publisher a mapear
+     * @param category Categoría a mapear
+     * @return Book mapeado
+     */
     public Book toBook(CreateBookDTO dto, Publisher publisher, Categoria category) {
         return Book.builder()
                 .name(dto.getName())
@@ -91,6 +103,14 @@ public class BookMapperImpl implements BookMapper {
                 .build();
     }
 
+    /**
+     * Mapea un UpdateBookDTO en Book
+     * @param book Book a mapear
+     * @param dto UpdateBookDTO a mapear
+     * @param publisher Publisher a mapear
+     * @param category Categoría a mapear
+     * @return Book mapeado
+     */
     public Book toBook(Book book, UpdateBookDTO dto, Publisher publisher, Categoria category) {
         return Book.builder()
                 .id(book.getId())
@@ -127,6 +147,11 @@ public class BookMapperImpl implements BookMapper {
                 .build();
     }
 
+    /**
+     * Mapea un Book en GetBookDTO
+     * @param book Book a mapear
+     * @return GetBookDTO mapeado
+     */
     public GetBookDTO toGetBookDTO(Book book) {
         return GetBookDTO.builder()
                 .id(book.getId())
@@ -153,8 +178,5 @@ public class BookMapperImpl implements BookMapper {
                 .mapToObj(index -> toGetBookDTO(books.get(index), publisherData.get(index)))
                 .toList();
     }
-
-
-
 
 }
