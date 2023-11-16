@@ -1,6 +1,6 @@
 package com.nullers.restbookstore.rest.client.models;
 
-import com.nullers.restbookstore.NOADD.models.Book;
+import com.nullers.restbookstore.rest.book.models.Book;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
