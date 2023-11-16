@@ -96,7 +96,7 @@ class BookControllerImplTest {
         var bookList = List.of(book, book2);
         var pageable = PageRequest.of(0, 10, Sort.by("id").ascending());
         var page = new PageImpl<>(bookList);
-        when(service.getAllBook(Optional.empty(), Optional.empty(), pageable)).thenReturn(page);
+        when(service.getAllBook(Optional.empty(), Optional.empty(), Optional.empty(), pageable)).thenReturn(page);
         MockHttpServletResponse response = mockMvc.perform(get(endpoint)
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
