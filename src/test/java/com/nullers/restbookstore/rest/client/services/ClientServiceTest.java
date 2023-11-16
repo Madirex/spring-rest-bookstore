@@ -1254,7 +1254,7 @@ class ClientServiceTest {
     }
 
     @Test
-    void updateImage() throws IOException {
+    void updateImage() throws IOException, InterruptedException {
         String imgrl = "http://placeimg.com/640/480/people";
         MultipartFile multipartFile = mock(MultipartFile.class);
 
@@ -1287,6 +1287,7 @@ class ClientServiceTest {
         verify(storageService, times(1)).store(any(MultipartFile.class), any(List.class), any(String.class));
         verify(clientRepository, times(1)).save(any(Client.class));
         verify(storageService, times(1)).getUrl(any(String.class));
+        Thread.sleep(1000);
         verify(webSocketHandler, times(1)).sendMessage(any(String.class));
 
     }
