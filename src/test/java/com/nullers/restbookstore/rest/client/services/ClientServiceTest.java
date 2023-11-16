@@ -902,7 +902,7 @@ class ClientServiceTest {
     }
 
     @Test
-    void saved() throws IOException {
+    void saved() throws IOException, InterruptedException {
         when(clientRepository.save(any(Client.class))).thenReturn(clientTest);
         doNothing().when(webSocketHandler).sendMessage(any(String.class));
 
@@ -924,6 +924,7 @@ class ClientServiceTest {
         );
 
         verify(clientRepository, times(1)).save(any(Client.class));
+        Thread.sleep(1000);
         verify(webSocketHandler, times(1)).sendMessage(any(String.class));
 
     }
