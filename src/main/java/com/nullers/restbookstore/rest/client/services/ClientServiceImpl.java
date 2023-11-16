@@ -109,11 +109,9 @@ public class ClientServiceImpl implements ClientService{
             Pageable pageable) {
 
         log.info("Buscando clientes con los criterios: name: " + name + ", surname: " + surname + ", email: " + email + ", phone: " + phone + ", address: " + address);
-        Specification<Client> specName = ((root, query, criteriaBuilder) ->
-                name.map(m -> criteriaBuilder.like(criteriaBuilder.lower(root.get("name")), "%"+ m.toLowerCase() + "%")).orElseGet(() -> criteriaBuilder.isTrue(criteriaBuilder.literal(true))));
+        Specification<Client> specName = ((root, query, criteriaBuilder) -> name.map(m -> criteriaBuilder.like(criteriaBuilder.lower(root.get("name")), "%"+ m.toLowerCase() + "%")).orElseGet(() -> criteriaBuilder.isTrue(criteriaBuilder.literal(true))));
 
-        Specification<Client> specSurName = ((root, query, criteriaBuilder) ->
-                surname.map(m -> criteriaBuilder.like(criteriaBuilder.lower(root.get("surname")), "%"+ m.toLowerCase() + "%")).orElseGet(() -> criteriaBuilder.isTrue(criteriaBuilder.literal(true))));
+        Specification<Client> specSurName = ((root, query, criteriaBuilder) -> surname.map(m -> criteriaBuilder.like(criteriaBuilder.lower(root.get("surname")), "%"+ m.toLowerCase() + "%")).orElseGet(() -> criteriaBuilder.isTrue(criteriaBuilder.literal(true))));
 
         Specification<Client> specEmail = ((root, query, criteriaBuilder) -> email.map(m -> criteriaBuilder.like(criteriaBuilder.lower(root.get("email")), "%"+ m.toLowerCase() + "%")).orElseGet(() -> criteriaBuilder.isTrue(criteriaBuilder.literal(true))));
 
