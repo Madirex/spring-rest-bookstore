@@ -1,4 +1,4 @@
-package com.nullers.restbookstore.client.mappers;
+package com.nullers.restbookstore.rest.client.mappers;
 
 import com.nullers.restbookstore.rest.client.dto.ClientCreateDto;
 import com.nullers.restbookstore.rest.client.mappers.ClientCreateMapper;
