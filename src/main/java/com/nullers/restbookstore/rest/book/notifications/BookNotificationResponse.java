@@ -13,7 +13,7 @@ public record BookNotificationResponse(
         String description,
         String createdAt,
         String updatedAt,
-
+        Double price,
         Boolean active
 ) {
 }
