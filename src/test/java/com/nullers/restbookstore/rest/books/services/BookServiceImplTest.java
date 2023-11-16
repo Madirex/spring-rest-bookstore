@@ -142,7 +142,7 @@ class BookServiceImplTest {
         when(bookRepository.findAll(anySpecification, any(Pageable.class))).thenReturn(expectedPage);
         when(bookMapperImpl.toGetBookDTO(any(Book.class), any())).thenReturn(list2.get(0));
         when(publisherMapper.toPublisherData(any(Publisher.class))).thenReturn(PublisherData.builder().id(1L).build());
-        Page<GetBookDTO> actualPage = bookService.getAllBook(Optional.empty(), Optional.empty(), pageable);
+        Page<GetBookDTO> actualPage = bookService.getAllBook(Optional.empty(), Optional.empty(), Optional.empty(),  pageable);
         var list3 = actualPage.getContent();
         assertAll("Book properties",
                 () -> assertEquals(2, list.size(), "La lista debe contener 2 elementos"),
