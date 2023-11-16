@@ -11,7 +11,7 @@ import java.util.UUID;
 @Repository
 public interface ClientRepository extends JpaRepository<Client, UUID>, JpaSpecificationExecutor<Client> {
 
-    public Optional<Client> getClientByEmail(String email);
+    public Optional<Client> getClientByEmailEqualsIgnoreCase(String email);
 
 
 }
