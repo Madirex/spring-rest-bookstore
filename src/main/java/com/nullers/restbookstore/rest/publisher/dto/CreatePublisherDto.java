@@ -16,4 +16,6 @@ public class CreatePublisherDto {
     private String name;
     @NotBlank(message = "la imagen no puede estar vacía")
     private String image;
+    @Builder.Default
+    private Boolean active = true;
 }

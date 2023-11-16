@@ -31,6 +31,7 @@ public class PublisherMapper {
                 .name(dto.getName())
                 .image(dto.getImage())
                 .books(dto.getBooks())
+                .active(true)
                 .build();
     }
 
@@ -48,6 +49,7 @@ public class PublisherMapper {
                 .books(publisher.getBooks())
                 .createdAt(publisher.getCreatedAt())
                 .updatedAt(publisher.getUpdatedAt())
+                .active(publisher.getActive())
                 .build();
     }
 
