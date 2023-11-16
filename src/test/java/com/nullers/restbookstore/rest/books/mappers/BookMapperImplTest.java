@@ -15,6 +15,7 @@ import org.junit.jupiter.api.Test;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 import static org.hibernate.validator.internal.util.Contracts.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -97,7 +98,7 @@ class BookMapperImplTest {
      * Test para comprobar que el mapeo de un Book a DTO es correcto
      */
     @Test
-    void toGetBookDTO() {
+    void testToGetBookDTO() {
         var book = Book.builder()
                 .id(1L)
                 .name("nombre")
@@ -121,10 +122,112 @@ class BookMapperImplTest {
     }
 
     /**
+     * Test para comprobar que el mapeo de un Book a DTO es correcto
+     */
+    @Test
+    void bookToBookDTO() {
+        var book = Book.builder()
+                .id(1L)
+                .name("nombre")
+                .publisher(Publisher.builder().id(1L).build())
+                .price(2.2)
+                .image("imagen")
+                .description("descripción")
+                .createdAt(LocalDateTime.now())
+                .updatedAt(LocalDateTime.now())
+                .active(true)
+                .category(Categoria.builder().nombre("test").nombre("dsfsdf").build())
+                .build();
+        var mapped = bookMapperImpl.toGetBookDTO(book);
+        assertAll("Book properties",
+                () -> assertEquals(book.getName(), mapped.getName(), "El nombre debe coincidir"),
+                () -> assertEquals(book.getPrice(), mapped.getPrice(), "El precio debe coincidir"),
+                () -> assertEquals(book.getImage(), mapped.getImage(), "La imagen debe coincidir"),
+                () -> assertEquals(book.getDescription(), mapped.getDescription(), "La descripción debe coincidir"));
+    }
+
+    /**
+     * Test para comprobar que el mapeo de un UpdateBook a DTO es correcto
+     */
+    @Test
+    void updateBookToBookDTO() {
+        var book = Book.builder()
+                .id(1L)
+                .name("nombre")
+                .publisher(Publisher.builder().id(1L).build())
+                .price(2.2)
+                .image("imagen")
+                .description("descripción")
+                .createdAt(LocalDateTime.now())
+                .updatedAt(LocalDateTime.now())
+                .active(true)
+                .category(Categoria.builder().nombre("test").build())
+                .build();
+        var updatedBook = UpdateBookDTO.builder()
+                .name("nombre")
+                .publisherId(1L)
+                .price(2.2)
+                .image("imagen")
+                .description("descripción")
+                .build();
+        var mapped = bookMapperImpl.toBook(book, updatedBook, Publisher.builder().id(1L).build(), Categoria.builder()
+                .build());
+        assertAll("Book properties",
+                () -> assertNotNull(mapped.getId(), "El ID no debe ser nulo"),
+                () -> assertEquals(book.getName(), mapped.getName(), "El nombre debe coincidir"),
+                () -> assertEquals(book.getPublisher().getId(), mapped.getPublisher().getId(), "El Publisher debe coincidir"),
+                () -> assertEquals(book.getPrice(), mapped.getPrice(), "El precio debe coincidir"),
+                () -> assertEquals(book.getImage(), mapped.getImage(), "La imagen debe coincidir"),
+                () -> assertEquals(book.getDescription(), mapped.getDescription(), "La descripción debe coincidir"));
+    }
+
+    /**
+     * Test para comprobar que el mapeo de un CreateBook a DTO es correcto
+     */
+    @Test
+    void createBookToBookDTO() {
+        var book = CreateBookDTO.builder()
+                .category(UUID.randomUUID().toString())
+                .name("nombre")
+                .price(2.2)
+                .publisherId(1L)
+                .image("imagen")
+                .description("descripción")
+                .build();
+        var mapped = bookMapperImpl.toBook(book, Publisher.builder().id(1L).build(), Categoria.builder().build());
+        assertAll("Book properties",
+                () -> assertEquals(book.getName(), mapped.getName(), "El nombre debe coincidir"),
+                () -> assertEquals(book.getPrice(), mapped.getPrice(), "El precio debe coincidir"),
+                () -> assertEquals(book.getImage(), mapped.getImage(), "La imagen debe coincidir"),
+                () -> assertEquals(book.getDescription(), mapped.getDescription(), "La descripción debe coincidir"));
+    }
+
+    /**
+     * Test para comprobar que el mapeo de GetBookDTO se realiza a Book
+     */
+    @Test
+    void getBookDTOToBook() {
+        var book = GetBookDTO.builder()
+                .name("nombre")
+                .price(2.2)
+                .image("imagen")
+                .description("descripción")
+                .category(UUID.randomUUID().toString())
+                .publisher(PublisherData.builder().id(1L).build())
+                .build();
+        var mapped = bookMapperImpl.toBook(book);
+        assertAll("Book properties",
+                () -> assertEquals(book.getName(), mapped.getName(), "El nombre debe coincidir"),
+                () -> assertEquals(book.getPrice(), mapped.getPrice(), "El precio debe coincidir"),
+                () -> assertEquals(book.getImage(), mapped.getImage(), "La imagen debe coincidir"),
+                () -> assertEquals(book.getDescription(), mapped.getDescription(), "La descripción debe coincidir"));
+    }
+
+    /**
      * Test para comprobar mapeo a GetBookDTOList
      */
     @Test
-    void toGetBookDTOList() {
+    void testToGetBookDTOList() {
         List<Book> list = new ArrayList<>();
         list.add(Book.builder()
                 .id(1L)
@@ -155,7 +258,7 @@ class BookMapperImplTest {
      * Test para comprobar mapeo a BookNotificationDTO
      */
     @Test
-    void toBookNotificationDTO() {
+    void testToBookNotificationDTO() {
         var book = GetBookDTO.builder()
                 .id(1L)
                 .name("nombre")
