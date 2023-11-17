@@ -1,6 +1,5 @@
-package com.nullers.restbookstore.rest.client.utils;
+package com.nullers.restbookstore.pagination.utils;
 
-import com.nullers.restbookstore.pagination.utils.PaginationLinksUtils;
 import org.junit.jupiter.api.Test;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -38,7 +37,7 @@ class PaginationLinksUtilsTest {
         String linkHeader = paginationLinksUtils.createLinkHeader(page, uriBuilder);
 
         assertAll(
-                () ->  assertEquals("<" + uriBuilder.replaceQueryParam("page", 3).replaceQueryParam("size", 10).build().encode().toUriString() + ">; rel=\"prev\", " +
+                () -> assertEquals("<" + uriBuilder.replaceQueryParam("page", 3).replaceQueryParam("size", 10).build().encode().toUriString() + ">; rel=\"prev\", " +
                         "<" + uriBuilder.replaceQueryParam("page", 0).replaceQueryParam("size", 10).build().encode().toUriString() + ">; rel=\"first\"", linkHeader)
         );
 
