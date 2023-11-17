@@ -37,6 +37,9 @@ class FileSystemStorageServiceTest {
             (byte) 137, (byte) 80, (byte) 78, (byte) 71, 13, 10, 26, 10, 0, 0, 0, 13, 73, 72, 68, 82,
             0, 0, 0, 1, 0, 0, 0, 1, 8, 6, 0, 0, 0, 31, 21, (byte) -60, (byte) -60 };
 
+    byte[] bytesGIF = {(byte) 71, (byte) 73, (byte) 70, (byte) 56, (byte) 57, (byte) 97, 0, 0, (byte) 192, 0, 0,
+            (byte) 255, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, (byte) 33, (byte) 249, 4, 1, 0, 0, 0, 0};
+
     @BeforeEach
     public void setUp() throws IOException {
         fileSystemStorageService.deleteAll();
@@ -50,16 +53,67 @@ class FileSystemStorageServiceTest {
         RequestContextHolder.setRequestAttributes(attrs);
     }
 
+    /**
+     * Test para probar que el método Store funciona correctamente (PNG)
+     *
+     * @throws IOException excepción entrada/salida
+     */
     @Test
-    void testStore() throws IOException {
+    void testStorePng() throws IOException {
         var id = UUID.randomUUID().toString();
-        String file = fileSystemStorageService.store(new MockMultipartFile("book", "book.png",
+        String file = fileSystemStorageService.store(new MockMultipartFile("funko", "funko.png",
                 "image/png", bytesPNG), List.of("jpg", "jpeg", "png"), id);
 
         assertAll(
                 () -> assertNotNull(file),
                 () -> assertTrue(file.contains(id + ".png"))
         );
+    }
+
+    /**
+     * Test para probar que el método Store funciona correctamente (JPG)
+     *
+     * @throws IOException excepción entrada/salida
+     */
+    @Test
+    void testStoreJpg() throws IOException {
+        var id = UUID.randomUUID().toString();
+        String file = fileSystemStorageService.store(new MockMultipartFile("funko", "funko.jpg",
+                "image/jpg", bytesPNG), List.of("jpg", "jpeg", "png"), id);
+
+        assertAll(
+                () -> assertNotNull(file),
+                () -> assertTrue(file.contains(id + ".jpg"))
+        );
+    }
+
+    /**
+     * Test para probar que el método Store funciona correctamente (Jpeg)
+     *
+     * @throws IOException excepción entrada/salida
+     */
+    @Test
+    void testStoreJpeg() throws IOException {
+        var id = UUID.randomUUID().toString();
+        String file = fileSystemStorageService.store(new MockMultipartFile("funko", "funko.jpeg",
+                "image/jpeg", bytesPNG), List.of("jpg", "jpeg", "png"), id);
+
+        assertAll(
+                () -> assertNotNull(file),
+                () -> assertTrue(file.contains(id + ".jpeg"))
+        );
+    }
+
+    /**
+     * Test para probar que no se permite insertar (Gif)
+     *
+     * @throws IOException excepción entrada/salida
+     */
+    @Test
+    void testStoreGifNotAllowed() {
+        var id = UUID.randomUUID().toString();
+        assertThrows(StorageBadRequest.class, () -> fileSystemStorageService.store(new MockMultipartFile("funko", "funko.gif",
+                "image/gif", bytesGIF), List.of("jpg", "jpeg", "png"), id));
     }
 
     @Test
