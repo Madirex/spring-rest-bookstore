@@ -1,8 +1,8 @@
 package com.nullers.restbookstore.rest.book.controllers;
 
 import com.nullers.restbookstore.pagination.exceptions.PageNotValidException;
-import com.nullers.restbookstore.pagination.utils.PageResponse;
-import com.nullers.restbookstore.pagination.utils.PaginationLinksUtils;
+import com.nullers.restbookstore.pagination.models.PageResponse;
+import com.nullers.restbookstore.pagination.util.PaginationLinksUtils;
 import com.nullers.restbookstore.rest.book.dto.CreateBookDTO;
 import com.nullers.restbookstore.rest.book.dto.GetBookDTO;
 import com.nullers.restbookstore.rest.book.dto.PatchBookDTO;

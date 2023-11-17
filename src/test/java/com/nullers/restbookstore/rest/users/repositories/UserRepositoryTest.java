@@ -1,6 +1,6 @@
 package com.nullers.restbookstore.rest.users.repositories;
 
-import com.nullers.restbookstore.rest.user.model.User;
+import com.nullers.restbookstore.rest.user.models.User;
 import com.nullers.restbookstore.rest.user.repository.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

@@ -2,7 +2,7 @@ package com.nullers.restbookstore.exceptions;
 
 import com.nullers.restbookstore.pagination.exceptions.PageNotValidException;
 import com.nullers.restbookstore.rest.category.exceptions.CategoriaNotFoundException;
-import com.nullers.restbookstore.rest.publisher.models.responses.ErrorResponse;
+import com.nullers.restbookstore.pagination.models.ErrorResponse;
 import org.apache.tomcat.util.http.fileupload.impl.FileSizeLimitExceededException;
 import org.springframework.data.mapping.PropertyReferenceException;
 import org.springframework.http.HttpStatus;

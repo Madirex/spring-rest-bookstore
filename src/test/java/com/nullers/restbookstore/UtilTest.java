@@ -1,6 +1,6 @@
 package com.nullers.restbookstore;
 
-import com.nullers.restbookstore.utils.Util;
+import com.nullers.restbookstore.util.Util;
 import org.junit.jupiter.api.Test;
 
 import java.lang.reflect.Constructor;

@@ -1,6 +1,6 @@
 package com.nullers.restbookstore.rest.user.dto;
 
-import com.nullers.restbookstore.rest.user.model.Role;
+import com.nullers.restbookstore.rest.user.models.Role;
 import lombok.*;
 
 import java.util.Set;

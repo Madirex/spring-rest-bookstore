@@ -1,11 +1,11 @@
 package com.nullers.restbookstore.rest.books.controllers;
 
-import com.nullers.restbookstore.pagination.utils.PaginationLinksUtils;
+import com.nullers.restbookstore.pagination.util.PaginationLinksUtils;
 import com.nullers.restbookstore.rest.book.controllers.BookRestControllerImpl;
-import com.nullers.restbookstore.rest.book.models.Book;
+import com.nullers.restbookstore.rest.book.model.Book;
 import com.nullers.restbookstore.rest.book.services.BookServiceImpl;
-import com.nullers.restbookstore.rest.category.models.Categoria;
-import com.nullers.restbookstore.rest.publisher.models.Publisher;
+import com.nullers.restbookstore.rest.category.model.Categoria;
+import com.nullers.restbookstore.rest.publisher.model.Publisher;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;

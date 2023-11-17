@@ -7,7 +7,7 @@ import com.nullers.restbookstore.rest.category.dto.CategoriaCreateDto;
 import com.nullers.restbookstore.rest.category.exceptions.CategoriaConflictException;
 import com.nullers.restbookstore.rest.category.exceptions.CategoriaNotFoundException;
 import com.nullers.restbookstore.rest.category.mappers.CategoriaCreateMapper;
-import com.nullers.restbookstore.rest.category.models.Categoria;
+import com.nullers.restbookstore.rest.category.model.Categoria;
 import com.nullers.restbookstore.rest.category.repository.CategoriasRepositoryJpa;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheConfig;

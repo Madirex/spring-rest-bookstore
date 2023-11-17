@@ -1,18 +1,18 @@
 package com.nullers.restbookstore.rest.client.controllers;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.nullers.restbookstore.pagination.models.ErrorResponse;
+import com.nullers.restbookstore.pagination.models.PageResponse;
 import com.nullers.restbookstore.rest.book.dto.GetBookDTO;
 import com.nullers.restbookstore.rest.book.exceptions.BookNotFoundException;
-import com.nullers.restbookstore.rest.book.models.Book;
+import com.nullers.restbookstore.rest.book.model.Book;
 import com.nullers.restbookstore.rest.client.dto.ClientCreateDto;
 import com.nullers.restbookstore.rest.client.dto.ClientDto;
 import com.nullers.restbookstore.rest.client.dto.ClientUpdateDto;
 import com.nullers.restbookstore.rest.client.exceptions.ClientAlreadyExists;
 import com.nullers.restbookstore.rest.client.exceptions.ClientBookAlreadyExists;
 import com.nullers.restbookstore.rest.client.exceptions.ClientNotFound;
-import com.nullers.restbookstore.rest.client.models.Client;
-import com.nullers.restbookstore.rest.client.models.responses.ErrorResponse;
-import com.nullers.restbookstore.rest.client.models.responses.PageResponse;
+import com.nullers.restbookstore.rest.client.model.Client;
 import com.nullers.restbookstore.rest.client.services.ClientServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -36,7 +36,8 @@ import org.springframework.web.multipart.MultipartFile;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -65,7 +66,6 @@ class ClientControllerTest {
             .image("https://via.placeholder.com/150")
             .books(List.of(Book.builder().id(1L).name("hobbit").description("prueba desc").active(true).build()))
             .build();
-
 
 
     private final Client clientTest2 = Client.builder()
@@ -101,12 +101,12 @@ class ClientControllerTest {
     private final String endpoint = "/api/clients";
 
     @Autowired
-    public ClientControllerTest(ClientServiceImpl clientService){
+    public ClientControllerTest(ClientServiceImpl clientService) {
         this.clientService = clientService;
     }
 
     @BeforeEach
-    void setUp(){
+    void setUp() {
         mapper = new ObjectMapper();
     }
 
@@ -114,7 +114,7 @@ class ClientControllerTest {
     void getAllClients() throws Exception {
         List<ClientDto> clients = List.of(clientDtoTest, clientDtoTest2);
 
-        when(clientService.findAll(any(Optional.class), any(Optional.class), any(Optional.class), any(Optional.class), any(Optional.class) ,any(PageRequest.class)))
+        when(clientService.findAll(any(Optional.class), any(Optional.class), any(Optional.class), any(Optional.class), any(Optional.class), any(PageRequest.class)))
                 .thenReturn(new PageImpl(clients));
 
         MockHttpServletResponse response = mockMvc.perform(get(endpoint).accept(MediaType.APPLICATION_JSON)).andReturn().getResponse();
@@ -130,7 +130,7 @@ class ClientControllerTest {
                 () -> assertEquals(clientDtoTest2.getName(), res.content().get(1).getName())
         );
 
-        verify(clientService, times(1)).findAll(any(Optional.class), any(Optional.class), any(Optional.class), any(Optional.class), any(Optional.class) ,any(PageRequest.class));
+        verify(clientService, times(1)).findAll(any(Optional.class), any(Optional.class), any(Optional.class), any(Optional.class), any(Optional.class), any(PageRequest.class));
 
     }
 
@@ -138,7 +138,7 @@ class ClientControllerTest {
     void getAllClients_ShouldReturnAllClients_withAllParams() throws Exception {
         List<ClientDto> clients = List.of(clientDtoTest);
 
-        when(clientService.findAll(any(Optional.class), any(Optional.class), any(Optional.class), any(Optional.class), any(Optional.class) ,any(PageRequest.class)))
+        when(clientService.findAll(any(Optional.class), any(Optional.class), any(Optional.class), any(Optional.class), any(Optional.class), any(PageRequest.class)))
                 .thenReturn(new PageImpl(clients));
 
         MockHttpServletResponse response = mockMvc.perform(get(endpoint)
@@ -159,14 +159,14 @@ class ClientControllerTest {
                 () -> assertEquals(clientDtoTest.getName(), res.content().get(0).getName())
         );
 
-        verify(clientService, times(1)).findAll(any(Optional.class), any(Optional.class), any(Optional.class), any(Optional.class), any(Optional.class) ,any(PageRequest.class));
+        verify(clientService, times(1)).findAll(any(Optional.class), any(Optional.class), any(Optional.class), any(Optional.class), any(Optional.class), any(PageRequest.class));
     }
 
     @Test
     void getAllClients_ShouldReturnEmptyList() throws Exception {
         List<ClientDto> clients = List.of();
 
-        when(clientService.findAll(any(Optional.class), any(Optional.class), any(Optional.class), any(Optional.class), any(Optional.class) ,any(PageRequest.class)))
+        when(clientService.findAll(any(Optional.class), any(Optional.class), any(Optional.class), any(Optional.class), any(Optional.class), any(PageRequest.class)))
                 .thenReturn(new PageImpl(clients));
 
         MockHttpServletResponse response = mockMvc.perform(get(endpoint)
@@ -188,7 +188,7 @@ class ClientControllerTest {
                 () -> assertEquals(0, res.content().size())
         );
 
-        verify(clientService, times(1)).findAll(any(Optional.class), any(Optional.class), any(Optional.class), any(Optional.class), any(Optional.class) ,any(PageRequest.class));
+        verify(clientService, times(1)).findAll(any(Optional.class), any(Optional.class), any(Optional.class), any(Optional.class), any(Optional.class), any(PageRequest.class));
     }
 
     /*@Test
@@ -212,7 +212,7 @@ class ClientControllerTest {
     void getAllClients_ShouldReturnAllClients_withNameParam() throws Exception {
         List<ClientDto> clients = List.of(clientDtoTest);
 
-        when(clientService.findAll(any(Optional.class), any(Optional.class), any(Optional.class), any(Optional.class), any(Optional.class) ,any(PageRequest.class)))
+        when(clientService.findAll(any(Optional.class), any(Optional.class), any(Optional.class), any(Optional.class), any(Optional.class), any(PageRequest.class)))
                 .thenReturn(new PageImpl(clients));
 
         MockHttpServletResponse response = mockMvc.perform(get(endpoint)
@@ -229,14 +229,14 @@ class ClientControllerTest {
                 () -> assertEquals(clientDtoTest.getName(), res.content().get(0).getName())
         );
 
-        verify(clientService, times(1)).findAll(any(Optional.class), any(Optional.class), any(Optional.class), any(Optional.class), any(Optional.class) ,any(PageRequest.class));
+        verify(clientService, times(1)).findAll(any(Optional.class), any(Optional.class), any(Optional.class), any(Optional.class), any(Optional.class), any(PageRequest.class));
     }
 
     @Test
     void getAllClients_ShouldReturnAllClients_withSurnameParam() throws Exception {
         List<ClientDto> clients = List.of(clientDtoTest);
 
-        when(clientService.findAll(any(Optional.class), any(Optional.class), any(Optional.class), any(Optional.class), any(Optional.class) ,any(PageRequest.class)))
+        when(clientService.findAll(any(Optional.class), any(Optional.class), any(Optional.class), any(Optional.class), any(Optional.class), any(PageRequest.class)))
                 .thenReturn(new PageImpl(clients));
 
         MockHttpServletResponse response = mockMvc.perform(get(endpoint)
@@ -253,7 +253,7 @@ class ClientControllerTest {
                 () -> assertEquals(clientDtoTest.getName(), res.content().get(0).getName())
         );
 
-        verify(clientService, times(1)).findAll(any(Optional.class), any(Optional.class), any(Optional.class), any(Optional.class), any(Optional.class) ,any(PageRequest.class));
+        verify(clientService, times(1)).findAll(any(Optional.class), any(Optional.class), any(Optional.class), any(Optional.class), any(Optional.class), any(PageRequest.class));
     }
 
 
@@ -450,7 +450,7 @@ class ClientControllerTest {
                 () -> assertEquals("El numero de pagina no debe ser menor a 0 y el tamano de la pagina debe ser mayor que 0", res.msg())
         );
 
-        verify(clientService, times(0)).findAll(any(Optional.class), any(Optional.class), any(Optional.class), any(Optional.class), any(Optional.class) ,any(PageRequest.class));
+        verify(clientService, times(0)).findAll(any(Optional.class), any(Optional.class), any(Optional.class), any(Optional.class), any(Optional.class), any(PageRequest.class));
     }
 
     @Test
@@ -466,12 +466,12 @@ class ClientControllerTest {
                 () -> assertEquals("El numero de pagina no debe ser menor a 0 y el tamano de la pagina debe ser mayor que 0", res.msg())
         );
 
-        verify(clientService, times(0)).findAll(any(Optional.class), any(Optional.class), any(Optional.class), any(Optional.class), any(Optional.class) ,any(PageRequest.class));
+        verify(clientService, times(0)).findAll(any(Optional.class), any(Optional.class), any(Optional.class), any(Optional.class), any(Optional.class), any(PageRequest.class));
     }
 
     @Test
     void getAll_ShouldReturnErrorResponse_withInvalidSortByParam() throws Exception {
-        when(clientService.findAll(any(Optional.class), any(Optional.class), any(Optional.class), any(Optional.class), any(Optional.class) ,any(PageRequest.class)))
+        when(clientService.findAll(any(Optional.class), any(Optional.class), any(Optional.class), any(Optional.class), any(Optional.class), any(PageRequest.class)))
                 .thenThrow(new IllegalArgumentException("No property 'pepe' found for type 'Client'"));
 
         MockHttpServletResponse response = mockMvc.perform(get(endpoint)
@@ -485,7 +485,7 @@ class ClientControllerTest {
                 () -> assertEquals("No property 'pepe' found for type 'Client'", res.msg())
         );
 
-        verify(clientService, times(1)).findAll(any(Optional.class), any(Optional.class), any(Optional.class), any(Optional.class), any(Optional.class) ,any(PageRequest.class));
+        verify(clientService, times(1)).findAll(any(Optional.class), any(Optional.class), any(Optional.class), any(Optional.class), any(Optional.class), any(PageRequest.class));
     }
 
     @Test
@@ -528,7 +528,6 @@ class ClientControllerTest {
 
         verify(clientService, times(1)).findById(any(UUID.class));
     }
-
 
 
     @Test
@@ -577,8 +576,8 @@ class ClientControllerTest {
         when(clientService.save(any(ClientCreateDto.class))).thenReturn(clientDtoTest);
 
         MockHttpServletResponse response = mockMvc.perform(post(endpoint)
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(mapper.writeValueAsString(clientDtoTest)))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(mapper.writeValueAsString(clientDtoTest)))
                 .andReturn().getResponse();
 
         ClientDto res = mapper.readValue(response.getContentAsString(), ClientDto.class);
@@ -602,8 +601,8 @@ class ClientControllerTest {
         when(clientService.findById(any(UUID.class))).thenThrow(new ClientNotFound("id", UUID.fromString("9def16db-362b-44c4-9fc9-77117758b5b9")));
 
         MockHttpServletResponse response = mockMvc.perform(post(endpoint)
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(mapper.writeValueAsString(clientDtoTest)))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(mapper.writeValueAsString(clientDtoTest)))
                 .andReturn().getResponse();
 
         ErrorResponse res = mapper.readValue(response.getContentAsString(), ErrorResponse.class);
@@ -617,7 +616,7 @@ class ClientControllerTest {
     }
 
     @Test
-    void createClient_ShouldReturnErrorResponse_withDuplicateEmail() throws Exception{
+    void createClient_ShouldReturnErrorResponse_withDuplicateEmail() throws Exception {
         when(clientService.save(any(ClientCreateDto.class))).thenThrow(new ClientAlreadyExists("email", "daniel@gmail.com"));
 
         MockHttpServletResponse response = mockMvc.perform(post(endpoint)
@@ -636,7 +635,7 @@ class ClientControllerTest {
 
 
     @Test
-    void createClient_ShouldReturnErrorReponse_WithEmptyName() throws Exception{
+    void createClient_ShouldReturnErrorReponse_WithEmptyName() throws Exception {
         ClientCreateDto clientCreateDto = ClientCreateDto.builder()
                 .surname("Garcia")
                 .email("daniel@gmail.com")
@@ -649,7 +648,7 @@ class ClientControllerTest {
                         .content(mapper.writeValueAsString(clientCreateDto)))
                 .andReturn().getResponse();
 
-        Map<String, Object> res = mapper.readValue(response.getContentAsString(),mapper.getTypeFactory().constructMapType(Map.class, String.class, Object.class));
+        Map<String, Object> res = mapper.readValue(response.getContentAsString(), mapper.getTypeFactory().constructMapType(Map.class, String.class, Object.class));
         LinkedHashMap<String, Object> errors = (LinkedHashMap<String, Object>) res.get("errors");
 
         assertAll(
@@ -818,7 +817,7 @@ class ClientControllerTest {
     }
 
     @Test
-    void createClient_ShouldReturnErrorResponse_WithAllErrors() throws Exception{
+    void createClient_ShouldReturnErrorResponse_WithAllErrors() throws Exception {
         ClientCreateDto clientCreateDto = ClientCreateDto.builder()
                 .name("")
                 .surname("")
@@ -832,7 +831,7 @@ class ClientControllerTest {
                         .content(mapper.writeValueAsString(clientCreateDto)))
                 .andReturn().getResponse();
 
-        Map<String, Object> res = mapper.readValue(response.getContentAsString(),mapper.getTypeFactory().constructMapType(Map.class, String.class, Object.class));
+        Map<String, Object> res = mapper.readValue(response.getContentAsString(), mapper.getTypeFactory().constructMapType(Map.class, String.class, Object.class));
         LinkedHashMap<String, Object> errors = (LinkedHashMap<String, Object>) res.get("errors");
 
         assertAll(
@@ -846,7 +845,7 @@ class ClientControllerTest {
     }
 
     @Test
-    void createClient_ShouldReturnErrorReponse_withPhoneMinINvalid() throws Exception{
+    void createClient_ShouldReturnErrorReponse_withPhoneMinINvalid() throws Exception {
         ClientCreateDto clientCreateDto = ClientCreateDto.builder()
                 .name("Daniel")
                 .surname("Garcia")
@@ -860,7 +859,7 @@ class ClientControllerTest {
                         .content(mapper.writeValueAsString(clientCreateDto)))
                 .andReturn().getResponse();
 
-        Map<String, Object> res = mapper.readValue(response.getContentAsString(),mapper.getTypeFactory().constructMapType(Map.class, String.class, Object.class));
+        Map<String, Object> res = mapper.readValue(response.getContentAsString(), mapper.getTypeFactory().constructMapType(Map.class, String.class, Object.class));
         LinkedHashMap<String, Object> errors = (LinkedHashMap<String, Object>) res.get("errors");
 
         assertAll(
@@ -874,8 +873,8 @@ class ClientControllerTest {
         when(clientService.update(any(UUID.class), any(ClientUpdateDto.class))).thenReturn(clientDtoTest);
 
         MockHttpServletResponse response = mockMvc.perform(put(endpoint + "/9def16db-362b-44c4-9fc9-77117758b5b0")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(mapper.writeValueAsString(clientDtoTest)))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(mapper.writeValueAsString(clientDtoTest)))
                 .andReturn().getResponse();
 
         ClientDto res = mapper.readValue(response.getContentAsString(), ClientDto.class);
@@ -899,8 +898,8 @@ class ClientControllerTest {
         when(clientService.update(any(UUID.class), any(ClientUpdateDto.class))).thenThrow(new ClientNotFound("id", UUID.fromString("9def16db-362b-44c4-9fc9-77117758b5b9")));
 
         MockHttpServletResponse response = mockMvc.perform(put(endpoint + "/9def16db-362b-44c4-9fc9-77117758b5b9")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(mapper.writeValueAsString(clientDtoTest)))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(mapper.writeValueAsString(clientDtoTest)))
                 .andReturn().getResponse();
 
         ErrorResponse res = mapper.readValue(response.getContentAsString(), ErrorResponse.class);
@@ -947,7 +946,7 @@ class ClientControllerTest {
                         .content(mapper.writeValueAsString(clientUpdateDto)))
                 .andReturn().getResponse();
 
-        Map<String, Object> res = mapper.readValue(response.getContentAsString(),mapper.getTypeFactory().constructMapType(Map.class, String.class, Object.class));
+        Map<String, Object> res = mapper.readValue(response.getContentAsString(), mapper.getTypeFactory().constructMapType(Map.class, String.class, Object.class));
         LinkedHashMap<String, Object> errors = (LinkedHashMap<String, Object>) res.get("errors");
 
         assertAll(
@@ -1024,7 +1023,7 @@ class ClientControllerTest {
                         .content(mapper.writeValueAsString(clientUpdateDto)))
                 .andReturn().getResponse();
 
-        Map<String, Object> res = mapper.readValue(response.getContentAsString(),mapper.getTypeFactory().constructMapType(Map.class, String.class, Object.class));
+        Map<String, Object> res = mapper.readValue(response.getContentAsString(), mapper.getTypeFactory().constructMapType(Map.class, String.class, Object.class));
         LinkedHashMap<String, Object> errors = (LinkedHashMap<String, Object>) res.get("errors");
 
         assertAll(
@@ -1243,7 +1242,7 @@ class ClientControllerTest {
                         .header(HttpHeaders.ACCEPT_CHARSET, StandardCharsets.UTF_8.name()))
                 .andReturn().getResponse();
 
-        Map<String, Object> res = mapper.readValue(response.getContentAsString(),mapper.getTypeFactory().constructMapType(Map.class, String.class, Object.class));
+        Map<String, Object> res = mapper.readValue(response.getContentAsString(), mapper.getTypeFactory().constructMapType(Map.class, String.class, Object.class));
 
         assertAll(
                 () -> assertEquals(HttpStatus.BAD_REQUEST.value(), response.getStatus()),
@@ -1257,7 +1256,7 @@ class ClientControllerTest {
                         .accept(MediaType.APPLICATION_JSON))
                 .andReturn().getResponse();
 
-        Map<String, Object> res = mapper.readValue(response.getContentAsString(),mapper.getTypeFactory().constructMapType(Map.class, String.class, Object.class));
+        Map<String, Object> res = mapper.readValue(response.getContentAsString(), mapper.getTypeFactory().constructMapType(Map.class, String.class, Object.class));
 
         assertAll(
                 () -> assertEquals(HttpStatus.BAD_REQUEST.value(), response.getStatus()),
@@ -1468,7 +1467,7 @@ class ClientControllerTest {
                         .contentType(MediaType.MULTIPART_FORM_DATA))
                 .andReturn().getResponse();
 
-        Map<String, Object> res = mapper.readValue(response.getContentAsString(),mapper.getTypeFactory().constructMapType(Map.class, String.class, Object.class));
+        Map<String, Object> res = mapper.readValue(response.getContentAsString(), mapper.getTypeFactory().constructMapType(Map.class, String.class, Object.class));
 
         assertAll(
                 () -> assertEquals(HttpStatus.BAD_REQUEST.value(), response.getStatus()),
@@ -1494,7 +1493,7 @@ class ClientControllerTest {
                         .contentType(MediaType.MULTIPART_FORM_DATA))
                 .andReturn().getResponse();
 
-        Map<String, Object> res = mapper.readValue(response.getContentAsString(),mapper.getTypeFactory().constructMapType(Map.class, String.class, Object.class));
+        Map<String, Object> res = mapper.readValue(response.getContentAsString(), mapper.getTypeFactory().constructMapType(Map.class, String.class, Object.class));
 
         assertAll(
                 () -> assertEquals(HttpStatus.BAD_REQUEST.value(), response.getStatus()),
@@ -1552,9 +1551,6 @@ class ClientControllerTest {
 
         verify(clientService, times(1)).addBookToClient(any(UUID.class), any(Long.class));
     }
-
-
-
 
 
 }

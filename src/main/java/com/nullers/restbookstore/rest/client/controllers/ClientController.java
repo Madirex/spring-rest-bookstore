@@ -1,6 +1,7 @@
 package com.nullers.restbookstore.rest.client.controllers;
 
-import com.nullers.restbookstore.pagination.utils.PaginationLinksUtils;
+import com.nullers.restbookstore.pagination.models.PageResponse;
+import com.nullers.restbookstore.pagination.util.PaginationLinksUtils;
 import com.nullers.restbookstore.rest.book.dto.GetBookDTO;
 import com.nullers.restbookstore.rest.book.exceptions.BookNotFoundException;
 import com.nullers.restbookstore.rest.client.dto.ClientCreateDto;
@@ -10,8 +11,7 @@ import com.nullers.restbookstore.rest.client.exceptions.ClientAlreadyExists;
 import com.nullers.restbookstore.rest.client.exceptions.ClientBadRequest;
 import com.nullers.restbookstore.rest.client.exceptions.ClientBookAlreadyExists;
 import com.nullers.restbookstore.rest.client.exceptions.ClientNotFound;
-import com.nullers.restbookstore.rest.client.models.responses.ErrorResponse;
-import com.nullers.restbookstore.rest.client.models.responses.PageResponse;
+import com.nullers.restbookstore.pagination.models.ErrorResponse;
 import com.nullers.restbookstore.rest.client.services.ClientServiceImpl;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;

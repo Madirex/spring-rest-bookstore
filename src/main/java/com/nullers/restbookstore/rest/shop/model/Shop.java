@@ -1,8 +1,7 @@
 package com.nullers.restbookstore.rest.shop.model;
 
 
-import com.nullers.restbookstore.rest.book.models.Book;
-import com.nullers.restbookstore.rest.client.models.Client;
+import com.nullers.restbookstore.rest.client.model.Client;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

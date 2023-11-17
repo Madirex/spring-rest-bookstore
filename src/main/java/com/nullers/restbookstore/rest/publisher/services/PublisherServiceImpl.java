@@ -1,11 +1,8 @@
 package com.nullers.restbookstore.rest.publisher.services;
 
-import com.nullers.restbookstore.notifications.models.Notification;
-import com.nullers.restbookstore.rest.book.dto.PatchBookDTO;
 import com.nullers.restbookstore.rest.book.exceptions.BookNotFoundException;
-import com.nullers.restbookstore.rest.book.exceptions.BookNotValidIDException;
-import com.nullers.restbookstore.rest.book.models.Book;
-import com.nullers.restbookstore.rest.book.repositories.BookRepository;
+import com.nullers.restbookstore.rest.book.model.Book;
+import com.nullers.restbookstore.rest.book.repository.BookRepository;
 import com.nullers.restbookstore.rest.publisher.dto.CreatePublisherDto;
 import com.nullers.restbookstore.rest.publisher.dto.PatchPublisherDto;
 import com.nullers.restbookstore.rest.publisher.dto.PublisherDTO;
@@ -13,10 +10,10 @@ import com.nullers.restbookstore.rest.publisher.exceptions.PublisherIDNotValid;
 import com.nullers.restbookstore.rest.publisher.exceptions.PublisherNotFound;
 import com.nullers.restbookstore.rest.publisher.mappers.CreatePublisherMapper;
 import com.nullers.restbookstore.rest.publisher.mappers.PublisherMapper;
-import com.nullers.restbookstore.rest.publisher.models.Publisher;
-import com.nullers.restbookstore.rest.publisher.repositories.PublisherRepository;
-import com.nullers.restbookstore.storage.service.StorageService;
-import com.nullers.restbookstore.utils.Util;
+import com.nullers.restbookstore.rest.publisher.model.Publisher;
+import com.nullers.restbookstore.rest.publisher.repository.PublisherRepository;
+import com.nullers.restbookstore.storage.services.StorageService;
+import com.nullers.restbookstore.util.Util;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheConfig;

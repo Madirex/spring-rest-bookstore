@@ -6,7 +6,7 @@ import com.nullers.restbookstore.rest.user.controller.UserController;
 import com.nullers.restbookstore.rest.user.dto.UserInfoResponse;
 import com.nullers.restbookstore.rest.user.dto.UserRequest;
 import com.nullers.restbookstore.rest.user.dto.UserResponse;
-import com.nullers.restbookstore.rest.user.model.User;
+import com.nullers.restbookstore.rest.user.models.User;
 import com.nullers.restbookstore.rest.user.services.UserService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

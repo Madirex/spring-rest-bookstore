@@ -1,6 +1,6 @@
 package com.nullers.restbookstore.rest.shop.controllers;
 
-import com.nullers.restbookstore.pagination.utils.PaginationLinksUtils;
+import com.nullers.restbookstore.pagination.util.PaginationLinksUtils;
 import com.nullers.restbookstore.rest.shop.model.Shop;
 import com.nullers.restbookstore.rest.shop.services.ShopServiceImpl;
 import org.junit.jupiter.api.BeforeEach;

@@ -1,6 +1,6 @@
 package com.nullers.restbookstore.rest.user.dto;
 
-import com.nullers.restbookstore.rest.user.model.Role;
+import com.nullers.restbookstore.rest.user.models.Role;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
