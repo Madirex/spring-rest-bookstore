@@ -193,8 +193,8 @@ public class BookRestControllerImpl implements BookRestController {
     @ExceptionHandler(ResponseStatusException.class)
     public ResponseEntity<String> handleResponseStatusException(ResponseStatusException ex) {
         HttpStatusCode httpStatus = ex.getStatusCode();
-        String mensaje = ex.getReason();
-        return new ResponseEntity<>(mensaje, httpStatus);
+        String msg = ex.getReason();
+        return new ResponseEntity<>(msg, httpStatus);
     }
 
     /**
