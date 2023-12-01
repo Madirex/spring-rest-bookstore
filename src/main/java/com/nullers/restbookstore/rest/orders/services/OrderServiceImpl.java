@@ -76,9 +76,9 @@ public class OrderServiceImpl implements OrderService{
     @CachePut(key = "#id")
     public Order updateOrder(ObjectId id, OrderCreateDto orderCreateDto) {
         Order orderToUpdate = getOrderById(id);
-        returnStockPedido(orderToUpdate);
         Order order = OrderCreateMapper.toOrder(orderCreateDto);
         checkOrder(order);
+        returnStockPedido(orderToUpdate);
         ObjectId idOrder = orderToUpdate.getId();
         orderToUpdate = reserveStockOrder(order);
         orderToUpdate.setId(idOrder);
@@ -119,8 +119,6 @@ public class OrderServiceImpl implements OrderService{
 
     public void checkOrder(Order order){
 
-
-
         UUID idUser = order.getUserId();
         userRepository.findById(idUser).orElseThrow(() -> new UserNotFound("El usuario con id " + idUser + " no existe"));
         UUID idClient = order.getClientId();
@@ -144,14 +142,9 @@ public class OrderServiceImpl implements OrderService{
         order.setOrderLines(mergedOrderLines);
         orderLines = order.getOrderLines();
 
-
-
         if(orderLines == null || orderLines.isEmpty()) {
             throw new OrderNotItemsExceptions(order.get_id());
         }
-
-
-
 
         orderLines.stream().forEach(lp -> {
             Book book = bookRepository.findById(lp.getBookId()).orElseThrow(() -> new BookNotFoundException("El libro con id " + lp.getBookId() + " no existe"));
