@@ -1,10 +1,7 @@
 package com.nullers.restbookstore.rest.client.notifications.dto;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.nullers.restbookstore.rest.book.model.Book;
-import com.nullers.restbookstore.rest.client.model.Address;
+import com.nullers.restbookstore.rest.common.Address;
 
-import java.util.List;
 import java.util.UUID;
 
 public record ClientNotificationResponse(

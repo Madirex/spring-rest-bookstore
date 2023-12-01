@@ -13,7 +13,7 @@ import com.nullers.restbookstore.rest.client.exceptions.ClientInOrderException;
 import com.nullers.restbookstore.rest.client.exceptions.ClientNotFound;
 import com.nullers.restbookstore.rest.client.mappers.ClientCreateMapper;
 import com.nullers.restbookstore.rest.client.mappers.ClientMapper;
-import com.nullers.restbookstore.rest.client.model.Address;
+import com.nullers.restbookstore.rest.common.Address;
 import com.nullers.restbookstore.rest.client.model.Client;
 import com.nullers.restbookstore.rest.client.repository.ClientRepository;
 import com.nullers.restbookstore.config.websockets.WebSocketConfig;
