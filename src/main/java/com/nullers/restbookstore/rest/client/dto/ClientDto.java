@@ -1,6 +1,7 @@
 package com.nullers.restbookstore.rest.client.dto;
 
 import com.nullers.restbookstore.rest.book.dto.GetBookDTO;
+import com.nullers.restbookstore.rest.client.model.Address;
 import lombok.*;
 
 import java.util.ArrayList;
@@ -18,10 +19,7 @@ public class ClientDto {
     private String surname;
     private String email;
     private String phone;
-    private String address;
+    private Address address;
     private String image;
-
-    @Builder.Default
-    private List<GetBookDTO> books = new ArrayList<>();
 
 }

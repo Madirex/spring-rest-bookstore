@@ -29,10 +29,6 @@ public interface ClientService {
 
     Optional<ClientDto> findByEmail(String email);
 
-    ClientDto addBookToClient(UUID id, Long bookId);
-
-    ClientDto removeBookOfClient(UUID id, Long bookId);
-
     void deleteById(UUID id);
 
     void deleteAll();
