@@ -1,25 +1,19 @@
 package com.nullers.restbookstore.rest.client.services;
 
-import com.nullers.restbookstore.rest.book.dto.GetBookDTO;
-import com.nullers.restbookstore.rest.book.exceptions.BookNotFoundException;
 import com.nullers.restbookstore.rest.book.mappers.BookMapperImpl;
-import com.nullers.restbookstore.rest.book.model.Book;
 import com.nullers.restbookstore.rest.book.services.BookServiceImpl;
-import com.nullers.restbookstore.rest.category.model.Categoria;
 import com.nullers.restbookstore.rest.client.dto.ClientCreateDto;
 import com.nullers.restbookstore.rest.client.dto.ClientDto;
 import com.nullers.restbookstore.rest.client.dto.ClientUpdateDto;
 import com.nullers.restbookstore.rest.client.exceptions.ClientAlreadyExists;
-import com.nullers.restbookstore.rest.client.exceptions.ClientBadRequest;
 import com.nullers.restbookstore.rest.client.exceptions.ClientNotFound;
-import com.nullers.restbookstore.rest.client.model.Address;
+import com.nullers.restbookstore.rest.common.Address;
 import com.nullers.restbookstore.rest.client.model.Client;
 import com.nullers.restbookstore.rest.client.repository.ClientRepository;
 import com.nullers.restbookstore.config.websockets.WebSocketConfig;
 import com.nullers.restbookstore.config.websockets.WebSocketHandler;
 import com.nullers.restbookstore.rest.client.notifications.mapper.ClientNotificationMapper;
 import com.nullers.restbookstore.notifications.models.Notification;
-import com.nullers.restbookstore.rest.publisher.model.Publisher;
 import com.nullers.restbookstore.storage.services.StorageService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
