@@ -21,6 +21,7 @@ public class BookNotificationMapper {
         return new BookNotificationResponse(
                 book.getId(),
                 book.getName(),
+                book.getAuthor(),
                 book.getPublisher().toString(),
                 book.getImage(),
                 book.getDescription(),
@@ -28,7 +29,8 @@ public class BookNotificationMapper {
                 book.getUpdatedAt().toString(),
                 book.getPrice(),
                 book.getActive(),
-                book.getCategory()
+                book.getCategory(),
+                book.getStock()
         );
     }
 }

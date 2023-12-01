@@ -31,6 +31,7 @@ public class BookMapperImpl implements BookMapper {
     public Book toBook(CreateBookDTO dto, Publisher publisher) {
         return Book.builder()
                 .name(dto.getName())
+                .author(dto.getAuthor())
                 .publisher(publisher)
                 .price(dto.getPrice())
                 .image(dto.getImage())
@@ -44,6 +45,7 @@ public class BookMapperImpl implements BookMapper {
 
     /**
      * Mapea un GetBookDTO en Book
+     *
      * @param dto GetBookDTO a mapear
      * @return Book mapeado
      */
@@ -51,6 +53,7 @@ public class BookMapperImpl implements BookMapper {
         return Book.builder()
                 .id(dto.getId())
                 .name(dto.getName())
+                .author(dto.getAuthor())
                 .price(dto.getPrice())
                 .image(dto.getImage())
                 .description(dto.getDescription())
@@ -63,14 +66,16 @@ public class BookMapperImpl implements BookMapper {
 
     /**
      * Mapea un CreateBookDTO en Book
-     * @param dto CreateBookDTO a mapear
+     *
+     * @param dto       CreateBookDTO a mapear
      * @param publisher Publisher a mapear
-     * @param category Categoría a mapear
+     * @param category  Categoría a mapear
      * @return Book mapeado
      */
     public Book toBook(CreateBookDTO dto, Publisher publisher, Categoria category) {
         return Book.builder()
                 .name(dto.getName())
+                .author(dto.getAuthor())
                 .publisher(publisher)
                 .price(dto.getPrice())
                 .image(dto.getImage())
@@ -95,6 +100,7 @@ public class BookMapperImpl implements BookMapper {
         return Book.builder()
                 .id(book.getId())
                 .name(dto.getName())
+                .author(dto.getAuthor())
                 .publisher(publisher)
                 .price(dto.getPrice())
                 .image(dto.getImage())
@@ -108,16 +114,18 @@ public class BookMapperImpl implements BookMapper {
 
     /**
      * Mapea un UpdateBookDTO en Book
-     * @param book Book a mapear
-     * @param dto UpdateBookDTO a mapear
+     *
+     * @param book      Book a mapear
+     * @param dto       UpdateBookDTO a mapear
      * @param publisher Publisher a mapear
-     * @param category Categoría a mapear
+     * @param category  Categoría a mapear
      * @return Book mapeado
      */
     public Book toBook(Book book, UpdateBookDTO dto, Publisher publisher, Categoria category) {
         return Book.builder()
                 .id(book.getId())
                 .name(dto.getName())
+                .author(dto.getAuthor())
                 .publisher(publisher)
                 .price(dto.getPrice())
                 .image(dto.getImage())
@@ -140,6 +148,7 @@ public class BookMapperImpl implements BookMapper {
         return GetBookDTO.builder()
                 .id(book.getId())
                 .name(book.getName())
+                .author(book.getAuthor())
                 .publisher(publisherData)
                 .price(book.getPrice())
                 .image(book.getImage())
@@ -154,6 +163,7 @@ public class BookMapperImpl implements BookMapper {
 
     /**
      * Mapea un Book en GetBookDTO
+     *
      * @param book Book a mapear
      * @return GetBookDTO mapeado
      */
@@ -161,6 +171,7 @@ public class BookMapperImpl implements BookMapper {
         return GetBookDTO.builder()
                 .id(book.getId())
                 .name(book.getName())
+                .author(book.getAuthor())
                 .price(book.getPrice())
                 .image(book.getImage())
                 .description(book.getDescription())
