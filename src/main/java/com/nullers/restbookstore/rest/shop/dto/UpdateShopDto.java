@@ -1,8 +1,17 @@
 package com.nullers.restbookstore.rest.shop.dto;
 
+import com.nullers.restbookstore.rest.common.Address;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
+import org.bson.types.ObjectId;
+
+import java.util.List;
+import java.util.UUID;
 
 /**
  * Clase UpdateShopDto
@@ -11,10 +20,19 @@ import lombok.Getter;
  */
 @Getter
 @Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class UpdateShopDto {
     @NotBlank(message = "El nombre no puede estar vacío")
-    private String name; // Nombre de la tienda, no debe estar vacío.
+    private String name;
 
-    @NotBlank(message = "La ubicación no puede estar vacía")
-    private String location; // Ubicación de la tienda, no debe estar vacía.
+    @NotNull(message = "La ubicación no puede estar vacía")
+    @Valid
+    private Address location;
+
+    @Builder.Default()
+    private List<Long> books = List.of();
+    @Builder.Default()
+    private List<UUID> clients = List.of();
+
 }
