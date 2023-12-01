@@ -58,7 +58,6 @@ import java.util.Optional;
 public class BookServiceImpl implements BookService {
 
     public static final String BOOK_NOT_FOUND_MSG = "No se ha encontrado el Book con el ID indicado";
-    public static final String NOT_VALID_FORMAT_ID_MSG = "El ID no tiene un formato válido";
 
     private final BookRepository bookRepository;
     private final BookMapperImpl bookMapperImpl;
@@ -116,7 +115,7 @@ public class BookServiceImpl implements BookService {
 
         Specification<Book> specMaxPrice = (root, query, criteriaBuilder) -> maxPrice.map(p -> criteriaBuilder.lessThanOrEqualTo(root.get("price"), p)).orElseGet(() -> criteriaBuilder.isTrue(criteriaBuilder.literal(true)));
 
-        Specification<Book> specCategory = (root, query, criteriaBuilder) -> category.map(c -> {return criteriaBuilder.equal(criteriaBuilder.upper(root.get("category").get("nombre")), c.toUpperCase());}).orElseGet(() -> criteriaBuilder.isTrue(criteriaBuilder.literal(true)));
+        Specification<Book> specCategory = (root, query, criteriaBuilder) -> category.map(c -> criteriaBuilder.equal(criteriaBuilder.upper(root.get("category").get("nombre")), c.toUpperCase())).orElseGet(() -> criteriaBuilder.isTrue(criteriaBuilder.literal(true)));
 
         Specification<Book> criterion = Specification.where(specType)
                 .and(specMaxPrice)
@@ -264,6 +263,7 @@ public class BookServiceImpl implements BookService {
         String imageStored = storageService.store(image, List.of("jpg", "jpeg", "png"), id
                 + "-" + LocalDateTime.now().format(formatter));
         String imageUrl = Boolean.FALSE.equals(withUrl) ? imageStored : storageService.getUrl(imageStored);
+
         if (actualBook.getImage() != null && !actualBook.getImage().equals(Book.IMAGE_DEFAULT)) {
             storageService.delete(actualBook.getImage());
         }
