@@ -24,4 +24,8 @@ public class PatchBookDTO {
     private Double price;
 
     private Boolean active;
+
+    @Min(value = 0, message = "El stock no puede estar en negativo")
+    @Builder.Default
+    private Integer stock = 0;
 }

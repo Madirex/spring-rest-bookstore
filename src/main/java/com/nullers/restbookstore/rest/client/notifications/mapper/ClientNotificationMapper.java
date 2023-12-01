@@ -26,8 +26,7 @@ public class ClientNotificationMapper {
                 client.getEmail(),
                 client.getPhone(),
                 client.getAddress(),
-                client.getImage(),
-                client.getBooks()
+                client.getImage()
         );
     }
 
