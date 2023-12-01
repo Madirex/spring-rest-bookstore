@@ -1,4 +1,4 @@
-package com.nullers.restbookstore.config;
+package com.nullers.restbookstore.config.storage;
 
 import com.nullers.restbookstore.storage.services.StorageService;
 import jakarta.annotation.PostConstruct;
