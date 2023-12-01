@@ -110,8 +110,8 @@ public class BookRestControllerImpl implements BookRestController {
     @PostMapping
     @Override
     public ResponseEntity<GetBookDTO> postBook(@Valid @RequestBody CreateBookDTO book) {
-            GetBookDTO bookDTO = service.postBook(book);
-            return ResponseEntity.status(HttpStatus.CREATED).body(bookDTO);
+        GetBookDTO bookDTO = service.postBook(book);
+        return ResponseEntity.status(HttpStatus.CREATED).body(bookDTO);
     }
 
     /**
@@ -127,7 +127,7 @@ public class BookRestControllerImpl implements BookRestController {
     @Override
     public ResponseEntity<GetBookDTO> putBook(@Valid @PathVariable Long id, @Valid @RequestBody UpdateBookDTO book)
             throws BookNotFoundException, BookNotValidIDException {
-            return ResponseEntity.ok(service.putBook(id, book));
+        return ResponseEntity.ok(service.putBook(id, book));
     }
 
     /**
@@ -143,7 +143,7 @@ public class BookRestControllerImpl implements BookRestController {
     @Override
     public ResponseEntity<GetBookDTO> patchBook(@Valid @PathVariable Long id, @Valid @RequestBody PatchBookDTO book)
             throws BookNotFoundException, BookNotValidIDException {
-            return ResponseEntity.ok(service.patchBook(id, book));
+        return ResponseEntity.ok(service.patchBook(id, book));
     }
 
     /**
@@ -171,7 +171,7 @@ public class BookRestControllerImpl implements BookRestController {
     public ResponseEntity<Map<String, Object>> handleValidationExceptions(
             MethodArgumentNotValidException ex) {
         Map<String, String> errors = new HashMap<>();
-        ex.getBindingResult().getAllErrors().forEach((error) -> {
+        ex.getBindingResult().getAllErrors().forEach(error -> {
             String fieldName = ((FieldError) error).getField();
             String errorMessage = error.getDefaultMessage();
             errors.put(fieldName, errorMessage);
