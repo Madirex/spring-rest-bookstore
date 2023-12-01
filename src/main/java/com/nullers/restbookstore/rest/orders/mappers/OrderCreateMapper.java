@@ -10,6 +10,7 @@ public class OrderCreateMapper {
                 .userId(orderCreateDto.getUserId())
                 .clientId(orderCreateDto.getClientId())
                 .orderLines(orderCreateDto.getOrderLines())
+                .shopId(orderCreateDto.getShopId())
                 .build();
     }
 
