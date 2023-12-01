@@ -32,4 +32,8 @@ public class UpdateBookDTO {
 
     private String category;
 
+    @Min(value = 0, message = "El stock no puede estar en negativo")
+    @Builder.Default
+    private Integer stock = 0;
+
 }

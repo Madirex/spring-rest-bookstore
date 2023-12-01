@@ -1,5 +1,6 @@
 package com.nullers.restbookstore.rest.client.repository;
 
+import com.nullers.restbookstore.rest.client.model.Address;
 import com.nullers.restbookstore.rest.client.model.Client;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -20,12 +21,21 @@ class ClientRepositoryTest {
     @Autowired
     private TestEntityManager entityManager;
 
+    Address address = Address.builder()
+            .street("Calle Falsa 123")
+            .city("Springfield")
+            .country("USA")
+            .province("Springfield")
+            .number("123")
+            .PostalCode("12345")
+            .build();
+
     Client clientTest = Client.builder()
             .name("Daniel")
             .surname("García")
             .email("daniel@gmail.com")
             .phone("123456789")
-            .address("Calle Falsa 123")
+            .address(address)
             .image("https://via.placeholder.com/150")
             .build();
 
@@ -143,7 +153,7 @@ class ClientRepositoryTest {
                 .surname("García")
                 .email("juan@gmail.com")
                 .phone("123456789")
-                .address("Calle Falsa 123")
+                .address(address)
                 .image("https://via.placeholder.com/150")
                 .build());
 
@@ -153,7 +163,7 @@ class ClientRepositoryTest {
                 () -> assertEquals("García", client.getSurname()),
                 () -> assertEquals("juan@gmail.com", client.getEmail()),
                 () -> assertEquals("123456789", client.getPhone()),
-                () -> assertEquals("Calle Falsa 123", client.getAddress()),
+                () -> assertEquals(address, client.getAddress()),
                 () -> assertEquals("https://via.placeholder.com/150", client.getImage())
         );
     }

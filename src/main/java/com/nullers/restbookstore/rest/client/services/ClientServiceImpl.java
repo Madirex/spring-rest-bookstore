@@ -3,18 +3,16 @@ package com.nullers.restbookstore.rest.client.services;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import com.nullers.restbookstore.rest.book.dto.GetBookDTO;
 import com.nullers.restbookstore.rest.book.mappers.BookMapperImpl;
 import com.nullers.restbookstore.rest.book.services.BookServiceImpl;
 import com.nullers.restbookstore.rest.client.dto.ClientCreateDto;
 import com.nullers.restbookstore.rest.client.dto.ClientDto;
 import com.nullers.restbookstore.rest.client.dto.ClientUpdateDto;
 import com.nullers.restbookstore.rest.client.exceptions.ClientAlreadyExists;
-import com.nullers.restbookstore.rest.client.exceptions.ClientBadRequest;
-import com.nullers.restbookstore.rest.client.exceptions.ClientBookAlreadyExists;
 import com.nullers.restbookstore.rest.client.exceptions.ClientNotFound;
 import com.nullers.restbookstore.rest.client.mappers.ClientCreateMapper;
 import com.nullers.restbookstore.rest.client.mappers.ClientMapper;
+import com.nullers.restbookstore.rest.client.model.Address;
 import com.nullers.restbookstore.rest.client.model.Client;
 import com.nullers.restbookstore.rest.client.repository.ClientRepository;
 import com.nullers.restbookstore.config.websockets.WebSocketConfig;
@@ -22,6 +20,7 @@ import com.nullers.restbookstore.config.websockets.WebSocketHandler;
 import com.nullers.restbookstore.rest.client.notifications.dto.ClientNotificationResponse;
 import com.nullers.restbookstore.rest.client.notifications.mapper.ClientNotificationMapper;
 import com.nullers.restbookstore.notifications.models.Notification;
+import com.nullers.restbookstore.rest.orders.repositories.OrderRepository;
 import com.nullers.restbookstore.storage.services.StorageService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,8 +28,6 @@ import org.springframework.cache.annotation.CacheConfig;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
@@ -62,6 +59,7 @@ public class ClientServiceImpl implements ClientService{
     private final ClientRepository clientRepository;
 
     private final BookServiceImpl bookService;
+    private final OrderRepository orderRepository;
 
     private final StorageService storageService;
 
@@ -75,9 +73,10 @@ public class ClientServiceImpl implements ClientService{
 
 
     @Autowired
-    public ClientServiceImpl(ClientRepository clientRepository, BookServiceImpl bookService, StorageService storageService, WebSocketConfig webSocketConfig, ClientNotificationMapper clientNotificationMapper, BookMapperImpl bookMapper) {
+    public ClientServiceImpl(ClientRepository clientRepository, BookServiceImpl bookService, OrderRepository orderRepository, StorageService storageService, WebSocketConfig webSocketConfig, ClientNotificationMapper clientNotificationMapper, BookMapperImpl bookMapper) {
         this.clientRepository = clientRepository;
         this.bookService = bookService;
+        this.orderRepository = orderRepository;
         this.storageService = storageService;
         this.webSocketConfig = webSocketConfig;
         this.clientNotificationMapper = clientNotificationMapper;
@@ -116,13 +115,14 @@ public class ClientServiceImpl implements ClientService{
 
         Specification<Client> specPhone = ((root, query, criteriaBuilder) -> phone.map(m -> criteriaBuilder.like(criteriaBuilder.lower(root.get("phone")), "%"+ m + "%")).orElseGet(() -> criteriaBuilder.isTrue(criteriaBuilder.literal(true))));
 
-        Specification<Client> specAddress = ((root, query, criteriaBuilder) -> address.map(m -> criteriaBuilder.like(criteriaBuilder.lower(root.get("address")), "%"+ m.toLowerCase() + "%")).orElseGet(() -> criteriaBuilder.isTrue(criteriaBuilder.literal(true))));
+        //Specification<Client> specAddress = ((root, query, criteriaBuilder) -> address.map(m -> criteriaBuilder.like(criteriaBuilder.lower(root.get("address")), "%"+ m.toLowerCase() + "%")).orElseGet(() -> criteriaBuilder.isTrue(criteriaBuilder.literal(true))));
 
         Specification<Client> criterio = Specification.where(specName)
                 .and(specSurName)
                 .and(specEmail)
                 .and(specPhone)
-                .and(specAddress);
+                //.and(specAddress)
+                ;
 
         return clientRepository.findAll(criterio,pageable).map(ClientMapper::toDto);
     }
@@ -193,17 +193,15 @@ public class ClientServiceImpl implements ClientService{
         String surname = client.getSurname() != null ? client.getSurname() : clientToUpdate.getSurname();
         String email = client.getEmail() != null ? client.getEmail() : clientToUpdate.getEmail();
         String phone = client.getPhone() != null ? client.getPhone() : clientToUpdate.getPhone();
-        String address = client.getAddress() != null ? client.getAddress() : clientToUpdate.getAddress();
+        Address address = client.getAddress() != null ? client.getAddress() : clientToUpdate.getAddress();
         String image = clientToUpdate.getImage();
-        List<GetBookDTO> books = clientToUpdate.getBooks();
         clientToUpdate.setName(name);
         clientToUpdate.setSurname(surname);
         clientToUpdate.setEmail(email);
         clientToUpdate.setPhone(phone);
         clientToUpdate.setAddress(address);
         clientToUpdate.setImage(image);
-        clientToUpdate.setBooks(books);
-        ClientDto clientUpdate = ClientMapper.toDto(clientRepository.save(ClientMapper.toEntity(clientToUpdate, clientToUpdate.getBooks().stream().map(bookMapper::toBook).toList())));
+        ClientDto clientUpdate = ClientMapper.toDto(clientRepository.save(ClientMapper.toEntity(clientToUpdate)));
         onChange(Notification.Type.UPDATE, ClientMapper.toEntity(clientUpdate));
         return clientUpdate;
     }
@@ -217,9 +215,6 @@ public class ClientServiceImpl implements ClientService{
     @CachePut(key = "#id")
     public void deleteById(UUID id) {
         ClientDto clientToDelete = findById(id);
-        if(!clientToDelete.getBooks().isEmpty()){
-            throw new ClientBadRequest("El cliente con id: " + id + " tiene libros asociados");
-        }
         log.info("Eliminando cliente con id: " + id);
         onChange(Notification.Type.DELETE, ClientMapper.toEntity(clientToDelete));
         clientRepository.deleteById(id);
@@ -235,87 +230,6 @@ public class ClientServiceImpl implements ClientService{
         clientRepository.deleteAll();
     }
 
-    /**
-     * @param id id del cliente
-     * @param pageable paginacion
-     * @return Page<Book> pagina con los libros del cliente
-     * @throws ClientNotFound si no existe el cliente
-     * Busca todos los libros de un cliente
-     */
-    @Cacheable
-    public Page<GetBookDTO> getAllBooksOfClient(UUID id, Pageable pageable){
-        log.info("Buscando libros del cliente con id: " + id);
-        ClientDto client = findById(id);
-        List<GetBookDTO> books = client.getBooks();
-
-        int pageSize = pageable.getPageSize();
-        int currentPage = pageable.getPageNumber();
-        int startItem = pageSize * currentPage;
-
-        List<GetBookDTO> pagedBooks;
-
-        if (books.size() < startItem) {
-            pagedBooks = Collections.emptyList();
-        } else {
-            int toIndex = Math.min(startItem + pageSize, books.size());
-            pagedBooks = books.subList(startItem, toIndex);
-        }
-
-        return new PageImpl<>(pagedBooks, PageRequest.of(currentPage, pageSize), books.size());
-    }
-
-
-    /**
-     * @param id id del cliente
-     * @param bookId id del libro
-     * @return ClientDto cliente actualizado
-     * @throws ClientNotFound si no existe el cliente
-     * @throws com.nullers.restbookstore.rest.book.exceptions.BookNotFoundException si no existe el libro
-     * Añade un libro a un cliente
-     */
-    @Override
-    @CachePut(key = "#id")
-    public ClientDto addBookToClient(UUID id, Long bookId) {
-        log.info("Añadiendo libro con id: " + bookId + " al cliente con id: " + id);
-        GetBookDTO bookToAdd = bookService.getBookById(bookId);
-        ClientDto clientToUpdate = findById(id);
-        List<GetBookDTO> books = new ArrayList<>(clientToUpdate.getBooks());
-        books.stream().filter(book -> book.getId().equals(bookId)).findFirst().ifPresentOrElse(
-                book -> {
-                    log.error("El libro con id: " + bookId + " ya existe en el cliente con id: " + id);
-                    throw new ClientBookAlreadyExists("El libro con id: " + bookId + " ya existe en el cliente con id: " + id );
-                } ,
-                () -> books.add(bookToAdd)
-        );
-        clientToUpdate.setBooks(books);
-        Client client = clientRepository.save(ClientMapper.toEntity(clientToUpdate, books.stream().map(bookMapper::toBook).toList()));
-        ClientDto clientUpdate = ClientMapper.toDto(client);
-        System.out.println(client.getBooks().get(0).getPublisher() + " prueba");
-        onChange(Notification.Type.UPDATE, ClientMapper.toEntity(clientUpdate));
-        return clientUpdate;
-    }
-
-    /**
-     * @param id id del cliente
-     * @param bookId id del libro
-     * @return ClientDto cliente actualizado
-     * @throws ClientNotFound si no existe el cliente
-     * @throws com.nullers.restbookstore.rest.book.exceptions.BookNotFoundException si no existe el libro
-     * Elimina un libro de un cliente
-     */
-    @Override
-    @CachePut(key = "#id")
-    public ClientDto removeBookOfClient(UUID id, Long bookId) {
-        log.info("Eliminando libro con id: " + bookId + " del cliente con id: " + id);
-        GetBookDTO bookToRemove = bookService.getBookById(bookId);
-        ClientDto clientToUpdate = findById(id);
-        List<GetBookDTO> books = new ArrayList<>(clientToUpdate.getBooks());
-        books.remove(bookToRemove);
-        clientToUpdate.setBooks(books);
-        ClientDto clientUpdate = ClientMapper.toDto(clientRepository.save(ClientMapper.toEntity(clientToUpdate)));
-        onChange(Notification.Type.UPDATE, ClientMapper.toEntity(clientUpdate));
-        return  clientUpdate;
-    }
 
     /**
      * @param id id del cliente
@@ -339,7 +253,6 @@ public class ClientServiceImpl implements ClientService{
 
         Client clientToUpdate = ClientMapper.toEntity(clientDto);
         clientToUpdate.setImage(urlImg);
-        clientToUpdate.setBooks(clientDto.getBooks().stream().map(bookMapper::toBook).toList());
         ClientDto clientUpdated = ClientMapper.toDto(clientRepository.save(clientToUpdate));
         onChange(Notification.Type.UPDATE, ClientMapper.toEntity(clientUpdated));
         return clientUpdated;
@@ -372,8 +285,6 @@ public class ClientServiceImpl implements ClientService{
                     clientNotificationMapper.toClientNotificationResponse(data),
                     LocalDateTime.now().toString()
             );
-
-            System.out.println(notificacion);
 
             String json = mapper.writeValueAsString(notificacion);
 

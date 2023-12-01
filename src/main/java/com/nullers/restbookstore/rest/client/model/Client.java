@@ -2,6 +2,8 @@ package com.nullers.restbookstore.rest.client.model;
 
 import com.nullers.restbookstore.rest.book.model.Book;
 import jakarta.persistence.*;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
 import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
 
@@ -45,15 +47,12 @@ public class Client {
     @Builder.Default
     private String image = DEFAULT_IMAGE;
 
-    @Column(nullable = false)
-    private String address;
-
-    @OneToMany
-    @JoinColumn(name = "book_id")
-    @Builder.Default
-    private List<Book> books = new ArrayList<>();
-
     @CreatedDate
     private LocalDateTime createdAt;
+
+    @NotNull(message = "La dirección no puede estar vacía")
+
+    @Embedded
+    private Address address;
 
 }
