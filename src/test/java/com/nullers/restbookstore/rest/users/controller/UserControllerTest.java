@@ -6,7 +6,7 @@ import com.nullers.restbookstore.rest.user.controller.UserController;
 import com.nullers.restbookstore.rest.user.dto.UserInfoResponse;
 import com.nullers.restbookstore.rest.user.dto.UserRequest;
 import com.nullers.restbookstore.rest.user.dto.UserResponse;
-import com.nullers.restbookstore.rest.user.model.User;
+import com.nullers.restbookstore.rest.user.models.User;
 import com.nullers.restbookstore.rest.user.services.UserService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -28,6 +28,8 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 /**
  * Test for {@link UserController}
@@ -106,6 +108,35 @@ public class UserControllerTest {
                 () -> assertEquals(200, response.getStatus()),
                 () -> assertNotNull(response.getContentAsString())
         );
+    }
+
+    /**
+     * Test para comprobar retorno de error cuando page tiene valor no válido
+     *
+     * @throws Exception excepción
+     */
+    @Test
+    void getAll_ShouldReturnErrorResponse_withInvalidPageParam() throws Exception {
+        mockMvc.perform(get(myEndpoint)
+                        .param("page", "-1")
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON));
+    }
+
+    /**
+     * Test para comprobar retorno de error cuando size tiene valor no válido
+     *
+     * @throws Exception excepción
+     */
+    @Test
+    void getAll_ShouldReturnErrorResponse_withInvalidSizeParam() throws Exception {
+        mockMvc.perform(get(myEndpoint)
+                        .param("size", "0")
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON));
+
     }
 
     @Test

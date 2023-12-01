@@ -3,9 +3,9 @@ package com.nullers.restbookstore.rest.users.mapper;
 import com.nullers.restbookstore.rest.user.dto.UserInfoResponse;
 import com.nullers.restbookstore.rest.user.dto.UserRequest;
 import com.nullers.restbookstore.rest.user.dto.UserResponse;
-import com.nullers.restbookstore.rest.user.mappers.UserMapper;
-import com.nullers.restbookstore.rest.user.model.Role;
-import com.nullers.restbookstore.rest.user.model.User;
+import com.nullers.restbookstore.rest.user.mapper.UserMapper;
+import com.nullers.restbookstore.rest.user.models.Role;
+import com.nullers.restbookstore.rest.user.models.User;
 import org.junit.jupiter.api.Test;
 
 import java.util.Set;

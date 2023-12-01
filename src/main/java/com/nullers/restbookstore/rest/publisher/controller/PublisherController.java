@@ -1,12 +1,12 @@
 package com.nullers.restbookstore.rest.publisher.controller;
 
 import com.nullers.restbookstore.pagination.exceptions.PageNotValidException;
-import com.nullers.restbookstore.pagination.utils.PageResponse;
-import com.nullers.restbookstore.pagination.utils.PaginationLinksUtils;
+import com.nullers.restbookstore.pagination.models.PageResponse;
+import com.nullers.restbookstore.pagination.util.PaginationLinksUtils;
 import com.nullers.restbookstore.rest.publisher.dto.CreatePublisherDto;
 import com.nullers.restbookstore.rest.publisher.dto.PublisherDTO;
 import com.nullers.restbookstore.rest.publisher.exceptions.PublisherNotFound;
-import com.nullers.restbookstore.rest.publisher.models.responses.ErrorResponse;
+import com.nullers.restbookstore.pagination.models.ErrorResponse;
 import com.nullers.restbookstore.rest.publisher.services.PublisherServiceImpl;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;

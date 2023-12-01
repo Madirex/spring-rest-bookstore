@@ -3,7 +3,7 @@ package com.nullers.restbookstore.rest.publisher.mappers;
 import com.nullers.restbookstore.rest.publisher.dto.CreatePublisherDto;
 import com.nullers.restbookstore.rest.publisher.dto.PublisherDTO;
 import com.nullers.restbookstore.rest.publisher.dto.PublisherData;
-import com.nullers.restbookstore.rest.publisher.models.Publisher;
+import com.nullers.restbookstore.rest.publisher.model.Publisher;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;

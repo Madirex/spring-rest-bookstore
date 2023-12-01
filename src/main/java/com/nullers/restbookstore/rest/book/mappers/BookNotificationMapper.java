@@ -1,7 +1,7 @@
 package com.nullers.restbookstore.rest.book.mappers;
 
 import com.nullers.restbookstore.rest.book.dto.GetBookDTO;
-import com.nullers.restbookstore.rest.book.notifications.BookNotificationResponse;
+import com.nullers.restbookstore.rest.book.notification.BookNotificationResponse;
 import org.springframework.stereotype.Component;
 
 /**

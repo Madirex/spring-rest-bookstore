@@ -1,7 +1,7 @@
 package com.nullers.restbookstore.rest.category.repositories;
 
 import com.nullers.restbookstore.rest.category.exceptions.CategoriaNotFoundException;
-import com.nullers.restbookstore.rest.category.models.Categoria;
+import com.nullers.restbookstore.rest.category.model.Categoria;
 import com.nullers.restbookstore.rest.category.repository.CategoriasRepositoryJpa;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

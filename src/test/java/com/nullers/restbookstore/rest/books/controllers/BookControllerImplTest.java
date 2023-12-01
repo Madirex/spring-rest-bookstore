@@ -115,6 +115,35 @@ class BookControllerImplTest {
     }
 
     /**
+     * Test para comprobar retorno de error cuando page tiene valor no válido
+     *
+     * @throws Exception excepción
+     */
+    @Test
+    void getAll_ShouldReturnErrorResponse_withInvalidPageParam() throws Exception {
+        mockMvc.perform(get(endpoint)
+                        .param("page", "-1")
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON));
+    }
+
+    /**
+     * Test para comprobar retorno de error cuando size tiene valor no válido
+     *
+     * @throws Exception excepción
+     */
+    @Test
+    void getAll_ShouldReturnErrorResponse_withInvalidSizeParam() throws Exception {
+        mockMvc.perform(get(endpoint)
+                        .param("size", "0")
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON));
+
+    }
+
+    /**
      * Test para comprobar que se obtiene un Book por su id
      *
      * @throws Exception excepción

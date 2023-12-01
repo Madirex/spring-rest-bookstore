@@ -2,12 +2,10 @@ package com.nullers.restbookstore.rest.client.mappers;
 
 import com.nullers.restbookstore.rest.book.dto.GetBookDTO;
 import com.nullers.restbookstore.rest.book.mappers.BookMapperImpl;
-import com.nullers.restbookstore.rest.book.models.Book;
+import com.nullers.restbookstore.rest.book.model.Book;
 import com.nullers.restbookstore.rest.client.dto.ClientDto;
-import com.nullers.restbookstore.rest.client.models.Client;
-import com.nullers.restbookstore.rest.publisher.dto.PublisherData;
+import com.nullers.restbookstore.rest.client.model.Client;
 import com.nullers.restbookstore.rest.publisher.mappers.PublisherMapper;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.List;

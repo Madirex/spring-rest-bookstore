@@ -1,14 +1,14 @@
 package com.nullers.restbookstore.rest.category.controller;
 
 
-import com.nullers.restbookstore.pagination.utils.PageResponse;
-import com.nullers.restbookstore.pagination.utils.PaginationLinksUtils;
+import com.nullers.restbookstore.pagination.models.PageResponse;
+import com.nullers.restbookstore.pagination.util.PaginationLinksUtils;
 import com.nullers.restbookstore.rest.category.dto.CategoriaCreateDto;
 import com.nullers.restbookstore.rest.category.exceptions.CategoriaConflictException;
 import com.nullers.restbookstore.rest.category.exceptions.CategoriaNotFoundException;
-import com.nullers.restbookstore.rest.category.models.Categoria;
+import com.nullers.restbookstore.rest.category.model.Categoria;
 import com.nullers.restbookstore.rest.category.services.CategoriaServiceJpa;
-import com.nullers.restbookstore.rest.publisher.models.responses.ErrorResponse;
+import com.nullers.restbookstore.pagination.models.ErrorResponse;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -1,6 +1,6 @@
 package com.nullers.restbookstore.config;
 
-import com.nullers.restbookstore.storage.service.StorageService;
+import com.nullers.restbookstore.storage.services.StorageService;
 import jakarta.annotation.PostConstruct;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -3,11 +3,10 @@ package com.nullers.restbookstore.rest.book.mappers;
 import com.nullers.restbookstore.rest.book.dto.CreateBookDTO;
 import com.nullers.restbookstore.rest.book.dto.GetBookDTO;
 import com.nullers.restbookstore.rest.book.dto.UpdateBookDTO;
-import com.nullers.restbookstore.rest.book.models.Book;
-import com.nullers.restbookstore.rest.category.models.Categoria;
+import com.nullers.restbookstore.rest.book.model.Book;
+import com.nullers.restbookstore.rest.category.model.Categoria;
 import com.nullers.restbookstore.rest.publisher.dto.PublisherData;
-import com.nullers.restbookstore.rest.publisher.mappers.PublisherMapper;
-import com.nullers.restbookstore.rest.publisher.models.Publisher;
+import com.nullers.restbookstore.rest.publisher.model.Publisher;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;

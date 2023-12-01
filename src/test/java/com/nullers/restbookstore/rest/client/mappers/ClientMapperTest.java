@@ -2,8 +2,7 @@ package com.nullers.restbookstore.rest.client.mappers;
 
 import com.nullers.restbookstore.rest.book.mappers.BookMapperImpl;
 import com.nullers.restbookstore.rest.client.dto.ClientDto;
-import com.nullers.restbookstore.rest.client.mappers.ClientMapper;
-import com.nullers.restbookstore.rest.client.models.Client;
+import com.nullers.restbookstore.rest.client.model.Client;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;

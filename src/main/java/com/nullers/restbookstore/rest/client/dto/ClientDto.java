@@ -1,7 +1,6 @@
 package com.nullers.restbookstore.rest.client.dto;
 
 import com.nullers.restbookstore.rest.book.dto.GetBookDTO;
-import com.nullers.restbookstore.rest.book.models.Book;
 import lombok.*;
 
 import java.util.ArrayList;

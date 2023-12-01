@@ -1,10 +1,9 @@
 package com.nullers.restbookstore.rest.client.notifications.mapper;
 
-import com.nullers.restbookstore.rest.book.models.Book;
-import com.nullers.restbookstore.rest.category.models.Categoria;
-import com.nullers.restbookstore.rest.client.models.Client;
+import com.nullers.restbookstore.rest.book.model.Book;
+import com.nullers.restbookstore.rest.category.model.Categoria;
+import com.nullers.restbookstore.rest.client.model.Client;
 import com.nullers.restbookstore.rest.client.notifications.dto.ClientNotificationResponse;
-import com.nullers.restbookstore.rest.client.notifications.mapper.ClientNotificationMapper;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDateTime;

@@ -1,7 +1,5 @@
 package com.nullers.restbookstore.rest.shop.services;
 
-import com.nullers.restbookstore.rest.book.dto.GetBookDTO;
-import com.nullers.restbookstore.rest.book.models.Book;
 import com.nullers.restbookstore.rest.shop.dto.CreateShopDto;
 import com.nullers.restbookstore.rest.shop.dto.GetShopDto;
 import com.nullers.restbookstore.rest.shop.dto.UpdateShopDto;
@@ -9,7 +7,7 @@ import com.nullers.restbookstore.rest.shop.exceptions.ShopNotFoundException;
 import com.nullers.restbookstore.rest.shop.exceptions.ShopNotValidUUIDException;
 import com.nullers.restbookstore.rest.shop.mappers.ShopMapperImpl;
 import com.nullers.restbookstore.rest.shop.model.Shop;
-import com.nullers.restbookstore.rest.shop.repositories.ShopRepository;
+import com.nullers.restbookstore.rest.shop.repository.ShopRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
@@ -22,7 +20,6 @@ import org.springframework.cache.annotation.CacheEvict;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 /**
  * Servicio que implementa las operaciones de negocio para la entidad Shop.

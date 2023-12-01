@@ -1,7 +1,7 @@
 package com.nullers.restbookstore.rest.client.mappers;
 
 import com.nullers.restbookstore.rest.client.dto.ClientCreateDto;
-import com.nullers.restbookstore.rest.client.models.Client;
+import com.nullers.restbookstore.rest.client.model.Client;
 
 /**
  * Mapea los datos de un cliente a un dto y viceversa
