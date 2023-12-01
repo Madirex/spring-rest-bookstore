@@ -8,6 +8,7 @@ package com.nullers.restbookstore.rest.book.notification;
 public record BookNotificationResponse(
         Long id,
         String name,
+        String author,
         String publisher,
         String image,
         String description,
@@ -15,6 +16,7 @@ public record BookNotificationResponse(
         String updatedAt,
         Double price,
         Boolean active,
-        String category
+        String category,
+        Integer stock
 ) {
 }
