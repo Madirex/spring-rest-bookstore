@@ -38,6 +38,7 @@ public class BookMapperImpl implements BookMapper {
                 .createdAt(LocalDateTime.now())
                 .updatedAt(LocalDateTime.now())
                 .active(true)
+                .stock(dto.getStock())
                 .build();
     }
 
@@ -56,6 +57,7 @@ public class BookMapperImpl implements BookMapper {
                 .createdAt(LocalDateTime.now())
                 .updatedAt(LocalDateTime.now())
                 .active(true)
+                .stock(dto.getStock())
                 .build();
     }
 
@@ -77,6 +79,7 @@ public class BookMapperImpl implements BookMapper {
                 .updatedAt(LocalDateTime.now())
                 .active(true)
                 .category(category)
+                .stock(dto.getStock())
                 .build();
     }
 
@@ -99,6 +102,7 @@ public class BookMapperImpl implements BookMapper {
                 .createdAt(book.getCreatedAt())
                 .updatedAt(LocalDateTime.now())
                 .active(book.getActive())
+                .stock(dto.getStock())
                 .build();
     }
 
@@ -122,6 +126,7 @@ public class BookMapperImpl implements BookMapper {
                 .updatedAt(LocalDateTime.now())
                 .active(book.getActive())
                 .category(category)
+                .stock(dto.getStock())
                 .build();
     }
 
@@ -143,6 +148,7 @@ public class BookMapperImpl implements BookMapper {
                 .updatedAt(book.getUpdatedAt())
                 .active(book.getActive())
                 .category(book.getCategory().getNombre())
+                .stock(book.getStock())
                 .build();
     }
 
@@ -162,6 +168,7 @@ public class BookMapperImpl implements BookMapper {
                 .updatedAt(book.getUpdatedAt())
                 .active(book.getActive())
                 .category(book.getCategory().getNombre())
+                .stock(book.getStock())
                 .build();
     }
 

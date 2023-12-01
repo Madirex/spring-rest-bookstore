@@ -67,6 +67,14 @@ public class Book {
     @NonNull
     private Boolean active;
 
+    @ManyToOne
+    @JoinColumn(name = "categoria_id")
+    private Categoria category;
+
+    @Min(value = 0, message = "El stock no puede estar en negativo")
+    @Builder.Default
+    private Integer stock = 0;
+
     /**
      * Método que se ejecuta antes de persistir un objeto
      * Soluciona los problemas de generación de fecha
@@ -77,7 +85,5 @@ public class Book {
         if (updatedAt == null) {updatedAt = LocalDateTime.now();}
     }
 
-    @ManyToOne
-    @JoinColumn(name = "categoria_id")
-    private Categoria category;
+
 }

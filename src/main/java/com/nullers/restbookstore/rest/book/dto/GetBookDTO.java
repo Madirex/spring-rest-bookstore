@@ -19,6 +19,7 @@ public class GetBookDTO {
     private String name;
     private PublisherData publisher;
     private String category;
+    private Integer stock;
 
 
     @Setter

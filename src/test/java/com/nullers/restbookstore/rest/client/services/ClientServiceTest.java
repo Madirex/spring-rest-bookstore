@@ -11,8 +11,8 @@ import com.nullers.restbookstore.rest.client.dto.ClientDto;
 import com.nullers.restbookstore.rest.client.dto.ClientUpdateDto;
 import com.nullers.restbookstore.rest.client.exceptions.ClientAlreadyExists;
 import com.nullers.restbookstore.rest.client.exceptions.ClientBadRequest;
-import com.nullers.restbookstore.rest.client.exceptions.ClientBookAlreadyExists;
 import com.nullers.restbookstore.rest.client.exceptions.ClientNotFound;
+import com.nullers.restbookstore.rest.client.model.Address;
 import com.nullers.restbookstore.rest.client.model.Client;
 import com.nullers.restbookstore.rest.client.repository.ClientRepository;
 import com.nullers.restbookstore.config.websockets.WebSocketConfig;
@@ -65,18 +65,14 @@ class ClientServiceTest {
     @InjectMocks
     private ClientServiceImpl clientService;
 
-    private Publisher publisher = Publisher.builder()
-            .id(1L)
-            .name("Planeta")
-            .books(Set.of(Book.builder().id(1L).name("hobbit").active(true).description("prueba desc").build()))
-            .updatedAt(LocalDateTime.now())
-            .createdAt(LocalDateTime.now())
+    Address address = Address.builder()
+            .street("Calle Falsa 123")
+            .city("Springfield")
+            .country("USA")
+            .province("Springfield")
+            .number("123")
+            .PostalCode("12345")
             .build();
-
-    private Categoria categoria = Categoria.builder()
-            .id(UUID.fromString("9def16db-362b-44c4-9fc9-77117758b5c8"))
-            .build();
-
 
 
     private final Client clientTest = Client.builder()
@@ -85,9 +81,8 @@ class ClientServiceTest {
             .surname("García")
             .email("daniel@gmail.com")
             .phone("123456789")
-            .address("Calle Falsa 123")
+            .address(address)
             .image("https://via.placeholder.com/150")
-            .books(List.of(Book.builder().id(1L).name("hobbit").active(true).category(categoria).price(50.0).updatedAt(LocalDateTime.now()).createdAt(LocalDateTime.now()).image("http://img.jpg").publisher(publisher).description("prueba desc").build()))
             .createdAt(LocalDateTime.now())
             .build();
 
@@ -99,7 +94,7 @@ class ClientServiceTest {
             .surname("ruiz")
             .email("pepe@gmail.com")
             .phone("123456789")
-            .address("Calle Falsa 321")
+            .address(address)
             .image("https://via.placeholder.com/150")
             .build();
 
@@ -109,7 +104,7 @@ class ClientServiceTest {
             .surname("García")
             .email("daniel@gmail.com")
             .phone("123456789")
-            .address("Calle Falsa 123")
+            .address(address)
             .image("https://via.placeholder.com/150")
             .build();
 
@@ -119,7 +114,7 @@ class ClientServiceTest {
             .surname("ruiz")
             .email("pepe@gmail.com")
             .phone("123456789")
-            .address("Calle Falsa 321")
+            .address(address)
             .image("https://via.placeholder.com/150")
             .build();
 
@@ -909,7 +904,7 @@ class ClientServiceTest {
                 .name("Daniel")
                 .surname("García")
                 .email("dani@gmail.com")
-                .address("Calle Falsa 123")
+                .address(address)
                 .build();
 
         ClientDto result = clientService.save(clientCreateDto);
@@ -935,7 +930,7 @@ class ClientServiceTest {
                 .name("Daniel")
                 .surname("García")
                 .email("dani@gmail.com")
-                .address("Calle Falsa 123")
+                .address(address)
                 .build();
 
         var res = assertThrows(ClientAlreadyExists.class, () -> clientService.save(clientCreateDto));
@@ -960,7 +955,7 @@ class ClientServiceTest {
                 .name("Daniel")
                 .surname("García")
                 .email("daniupdate@gmail.com")
-                .address("Calle 123")
+                .address(address)
                 .phone("644331287")
                 .build();
 
@@ -988,7 +983,7 @@ class ClientServiceTest {
                 .name("Daniel")
                 .surname("García")
                 .email("daniel@gmail.com")
-                .address("Calle Falsa 123")
+                .address(address)
                 .phone("123456789")
                 .build();
 
@@ -1010,7 +1005,7 @@ class ClientServiceTest {
                         .name("Daniel")
                         .surname("García")
                         .email("daniel@gmail.com")
-                        .address("Calle Falsa 123")
+                        .address(address)
                         .phone("123456789")
                         .image("http://imag.jpg")
                         .build()
@@ -1027,17 +1022,6 @@ class ClientServiceTest {
 
     }
 
-    @Test
-    void deleteError_HasBooks() throws IOException, InterruptedException {
-        when(clientRepository.findById(any(UUID.class))).thenReturn(Optional.of(clientTest));
-
-        var res = assertThrows(ClientBadRequest.class, () -> clientService.deleteById(UUID.fromString("9def16db-362b-44c4-9fc9-77117758b5b0")));
-        assertAll(
-                () -> assertNotNull(res),
-                () -> assertEquals("El cliente con id: 9def16db-362b-44c4-9fc9-77117758b5b0 tiene libros asociados", res.getMessage())
-        );
-        verify(clientRepository, times(1)).findById(any(UUID.class));
-    }
 
     @Test
     void delete_shouldThrowExceptionClientNotFound() {
@@ -1060,198 +1044,6 @@ class ClientServiceTest {
     }
 
     @Test
-    void getAllBooksOfClient(){
-
-        when(clientRepository.findById(any(UUID.class))).thenReturn(Optional.of(clientTest));
-
-        Pageable pageable = PageRequest.of(0, 10, Sort.by("id").ascending());
-
-        Page<GetBookDTO> result = clientService.getAllBooksOfClient(UUID.fromString("9def16db-362b-44c4-9fc9-77117758b5b0"), pageable);
-
-
-        assertAll(
-                () -> assertNotNull(result),
-                () -> assertFalse(result.isEmpty()),
-                () -> assertEquals(1,result.getTotalElements()),
-                () -> assertEquals(clientTest.getBooks().get(0).getName(), (result.getContent().get(0)).getName()),
-                () -> assertEquals(clientTest.getBooks().get(0).getDescription(), (result.getContent().get(0)).getDescription())
-        );
-
-        verify(clientRepository, times(1)).findById(any(UUID.class));
-
-    }
-
-    @Test
-    void getAllBooksOfClient_shouldThrowExceptionClientNotFound() {
-        when(clientRepository.findById(any(UUID.class))).thenThrow(new ClientNotFound("id", UUID.fromString("9def16db-362b-44c4-9fc9-77117758b5b0")));
-
-        var res = assertThrows(ClientNotFound.class, () -> clientService.getAllBooksOfClient(UUID.fromString("9def16db-362b-44c4-9fc9-77117758b5b0"), PageRequest.of(0, 10, Sort.by("id").ascending())));
-
-        assertAll(
-                () -> assertNotNull(res),
-                () -> assertEquals("Client con id: 9def16db-362b-44c4-9fc9-77117758b5b0 no existe", res.getMessage())
-        );
-
-        verify(clientRepository, times(1)).findById(any(UUID.class));
-    }
-
-    @Test
-    void getAllBooksOfClient_NotReturnBooks() {
-        when(clientRepository.findById(any(UUID.class))).thenReturn(Optional.of(clientTest2));
-
-        Pageable pageable = PageRequest.of(0, 10, Sort.by("id").ascending());
-
-        Page<GetBookDTO> result = clientService.getAllBooksOfClient(UUID.fromString("6dbcbf5e-8e1c-47cc-8578-7b0a33ebc154"), pageable);
-
-        assertAll(
-                () -> assertNotNull(result),
-                () -> assertTrue(result.isEmpty())
-        );
-
-        verify(clientRepository, times(1)).findById(any(UUID.class));
-    }
-
-
-    @Test
-    void addBookToClient() throws IOException {
-        when(clientRepository.findById(any(UUID.class))).thenReturn(Optional.of(
-                Client.builder()
-                        .id(UUID.fromString("9def16db-362b-44c4-9fc9-77117758b5b0"))
-                        .name("Daniel")
-                        .surname("García")
-                        .email("daniel@gmail.com")
-                        .phone("123456789")
-                        .address("Calle Falsa 123")
-                        .build()
-        ));
-        when(bookService.getBookById(any(Long.class))).thenReturn(GetBookDTO.builder().id(1L).name("hobbit").description("prueba desc").build());
-        when(clientRepository.save(any(Client.class))).thenReturn(clientTest);
-        doNothing().when(webSocketHandler).sendMessage(any(String.class));
-
-        ClientDto result = clientService.addBookToClient(UUID.fromString("9def16db-362b-44c4-9fc9-77117758b5b0"), 1L);
-
-        assertAll(
-                () -> assertNotNull(result),
-                () -> assertEquals(clientTest.getName(), result.getName()),
-                () -> assertEquals(clientTest.getSurname(), result.getSurname()),
-                () -> assertEquals(clientTest.getEmail(), result.getEmail()),
-                () -> assertEquals(clientTest.getBooks().get(0).getName(), result.getBooks().get(0).getName()),
-                () -> assertEquals(clientTest.getBooks().get(0).getDescription(), result.getBooks().get(0).getDescription())
-        );
-
-        verify(clientRepository, times(1)).findById(any(UUID.class));
-        verify(bookService, times(1)).getBookById(any(Long.class));
-        verify(clientRepository, times(1)).save(any(Client.class));
-        doNothing().when(webSocketHandler).sendMessage(any(String.class));
-
-    }
-
-    @Test
-    void addBookToClientAlreadyExistsBook() throws IOException {
-        when(clientRepository.findById(any(UUID.class))).thenReturn(Optional.of(clientTest));
-        when(bookService.getBookById(any(Long.class))).thenReturn(GetBookDTO.builder().id(1L).name("hobbit").description("prueba desc").build());
-
-
-        var res = assertThrows(ClientBookAlreadyExists.class, () ->  clientService.addBookToClient(UUID.fromString("9def16db-362b-44c4-9fc9-77117758b5b0"), 1L));
-
-        assertAll(
-                () -> assertNotNull(res),
-                () -> assertEquals("El libro con id: 1 ya existe en el cliente con id: 9def16db-362b-44c4-9fc9-77117758b5b0", res.getMessage())
-        );
-
-        verify(clientRepository, times(1)).findById(any(UUID.class));
-        verify(bookService, times(1)).getBookById(any(Long.class));
-
-    }
-
-    @Test
-    void addBookToClient_shouldThrowExceptionClientNotFound() {
-        when(clientRepository.findById(any(UUID.class))).thenThrow(new ClientNotFound("id", UUID.fromString("9def16db-362b-44c4-9fc9-77117758b5b0")));
-
-        var res = assertThrows(ClientNotFound.class, () -> clientService.addBookToClient(UUID.fromString("9def16db-362b-44c4-9fc9-77117758b5b0"),1L));
-
-        assertAll(
-                () -> assertNotNull(res),
-                () -> assertEquals("Client con id: 9def16db-362b-44c4-9fc9-77117758b5b0 no existe", res.getMessage())
-        );
-
-        verify(clientRepository, times(1)).findById(any(UUID.class));
-    }
-
-    @Test
-    void addBookToClient_shouldThrowExceptionBookNotFound() {
-        when(bookService.getBookById(any(Long.class))).thenThrow(new BookNotFoundException("No se ha encontrado el Book con el ID indicado"));
-
-        var res = assertThrows(BookNotFoundException.class, () -> clientService.addBookToClient(UUID.fromString("9def16db-362b-44c4-9fc9-77117758b5b0"), 1L));
-
-        assertAll(
-                () -> assertNotNull(res),
-                () -> assertEquals("Libro no encontrado - No se ha encontrado el Book con el ID indicado", res.getMessage())
-        );
-
-        verify(bookService, times(1)).getBookById(any(Long.class));
-    }
-
-    @Test
-    void removeBookOfClient() throws IOException {
-        when(clientRepository.findById(any(UUID.class))).thenReturn(Optional.of(clientTest));
-        when(bookService.getBookById(any(Long.class))).thenReturn(GetBookDTO.builder().id(1L).name("hobbit").description("prueba desc").build());
-        when(clientRepository.save(any(Client.class))).thenReturn(Client.builder()
-                .id(UUID.fromString("9def16db-362b-44c4-9fc9-77117758b5b0"))
-                .name("Daniel")
-                .surname("García")
-                .email("daniel@gmail.com")
-                .phone("123456789")
-                .address("Calle Falsa 123")
-                .image("https://via.placeholder.com/150")
-                .build());
-        doNothing().when(webSocketHandler).sendMessage(any(String.class));
-
-
-        ClientDto result = clientService.removeBookOfClient(UUID.fromString("9def16db-362b-44c4-9fc9-77117758b5b0"), 1L);
-        assertAll(
-                () -> assertNotNull(result),
-                () -> assertEquals(clientTest.getName(), result.getName()),
-                () -> assertEquals(clientTest.getSurname(), result.getSurname()),
-                () -> assertEquals(clientTest.getEmail(), result.getEmail()),
-                () -> assertTrue(result.getBooks().isEmpty())
-        );
-
-        verify(clientRepository, times(1)).findById(any(UUID.class));
-        verify(bookService, times(1)).getBookById(any(Long.class));
-        verify(clientRepository, times(1)).save(any(Client.class));
-        doNothing().when(webSocketHandler).sendMessage(any(String.class));
-    }
-
-    @Test
-    void removeBookOfClient_shouldThrowExceptionClientNotFound() {
-        when(clientRepository.findById(any(UUID.class))).thenThrow(new ClientNotFound("id", UUID.fromString("9def16db-362b-44c4-9fc9-77117758b5b0")));
-
-        var res = assertThrows(ClientNotFound.class, () -> clientService.removeBookOfClient(UUID.fromString("9def16db-362b-44c4-9fc9-77117758b5b0"), 1L));
-
-        assertAll(
-                () -> assertNotNull(res),
-                () -> assertEquals("Client con id: 9def16db-362b-44c4-9fc9-77117758b5b0 no existe", res.getMessage())
-        );
-
-        verify(clientRepository, times(1)).findById(any(UUID.class));
-    }
-
-    @Test
-    void removeBookOfClient_shouldThrowExceptionBookNotFound() {
-        when(bookService.getBookById(any(Long.class))).thenThrow(new BookNotFoundException("No se ha encontrado el Book con el ID indicado"));
-
-        var res = assertThrows(BookNotFoundException.class, () -> clientService.removeBookOfClient(UUID.fromString("9def16db-362b-44c4-9fc9-77117758b5b0"), 1L));
-
-        assertAll(
-                () -> assertNotNull(res),
-                () -> assertEquals("Libro no encontrado - No se ha encontrado el Book con el ID indicado", res.getMessage())
-        );
-
-        verify(bookService, times(1)).getBookById(any(Long.class));
-    }
-
-    @Test
     void updateImage() throws IOException, InterruptedException {
         String imgrl = "http://placeimg.com/640/480/people";
         MultipartFile multipartFile = mock(MultipartFile.class);
@@ -1264,7 +1056,7 @@ class ClientServiceTest {
                 .surname("García")
                 .email("daniel@gmail.com")
                 .phone("123456789")
-                .address("Calle Falsa 123")
+                .address(address)
                 .image(imgrl)
                 .build());
         when(storageService.getUrl(any(String.class))).thenReturn(imgrl);
@@ -1321,7 +1113,7 @@ class ClientServiceTest {
                         .surname("García")
                         .email("daniel@gmail.com")
                         .phone("123456789")
-                        .address("Calle Falsa 123")
+                        .address(address)
                         .image("https://via.placeholder.com/250")
                         .build()
         ));
@@ -1332,7 +1124,7 @@ class ClientServiceTest {
                 .surname("García")
                 .email("daniel@gmail.com")
                 .phone("123456789")
-                .address("Calle Falsa 123")
+                .address(address)
                 .image(imgrl)
                 .build());
         when(storageService.getUrl(any(String.class))).thenReturn(imgrl);
@@ -1400,23 +1192,6 @@ class ClientServiceTest {
         clientService.onChange(Notification.Type.CREATE, clientTest);
         verify(webSocketHandler, times(0)).sendMessage(any(String.class));
     }
-
-    @Test
-    void getAllBooksOfClientEmptyListConditional(){
-        when(clientRepository.findById(any(UUID.class))).thenReturn(Optional.of(clientTest));
-        Pageable pageable = PageRequest.of(1, 10, Sort.by("id").ascending());
-        Page<Book> expectedPage = new PageImpl<>(List.of());
-
-        Page<GetBookDTO> result = clientService.getAllBooksOfClient(UUID.fromString("9def16db-362b-44c4-9fc9-77117758b5b0"), pageable);
-
-        assertAll(
-                () -> assertNotNull(result),
-                () -> assertTrue(result.isEmpty())
-        );
-
-        verify(clientRepository, times(1)).findById(any(UUID.class));
-    }
-
 
 
 }
