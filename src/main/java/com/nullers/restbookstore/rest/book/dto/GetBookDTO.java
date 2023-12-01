@@ -17,12 +17,10 @@ import java.time.LocalDateTime;
 public class GetBookDTO {
     private Long id;
     private String name;
+    private String author;
     private PublisherData publisher;
     private String category;
     private Integer stock;
-
-
-    @Setter
     private String image;
     private String description;
     private Double price;
