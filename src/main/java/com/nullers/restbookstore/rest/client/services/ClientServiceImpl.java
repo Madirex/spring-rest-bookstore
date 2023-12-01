@@ -9,6 +9,7 @@ import com.nullers.restbookstore.rest.client.dto.ClientCreateDto;
 import com.nullers.restbookstore.rest.client.dto.ClientDto;
 import com.nullers.restbookstore.rest.client.dto.ClientUpdateDto;
 import com.nullers.restbookstore.rest.client.exceptions.ClientAlreadyExists;
+import com.nullers.restbookstore.rest.client.exceptions.ClientInOrderException;
 import com.nullers.restbookstore.rest.client.exceptions.ClientNotFound;
 import com.nullers.restbookstore.rest.client.mappers.ClientCreateMapper;
 import com.nullers.restbookstore.rest.client.mappers.ClientMapper;
@@ -28,6 +29,7 @@ import org.springframework.cache.annotation.CacheConfig;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
@@ -215,6 +217,11 @@ public class ClientServiceImpl implements ClientService{
     @CachePut(key = "#id")
     public void deleteById(UUID id) {
         ClientDto clientToDelete = findById(id);
+        int orders_client = orderRepository.findByClientId(id, PageRequest.of(0, 10)).getContent().size();
+        if(orders_client > 0){
+            log.error("El cliente con id: " + id + " tiene pedidos asociados");
+            throw new ClientInOrderException(id);
+        }
         log.info("Eliminando cliente con id: " + id);
         onChange(Notification.Type.DELETE, ClientMapper.toEntity(clientToDelete));
         clientRepository.deleteById(id);
