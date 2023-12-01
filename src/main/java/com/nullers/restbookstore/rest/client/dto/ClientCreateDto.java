@@ -1,5 +1,7 @@
 package com.nullers.restbookstore.rest.client.dto;
 
+import com.nullers.restbookstore.rest.client.model.Address;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -27,7 +29,7 @@ public class ClientCreateDto {
     @Pattern(regexp = "^\\d*$", message = "El telefono debe contener solo digitos")
     private String phone;
 
-    @NotBlank(message = "La direccion no puede estar vacia")
-    private String address;
+    @NotNull(message = "La direccion no puede estar vacia")
+    private @Valid Address address;
 
 }
