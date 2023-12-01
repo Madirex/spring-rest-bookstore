@@ -1,12 +1,12 @@
 package com.nullers.restbookstore.rest.orders.controllers;
 
-import com.nullers.restbookstore.pagination.exceptions.PageNotValidException;
 import com.nullers.restbookstore.pagination.models.ErrorResponse;
 import com.nullers.restbookstore.pagination.models.PageResponse;
 import com.nullers.restbookstore.pagination.util.PaginationLinksUtils;
 import com.nullers.restbookstore.rest.book.exceptions.BookNotFoundException;
 import com.nullers.restbookstore.rest.client.exceptions.ClientNotFound;
 import com.nullers.restbookstore.rest.orders.dto.OrderCreateDto;
+import com.nullers.restbookstore.rest.orders.dto.OrderPageableRequest;
 import com.nullers.restbookstore.rest.orders.exceptions.OrderBadPriceException;
 import com.nullers.restbookstore.rest.orders.exceptions.OrderNotFoundException;
 import com.nullers.restbookstore.rest.orders.exceptions.OrderNotItemsExceptions;
@@ -37,8 +37,6 @@ import java.util.UUID;
 @RequestMapping("/api/orders")
 public class OrderRestController {
 
-    private final String MSG_PAGE_INVALID = "La página no puede ser inferior a 0 o el tamaño inferior a 1";
-
     private final OrderService orderService;
 
     private final PaginationLinksUtils paginationLinksUtils;
@@ -51,15 +49,13 @@ public class OrderRestController {
 
     @GetMapping
     public ResponseEntity<PageResponse<Order>> getAllOrders(
-            @RequestParam(defaultValue = "0") Integer page,
-            @RequestParam(defaultValue = "10") Integer size,
-            @RequestParam(defaultValue = "id") String orderBy,
-            @RequestParam(defaultValue = "ASC") String order,
+            @Valid OrderPageableRequest pageableRequest,
             HttpServletRequest request
     ) {
-        if(page < 0 || size <1){
-            throw new PageNotValidException(MSG_PAGE_INVALID);
-        }
+        String orderBy = pageableRequest.getOrderBy();
+        String order = pageableRequest.getOrder();
+        Integer page = pageableRequest.getPage();
+        Integer size = pageableRequest.getSize();
         Sort sort = order.equalsIgnoreCase("ASC") ? Sort.by(orderBy).ascending() : Sort.by(orderBy).descending();
         Page<Order> orders = orderService.getAllOrders(PageRequest.of(page, size, sort));
         UriComponentsBuilder uriBuilder = UriComponentsBuilder.fromHttpUrl(request.getRequestURL().toString());
@@ -98,15 +94,13 @@ public class OrderRestController {
     @GetMapping("/client/{id}")
     public ResponseEntity<PageResponse<Order>> getOrdersByClientId(
             @PathVariable UUID id,
-            @RequestParam(defaultValue = "0") Integer page,
-            @RequestParam(defaultValue = "10") Integer size,
-            @RequestParam(defaultValue = "id") String orderBy,
-            @RequestParam(defaultValue = "ASC") String order,
+            @Valid OrderPageableRequest pageableRequest,
             HttpServletRequest request
     ) {
-        if(page < 0 || size <1){
-            throw new PageNotValidException(MSG_PAGE_INVALID);
-        }
+        String orderBy = pageableRequest.getOrderBy();
+        String order = pageableRequest.getOrder();
+        Integer page = pageableRequest.getPage();
+        Integer size = pageableRequest.getSize();
         Sort sort = order.equalsIgnoreCase("ASC") ? Sort.by(orderBy).ascending() : Sort.by(orderBy).descending();
         Page<Order> orders = orderService.getOrdersByClientId(id, PageRequest.of(page, size, sort));
         UriComponentsBuilder uriBuilder = UriComponentsBuilder.fromHttpUrl(request.getRequestURL().toString());
@@ -119,15 +113,13 @@ public class OrderRestController {
     @GetMapping("/user/{id}")
     public ResponseEntity<PageResponse<Order>> getOrdersByUserId(
             @PathVariable UUID id,
-            @RequestParam(defaultValue = "0") Integer page,
-            @RequestParam(defaultValue = "10") Integer size,
-            @RequestParam(defaultValue = "id") String orderBy,
-            @RequestParam(defaultValue = "ASC") String order,
+            @Valid OrderPageableRequest pageableRequest,
             HttpServletRequest request
     ) {
-        if(page < 0 || size <1){
-            throw new PageNotValidException(MSG_PAGE_INVALID);
-        }
+        String orderBy = pageableRequest.getOrderBy();
+        String order = pageableRequest.getOrder();
+        Integer page = pageableRequest.getPage();
+        Integer size = pageableRequest.getSize();
         Sort sort = order.equalsIgnoreCase("ASC") ? Sort.by(orderBy).ascending() : Sort.by(orderBy).descending();
         Page<Order> orders = orderService.getOrdersByUserId(id, PageRequest.of(page, size, sort));
         UriComponentsBuilder uriBuilder = UriComponentsBuilder.fromHttpUrl(request.getRequestURL().toString());
@@ -137,11 +129,6 @@ public class OrderRestController {
                 .body(PageResponse.of(orders, orderBy, order));
     }
 
-    @ExceptionHandler(PageNotValidException.class)
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ResponseEntity<ErrorResponse> handlePageNotValidException(PageNotValidException e) {
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ErrorResponse(HttpStatus.BAD_REQUEST.value(), e.getMessage()));
-    }
 
     @ExceptionHandler(UserNotFound.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
