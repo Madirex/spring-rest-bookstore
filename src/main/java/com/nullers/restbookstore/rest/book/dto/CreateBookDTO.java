@@ -32,4 +32,8 @@ public class CreateBookDTO {
 
     @NotBlank(message = "La categoría no puede estar vacía")
     private String category;
+
+    @Min(value = 0, message = "El stock no puede estar en negativo")
+    @Builder.Default()
+    private Integer stock = 0;
 }
