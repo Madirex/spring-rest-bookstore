@@ -14,6 +14,8 @@ import com.nullers.restbookstore.rest.orders.mappers.OrderCreateMapper;
 import com.nullers.restbookstore.rest.orders.models.Order;
 import com.nullers.restbookstore.rest.orders.models.OrderLine;
 import com.nullers.restbookstore.rest.orders.repositories.OrderRepository;
+import com.nullers.restbookstore.rest.shop.exceptions.ShopNotFoundException;
+import com.nullers.restbookstore.rest.shop.repository.ShopRepository;
 import com.nullers.restbookstore.rest.user.exceptions.UserNotFound;
 import com.nullers.restbookstore.rest.user.repository.UserRepository;
 import org.bson.types.ObjectId;
@@ -44,12 +46,15 @@ public class OrderServiceImpl implements OrderService{
 
     private final ClientRepository clientRepository;
 
+    private final ShopRepository shopRepository;
+
     @Autowired
-    public OrderServiceImpl(OrderRepository orderRepository, BookRepository bookRepository, UserRepository userRepository, ClientRepository clientRepository) {
+    public OrderServiceImpl(OrderRepository orderRepository, BookRepository bookRepository, UserRepository userRepository, ClientRepository clientRepository, ShopRepository shopRepository) {
         this.orderRepository = orderRepository;
         this.bookRepository = bookRepository;
         this.userRepository = userRepository;
         this.clientRepository = clientRepository;
+        this.shopRepository = shopRepository;
     }
 
     @Override
@@ -105,6 +110,11 @@ public class OrderServiceImpl implements OrderService{
     }
 
     @Override
+    public Page<Order> getOrdersByShopId(UUID shopId, Pageable pageable) {
+        return orderRepository.findByShopId(shopId, pageable);
+    }
+
+    @Override
     public boolean existsByUserId(UUID userId) {
         return orderRepository.existsByUserId(userId);
     }
@@ -123,6 +133,8 @@ public class OrderServiceImpl implements OrderService{
         userRepository.findById(idUser).orElseThrow(() -> new UserNotFound("El usuario con id " + idUser + " no existe"));
         UUID idClient = order.getClientId();
         clientRepository.findById(idClient).orElseThrow(() -> new ClientNotFound("id", idClient.toString()));
+        UUID idShop = order.getShopId();
+        shopRepository.findById(idShop).orElseThrow(() -> new ShopNotFoundException("La tienda con id " + idShop + " no existe"));
 
         List<OrderLine> orderLines = order.getOrderLines();
 
