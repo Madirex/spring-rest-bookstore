@@ -15,5 +15,7 @@ public interface OrderRepository extends MongoRepository<Order, ObjectId> {
 
     Page<Order> findByUserId(UUID userId, Pageable pageable);
 
+    Page<Order> findByShopId(UUID shopId, Pageable pageable);
+
     boolean existsByUserId(UUID userId);
 }

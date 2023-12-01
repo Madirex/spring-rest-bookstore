@@ -1,6 +1,5 @@
-package com.nullers.restbookstore.rest.client.model;
+package com.nullers.restbookstore.rest.common;
 
-import jakarta.persistence.Entity;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import lombok.Builder;
@@ -21,6 +20,7 @@ public record Address(
         String city,
 
         @Length(min = 3, message = "La provincia debe tener al menos 3 caracteres")
+        @NotBlank(message = "La provincia no puede estar vacía")
         String province,
 
         @Length(min = 3, message = "El país debe tener al menos 3 caracteres")
