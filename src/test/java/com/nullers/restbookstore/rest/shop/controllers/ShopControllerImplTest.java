@@ -10,9 +10,6 @@ import com.nullers.restbookstore.rest.category.model.Categoria;
 import com.nullers.restbookstore.rest.client.exceptions.ClientNotFound;
 import com.nullers.restbookstore.rest.client.model.Client;
 import com.nullers.restbookstore.rest.common.Address;
-import com.nullers.restbookstore.rest.orders.dto.OrderCreateDto;
-import com.nullers.restbookstore.rest.orders.models.Order;
-import com.nullers.restbookstore.rest.orders.models.OrderLine;
 import com.nullers.restbookstore.rest.publisher.model.Publisher;
 import com.nullers.restbookstore.rest.shop.dto.CreateShopDto;
 import com.nullers.restbookstore.rest.shop.dto.GetShopDto;
@@ -22,9 +19,6 @@ import com.nullers.restbookstore.rest.shop.exceptions.ShopNotFoundException;
 import com.nullers.restbookstore.rest.shop.mappers.ShopMapperImpl;
 import com.nullers.restbookstore.rest.shop.model.Shop;
 import com.nullers.restbookstore.rest.shop.services.ShopServiceImpl;
-import com.nullers.restbookstore.rest.user.models.Role;
-import com.nullers.restbookstore.rest.user.models.User;
-import org.bson.types.ObjectId;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.json.AutoConfigureJsonTesters;
@@ -68,19 +62,6 @@ class ShopControllerImplTest {
 
     @MockBean
     ShopMapperImpl shopMapper;
-
-    OrderLine orderLine = OrderLine.builder()
-            .bookId(1L)
-            .quantity(1)
-            .price(1.0)
-            .build();
-
-    OrderLine orderLine2 = OrderLine.builder()
-            .bookId(2L)
-            .quantity(1)
-            .price(1.0)
-            .build();
-
 
 
     Publisher publisher = Publisher.builder()
@@ -127,15 +108,6 @@ class ShopControllerImplTest {
             .createdAt(LocalDateTime.now())
             .build();
 
-    private final User userTest = User.builder()
-            .id(UUID.fromString("9def16db-362b-44c4-9fc9-77117758b5b9"))
-            .name("Daniel")
-            .email("daniel@gmail.com")
-            .password("123456789")
-            .surnames("García")
-            .isDeleted(false)
-            .roles(Set.of(Role.USER))
-            .build();
 
     Shop shop = Shop.builder()
             .id(UUID.fromString("b5f29063-77d8-4d5d-98ea-def0cc9ebc5f"))
@@ -150,28 +122,6 @@ class ShopControllerImplTest {
             .books(Set.of(book.getId()))
             .clients(Set.of(clientTest.getId()))
             .location(address)
-            .build();
-
-
-    Order order = Order.builder()
-            .id(new ObjectId())
-            .userId(userTest.getId())
-            .clientId(clientTest.getId())
-            .shopId(shop.getId())
-            .isDeleted(false)
-            .orderLines(List.of(orderLine, orderLine2))
-            .updatedAt(LocalDateTime.now())
-            .createdAt(LocalDateTime.now())
-            .total(2.0)
-            .totalBooks(2)
-            .build();
-
-
-    OrderCreateDto orderCreateDto = OrderCreateDto.builder()
-            .userId(userTest.getId())
-            .clientId(clientTest.getId())
-            .orderLines(List.of(orderLine, orderLine2))
-            .shopId(shop.getId())
             .build();
 
     GetShopDto getShopDto = GetShopDto.builder()
