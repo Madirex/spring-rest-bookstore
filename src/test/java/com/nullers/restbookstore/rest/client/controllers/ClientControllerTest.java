@@ -7,6 +7,7 @@ import com.nullers.restbookstore.rest.client.dto.ClientCreateDto;
 import com.nullers.restbookstore.rest.client.dto.ClientDto;
 import com.nullers.restbookstore.rest.client.dto.ClientUpdateDto;
 import com.nullers.restbookstore.rest.client.exceptions.ClientAlreadyExists;
+import com.nullers.restbookstore.rest.client.exceptions.ClientInOrderException;
 import com.nullers.restbookstore.rest.client.exceptions.ClientNotFound;
 import com.nullers.restbookstore.rest.common.Address;
 import com.nullers.restbookstore.rest.client.model.Client;
@@ -25,6 +26,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.mock.web.MockMultipartFile;
+import org.springframework.security.test.context.support.WithAnonymousUser;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.web.multipart.MaxUploadSizeExceededException;
 import org.springframework.web.multipart.MultipartFile;
@@ -42,6 +45,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 @AutoConfigureMockMvc
 @ExtendWith(MockitoExtension.class)
 @SpringBootTest(properties = "spring.config.name=application-test")
+@WithMockUser(username = "admin", password = "admin", roles = {"ADMIN"})
 class ClientControllerTest {
 
     private ObjectMapper mapper;
@@ -113,6 +117,102 @@ class ClientControllerTest {
     void setUp() {
         mapper = new ObjectMapper();
     }
+
+
+    @Test
+    @WithAnonymousUser
+    void getAllClients_ShouldReturnForbidden() throws Exception {
+        MockHttpServletResponse response = mockMvc.perform(get(endpoint)
+                .accept(MediaType.APPLICATION_JSON)).andReturn().getResponse();
+
+        assertAll(
+                () -> assertEquals(HttpStatus.FORBIDDEN .value(), response.getStatus())
+        );
+    }
+
+    @Test
+    @WithAnonymousUser
+    void getById_ShouldReturnForbidden() throws Exception {
+        MockHttpServletResponse response = mockMvc.perform(get(endpoint + "/9def16db-362b-44c4-9fc9-77117758b5b0")
+                .accept(MediaType.APPLICATION_JSON)).andReturn().getResponse();
+
+        assertAll(
+                () -> assertEquals(HttpStatus.FORBIDDEN .value(), response.getStatus())
+        );
+    }
+
+    @Test
+    @WithAnonymousUser
+    void getByEmail_ShouldReturnForbidden() throws Exception {
+        MockHttpServletResponse response = mockMvc.perform(get(endpoint + "/email/daniel@gmail.com")
+                .accept(MediaType.APPLICATION_JSON)).andReturn().getResponse();
+
+        assertAll(
+                () -> assertEquals(HttpStatus.FORBIDDEN .value(), response.getStatus())
+        );
+    }
+
+    @Test
+    @WithAnonymousUser
+    void save_ShouldReturnForbidden() throws Exception {
+        MockHttpServletResponse response = mockMvc.perform(post(endpoint)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(mapper.writeValueAsString(clientDtoTest)))
+                .andReturn().getResponse();
+
+        assertAll(
+                () -> assertEquals(HttpStatus.FORBIDDEN .value(), response.getStatus())
+        );
+    }
+
+    @Test
+    @WithAnonymousUser
+    void update_ShouldReturnForbidden() throws Exception {
+        MockHttpServletResponse response = mockMvc.perform(put(endpoint + "/9def16db-362b-44c4-9fc9-77117758b5b0")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(mapper.writeValueAsString(clientDtoTest)))
+                .andReturn().getResponse();
+
+        assertAll(
+                () -> assertEquals(HttpStatus.FORBIDDEN .value(), response.getStatus())
+        );
+    }
+
+    @Test
+    @WithAnonymousUser
+    void delete_ShouldReturnForbidden() throws Exception {
+        MockHttpServletResponse response = mockMvc.perform(delete(endpoint + "/9def16db-362b-44c4-9fc9-77117758b5b0")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(mapper.writeValueAsString(clientDtoTest)))
+                .andReturn().getResponse();
+
+        assertAll(
+                () -> assertEquals(HttpStatus.FORBIDDEN .value(), response.getStatus())
+        );
+    }
+
+    @Test
+    @WithAnonymousUser
+    void uploadImage_ShouldReturnForbidden() throws Exception {
+        MockMultipartFile file = new MockMultipartFile("file", "test.txt", MediaType.TEXT_PLAIN_VALUE, "Hello, World!".getBytes(StandardCharsets.UTF_8));
+
+        MockHttpServletResponse response = mockMvc.perform(multipart(endpoint + "/9def16db-362b-44c4-9fc9-77117758b5b0/image")
+                        .file(file)
+                        .with(req -> {
+                            req.setMethod("PATCH");
+                            return req;
+                        })
+                        .contentType(MediaType.MULTIPART_FORM_DATA))
+                .andReturn().getResponse();
+
+
+
+        assertAll(
+                () -> assertEquals(HttpStatus.FORBIDDEN .value(), response.getStatus())
+        );
+    }
+
+
 
     @Test
     void getAllClients() throws Exception {
@@ -1125,6 +1225,24 @@ class ClientControllerTest {
 
         verify(clientService, times(1)).deleteById(any(UUID.class));
 
+    }
+
+    @Test
+    void deleteClient_ShouldThrowClientInOrder() throws Exception{
+        doThrow(new ClientInOrderException(UUID.fromString("9def16db-362b-44c4-9fc9-77117758b5b9"))).when(clientService).deleteById(any(UUID.class));
+
+        MockHttpServletResponse response = mockMvc.perform(
+                        delete(endpoint + "/9def16db-362b-44c4-9fc9-77117758b5b9"))
+                .andReturn().getResponse();
+
+        ErrorResponse res = mapper.readValue(response.getContentAsString(), ErrorResponse.class);
+
+        assertAll(
+                () -> assertEquals(HttpStatus.BAD_REQUEST.value(), response.getStatus()),
+                () -> assertEquals("El cliente con id 9def16db-362b-44c4-9fc9-77117758b5b9 tiene pedidos asociados", res.msg())
+        );
+
+        verify(clientService, times(1)).deleteById(any(UUID.class));
     }
 
     @Test

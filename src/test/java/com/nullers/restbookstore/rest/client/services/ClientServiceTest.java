@@ -1,11 +1,15 @@
 package com.nullers.restbookstore.rest.client.services;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.nullers.restbookstore.rest.book.mappers.BookMapperImpl;
+import com.nullers.restbookstore.rest.book.model.Book;
 import com.nullers.restbookstore.rest.book.services.BookServiceImpl;
+import com.nullers.restbookstore.rest.category.model.Categoria;
 import com.nullers.restbookstore.rest.client.dto.ClientCreateDto;
 import com.nullers.restbookstore.rest.client.dto.ClientDto;
 import com.nullers.restbookstore.rest.client.dto.ClientUpdateDto;
 import com.nullers.restbookstore.rest.client.exceptions.ClientAlreadyExists;
+import com.nullers.restbookstore.rest.client.exceptions.ClientInOrderException;
 import com.nullers.restbookstore.rest.client.exceptions.ClientNotFound;
 import com.nullers.restbookstore.rest.common.Address;
 import com.nullers.restbookstore.rest.client.model.Client;
@@ -14,7 +18,14 @@ import com.nullers.restbookstore.config.websockets.WebSocketConfig;
 import com.nullers.restbookstore.config.websockets.WebSocketHandler;
 import com.nullers.restbookstore.rest.client.notifications.mapper.ClientNotificationMapper;
 import com.nullers.restbookstore.notifications.models.Notification;
+import com.nullers.restbookstore.rest.orders.models.Order;
+import com.nullers.restbookstore.rest.orders.models.OrderLine;
+import com.nullers.restbookstore.rest.orders.repositories.OrderRepository;
+import com.nullers.restbookstore.rest.publisher.model.Publisher;
+import com.nullers.restbookstore.rest.user.models.Role;
+import com.nullers.restbookstore.rest.user.models.User;
 import com.nullers.restbookstore.storage.services.StorageService;
+import org.bson.types.ObjectId;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -42,6 +53,9 @@ class ClientServiceTest {
     private ClientRepository clientRepository;
 
     @Mock
+    private OrderRepository orderRepository;
+
+    @Mock
     private BookServiceImpl bookService;
 
     @Mock
@@ -58,6 +72,43 @@ class ClientServiceTest {
 
     @InjectMocks
     private ClientServiceImpl clientService;
+
+    OrderLine orderLine = OrderLine.builder()
+            .bookId(1L)
+            .quantity(1)
+            .price(1.0)
+            .build();
+
+    OrderLine orderLine2 = OrderLine.builder()
+            .bookId(2L)
+            .quantity(1)
+            .price(1.0)
+            .build();
+
+
+
+    Publisher publisher = Publisher.builder()
+            .id(1L)
+            .name("name")
+            .build();
+
+    Categoria categoria = Categoria.builder()
+            .id(UUID.fromString("a712c5f2-eb95-449a-9ec4-1aa55cdac9bc"))
+            .nombre("Cat")
+            .activa(true)
+            .build();
+
+    Book book = Book.builder()
+            .id(1L)
+            .name("name")
+            .publisher(publisher)
+            .image("image.jpg")
+            .stock(10)
+            .price(1.0)
+            .description("description")
+            .active(true)
+            .category(categoria)
+            .build();
 
     Address address = Address.builder()
             .street("Calle Falsa 123")
@@ -79,6 +130,29 @@ class ClientServiceTest {
             .image("https://via.placeholder.com/150")
             .createdAt(LocalDateTime.now())
             .build();
+
+    private final User userTest = User.builder()
+            .id(UUID.fromString("9def16db-362b-44c4-9fc9-77117758b5b9"))
+            .name("Daniel")
+            .email("daniel@gmail.com")
+            .password("123456789")
+            .surnames("García")
+            .isDeleted(false)
+            .roles(Set.of(Role.USER))
+            .build();
+
+    Order order = Order.builder()
+            .id(new ObjectId())
+            .userId(userTest.getId())
+            .clientId(clientTest.getId())
+            .isDeleted(false)
+            .orderLines(List.of(orderLine, orderLine2))
+            .updatedAt(LocalDateTime.now())
+            .createdAt(LocalDateTime.now())
+            .total(2.0)
+            .totalBooks(2)
+            .build();
+
 
 
 
@@ -993,6 +1067,7 @@ class ClientServiceTest {
 
     @Test
     void delete() throws IOException, InterruptedException {
+        when(orderRepository.findByClientId(any(UUID.class), any(Pageable.class))).thenReturn(new PageImpl<>(List.of()));
         when(clientRepository.findById(any(UUID.class))).thenReturn(Optional.of(
                 Client.builder()
                         .id(UUID.fromString("9def16db-362b-44c4-9fc9-77117758b5b0"))
@@ -1008,12 +1083,29 @@ class ClientServiceTest {
 
         clientService.deleteById(UUID.fromString("9def16db-362b-44c4-9fc9-77117758b5b0"));
 
+        verify(orderRepository, times(1)).findByClientId(any(UUID.class), any(Pageable.class));
         verify(clientRepository, times(1)).deleteById(any(UUID.class));
         verify(clientRepository, times(1)).findById(any(UUID.class));
         Thread.sleep(1000);
 
         verify(webSocketHandler, times(1)).sendMessage(any(String.class));
 
+    }
+
+    @Test
+    void delete_ShouldThrowExceptionClientInOrder() {
+        when(orderRepository.findByClientId(any(UUID.class), any(Pageable.class))).thenReturn(new PageImpl<>(List.of(Order.builder().build())));
+        when(clientRepository.findById(any(UUID.class))).thenReturn(Optional.of(clientTest));
+        var res = assertThrows(ClientInOrderException.class, () -> clientService.deleteById(UUID.fromString("9def16db-362b-44c4-9fc9-77117758b5b0")));
+
+        assertAll(
+                () -> assertNotNull(res),
+                () -> assertEquals("El cliente con id "+clientTest.getId()+" tiene pedidos asociados", res.getMessage())
+        );
+
+        verify(orderRepository, times(1)).findByClientId(any(UUID.class), any(Pageable.class));
+        verify(clientRepository, times(0)).deleteById(any(UUID.class));
+        verify(clientRepository, times(1)).findById(any(UUID.class));
     }
 
 
@@ -1150,6 +1242,17 @@ class ClientServiceTest {
     void onChange() throws IOException, InterruptedException {
         clientService.setWebSocketService(webSocketHandler);
         doNothing().when(webSocketHandler).sendMessage(any(String.class));
+
+        clientService.onChange(Notification.Type.CREATE, clientTest);
+
+        Thread.sleep(1000);
+
+        verify(webSocketHandler, times(1)).sendMessage(any(String.class));
+    }
+
+    @Test
+    void onChange_ShouldReturnJsonProcessingException() throws IOException, InterruptedException {
+        clientService.setWebSocketService(webSocketHandler);
 
         clientService.onChange(Notification.Type.CREATE, clientTest);
 
