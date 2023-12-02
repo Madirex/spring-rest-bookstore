@@ -5,7 +5,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 /**
  * JwtService interface
  *
- * @Author: Binwei Wang
+ * @Author Binwei Wang
  */
 public interface JwtService {
     /**

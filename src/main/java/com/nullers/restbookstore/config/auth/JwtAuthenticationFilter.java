@@ -22,8 +22,9 @@ import java.io.IOException;
 
 /**
  * JwtAuthenticationFilter es un filtro que se ejecuta en cada petición y comprueba si el token
+ * de autenticación es válido. Si es así, lo añade al contexto de seguridad.
  *
- * @Author: Binwei Wang
+ * @Author Binwei Wang
  */
 @Component
 @Slf4j

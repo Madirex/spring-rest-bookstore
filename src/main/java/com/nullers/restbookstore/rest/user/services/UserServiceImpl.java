@@ -26,7 +26,7 @@ import java.util.UUID;
 /**
  * Servicio para la entidad User
  *
- * @Author: Binwei Wang
+ * @Author Binwei Wang
  */
 @Service
 @Slf4j

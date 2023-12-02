@@ -12,6 +12,10 @@ import com.nullers.restbookstore.rest.book.services.BookServiceImpl;
 import com.nullers.restbookstore.rest.common.PageableRequest;
 import com.nullers.restbookstore.rest.publisher.exceptions.PublisherIDNotValid;
 import com.nullers.restbookstore.rest.publisher.exceptions.PublisherNotFound;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,9 +23,9 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
@@ -60,7 +64,20 @@ public class BookRestControllerImpl implements BookRestController {
      * @param publisher Publisher por la que filtrar
      * @return ResponseEntity con el código de estado
      */
-    @GetMapping
+    @Operation(summary = "Obtiene todos los libros", description = "Obtiene una lista de libros")
+    @Parameter(name = "publisher", description = "Publisher del libro", example = "Madirex")
+    @Parameter(name = "maxPrice", description = "Precio máximo", example = "12.2")
+    @Parameter(name = "category", description = "Categoría del libro", example = "Terror")
+    @Parameter(name = "page", description = "Número de página", example = "0")
+    @Parameter(name = "size", description = "Tamaño de la página", example = "10")
+    @Parameter(name = "orderBy", description = "Campo de ordenación", example = "id")
+    @Parameter(name = "order", description = "Dirección de ordenación", example = "asc")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Página de libros"),
+            @ApiResponse(responseCode = "400", description = "Petición no válida")
+    })
+    @GetMapping()
+    @PreAuthorize("hasAnyRole('USER','ADMIN')")
     public ResponseEntity<PageResponse<GetBookDTO>> getAllBook(
             @Valid @RequestParam(required = false) Optional<String> publisher,
             @RequestParam(required = false) Optional<Double> maxPrice,
@@ -87,7 +104,14 @@ public class BookRestControllerImpl implements BookRestController {
      * @return ResponseEntity con el código de estado
      * @throws BookNotFoundException Si no se ha encontrado el Book con el ID indicado
      */
+    @Operation(summary = "Busca un libro dada su ID", description = "Busca un libro dada su ID")
+    @Parameter(name = "id", description = "Identificador del libro", example = "1", required = true)
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Libro encontrado"),
+            @ApiResponse(responseCode = "404", description = "Libro no encontrado"),
+    })
     @GetMapping("/{id}")
+    @PreAuthorize("hasAnyRole('USER','ADMIN')")
     @Override
     public ResponseEntity<GetBookDTO> getBookById(@Valid @PathVariable Long id) throws BookNotFoundException {
         return ResponseEntity.ok(service.getBookById(id));
@@ -99,7 +123,13 @@ public class BookRestControllerImpl implements BookRestController {
      * @param book Objeto CreateBookDTO con los campos a crear
      * @return ResponseEntity con el código de estado
      */
+    @Operation(summary = "Crea un libro", description = "Crea un libro")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "201", description = "Libro creado"),
+            @ApiResponse(responseCode = "400", description = "Libro no válido"),
+    })
     @PostMapping
+    @PreAuthorize("hasRole('ADMIN')")
     @Override
     public ResponseEntity<GetBookDTO> postBook(@Valid @RequestBody CreateBookDTO book) {
         GetBookDTO bookDTO = service.postBook(book);
@@ -115,7 +145,16 @@ public class BookRestControllerImpl implements BookRestController {
      * @throws BookNotFoundException   Si no se ha encontrado el Book con el ID indicado
      * @throws BookNotValidIDException Si el ID del Book no es válido
      */
+    @Operation(summary = "Actualiza un libro", description = "Actualiza un libro")
+    @Parameter(name = "id", description = "Identificador del libro", example = "1", required = true)
+    @io.swagger.v3.oas.annotations.parameters.RequestBody(required = true, description = "Libro a actualizar")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Libro actualizado"),
+            @ApiResponse(responseCode = "400", description = "Libro no válido"),
+            @ApiResponse(responseCode = "404", description = "Libro no encontrado"),
+    })
     @PutMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     @Override
     public ResponseEntity<GetBookDTO> putBook(@Valid @PathVariable Long id, @Valid @RequestBody UpdateBookDTO book)
             throws BookNotFoundException, BookNotValidIDException {
@@ -131,7 +170,16 @@ public class BookRestControllerImpl implements BookRestController {
      * @throws BookNotFoundException   Si no se ha encontrado el Book con el ID indicado
      * @throws BookNotValidIDException Si el ID del Book no es válido
      */
+    @Operation(summary = "Actualiza un libro parcialmente", description = "Actualiza un libro parcialmente")
+    @Parameter(name = "id", description = "Identificador del libro", example = "1", required = true)
+    @io.swagger.v3.oas.annotations.parameters.RequestBody(required = true, description = "Libro a actualizar parcialmente")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Libro actualizado"),
+            @ApiResponse(responseCode = "400", description = "Libro no válido"),
+            @ApiResponse(responseCode = "404", description = "Libro no encontrado"),
+    })
     @PatchMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     @Override
     public ResponseEntity<GetBookDTO> patchBook(@Valid @PathVariable Long id, @Valid @RequestBody PatchBookDTO book)
             throws BookNotFoundException, BookNotValidIDException {
@@ -145,24 +193,18 @@ public class BookRestControllerImpl implements BookRestController {
      * @return ResponseEntity con el código de estado
      * @throws BookNotFoundException Si no se ha encontrado el Book con el ID indicado
      */
+    @Operation(summary = "Borra un libro", description = "Borra un libro")
+    @Parameter(name = "id", description = "Identificador del libro", example = "1", required = true)
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "204", description = "Libro borrado"),
+            @ApiResponse(responseCode = "404", description = "Libro no encontrado"),
+    })
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     @Override
     public ResponseEntity<String> deleteBook(@Valid @PathVariable Long id) throws BookNotFoundException {
         service.deleteBook(id);
         return ResponseEntity.noContent().build();
-    }
-
-    /**
-     * Método para manejar las excepciones de ResponseStatusException
-     *
-     * @param ex Excepción
-     * @return Error en ResponseEntity (mensaje y código de estado)
-     */
-    @ExceptionHandler(ResponseStatusException.class)
-    public ResponseEntity<String> handleResponseStatusException(ResponseStatusException ex) {
-        HttpStatusCode httpStatus = ex.getStatusCode();
-        String msg = ex.getReason();
-        return new ResponseEntity<>(msg, httpStatus);
     }
 
     /**
@@ -177,7 +219,16 @@ public class BookRestControllerImpl implements BookRestController {
      * @throws PublisherIDNotValid   Si el ID del Publisher no es válido
      * @throws IOException           Si ha habido un error al subir la imagen
      */
+    @Operation(summary = "Actualiza la imagen de un libro", description = "Actualiza la imagen de un libro")
+    @Parameter(name = "file", description = "Fichero a subir", required = true)
+    @Parameter(name = "id", description = "Identificador del libro", example = "1", required = true)
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Libro actualizado"),
+            @ApiResponse(responseCode = "400", description = "Libro no válido"),
+            @ApiResponse(responseCode = "404", description = "Libro no encontrado"),
+    })
     @PatchMapping(value = "/image/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<GetBookDTO> newBookImg(
             @PathVariable Long id,
             @RequestPart("file") MultipartFile file) throws BookNotValidIDException, PublisherNotFound,

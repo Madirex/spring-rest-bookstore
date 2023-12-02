@@ -16,7 +16,7 @@ import java.util.function.Function;
 /**
  * Implementación de JwtService
  *
- * @Author: Binwei Wang
+ * @Author Binwei Wang
  */
 @Service
 public class JwtServiceImp implements JwtService {
@@ -114,7 +114,6 @@ public class JwtServiceImp implements JwtService {
      * Crea el header del token
      * @return header
      */
-
     private Map<String,Object> createHeader() {
         Map<String,Object> header = new HashMap<>();
         header.put("typ","JWT");

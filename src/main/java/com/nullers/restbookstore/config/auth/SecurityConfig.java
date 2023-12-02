@@ -1,7 +1,6 @@
 package com.nullers.restbookstore.config.auth;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -21,9 +20,13 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import static org.springframework.security.config.http.SessionCreationPolicy.STATELESS;
 
 /**
- * Security configuration class.
+ * Security configuration class
  *
- * @Author: Binwei Wang
+ * @Author Binwei Wang
+ * @Author Jaimesalcedo1
+ * @Author Daniel
+ * @Author Madirex
+ * @Author Alexdor00
  */
 
 @Configuration
@@ -38,8 +41,9 @@ public class SecurityConfig {
 
     /**
      * Constructor de la clase
-     * @param userService userservice para la autenticacion
-     * @param jwtAuthenticationFilter filtro de autenticacion
+     *
+     * @param userService             user service para la autenticación
+     * @param jwtAuthenticationFilter filtro de autenticación
      */
     @Autowired
     public SecurityConfig(UserDetailsService userService, JwtAuthenticationFilter jwtAuthenticationFilter) {
@@ -48,10 +52,11 @@ public class SecurityConfig {
     }
 
     /**
-     * Metodo que configura la seguridad de la aplicacion
-     * @param http httpsecurity
-     * @return SecurityFilterChain
-     * @throws Exception excepcion
+     * Método que configura la seguridad de la aplicación
+     *
+     * @param http http-security para la configuración
+     * @return SecurityFilterChain filtro de seguridad
+     * @throws Exception excepción de la configuración
      */
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -59,12 +64,21 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .sessionManagement(manager -> manager.sessionCreationPolicy(STATELESS))
                 .authorizeHttpRequests(request -> request
+                        //acceso a los recursos estáticos para todos los usuarios
                         .requestMatchers("/error/**").permitAll()
-                        .requestMatchers("/swagger-ui/**", "/v3/api-docs/**").permitAll()
-                        .requestMatchers("/api/books/**").permitAll()
-                        .requestMatchers("/ws/**").permitAll()
+                        .requestMatchers("/static/**").permitAll()
+                        .requestMatchers("/images/**").permitAll()
+                        .requestMatchers("/webjars/**").permitAll()
                         .requestMatchers("/storage/**").permitAll()
-                        .requestMatchers("/" + "api" + "/**").permitAll()
+                        //WebSockets y Swagger solo para Admins
+                        .requestMatchers("/ws/**").hasRole("ADMIN")
+                        .requestMatchers("/swagger-ui/**", "/v3/api-docs/**").permitAll()
+                        //acceso a autentificación para todos los usuarios
+                        .requestMatchers("/api/auth/**").permitAll()
+                        //Acceso a los endpoints de la API solo para administradores
+                        .requestMatchers("/api/orders/**").hasRole("ADMIN")
+                        //Acceso al perfil para usuarios autenticados
+                        .requestMatchers("/books/**").permitAll()
                         .anyRequest().authenticated())
                 .authenticationProvider(authenticationProvider()).addFilterBefore(
                         jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
@@ -74,7 +88,8 @@ public class SecurityConfig {
     }
 
     /**
-     * Metodo que configura la autenticacion
+     * Configura la autenticación
+     *
      * @return AuthenticationProvider
      */
     @Bean
@@ -86,7 +101,8 @@ public class SecurityConfig {
     }
 
     /**
-     * Metodo que encripta la contraseña
+     * Encripta la contraseña
+     *
      * @return PasswordEncoder
      */
 
@@ -96,10 +112,11 @@ public class SecurityConfig {
     }
 
     /**
-     * Metodo que configura el AuthenticationManager
-     * @param config configuracion de la autenticacion
+     * Configura el AuthenticationManager
+     *
+     * @param config configuración de la autenticación
      * @return AuthenticationManager
-     * @throws Exception excepcion
+     * @throws Exception excepción
      */
     @Bean
     public AuthenticationManager authenticationManagerBean(AuthenticationConfiguration config) throws Exception {

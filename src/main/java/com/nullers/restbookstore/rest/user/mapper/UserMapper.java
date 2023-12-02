@@ -11,7 +11,7 @@ import java.util.UUID;
 /**
  * Mapper de usuario
  *
- * @Author: Binwei Wang
+ * @Author Binwei Wang
  */
 @Component
 public class UserMapper {

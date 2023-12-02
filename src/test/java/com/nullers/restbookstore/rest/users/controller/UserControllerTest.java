@@ -34,7 +34,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 /**
  * Test for {@link UserController}
  *
- * @Author: Binwei Wang
+ * @Author Binwei Wang
  */
 @SpringBootTest(properties = "spring.config.name=application-test")
 @AutoConfigureMockMvc

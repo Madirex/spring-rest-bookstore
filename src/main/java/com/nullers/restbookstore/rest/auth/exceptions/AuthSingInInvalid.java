@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 /**
  * AuthSingInInvalid
  *
- * @Author: Binwei Wang
+ * @Author Binwei Wang
  */
 @ResponseStatus(HttpStatus.NOT_FOUND)
 public class AuthSingInInvalid extends AuthException {

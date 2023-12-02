@@ -18,6 +18,7 @@ import com.nullers.restbookstore.rest.book.services.BookServiceImpl;
 import com.nullers.restbookstore.rest.category.exceptions.CategoriaNotFoundException;
 import com.nullers.restbookstore.rest.category.model.Categoria;
 import com.nullers.restbookstore.rest.category.repository.CategoriasRepositoryJpa;
+import com.nullers.restbookstore.rest.category.services.CategoriaServiceJpa;
 import com.nullers.restbookstore.rest.publisher.dto.PublisherDTO;
 import com.nullers.restbookstore.rest.publisher.dto.PublisherData;
 import com.nullers.restbookstore.rest.publisher.mappers.PublisherMapper;
@@ -40,6 +41,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
@@ -79,6 +81,9 @@ class BookServiceImplTest {
     private BookNotificationMapper bookNotificationMapper;
     @Mock
     private ObjectMapper objectMapper;
+
+    @Mock
+    private CategoriaServiceJpa categoryService;
 
     @InjectMocks
     private BookServiceImpl bookService;
@@ -328,11 +333,13 @@ class BookServiceImplTest {
      */
     @Test
     void testPatchBook() throws BookNotFoundException {
+        var categoryId = UUID.randomUUID();
         var update = PatchBookDTO.builder()
                 .name("nombre")
                 .publisherId(1L)
                 .price(2.2)
                 .image("imagen")
+                .category(categoryId.toString())
                 .description("descripción")
                 .build();
         var publisher = Publisher.builder().id(1L).createdAt(LocalDateTime.now())
@@ -343,6 +350,7 @@ class BookServiceImplTest {
                 .publisher(publisher).description("descripción")
                 .createdAt(LocalDateTime.now()).updatedAt(LocalDateTime.now()).active(true).build();
         when(publisherService.findById(1L)).thenReturn(any());
+        when(categoryService.getCategoriaById(categoryId)).thenReturn(any());
         when(publisherMapper.toPublisher(publisherDTO)).thenReturn(publisher);
         when(bookRepository.save(inserted)).thenReturn(inserted);
         when(bookRepository.findById(inserted.getId())).thenReturn(Optional.of(inserted));
@@ -469,8 +477,6 @@ class BookServiceImplTest {
 
         when(bookRepository.findById(list.get(0).getId()))
                 .thenReturn(Optional.of(list.get(0)));
-        when(storageService.store(any(), any(), any()))
-                .thenReturn(imageUrl);
 
         //path
         var update = PatchBookDTO.builder().image(imageUrl).build();
