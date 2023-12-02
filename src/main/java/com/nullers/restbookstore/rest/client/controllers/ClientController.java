@@ -214,17 +214,6 @@ public class ClientController {
         return new ErrorResponse(HttpStatus.BAD_REQUEST.value(), exception.getMessage());
     }
 
-    /**
-     * Manejador de excepciones de PropertyReferenceException
-     *
-     * @param exception excepción
-     * @return ErrorResponse con el mensaje de error
-     */
-    @ExceptionHandler(PropertyReferenceException.class)
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ErrorResponse handlePropertyReferenceException(PropertyReferenceException exception) {
-        return new ErrorResponse(HttpStatus.BAD_REQUEST.value(), exception.getMessage());
-    }
 
     @ExceptionHandler(ClientInOrderException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
