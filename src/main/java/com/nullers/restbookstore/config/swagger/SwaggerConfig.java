@@ -15,12 +15,22 @@ import org.springframework.context.annotation.Configuration;
 /**
  * SwaggerConfig
  *
- * @Author: Binwei Wang
+ * @Author Binwei Wang
+ * @Author Jaimesalcedo1
+ * @Author Daniel
+ * @Author Madirex
+ * @Author Alexdor00
  */
 @Configuration
 class SwaggerConfig {
 
-    // Añadimos la configuración de JWT
+    public static final String REPO_URL = "https://github.com/Madirex/rest-bookstore";
+
+    /**
+     * Método que crea el esquema de seguridad
+     *
+     * @return SecurityScheme
+     */
     private SecurityScheme createAPIKeyScheme() {
         return new SecurityScheme().type(SecurityScheme.Type.HTTP)
                 .bearerFormat("JWT")
@@ -29,39 +39,32 @@ class SwaggerConfig {
 
     /**
      * Método que devuelve la información de la API
+     *
      * @return OpenAPI
      */
     @Bean
-    OpenAPI apiInfo() {
+    public OpenAPI apiInfo() {
         return new OpenAPI()
                 .info(
                         new Info()
-                                .title("API REST Tienda Spring Boot DAW 2023/2024")
+                                .title("API REST Tienda libros")
                                 .version("1.0.0")
-                                .description("API REST Tienda libros Nullers")
+                                .description("API REST Tienda libros")
                                 .license(
                                         new License()
                                                 .name("CC BY-NC-SA 4.0")
-                                                .url("https://github.com/Madirex/rest-bookstore")
+                                                .url(REPO_URL)
                                 )
                                 .contact(
                                         new Contact()
-                                                .name("Nullers")
-                                                .email("Nullers@gmail.com")
+                                                .name("NULLERS")
                                 )
-
                 )
                 .externalDocs(
                         new ExternalDocumentation()
                                 .description("Documentación del Proyecto")
-                                .url("https://github.com/Madirex/rest-bookstore")
+                                .url(REPO_URL)
                 )
-                .externalDocs(
-                        new ExternalDocumentation()
-                                .description("GitHub del Proyecto")
-                                .url("https://github.com/Madirex/rest-bookstore")
-                )
-                // Añadimos la seguridad JWT
                 .addSecurityItem(new SecurityRequirement().
                         addList("Bearer Authentication"))
                 .components(new Components().addSecuritySchemes
@@ -70,16 +73,15 @@ class SwaggerConfig {
 
     /**
      * Método que devuelve la información de la API
+     *
      * @return OpenAPI
      */
     @Bean
-    GroupedOpenApi httpApi() {
+    public GroupedOpenApi httpApi() {
         return GroupedOpenApi.builder()
                 .group("https")
-                // Algunas rutas son JWT
-                // .pathsToMatch("/v1/**") // Todas las rutas
-                .pathsToMatch("/api/books/**") //Solo productos
-                .displayName("Tienda libros Nullers")
+                .pathsToMatch("/api/books/**")
+                .displayName("Tienda libros")
                 .build();
     }
 }
