@@ -58,6 +58,7 @@ public class User implements UserDetails {
     private LocalDateTime updatedAt = LocalDateTime.now();
     @Builder.Default
     private Boolean isDeleted = false;
+    @ElementCollection(fetch = FetchType.EAGER)
     @Enumerated(EnumType.STRING)
     private Set<UserRole> userRoles;
 
