@@ -1,6 +1,5 @@
 package com.nullers.restbookstore.rest.shop.controllers;
 
-import com.nullers.restbookstore.pagination.exceptions.PageNotValidException;
 import com.nullers.restbookstore.pagination.models.ErrorResponse;
 import com.nullers.restbookstore.pagination.models.PageResponse;
 import com.nullers.restbookstore.pagination.util.PaginationLinksUtils;
@@ -12,17 +11,15 @@ import com.nullers.restbookstore.rest.shop.dto.GetShopDto;
 import com.nullers.restbookstore.rest.shop.dto.UpdateShopDto;
 import com.nullers.restbookstore.rest.shop.exceptions.ShopHasOrders;
 import com.nullers.restbookstore.rest.shop.exceptions.ShopNotFoundException;
-import com.nullers.restbookstore.rest.shop.exceptions.ShopNotValidUUIDException;
 import com.nullers.restbookstore.rest.shop.services.ShopServiceImpl;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
-import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Repository;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
