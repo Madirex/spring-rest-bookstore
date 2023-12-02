@@ -17,7 +17,10 @@ public class UpdateBookDTO {
     @NotBlank(message = "El nombre no puede estar vacío")
     private String name;
 
-    @NotNull(message = "publisher no puede ser nulo")
+    @NotBlank(message = "El autor no puede estar vacío")
+    private String author;
+
+    @NotNull(message = "Publisher no puede ser nulo")
     private Long publisherId;
 
     @Min(value = 0, message = "El precio no puede estar en negativo")

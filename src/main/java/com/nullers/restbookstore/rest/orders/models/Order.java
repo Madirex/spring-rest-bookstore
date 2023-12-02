@@ -37,6 +37,9 @@ public class Order {
     @NotNull(message = "El cliente no puede ser nulo")
     private UUID clientId;
 
+    @NotNull(message = "La tienda no puede ser nula")
+    private UUID shopId;
+
     @NotNull(message = "El pedido debe tener al menos una línea de pedido")
     private List<@Valid OrderLine> orderLines;
 

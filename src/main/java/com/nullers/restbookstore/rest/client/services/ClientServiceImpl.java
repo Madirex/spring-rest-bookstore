@@ -3,6 +3,9 @@ package com.nullers.restbookstore.rest.client.services;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import com.nullers.restbookstore.config.websockets.WebSocketConfig;
+import com.nullers.restbookstore.config.websockets.WebSocketHandler;
+import com.nullers.restbookstore.notifications.models.Notification;
 import com.nullers.restbookstore.rest.book.mappers.BookMapperImpl;
 import com.nullers.restbookstore.rest.book.services.BookServiceImpl;
 import com.nullers.restbookstore.rest.client.dto.ClientCreateDto;
@@ -13,14 +16,11 @@ import com.nullers.restbookstore.rest.client.exceptions.ClientInOrderException;
 import com.nullers.restbookstore.rest.client.exceptions.ClientNotFound;
 import com.nullers.restbookstore.rest.client.mappers.ClientCreateMapper;
 import com.nullers.restbookstore.rest.client.mappers.ClientMapper;
-import com.nullers.restbookstore.rest.client.model.Address;
 import com.nullers.restbookstore.rest.client.model.Client;
-import com.nullers.restbookstore.rest.client.repository.ClientRepository;
-import com.nullers.restbookstore.config.websockets.WebSocketConfig;
-import com.nullers.restbookstore.config.websockets.WebSocketHandler;
 import com.nullers.restbookstore.rest.client.notifications.dto.ClientNotificationResponse;
 import com.nullers.restbookstore.rest.client.notifications.mapper.ClientNotificationMapper;
-import com.nullers.restbookstore.notifications.models.Notification;
+import com.nullers.restbookstore.rest.client.repository.ClientRepository;
+import com.nullers.restbookstore.rest.common.Address;
 import com.nullers.restbookstore.rest.orders.repositories.OrderRepository;
 import com.nullers.restbookstore.storage.services.StorageService;
 import lombok.extern.slf4j.Slf4j;
@@ -37,8 +37,8 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.*;
+import java.util.Optional;
+import java.util.UUID;
 
 /**
  * @author Daniel
@@ -49,15 +49,11 @@ import java.util.*;
  * @see WebSocketHandler
  * @see ClientNotificationMapper
  * Servicio que implementa la interfaz ClientService y que se encarga de gestionar los clientes
- * */
+ */
 @Service
 @Slf4j
 @CacheConfig(cacheNames = "clients")
-public class ClientServiceImpl implements ClientService{
-
-    private final List<String> contentTypesAllowed = List.of("png", "jpeg", "jpg");
-
-
+public class ClientServiceImpl implements ClientService {
     private final ClientRepository clientRepository;
 
     private final BookServiceImpl bookService;
@@ -89,11 +85,11 @@ public class ClientServiceImpl implements ClientService{
     }
 
     /**
-     * @param name nombre del cliente
-     * @param surname apellidos del cliente
-     * @param email email del cliente
-     * @param phone telefono del cliente
-     * @param address direccion del cliente
+     * @param name     nombre del cliente
+     * @param surname  apellidos del cliente
+     * @param email    email del cliente
+     * @param phone    telefono del cliente
+     * @param address  direccion del cliente
      * @param pageable paginacion
      * @return Page<ClientDto> pagina con los clientes encontrados
      * Busca todos los clientes que coincidan con los criterios de busqueda
@@ -109,13 +105,13 @@ public class ClientServiceImpl implements ClientService{
             Pageable pageable) {
 
         log.info("Buscando clientes con los criterios: name: " + name + ", surname: " + surname + ", email: " + email + ", phone: " + phone + ", address: " + address);
-        Specification<Client> specName = ((root, query, criteriaBuilder) -> name.map(m -> criteriaBuilder.like(criteriaBuilder.lower(root.get("name")), "%"+ m.toLowerCase() + "%")).orElseGet(() -> criteriaBuilder.isTrue(criteriaBuilder.literal(true))));
+        Specification<Client> specName = ((root, query, criteriaBuilder) -> name.map(m -> criteriaBuilder.like(criteriaBuilder.lower(root.get("name")), "%" + m.toLowerCase() + "%")).orElseGet(() -> criteriaBuilder.isTrue(criteriaBuilder.literal(true))));
 
-        Specification<Client> specSurName = ((root, query, criteriaBuilder) -> surname.map(m -> criteriaBuilder.like(criteriaBuilder.lower(root.get("surname")), "%"+ m.toLowerCase() + "%")).orElseGet(() -> criteriaBuilder.isTrue(criteriaBuilder.literal(true))));
+        Specification<Client> specSurName = ((root, query, criteriaBuilder) -> surname.map(m -> criteriaBuilder.like(criteriaBuilder.lower(root.get("surname")), "%" + m.toLowerCase() + "%")).orElseGet(() -> criteriaBuilder.isTrue(criteriaBuilder.literal(true))));
 
-        Specification<Client> specEmail = ((root, query, criteriaBuilder) -> email.map(m -> criteriaBuilder.like(criteriaBuilder.lower(root.get("email")), "%"+ m.toLowerCase() + "%")).orElseGet(() -> criteriaBuilder.isTrue(criteriaBuilder.literal(true))));
+        Specification<Client> specEmail = ((root, query, criteriaBuilder) -> email.map(m -> criteriaBuilder.like(criteriaBuilder.lower(root.get("email")), "%" + m.toLowerCase() + "%")).orElseGet(() -> criteriaBuilder.isTrue(criteriaBuilder.literal(true))));
 
-        Specification<Client> specPhone = ((root, query, criteriaBuilder) -> phone.map(m -> criteriaBuilder.like(criteriaBuilder.lower(root.get("phone")), "%"+ m + "%")).orElseGet(() -> criteriaBuilder.isTrue(criteriaBuilder.literal(true))));
+        Specification<Client> specPhone = ((root, query, criteriaBuilder) -> phone.map(m -> criteriaBuilder.like(criteriaBuilder.lower(root.get("phone")), "%" + m + "%")).orElseGet(() -> criteriaBuilder.isTrue(criteriaBuilder.literal(true))));
 
         //Specification<Client> specAddress = ((root, query, criteriaBuilder) -> address.map(m -> criteriaBuilder.like(criteriaBuilder.lower(root.get("address")), "%"+ m.toLowerCase() + "%")).orElseGet(() -> criteriaBuilder.isTrue(criteriaBuilder.literal(true))));
 
@@ -126,20 +122,20 @@ public class ClientServiceImpl implements ClientService{
                 //.and(specAddress)
                 ;
 
-        return clientRepository.findAll(criterio,pageable).map(ClientMapper::toDto);
+        return clientRepository.findAll(criterio, pageable).map(ClientMapper::toDto);
     }
 
     /**
      * @param id id del cliente
      * @return ClientDto cliente encontrado
      * @throws ClientNotFound si no existe el cliente
-     * Busca un cliente por su id
+     *                        Busca un cliente por su id
      */
     @Override
     @Cacheable(key = "#id")
     public ClientDto findById(UUID id) {
         log.info("Buscando cliente con id: " + id);
-        return clientRepository.findById(id).map(ClientMapper::toDto).orElseThrow(()-> new ClientNotFound("id",id));
+        return clientRepository.findById(id).map(ClientMapper::toDto).orElseThrow(() -> new ClientNotFound("id", id));
     }
 
     /**
@@ -149,7 +145,7 @@ public class ClientServiceImpl implements ClientService{
      */
     @Override
     @Cacheable(key = "#email")
-    public Optional<ClientDto> findByEmail(String email){
+    public Optional<ClientDto> findByEmail(String email) {
         log.info("Buscando cliente con email: " + email);
         return clientRepository.getClientByEmailEqualsIgnoreCase(email).map(ClientMapper::toDto);
     }
@@ -158,37 +154,37 @@ public class ClientServiceImpl implements ClientService{
      * @param client cliente a guardar
      * @return ClientDto cliente guardado
      * @throws ClientAlreadyExists si ya existe el cliente
-     * Guarda un cliente
+     *                             Guarda un cliente
      */
     @Override
     @CachePut(key = "#result.id")
     public ClientDto save(ClientCreateDto client) {
         Optional<ClientDto> clientDto = findByEmail(client.getEmail());
-        if(clientDto.isPresent()){
+        if (clientDto.isPresent()) {
             log.error("El cliente con email: " + client.getEmail() + " ya existe");
-            throw new ClientAlreadyExists("email",client.getEmail());
+            throw new ClientAlreadyExists("email", client.getEmail());
         }
-        log.info("Guardando cliente "+ client);
+        log.info("Guardando cliente " + client);
         ClientDto clientSave = ClientMapper.toDto(clientRepository.save(ClientCreateMapper.toEntity(client)));
         onChange(Notification.Type.CREATE, ClientMapper.toEntity(clientSave));
         return clientSave;
     }
 
     /**
-     * @param id id del cliente
+     * @param id     id del cliente
      * @param client cliente a actualizar
      * @return ClientDto cliente actualizado
      * @throws ClientNotFound si no existe el cliente
-     * Actualiza un cliente
+     *                        Actualiza un cliente
      */
     @Override
     @CachePut(key = "#id")
     public ClientDto update(UUID id, ClientUpdateDto client) {
-        log.info("Actualizando cliente "+ client);
+        log.info("Actualizando cliente " + client);
         Optional<ClientDto> clientDto = findByEmail(client.getEmail());
-        if(clientDto.isPresent() && !clientDto.get().getId().equals(id)){
+        if (clientDto.isPresent() && !clientDto.get().getId().equals(id)) {
             log.error("El cliente con email: " + client.getEmail() + " ya existe");
-            throw new ClientAlreadyExists("email",client.getEmail());
+            throw new ClientAlreadyExists("email", client.getEmail());
         }
         ClientDto clientToUpdate = findById(id);
         String name = client.getName() != null ? client.getName() : clientToUpdate.getName();
@@ -210,7 +206,7 @@ public class ClientServiceImpl implements ClientService{
 
     /**
      * @param id id del cliente
-     * Elimina un cliente
+     *           Elimina un cliente
      * @throws ClientNotFound si no existe el cliente
      */
     @Override
@@ -218,7 +214,7 @@ public class ClientServiceImpl implements ClientService{
     public void deleteById(UUID id) {
         ClientDto clientToDelete = findById(id);
         int orders_client = orderRepository.findByClientId(id, PageRequest.of(0, 10)).getContent().size();
-        if(orders_client > 0){
+        if (orders_client > 0) {
             log.error("El cliente con id: " + id + " tiene pedidos asociados");
             throw new ClientInOrderException(id);
         }
@@ -239,27 +235,21 @@ public class ClientServiceImpl implements ClientService{
 
 
     /**
-     * @param id id del cliente
+     * @param id   id del cliente
      * @param file imagen del cliente
      * @return ClientDto cliente actualizado
      * @throws ClientNotFound si no existe el cliente
-     * Actualiza la imagen de un cliente
+     *                        Actualiza la imagen de un cliente
      */
     @CachePut(key = "#id")
     public ClientDto updateImage(UUID id, MultipartFile file) throws IOException {
         log.info("Actualizando imagen del cliente con id: " + id);
         ClientDto clientDto = findById(id);
-        if(clientDto.getImage() != null && !clientDto.getImage().equals(Client.DEFAULT_IMAGE)){
+        if (clientDto.getImage() != null && !clientDto.getImage().equals(Client.DEFAULT_IMAGE)) {
             storageService.delete(clientDto.getImage());
         }
-
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd-HH-mm-ss-SSSSSS");
-        String fileName = storageService.store(file, contentTypesAllowed, id + "-" + LocalDateTime.now().format(formatter));
-        String urlImg = storageService.getUrl(fileName);
-
-
         Client clientToUpdate = ClientMapper.toEntity(clientDto);
-        clientToUpdate.setImage(urlImg);
+        clientToUpdate.setImage(storageService.getImageUrl(id.toString(), file, true));
         ClientDto clientUpdated = ClientMapper.toDto(clientRepository.save(clientToUpdate));
         onChange(Notification.Type.UPDATE, ClientMapper.toEntity(clientUpdated));
         return clientUpdated;
@@ -267,6 +257,7 @@ public class ClientServiceImpl implements ClientService{
 
     /**
      * Añadir websocket
+     *
      * @param webSocketHandlerMock
      */
     public void setWebSocketService(WebSocketHandler webSocketHandlerMock) {
@@ -277,7 +268,7 @@ public class ClientServiceImpl implements ClientService{
     /**
      * @param tipo tipo de notificacion
      * @param data datos de la notificacion
-     * Envia una notificacion a los clientes conectados
+     *             Envia una notificacion a los clientes conectados
      */
     public void onChange(Notification.Type tipo, Client data) {
         if (webSocketService == null) {

@@ -448,7 +448,7 @@ class BookServiceImplTest {
                 .name("nombre")
                 .publisher(PublisherData.builder().id(1L).build())
                 .price(2.2)
-                .image("imagen")
+                .image(imageUrl)
                 .description("descripción")
                 .createdAt(LocalDateTime.now())
                 .updatedAt(LocalDateTime.now())
@@ -466,7 +466,6 @@ class BookServiceImplTest {
                 .updatedAt(LocalDateTime.now())
                 .active(true)
                 .build();
-        expectedBookDTO.setImage(imageUrl);
 
         when(bookRepository.findById(list.get(0).getId()))
                 .thenReturn(Optional.of(list.get(0)));

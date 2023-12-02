@@ -25,6 +25,8 @@ public interface OrderService {
 
     Page<Order> getOrdersByClientId(UUID clientId, Pageable pageable);
 
+    Page<Order> getOrdersByShopId(UUID shopId, Pageable pageable);
+
     boolean existsByUserId(UUID userId);
 
     Order deleteLogicOrder(ObjectId id);

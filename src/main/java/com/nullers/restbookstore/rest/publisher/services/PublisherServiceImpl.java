@@ -30,7 +30,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Optional;
 
@@ -179,7 +178,7 @@ public class PublisherServiceImpl implements PublisherService {
 
     @Override
     @CachePut(key = "#result.id")
-    public PublisherDTO patchPublisher(Long id, PatchPublisherDto publisher) throws PublisherNotFound, PublisherIDNotValid{
+    public PublisherDTO patchPublisher(Long id, PatchPublisherDto publisher) throws PublisherNotFound, PublisherIDNotValid {
         try {
             var opt = publisherRepository.findById(id);
             if (opt.isEmpty()) {
@@ -221,14 +220,11 @@ public class PublisherServiceImpl implements PublisherService {
             PublisherNotFound, PublisherIDNotValid, IOException {
         try {
             var actualPublisher = publisherRepository.findById(id).orElseThrow(() -> new PublisherNotFound(String.valueOf(id)));
-            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd-HH-mm-ss-SSSSSS");
-            String imageStored = storageService.store(image, List.of("jpg", "jpeg", "png"), id
-                    + "-" + LocalDateTime.now().format(formatter));
-            String imageUrl = Boolean.FALSE.equals(withUrl) ? imageStored : storageService.getUrl(imageStored);
             if (actualPublisher.getImage() != null && !actualPublisher.getImage().equals(Book.IMAGE_DEFAULT)) {
                 storageService.delete(actualPublisher.getImage());
             }
-            return update(id, createPublisherMapper.toDtoOnlyImage(actualPublisher, imageUrl));
+            return update(id, createPublisherMapper.toDtoOnlyImage(actualPublisher,
+                    storageService.getImageUrl(id.toString(), image, withUrl)));
         } catch (IllegalArgumentException e) {
             throw new PublisherIDNotValid("El ID del Publisher no es válido");
         }

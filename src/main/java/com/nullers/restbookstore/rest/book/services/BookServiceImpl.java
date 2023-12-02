@@ -43,7 +43,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Optional;
 
@@ -58,7 +57,6 @@ import java.util.Optional;
 public class BookServiceImpl implements BookService {
 
     public static final String BOOK_NOT_FOUND_MSG = "No se ha encontrado el Book con el ID indicado";
-    public static final String NOT_VALID_FORMAT_ID_MSG = "El ID no tiene un formato válido";
 
     private final BookRepository bookRepository;
     private final BookMapperImpl bookMapperImpl;
@@ -112,11 +110,17 @@ public class BookServiceImpl implements BookService {
     @Cacheable
     @Override
     public Page<GetBookDTO> getAllBook(Optional<String> publisher, Optional<Double> maxPrice, Optional<String> category, PageRequest pageable) {
-        Specification<Book> specType = (root, query, criteriaBuilder) -> publisher.map(m -> {try {return criteriaBuilder.equal(criteriaBuilder.upper(root.get("publisher").get("name")), m.toUpperCase());} catch (IllegalArgumentException e) {return criteriaBuilder.isTrue(criteriaBuilder.literal(false));}}).orElseGet(() -> criteriaBuilder.isTrue(criteriaBuilder.literal(true)));
+        Specification<Book> specType = (root, query, criteriaBuilder) -> publisher.map(m -> {
+            try {
+                return criteriaBuilder.equal(criteriaBuilder.upper(root.get("publisher").get("name")), m.toUpperCase());
+            } catch (IllegalArgumentException e) {
+                return criteriaBuilder.isTrue(criteriaBuilder.literal(false));
+            }
+        }).orElseGet(() -> criteriaBuilder.isTrue(criteriaBuilder.literal(true)));
 
         Specification<Book> specMaxPrice = (root, query, criteriaBuilder) -> maxPrice.map(p -> criteriaBuilder.lessThanOrEqualTo(root.get("price"), p)).orElseGet(() -> criteriaBuilder.isTrue(criteriaBuilder.literal(true)));
 
-        Specification<Book> specCategory = (root, query, criteriaBuilder) -> category.map(c -> {return criteriaBuilder.equal(criteriaBuilder.upper(root.get("category").get("nombre")), c.toUpperCase());}).orElseGet(() -> criteriaBuilder.isTrue(criteriaBuilder.literal(true)));
+        Specification<Book> specCategory = (root, query, criteriaBuilder) -> category.map(c -> criteriaBuilder.equal(criteriaBuilder.upper(root.get("category").get("nombre")), c.toUpperCase())).orElseGet(() -> criteriaBuilder.isTrue(criteriaBuilder.literal(true)));
 
         Specification<Book> criterion = Specification.where(specType)
                 .and(specMaxPrice)
@@ -213,7 +217,7 @@ public class BookServiceImpl implements BookService {
         BeanUtils.copyProperties(book, opt.get(), Util.getNullPropertyNames(book));
         opt.get().setId(id);
         opt.get().setUpdatedAt(LocalDateTime.now());
-        if (book.getPublisherId() != null){
+        if (book.getPublisherId() != null) {
             opt.get().setPublisher(publisherMapper.toPublisher(publisherService.findById(book.getPublisherId())));
         }
         Book modified = bookRepository.save(opt.get());
@@ -260,14 +264,10 @@ public class BookServiceImpl implements BookService {
     public GetBookDTO updateImage(Long id, MultipartFile image, Boolean withUrl) throws BookNotFoundException,
             BookNotValidIDException, PublisherNotFound, PublisherIDNotValid, IOException {
         var actualBook = bookRepository.findById(id).orElseThrow(() -> new BookNotFoundException(String.valueOf(id)));
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd-HH-mm-ss-SSSSSS");
-        String imageStored = storageService.store(image, List.of("jpg", "jpeg", "png"), id
-                + "-" + LocalDateTime.now().format(formatter));
-        String imageUrl = Boolean.FALSE.equals(withUrl) ? imageStored : storageService.getUrl(imageStored);
         if (actualBook.getImage() != null && !actualBook.getImage().equals(Book.IMAGE_DEFAULT)) {
             storageService.delete(actualBook.getImage());
         }
-        return patchBook(id, PatchBookDTO.builder().image(imageUrl).build());
+        return patchBook(id, PatchBookDTO.builder().image(storageService.getImageUrl(String.valueOf(id), image, withUrl)).build());
     }
 
     /**

@@ -1,6 +1,9 @@
 package com.nullers.restbookstore.rest.shop.dto;
 
+import com.nullers.restbookstore.rest.common.Address;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.Builder;
 import lombok.Getter;
 
@@ -13,9 +16,10 @@ import lombok.Getter;
 @Builder
 public class CreateShopDto {
     @NotBlank(message = "El nombre no puede estar vacío")
-    private String name;  // Nombre de la tienda, no debe estar vacío.
+    private String name;
 
-    @NotBlank(message = "La ubicación no puede estar vacía")
-    private String location;  // Ubicación de la tienda, no debe estar vacía.
+    @NotNull(message = "La ubicación no puede estar vacía")
+    @Valid
+    private Address location;
 }
 

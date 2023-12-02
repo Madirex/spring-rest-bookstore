@@ -5,14 +5,15 @@ import com.nullers.restbookstore.pagination.models.PageResponse;
 import com.nullers.restbookstore.pagination.util.PaginationLinksUtils;
 import com.nullers.restbookstore.rest.book.exceptions.BookNotFoundException;
 import com.nullers.restbookstore.rest.client.exceptions.ClientNotFound;
+import com.nullers.restbookstore.rest.common.PageableRequest;
 import com.nullers.restbookstore.rest.orders.dto.OrderCreateDto;
-import com.nullers.restbookstore.rest.orders.dto.OrderPageableRequest;
 import com.nullers.restbookstore.rest.orders.exceptions.OrderBadPriceException;
 import com.nullers.restbookstore.rest.orders.exceptions.OrderNotFoundException;
 import com.nullers.restbookstore.rest.orders.exceptions.OrderNotItemsExceptions;
 import com.nullers.restbookstore.rest.orders.exceptions.OrderNotStockException;
 import com.nullers.restbookstore.rest.orders.models.Order;
 import com.nullers.restbookstore.rest.orders.services.OrderService;
+import com.nullers.restbookstore.rest.shop.exceptions.ShopNotFoundException;
 import com.nullers.restbookstore.rest.user.exceptions.UserNotFound;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
@@ -23,14 +24,9 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.FieldError;
-import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.Map;
 import java.util.UUID;
 
 @RestController
@@ -49,7 +45,7 @@ public class OrderRestController {
 
     @GetMapping
     public ResponseEntity<PageResponse<Order>> getAllOrders(
-            @Valid OrderPageableRequest pageableRequest,
+            @Valid PageableRequest pageableRequest,
             HttpServletRequest request
     ) {
         String orderBy = pageableRequest.getOrderBy();
@@ -94,7 +90,7 @@ public class OrderRestController {
     @GetMapping("/client/{id}")
     public ResponseEntity<PageResponse<Order>> getOrdersByClientId(
             @PathVariable UUID id,
-            @Valid OrderPageableRequest pageableRequest,
+            @Valid PageableRequest pageableRequest,
             HttpServletRequest request
     ) {
         String orderBy = pageableRequest.getOrderBy();
@@ -113,7 +109,7 @@ public class OrderRestController {
     @GetMapping("/user/{id}")
     public ResponseEntity<PageResponse<Order>> getOrdersByUserId(
             @PathVariable UUID id,
-            @Valid OrderPageableRequest pageableRequest,
+            @Valid PageableRequest pageableRequest,
             HttpServletRequest request
     ) {
         String orderBy = pageableRequest.getOrderBy();
@@ -122,6 +118,25 @@ public class OrderRestController {
         Integer size = pageableRequest.getSize();
         Sort sort = order.equalsIgnoreCase("ASC") ? Sort.by(orderBy).ascending() : Sort.by(orderBy).descending();
         Page<Order> orders = orderService.getOrdersByUserId(id, PageRequest.of(page, size, sort));
+        UriComponentsBuilder uriBuilder = UriComponentsBuilder.fromHttpUrl(request.getRequestURL().toString());
+
+        return ResponseEntity.ok()
+                .header("link", paginationLinksUtils.createLinkHeader(orders, uriBuilder))
+                .body(PageResponse.of(orders, orderBy, order));
+    }
+
+    @GetMapping("/shop/{id}")
+    public ResponseEntity<PageResponse<Order>> getOrdersByShopId(
+            @PathVariable UUID id,
+            @Valid PageableRequest pageableRequest,
+            HttpServletRequest request
+    ) {
+        String orderBy = pageableRequest.getOrderBy();
+        String order = pageableRequest.getOrder();
+        Integer page = pageableRequest.getPage();
+        Integer size = pageableRequest.getSize();
+        Sort sort = order.equalsIgnoreCase("ASC") ? Sort.by(orderBy).ascending() : Sort.by(orderBy).descending();
+        Page<Order> orders = orderService.getOrdersByShopId(id, PageRequest.of(page, size, sort));
         UriComponentsBuilder uriBuilder = UriComponentsBuilder.fromHttpUrl(request.getRequestURL().toString());
 
         return ResponseEntity.ok()
@@ -172,22 +187,9 @@ public class OrderRestController {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ErrorResponse(HttpStatus.BAD_REQUEST.value(), e.getMessage()));
     }
 
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<Map<String, Object>> handleValidationExceptions(
-            MethodArgumentNotValidException ex) {
-        Map<String, String> errors = new HashMap<>();
-        ex.getBindingResult().getAllErrors().forEach(error -> {
-            String fieldName = ((FieldError) error).getField();
-            String errorMessage = error.getDefaultMessage();
-            errors.put(fieldName, errorMessage);
-        });
-
-        Map<String, Object> response = new LinkedHashMap<>();
-        response.put("code", HttpStatus.BAD_REQUEST.value());
-        response.put("errors", errors);
-
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+    @ExceptionHandler(ShopNotFoundException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public ResponseEntity<ErrorResponse> handleShopNotFoundException(ShopNotFoundException e) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ErrorResponse(HttpStatus.NOT_FOUND.value(), e.getMessage()));
     }
-
 }
