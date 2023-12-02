@@ -1,9 +1,8 @@
 package com.nullers.restbookstore.rest.client.controllers;
 
+import com.nullers.restbookstore.pagination.models.ErrorResponse;
 import com.nullers.restbookstore.pagination.models.PageResponse;
 import com.nullers.restbookstore.pagination.util.PaginationLinksUtils;
-import com.nullers.restbookstore.rest.book.dto.GetBookDTO;
-import com.nullers.restbookstore.rest.book.exceptions.BookNotFoundException;
 import com.nullers.restbookstore.rest.client.dto.ClientCreateDto;
 import com.nullers.restbookstore.rest.client.dto.ClientDto;
 import com.nullers.restbookstore.rest.client.dto.ClientUpdateDto;
@@ -11,7 +10,6 @@ import com.nullers.restbookstore.rest.client.exceptions.ClientAlreadyExists;
 import com.nullers.restbookstore.rest.client.exceptions.ClientBadRequest;
 import com.nullers.restbookstore.rest.client.exceptions.ClientInOrderException;
 import com.nullers.restbookstore.rest.client.exceptions.ClientNotFound;
-import com.nullers.restbookstore.pagination.models.ErrorResponse;
 import com.nullers.restbookstore.rest.client.services.ClientServiceImpl;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
@@ -24,14 +22,14 @@ import org.springframework.data.mapping.PropertyReferenceException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.FieldError;
-import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.io.IOException;
-import java.util.*;
+import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
 
 /**
  * Controlador de Clientes
@@ -198,7 +196,7 @@ public class ClientController {
     public ErrorResponse handleClientAlreadyExists(ClientAlreadyExists exception) {
         return new ErrorResponse(HttpStatus.CONFLICT.value(), exception.getMessage());
     }
-    
+
 
     /**
      * Manejador de excepciones de ClientBadRequest
@@ -242,29 +240,4 @@ public class ClientController {
     public ErrorResponse handleIllegelAlrgumentException(IllegalArgumentException exception) {
         return new ErrorResponse(HttpStatus.BAD_REQUEST.value(), exception.getMessage());
     }
-
-    /**
-     * Manejador de excepciones de MethodArgumentNotValidException
-     *
-     * @param ex excepción
-     * @return ResponseEntity<Map < String, Object>> con el mensaje de error
-     */
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<Map<String, Object>> handleValidationExceptions(
-            MethodArgumentNotValidException ex) {
-        Map<String, String> errors = new HashMap<>();
-        ex.getBindingResult().getAllErrors().forEach(error -> {
-            String fieldName = ((FieldError) error).getField();
-            String errorMessage = error.getDefaultMessage();
-            errors.put(fieldName, errorMessage);
-        });
-
-        Map<String, Object> response = new LinkedHashMap<>();
-        response.put("code", HttpStatus.BAD_REQUEST.value());
-        response.put("errors", errors);
-
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
-    }
-
 }
