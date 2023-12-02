@@ -1,10 +1,13 @@
 package com.nullers.restbookstore.rest.shop.mappers;
 
 
+import com.nullers.restbookstore.rest.book.model.Book;
+import com.nullers.restbookstore.rest.client.model.Client;
 import com.nullers.restbookstore.rest.shop.dto.CreateShopDto;
 import com.nullers.restbookstore.rest.shop.dto.GetShopDto;
 import com.nullers.restbookstore.rest.shop.dto.UpdateShopDto;
 import com.nullers.restbookstore.rest.shop.model.Shop;
+import org.bson.types.ObjectId;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
@@ -45,6 +48,8 @@ public class ShopMapperImpl implements ShopMapper {
                 .location(shop.getLocation())
                 .createdAt(shop.getCreatedAt())
                 .updatedAt(shop.getUpdatedAt())
+                .books_id(shop.getBooks().stream().map(Book::getId).toList())
+                .clients_id(shop.getClients().stream().map(Client::getId).toList())
                 .build();
     }
 

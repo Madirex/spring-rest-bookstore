@@ -32,6 +32,15 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-websocket")
     implementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.11.3")
 
+    implementation("org.springframework.boot:spring-boot-starter-security")
+    testImplementation("org.springframework.security:spring-security-test")
+    implementation("com.auth0:java-jwt:4.4.0")
+ 
+    implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.2.0")
+    
+    implementation("org.springframework.boot:spring-boot-starter-data-mongodb")
+    implementation("de.flapdoodle.embed:de.flapdoodle.embed.mongo:3.0.0")
+
     runtimeOnly("com.h2database:h2")
 
     compileOnly("org.projectlombok:lombok")

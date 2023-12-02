@@ -3,15 +3,12 @@ package com.nullers.restbookstore.rest.client.controllers;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nullers.restbookstore.pagination.models.ErrorResponse;
 import com.nullers.restbookstore.pagination.models.PageResponse;
-import com.nullers.restbookstore.rest.book.dto.GetBookDTO;
-import com.nullers.restbookstore.rest.book.exceptions.BookNotFoundException;
-import com.nullers.restbookstore.rest.book.model.Book;
 import com.nullers.restbookstore.rest.client.dto.ClientCreateDto;
 import com.nullers.restbookstore.rest.client.dto.ClientDto;
 import com.nullers.restbookstore.rest.client.dto.ClientUpdateDto;
 import com.nullers.restbookstore.rest.client.exceptions.ClientAlreadyExists;
-import com.nullers.restbookstore.rest.client.exceptions.ClientBookAlreadyExists;
 import com.nullers.restbookstore.rest.client.exceptions.ClientNotFound;
+import com.nullers.restbookstore.rest.common.Address;
 import com.nullers.restbookstore.rest.client.model.Client;
 import com.nullers.restbookstore.rest.client.services.ClientServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
@@ -24,7 +21,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockHttpServletResponse;
@@ -56,15 +52,23 @@ class ClientControllerTest {
     @Autowired
     MockMvc mockMvc;
 
+    Address address = Address.builder()
+            .street("Calle Falsa 123")
+            .city("Springfield")
+            .country("USA")
+            .province("Springfield")
+            .number("123")
+            .PostalCode("12345")
+            .build();
+
     private final Client clientTest = Client.builder()
             .id(UUID.fromString("9def16db-362b-44c4-9fc9-77117758b5b0"))
             .name("Daniel")
             .surname("Garcia")
             .email("daniel@gmail.com")
             .phone("123456789")
-            .address("Calle Falsa 123")
+            .address(address)
             .image("https://via.placeholder.com/150")
-            .books(List.of(Book.builder().id(1L).name("hobbit").description("prueba desc").active(true).build()))
             .build();
 
 
@@ -74,7 +78,7 @@ class ClientControllerTest {
             .surname("ruiz")
             .email("pepe@gmail.com")
             .phone("123456789")
-            .address("Calle Falsa 321")
+            .address(address)
             .image("https://via.placeholder.com/150")
             .build();
 
@@ -84,7 +88,7 @@ class ClientControllerTest {
             .surname("Garcia")
             .email("daniel@gmail.com")
             .phone("123456789")
-            .address("Calle Falsa 123")
+            .address(address)
             .image("https://via.placeholder.com/150")
             .build();
 
@@ -94,7 +98,7 @@ class ClientControllerTest {
             .surname("ruiz")
             .email("pepe@gmail.com")
             .phone("123456789")
-            .address("Calle Falsa 321")
+            .address(address)
             .image("https://via.placeholder.com/150")
             .build();
 
@@ -191,22 +195,6 @@ class ClientControllerTest {
         verify(clientService, times(1)).findAll(any(Optional.class), any(Optional.class), any(Optional.class), any(Optional.class), any(Optional.class), any(PageRequest.class));
     }
 
-    /*@Test
-    void getAllClients_ShouldReturnPropertyReferenceException() throws Exception {
-        when(clientService.findAll(any(Optional.class), any(Optional.class), any(Optional.class), any(Optional.class), any(Optional.class) ,any(PageRequest.class)))
-                .thenThrow(new PropertyReferenceException("pepe", TypeInformation.OBJECT));
-
-        MockHttpServletResponse response = mockMvc.perform(get(endpoint)
-                .param("sortBy", "pepe")
-                .param("order", "asc")
-                .accept(MediaType.APPLICATION_JSON)).andReturn().getResponse();
-
-        ErrorResponse res = mapper.readValue(response.getContentAsString(), ErrorResponse.class);
-        assertAll(
-                () -> assertEquals(HttpStatus.BAD_REQUEST.value(), res.status()),
-                () -> assertEquals("No property 'pepe' found for type 'Client'", res.msg())
-        );
-    }*/
 
     @Test
     void getAllClients_ShouldReturnAllClients_withNameParam() throws Exception {
@@ -640,7 +628,7 @@ class ClientControllerTest {
                 .surname("Garcia")
                 .email("daniel@gmail.com")
                 .phone("123456789")
-                .address("Calle Falsa 123")
+                .address(address)
                 .build();
 
         MockHttpServletResponse response = mockMvc.perform(post(endpoint)
@@ -663,7 +651,7 @@ class ClientControllerTest {
                 .name("Daniel")
                 .email("daniel@gmail.com")
                 .phone("123456789")
-                .address("Calle Falsa 123")
+                .address(address)
                 .build();
 
         MockHttpServletResponse response = mockMvc.perform(post(endpoint)
@@ -685,7 +673,7 @@ class ClientControllerTest {
                 .name("Daniel")
                 .surname("Garcia")
                 .phone("123456789")
-                .address("Calle Falsa 123")
+                .address(address)
                 .build();
 
         MockHttpServletResponse response = mockMvc.perform(post(endpoint)
@@ -708,7 +696,7 @@ class ClientControllerTest {
                 .name("Daniel")
                 .surname("Garcia")
                 .email("daniel@gmail.com")
-                .address("Calle Falsa 123")
+                .address(address)
                 .build();
 
         MockHttpServletResponse response = mockMvc.perform(post(endpoint)
@@ -754,7 +742,7 @@ class ClientControllerTest {
                 .surname("Garcia")
                 .email("danielgmail.com")
                 .phone("123456789")
-                .address("Calle Falsa 123")
+                .address(address)
                 .build();
 
         MockHttpServletResponse response = mockMvc.perform(post(endpoint)
@@ -777,7 +765,7 @@ class ClientControllerTest {
                 .surname("Garcia")
                 .email("daniel@gmail.com")
                 .phone("123456784937598437587349857439857893475897")
-                .address("Calle Falsa 123")
+                .address(address)
                 .build();
 
         MockHttpServletResponse response = mockMvc.perform(post(endpoint)
@@ -800,7 +788,7 @@ class ClientControllerTest {
                 .surname("Garcia")
                 .email("daniel@gmail.com")
                 .phone("sdf324df")
-                .address("Calle Falsa 123")
+                .address(address)
                 .build();
 
         MockHttpServletResponse response = mockMvc.perform(post(endpoint)
@@ -823,7 +811,6 @@ class ClientControllerTest {
                 .surname("")
                 .email("danielgmail.com")
                 .phone("123456784937598437587349857439857893475897")
-                .address("")
                 .build();
 
         MockHttpServletResponse response = mockMvc.perform(post(endpoint)
@@ -851,7 +838,7 @@ class ClientControllerTest {
                 .surname("Garcia")
                 .email("daniel@gmail.com")
                 .phone("12")
-                .address("Calle Falsa 123")
+                .address(address)
                 .build();
 
         MockHttpServletResponse response = mockMvc.perform(post(endpoint)
@@ -938,7 +925,6 @@ class ClientControllerTest {
                 .surname("")
                 .email("danielgmail.com")
                 .phone("123456784937598437587349857439857893475897")
-                .address("")
                 .build();
 
         MockHttpServletResponse response = mockMvc.perform(put(endpoint + "/9def16db-362b-44c4-9fc9-77117758b5b0")
@@ -955,7 +941,7 @@ class ClientControllerTest {
                 () -> assertEquals("El apellido debe tener entre 3 y 80 caracteres", errors.get("surname")),
                 () -> assertEquals("El email debe tener un formato valido", errors.get("email")),
                 () -> assertEquals("El telefono debe tener como maximo 11 caracteres y como minimo 3", errors.get("phone")),
-                () -> assertEquals("La direccion debe tener entre 3 y 150 caracteres", errors.get("address"))
+                () -> assertEquals("La direccion no puede estar vacia", errors.get("address"))
         );
     }
 
@@ -966,7 +952,7 @@ class ClientControllerTest {
                 .surname("Garcia")
                 .email("daniel@gmail.com")
                 .phone("12")
-                .address("Calle Falsa 123")
+                .address(address)
                 .build();
 
         MockHttpServletResponse response = mockMvc.perform(put(endpoint + "/9def16db-362b-44c4-9fc9-77117758b5b0")
@@ -990,7 +976,7 @@ class ClientControllerTest {
                 .surname("Garcia")
                 .email("daniel@gmail.com")
                 .phone("sdf324df")
-                .address("Calle Falsa 123")
+                .address(address)
                 .build();
 
         MockHttpServletResponse response = mockMvc.perform(put(endpoint + "/9def16db-362b-44c4-9fc9-77117758b5b0")
@@ -1015,7 +1001,7 @@ class ClientControllerTest {
                 .surname("Garcia")
                 .email("danielgmail.com")
                 .phone("123456784937598437587349857439857893475897")
-                .address("Calle Falsa 123")
+                .address(address)
                 .build();
 
         MockHttpServletResponse response = mockMvc.perform(put(endpoint + "/9def16db-362b-44c4-9fc9-77117758b5b0")
@@ -1040,7 +1026,6 @@ class ClientControllerTest {
                 .surname("Garcia")
                 .email("daniel@gmail.com")
                 .phone("1234567")
-                .address("")
                 .build();
 
         MockHttpServletResponse response = mockMvc.perform(put(endpoint + "/9def16db-362b-44c4-9fc9-77117758b5b0")
@@ -1053,7 +1038,7 @@ class ClientControllerTest {
 
         assertAll(
                 () -> assertEquals(HttpStatus.BAD_REQUEST.value(), response.getStatus()),
-                () -> assertEquals("La direccion debe tener entre 3 y 150 caracteres", errors.get("address"))
+                () -> assertEquals("La direccion no puede estar vacia", errors.get("address"))
         );
     }
 
@@ -1064,7 +1049,7 @@ class ClientControllerTest {
                 .surname("Garcia")
                 .email("daniel@gmail.com")
                 .phone("")
-                .address("Calle Falsa 123")
+                .address(address)
                 .build();
 
         MockHttpServletResponse response = mockMvc.perform(put(endpoint + "/9def16db-362b-44c4-9fc9-77117758b5b0")
@@ -1089,7 +1074,7 @@ class ClientControllerTest {
                 .surname("")
                 .email("daniel@gmail.com")
                 .phone("1234567")
-                .address("Calle Falsa 123")
+                .address(address)
                 .build();
 
         MockHttpServletResponse response = mockMvc.perform(put(endpoint + "/9def16db-362b-44c4-9fc9-77117758b5b0").contentType(MediaType.APPLICATION_JSON).content(mapper.writeValueAsString(clientUpdateDto))).andReturn().getResponse();
@@ -1110,7 +1095,7 @@ class ClientControllerTest {
                 .surname("Garcia")
                 .email("daniel@gmail.com")
                 .phone("1234567")
-                .address("Calle Falsa 123")
+                .address(address)
                 .build();
 
         MockHttpServletResponse response = mockMvc.perform(put(endpoint + "/9def16db-362b-44c4-9fc9-77117758b5b0").contentType(MediaType.APPLICATION_JSON).content(mapper.writeValueAsString(clientUpdateDto))).andReturn().getResponse();
@@ -1160,228 +1145,6 @@ class ClientControllerTest {
         verify(clientService, times(1)).deleteById(any(UUID.class));
     }
 
-    @Test
-    void getAllBooks() throws Exception {
-        List<GetBookDTO> books = List.of(
-                GetBookDTO.builder()
-                        .id(1L)
-                        .name("El senor de los anillos")
-                        .description("Libro de fantasia")
-                        .image("https://images-na.ssl-images-amazon.com/images/I/51ZkLkaZ3OL._SX331_BO1,204,203,200_.jpg")
-                        .active(true)
-                        .build()
-        );
-
-        when(clientService.getAllBooksOfClient(any(UUID.class), any(PageRequest.class))).thenReturn(new PageImpl<>(books));
-
-        MockHttpServletResponse response = mockMvc.perform(get(endpoint + "/9def16db-362b-44c4-9fc9-77117758b6a2/books")
-                        .accept(MediaType.APPLICATION_JSON))
-                .andReturn().getResponse();
-
-
-        System.out.println(response.getContentAsString());
-        PageResponse<Book> res = mapper.readValue(response.getContentAsString(), mapper.getTypeFactory().constructParametricType(PageResponse.class, Book.class));
-
-        assertAll(
-                () -> assertEquals(HttpStatus.OK.value(), response.getStatus()),
-                () -> assertEquals(1, res.totalElements()),
-                () -> assertEquals(1, res.totalPages()),
-                () -> assertEquals(1, res.content().size()),
-                () -> assertEquals("El senor de los anillos", res.content().get(0).getName()),
-                () -> assertEquals("Libro de fantasia", res.content().get(0).getDescription()),
-                () -> assertEquals("https://images-na.ssl-images-amazon.com/images/I/51ZkLkaZ3OL._SX331_BO1,204,203,200_.jpg", res.content().get(0).getImage())
-        );
-
-        verify(clientService, times(1)).getAllBooksOfClient(any(UUID.class), any(PageRequest.class));
-    }
-
-    @Test
-    void getAllBooks_ShouldThrowClientNotFound() throws Exception {
-        when(clientService.getAllBooksOfClient(any(UUID.class), any(PageRequest.class))).thenThrow(new ClientNotFound("id", UUID.fromString("9def16db-362b-44c4-9fc9-77117758b5b9")));
-
-        MockHttpServletResponse response = mockMvc.perform(get(endpoint + "/9def16db-362b-44c4-9fc9-77117758b5b9/books")
-                        .accept(MediaType.APPLICATION_JSON))
-                .andReturn().getResponse();
-
-        ErrorResponse res = mapper.readValue(response.getContentAsString(), ErrorResponse.class);
-
-        assertAll(
-                () -> assertEquals(HttpStatus.NOT_FOUND.value(), response.getStatus()),
-                () -> assertEquals("Client con id: 9def16db-362b-44c4-9fc9-77117758b5b9 no existe", res.msg())
-        );
-
-        verify(clientService, times(1)).getAllBooksOfClient(any(UUID.class), any(PageRequest.class));
-    }
-
-
-    @Test
-    void getAllBooks_ShouldReturnEmptyList() throws Exception {
-        when(clientService.getAllBooksOfClient(any(UUID.class), any(PageRequest.class))).thenReturn(new PageImpl<>(List.of()));
-
-        MockHttpServletResponse response = mockMvc.perform(get(endpoint + "/9def16db-362b-44c4-9fc9-77117758b6a2/books")
-                        .accept(MediaType.APPLICATION_JSON))
-                .andReturn().getResponse();
-
-
-        PageResponse res = mapper.readValue(response.getContentAsString(), PageResponse.class);
-
-        assertAll(
-                () -> assertEquals(HttpStatus.OK.value(), response.getStatus()),
-                () -> assertEquals(0, res.totalElements()),
-                () -> assertEquals(1, res.totalPages()),
-                () -> assertEquals(0, res.content().size())
-        );
-
-        verify(clientService, times(1)).getAllBooksOfClient(any(UUID.class), any(PageRequest.class));
-    }
-
-    @Test
-    void getAllBooks_ShouldReturnErrorReponse_withInvalidPage() throws Exception {
-        MockHttpServletResponse response = mockMvc.perform(get(endpoint + "/9def16db-362b-44c4-9fc9-77117758b6a2/books?page=-1")
-                        .accept(MediaType.APPLICATION_JSON)
-                        .header(HttpHeaders.ACCEPT_CHARSET, StandardCharsets.UTF_8.name()))
-                .andReturn().getResponse();
-
-        Map<String, Object> res = mapper.readValue(response.getContentAsString(), mapper.getTypeFactory().constructMapType(Map.class, String.class, Object.class));
-
-        assertAll(
-                () -> assertEquals(HttpStatus.BAD_REQUEST.value(), response.getStatus()),
-                () -> assertEquals("El numero de pagina no debe ser menor a 0 y el tamano de la pagina debe ser mayor que 0", res.get("msg"))
-        );
-    }
-
-    @Test
-    void getAllBooks_ShouldReturnErrorReponse_withInvalidSize() throws Exception {
-        MockHttpServletResponse response = mockMvc.perform(get(endpoint + "/9def16db-362b-44c4-9fc9-77117758b6a2/books?size=-1")
-                        .accept(MediaType.APPLICATION_JSON))
-                .andReturn().getResponse();
-
-        Map<String, Object> res = mapper.readValue(response.getContentAsString(), mapper.getTypeFactory().constructMapType(Map.class, String.class, Object.class));
-
-        assertAll(
-                () -> assertEquals(HttpStatus.BAD_REQUEST.value(), response.getStatus()),
-                () -> assertEquals("El numero de pagina no debe ser menor a 0 y el tamano de la pagina debe ser mayor que 0", res.get("msg"))
-        );
-    }
-
-
-    @Test
-    void updatePatchBook_ShouldReturnClientDto() throws Exception {
-        when(clientService.addBookToClient(any(UUID.class), any(Long.class))).thenReturn(clientDtoTest);
-
-        MockHttpServletResponse response = mockMvc.perform(patch(endpoint + "/9def16db-362b-44c4-9fc9-77117758b5b0/books/add?idBook=1")
-                        .contentType(MediaType.APPLICATION_JSON))
-                .andReturn().getResponse();
-
-        ClientDto res = mapper.readValue(response.getContentAsString(), ClientDto.class);
-
-        assertAll(
-                () -> assertEquals(clientDtoTest.getId(), res.getId()),
-                () -> assertEquals(clientDtoTest.getName(), res.getName()),
-                () -> assertEquals(clientDtoTest.getSurname(), res.getSurname()),
-                () -> assertEquals(clientDtoTest.getEmail(), res.getEmail()),
-                () -> assertEquals(clientDtoTest.getPhone(), res.getPhone()),
-                () -> assertEquals(clientDtoTest.getAddress(), res.getAddress()),
-                () -> assertEquals(clientDtoTest.getImage(), res.getImage())
-        );
-
-        verify(clientService, times(1)).addBookToClient(any(UUID.class), any(Long.class));
-    }
-
-    @Test
-    void updatePatchBook_ShouldReturnClientNotFound() throws Exception {
-        when(clientService.addBookToClient(any(UUID.class), any(Long.class))).thenThrow(new ClientNotFound("id", UUID.fromString("9def16db-362b-44c4-9fc9-77117758b5b9")));
-
-        MockHttpServletResponse response = mockMvc.perform(patch(endpoint + "/9def16db-362b-44c4-9fc9-77117758b5b9/books/add?idBook=1")
-                        .contentType(MediaType.APPLICATION_JSON))
-                .andReturn().getResponse();
-
-        ErrorResponse res = mapper.readValue(response.getContentAsString(), ErrorResponse.class);
-
-        assertAll(
-                () -> assertEquals(HttpStatus.NOT_FOUND.value(), response.getStatus()),
-                () -> assertEquals("Client con id: 9def16db-362b-44c4-9fc9-77117758b5b9 no existe", res.msg())
-        );
-
-        verify(clientService, times(1)).addBookToClient(any(UUID.class), any(Long.class));
-    }
-
-    @Test
-    void updatePatchBook_ShouldReturnBookNotFound() throws Exception {
-        when(clientService.addBookToClient(any(UUID.class), any(Long.class))).thenThrow(new BookNotFoundException("No se ha encontrado el Book con el ID indicado"));
-
-        MockHttpServletResponse response = mockMvc.perform(patch(endpoint + "/9def16db-362b-44c4-9fc9-77117758b5b0/books/add?idBook=1")
-                        .contentType(MediaType.APPLICATION_JSON))
-                .andReturn().getResponse();
-
-        ErrorResponse res = mapper.readValue(response.getContentAsString(), ErrorResponse.class);
-
-        assertAll(
-                () -> assertEquals(HttpStatus.NOT_FOUND.value(), response.getStatus()),
-                () -> assertEquals("Libro no encontrado - No se ha encontrado el Book con el ID indicado", res.msg())
-        );
-
-        verify(clientService, times(1)).addBookToClient(any(UUID.class), any(Long.class));
-    }
-
-    @Test
-    void updatePatchBookDelete() throws Exception {
-        when(clientService.removeBookOfClient(any(UUID.class), any(Long.class))).thenReturn(clientDtoTest);
-
-        MockHttpServletResponse response = mockMvc.perform(patch(endpoint + "/9def16db-362b-44c4-9fc9-77117758b5b0/books/remove?idBook=1")
-                        .contentType(MediaType.APPLICATION_JSON))
-                .andReturn().getResponse();
-
-        ClientDto res = mapper.readValue(response.getContentAsString(), ClientDto.class);
-
-        assertAll(
-                () -> assertEquals(clientDtoTest.getId(), res.getId()),
-                () -> assertEquals(clientDtoTest.getName(), res.getName()),
-                () -> assertEquals(clientDtoTest.getSurname(), res.getSurname()),
-                () -> assertEquals(clientDtoTest.getEmail(), res.getEmail()),
-                () -> assertEquals(clientDtoTest.getPhone(), res.getPhone()),
-                () -> assertEquals(clientDtoTest.getAddress(), res.getAddress()),
-                () -> assertEquals(clientDtoTest.getImage(), res.getImage())
-        );
-
-        verify(clientService, times(1)).removeBookOfClient(any(UUID.class), any(Long.class));
-    }
-
-    @Test
-    void updatePatchBookDelete_ShouldReturnClientNotFound() throws Exception {
-        when(clientService.removeBookOfClient(any(UUID.class), any(Long.class))).thenThrow(new ClientNotFound("id", UUID.fromString("9def16db-362b-44c4-9fc9-77117758b5b9")));
-
-        MockHttpServletResponse response = mockMvc.perform(patch(endpoint + "/9def16db-362b-44c4-9fc9-77117758b5b9/books/remove?idBook=1")
-                        .contentType(MediaType.APPLICATION_JSON))
-                .andReturn().getResponse();
-
-        ErrorResponse res = mapper.readValue(response.getContentAsString(), ErrorResponse.class);
-
-        assertAll(
-                () -> assertEquals(HttpStatus.NOT_FOUND.value(), response.getStatus()),
-                () -> assertEquals("Client con id: 9def16db-362b-44c4-9fc9-77117758b5b9 no existe", res.msg())
-        );
-
-        verify(clientService, times(1)).removeBookOfClient(any(UUID.class), any(Long.class));
-    }
-
-    @Test
-    void updatePatchBookDelete_ShouldReturnBookNotFound() throws Exception {
-        when(clientService.removeBookOfClient(any(UUID.class), any(Long.class))).thenThrow(new BookNotFoundException("No se ha encontrado el Book con el ID indicado"));
-
-        MockHttpServletResponse response = mockMvc.perform(patch(endpoint + "/9def16db-362b-44c4-9fc9-77117758b5b0/books/remove?idBook=1")
-                        .contentType(MediaType.APPLICATION_JSON))
-                .andReturn().getResponse();
-
-        ErrorResponse res = mapper.readValue(response.getContentAsString(), ErrorResponse.class);
-
-        assertAll(
-                () -> assertEquals(HttpStatus.NOT_FOUND.value(), response.getStatus()),
-                () -> assertEquals("Libro no encontrado - No se ha encontrado el Book con el ID indicado", res.msg())
-        );
-
-        verify(clientService, times(1)).removeBookOfClient(any(UUID.class), any(Long.class));
-    }
 
 
     @Test
@@ -1533,24 +1296,4 @@ class ClientControllerTest {
                 () -> assertEquals("El tamaño del archivo supera el límite permitido. (10MB)", res.msg())
         );
     }
-
-    @Test
-    void addBookToClientAlreadyExistBook() throws Exception {
-        when(clientService.addBookToClient(any(UUID.class), any(Long.class))).thenThrow(new ClientBookAlreadyExists("El libro con id: 1 ya existe en el cliente con id: 9def16db-362b-44c4-9fc9-77117758b5b9"));
-
-        MockHttpServletResponse response = mockMvc.perform(patch(endpoint + "/9def16db-362b-44c4-9fc9-77117758b5b9/books/add?idBook=1")
-                        .contentType(MediaType.APPLICATION_JSON))
-                .andReturn().getResponse();
-
-        ErrorResponse res = mapper.readValue(response.getContentAsString(), ErrorResponse.class);
-
-        assertAll(
-                () -> assertEquals(HttpStatus.CONFLICT.value(), response.getStatus()),
-                () -> assertEquals("El libro con id: 1 ya existe en el cliente con id: 9def16db-362b-44c4-9fc9-77117758b5b9", res.msg())
-        );
-
-        verify(clientService, times(1)).addBookToClient(any(UUID.class), any(Long.class));
-    }
-
-
 }

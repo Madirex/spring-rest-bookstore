@@ -48,7 +48,6 @@ public class ClientMapper {
                 .email(dto.getEmail())
                 .phone(dto.getPhone())
                 .address(dto.getAddress())
-                .books(books)
                 .image(dto.getImage())
                 .build();
     }
@@ -68,10 +67,6 @@ public class ClientMapper {
                 .phone(entity.getPhone())
                 .address(entity.getAddress())
                 .image(entity.getImage())
-                .books(entity.getBooks().stream().map((b) -> {
-                    var publisher = publisherMapper.toPublisherData(b.getPublisher());
-                    return bookMapper.toGetBookDTO(b, publisher);
-                }).toList())
                 .build();
     }
 
@@ -84,7 +79,6 @@ public class ClientMapper {
                 .phone(entity.getPhone())
                 .address(entity.getAddress())
                 .image(entity.getImage())
-                .books(books)
                 .build();
     }
 

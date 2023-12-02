@@ -1,6 +1,7 @@
 package com.nullers.restbookstore.rest.client.mappers;
 
 import com.nullers.restbookstore.rest.client.dto.ClientCreateDto;
+import com.nullers.restbookstore.rest.common.Address;
 import com.nullers.restbookstore.rest.client.model.Client;
 import org.junit.jupiter.api.Test;
 
@@ -8,12 +9,21 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class ClientCreateMapperTest {
 
+    Address address = Address.builder()
+            .street("Calle Falsa 123")
+            .city("Springfield")
+            .country("USA")
+            .province("Springfield")
+            .number("123")
+            .PostalCode("12345")
+            .build();
+
     Client client = Client.builder()
             .name("Daniel")
             .surname("García")
             .email("daniel@gmail.com")
             .phone("123456789")
-            .address("Calle Falsa 123")
+            .address(address)
             .image("https://via.placeholder.com/150")
             .build();
 
@@ -22,7 +32,7 @@ class ClientCreateMapperTest {
             .surname("García")
             .email("daniel@gmail.com")
             .phone("123456789")
-            .address("Calle Falsa 123")
+            .address(address)
             .build();
 
 

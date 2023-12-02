@@ -1,6 +1,7 @@
 package com.nullers.restbookstore.rest.shop.controllers;
 
 import com.nullers.restbookstore.pagination.util.PaginationLinksUtils;
+import com.nullers.restbookstore.rest.common.Address;
 import com.nullers.restbookstore.rest.shop.model.Shop;
 import com.nullers.restbookstore.rest.shop.services.ShopServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
@@ -30,7 +31,13 @@ class ShopControllerWithoutMockMvcTest {
     private final Shop shopTest = Shop.builder()
             .id(UUID.randomUUID())
             .name("Shop1")
-            .location("https://via.placeholder.com/150")
+            .location(Address.builder()
+                    .city("city")
+                    .country("country")
+                    .number("1")
+                    .street("street")
+                    .province("province")
+                    .build())
             .createdAt(LocalDateTime.now())
             .updatedAt(LocalDateTime.now())
             .build();
@@ -39,7 +46,13 @@ class ShopControllerWithoutMockMvcTest {
     private final Shop shopTest2 = Shop.builder()
             .id(UUID.randomUUID())
             .name("Shop2")
-            .location("https://via.placeholder.com/150")
+            .location(Address.builder()
+                    .city("city")
+                    .country("country")
+                    .number("1")
+                    .street("street")
+                    .province("province")
+                    .build())
             .createdAt(LocalDateTime.now())
             .updatedAt(LocalDateTime.now())
             .build();

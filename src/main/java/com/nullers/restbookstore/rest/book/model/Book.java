@@ -12,7 +12,6 @@ import lombok.*;
 import org.hibernate.annotations.ColumnDefault;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
-import org.springframework.lang.NonNull;
 
 import java.time.LocalDateTime;
 
@@ -39,6 +38,9 @@ public class Book {
     @NotBlank(message = "El nombre no puede estar vacío")
     private String name;
 
+    @NotBlank(message = "El autor no puede estar vacío")
+    private String author;
+
     @NotNull(message = "publisher no puede ser nulo")
     @ManyToOne
     @JoinColumn(name = "publisher_id")
@@ -64,8 +66,16 @@ public class Book {
     @LastModifiedDate
     private LocalDateTime updatedAt;
 
-    @NonNull
+    @NotNull
     private Boolean active;
+
+    @ManyToOne
+    @JoinColumn(name = "categoria_id")
+    private Categoria category;
+
+    @Min(value = 0, message = "El stock no puede estar en negativo")
+    @Builder.Default
+    private Integer stock = 0;
 
     /**
      * Método que se ejecuta antes de persistir un objeto
@@ -73,11 +83,12 @@ public class Book {
      */
     @PrePersist
     protected void onCreate() {
-        if (createdAt == null) {createdAt = LocalDateTime.now();}
-        if (updatedAt == null) {updatedAt = LocalDateTime.now();}
+        if (createdAt == null) {
+            createdAt = LocalDateTime.now();
+        }
+        if (updatedAt == null) {
+            updatedAt = LocalDateTime.now();
+        }
     }
 
-    @ManyToOne
-    @JoinColumn(name = "categoria_id")
-    private Categoria category;
 }

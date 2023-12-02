@@ -6,11 +6,13 @@ import com.nullers.restbookstore.rest.shop.dto.UpdateShopDto;
 import com.nullers.restbookstore.rest.shop.exceptions.ShopNotFoundException;
 import com.nullers.restbookstore.rest.shop.exceptions.ShopNotValidUUIDException;
 import jakarta.validation.Valid;
+import org.bson.types.ObjectId;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 
 import java.util.List;
+import java.util.UUID;
 
 /**
  * Interfaz para el controlador REST de Shop, definiendo los endpoints para la gestión de tiendas.
@@ -27,7 +29,7 @@ public interface ShopRestController {
      * @throws ShopNotValidUUIDException Si el identificador proporcionado no es válido.
      * @throws ShopNotFoundException Si la tienda no se encuentra.
      */
-    ResponseEntity<GetShopDto> getShopById(@Valid @PathVariable String id)
+    ResponseEntity<GetShopDto> getShopById(@Valid @PathVariable UUID id)
             throws ShopNotValidUUIDException, ShopNotFoundException;
 
     /**
@@ -45,7 +47,7 @@ public interface ShopRestController {
      * @throws ShopNotValidUUIDException Si el identificador proporcionado no es válido.
      * @throws ShopNotFoundException Si la tienda no se encuentra.
      */
-    ResponseEntity<GetShopDto> updateShop(@Valid @PathVariable String id, @Valid @RequestBody UpdateShopDto shopDto)
+    ResponseEntity<GetShopDto> updateShop(@Valid @PathVariable UUID id, @Valid @RequestBody UpdateShopDto shopDto)
             throws ShopNotValidUUIDException, ShopNotFoundException;
 
     /**
@@ -55,5 +57,14 @@ public interface ShopRestController {
      * @throws ShopNotValidUUIDException Si el identificador proporcionado no es válido.
      * @throws ShopNotFoundException Si la tienda no se encuentra.
      */
-    ResponseEntity<String> deleteShop(@Valid @PathVariable String id) throws ShopNotValidUUIDException, ShopNotFoundException;
+    ResponseEntity<String> deleteShop(@Valid @PathVariable UUID id);
+
+    ResponseEntity<GetShopDto> addBookToShop(@PathVariable UUID id, @PathVariable Long bookId);
+
+    ResponseEntity<GetShopDto> removeBookFromShop(@PathVariable UUID id, @PathVariable Long bookId);
+
+    ResponseEntity<GetShopDto> addClientToShop(@PathVariable UUID id, @PathVariable UUID clientId);
+
+    ResponseEntity<GetShopDto> removeClientFromShop(@PathVariable UUID id, @PathVariable UUID clientId);
+
 }
