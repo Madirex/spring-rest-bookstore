@@ -7,9 +7,11 @@ import com.nullers.restbookstore.rest.category.dto.CategoriaCreateDto;
 import com.nullers.restbookstore.rest.category.exceptions.CategoriaConflictException;
 import com.nullers.restbookstore.rest.category.exceptions.CategoriaNotFoundException;
 import com.nullers.restbookstore.rest.category.mappers.CategoriaCreateMapper;
-import com.nullers.restbookstore.rest.category.models.Categoria;
+import com.nullers.restbookstore.rest.category.model.Categoria;
 import com.nullers.restbookstore.rest.category.repository.CategoriasRepositoryJpa;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheConfig;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -20,6 +22,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 @Service
+@CacheConfig(cacheNames = "categories")
 public class CategoriaServiceJpaImpl implements CategoriaServiceJpa{
 
     CategoriasRepositoryJpa repository;
@@ -33,6 +36,7 @@ public class CategoriaServiceJpaImpl implements CategoriaServiceJpa{
     }
 
     @Override
+    @Cacheable
     public Page<Categoria> getAll(Optional<String> nombre, Optional<Boolean> activa, Pageable pageable){
         Specification<Categoria> specName = (((root, query, criteriaBuilder) -> nombre.map(value -> criteriaBuilder.like(root.get("nombre"), "%" + value + "%")).orElseGet(() -> criteriaBuilder.isTrue(criteriaBuilder.literal(true)))));
 
@@ -43,15 +47,18 @@ public class CategoriaServiceJpaImpl implements CategoriaServiceJpa{
     }
 
     @Override
+    @Cacheable(key = "#id")
     public Categoria getCategoriaById(UUID id) {
     return repository.findById(id).orElseThrow(() -> new CategoriaNotFoundException(id));
     }
 
     @Override
+    @Cacheable(key = "#nombre")
     public Categoria getCategoriaByNombre(String nombre) {
         return repository.findByNombre(nombre).orElseThrow(() -> new CategoriaNotFoundException(nombre));
     }
 
+    @Cacheable(key = "#result.id")
     public Categoria createCategoria(CategoriaCreateDto categoriaCreateDto) {
         repository.findByNombre(categoriaCreateDto.getNombre()).ifPresent(categoria -> {
             throw new CategoriaConflictException("Ya existe una categoria con el nombre: " + categoriaCreateDto.getNombre());
@@ -60,6 +67,7 @@ public class CategoriaServiceJpaImpl implements CategoriaServiceJpa{
     }
 
     @Override
+    @Cacheable(key = "#id")
     public Categoria updateCategoria(UUID id, CategoriaCreateDto categoriaCreateDto) {
         Categoria categoria = repository.findById(id).orElseThrow(() -> new CategoriaNotFoundException(id));
         repository.findByNombre(categoriaCreateDto.getNombre()).ifPresent(categoria1 -> {
@@ -74,6 +82,7 @@ public class CategoriaServiceJpaImpl implements CategoriaServiceJpa{
 
 
     @Override
+    @Cacheable(key = "#id")
     public void deleteById(UUID id) {
         Categoria categoria = repository.findById(id).orElseThrow(() -> new CategoriaNotFoundException(id));
         Page<GetBookDTO> book =  bookService.getAllBook(Optional.empty(), Optional.empty(), Optional.of(categoria.getNombre()), PageRequest.of(0, 10000));

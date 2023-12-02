@@ -27,16 +27,24 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-web")
     implementation("org.springframework.boot:spring-boot-starter-cache")
     implementation("org.springframework.boot:spring-boot-starter-validation")
-    implementation("org.springframework.boot:spring-boot-starter-websocket")
+    testImplementation("org.springframework.boot:spring-boot-starter-test")
     implementation("com.fasterxml.jackson.dataformat:jackson-dataformat-xml")
+    implementation("org.springframework.boot:spring-boot-starter-websocket")
     implementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.11.3")
+
+    implementation("org.springframework.boot:spring-boot-starter-security")
+    testImplementation("org.springframework.security:spring-security-test")
+    implementation("com.auth0:java-jwt:4.4.0")
+ 
+    implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.2.0")
+    
+    implementation("org.springframework.boot:spring-boot-starter-data-mongodb")
+    implementation("de.flapdoodle.embed:de.flapdoodle.embed.mongo:3.0.0")
 
     runtimeOnly("com.h2database:h2")
 
     compileOnly("org.projectlombok:lombok")
     annotationProcessor("org.projectlombok:lombok")
-
-    testImplementation("org.springframework.boot:spring-boot-starter-test")
 }
 
 tasks.withType<Test> {

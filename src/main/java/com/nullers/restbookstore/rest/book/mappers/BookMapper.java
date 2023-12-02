@@ -3,9 +3,9 @@ package com.nullers.restbookstore.rest.book.mappers;
 import com.nullers.restbookstore.rest.book.dto.CreateBookDTO;
 import com.nullers.restbookstore.rest.book.dto.GetBookDTO;
 import com.nullers.restbookstore.rest.book.dto.UpdateBookDTO;
-import com.nullers.restbookstore.rest.book.models.Book;
+import com.nullers.restbookstore.rest.book.model.Book;
 import com.nullers.restbookstore.rest.publisher.dto.PublisherData;
-import com.nullers.restbookstore.rest.publisher.models.Publisher;
+import com.nullers.restbookstore.rest.publisher.model.Publisher;
 
 import java.util.List;
 

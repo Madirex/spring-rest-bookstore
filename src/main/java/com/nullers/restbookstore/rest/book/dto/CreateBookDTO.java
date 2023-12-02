@@ -17,6 +17,9 @@ public class CreateBookDTO {
     @NotBlank(message = "El nombre no puede estar vacío")
     private String name;
 
+    @NotBlank(message = "El autor no puede estar vacío")
+    private String author;
+
     @NotNull(message = "Publisher no puede ser nulo")
     private Long publisherId;
 
@@ -32,4 +35,8 @@ public class CreateBookDTO {
 
     @NotBlank(message = "La categoría no puede estar vacía")
     private String category;
+
+    @Min(value = 0, message = "El stock no puede estar en negativo")
+    @Builder.Default()
+    private Integer stock = 0;
 }

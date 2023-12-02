@@ -1,13 +1,13 @@
 package com.nullers.restbookstore.rest.category.controllers;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.nullers.restbookstore.pagination.utils.PageResponse;
+import com.nullers.restbookstore.pagination.models.PageResponse;
 import com.nullers.restbookstore.rest.category.dto.CategoriaCreateDto;
 import com.nullers.restbookstore.rest.category.exceptions.CategoriaConflictException;
 import com.nullers.restbookstore.rest.category.exceptions.CategoriaNotFoundException;
-import com.nullers.restbookstore.rest.category.models.Categoria;
+import com.nullers.restbookstore.rest.category.model.Categoria;
 import com.nullers.restbookstore.rest.category.services.CategoriaServiceJpaImpl;
-import com.nullers.restbookstore.rest.publisher.models.responses.ErrorResponse;
+import com.nullers.restbookstore.pagination.models.ErrorResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -18,7 +18,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockHttpServletResponse;

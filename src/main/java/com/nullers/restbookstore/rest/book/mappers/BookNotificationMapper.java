@@ -1,7 +1,7 @@
 package com.nullers.restbookstore.rest.book.mappers;
 
 import com.nullers.restbookstore.rest.book.dto.GetBookDTO;
-import com.nullers.restbookstore.rest.book.notifications.BookNotificationResponse;
+import com.nullers.restbookstore.rest.book.notification.BookNotificationResponse;
 import org.springframework.stereotype.Component;
 
 /**
@@ -21,13 +21,16 @@ public class BookNotificationMapper {
         return new BookNotificationResponse(
                 book.getId(),
                 book.getName(),
+                book.getAuthor(),
                 book.getPublisher().toString(),
                 book.getImage(),
                 book.getDescription(),
                 book.getCreatedAt().toString(),
                 book.getUpdatedAt().toString(),
+                book.getPrice(),
                 book.getActive(),
-                book.getCategory()
+                book.getCategory(),
+                book.getStock()
         );
     }
 }

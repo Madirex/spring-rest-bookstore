@@ -7,15 +7,12 @@ import com.nullers.restbookstore.rest.book.dto.PatchBookDTO;
 import com.nullers.restbookstore.rest.book.dto.UpdateBookDTO;
 import com.nullers.restbookstore.rest.book.exceptions.BookNotFoundException;
 import com.nullers.restbookstore.rest.book.exceptions.BookNotValidIDException;
-import com.nullers.restbookstore.rest.publisher.exceptions.PublisherNotFound;
 import com.nullers.restbookstore.rest.publisher.exceptions.PublisherIDNotValid;
+import com.nullers.restbookstore.rest.publisher.exceptions.PublisherNotFound;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
-
-import java.util.Map;
 
 /**
  * Interface BookRestController
@@ -38,5 +35,4 @@ public interface BookRestController {
 
     ResponseEntity<String> deleteBook(@Valid @PathVariable Long id) throws BookNotValidIDException, BookNotFoundException;
 
-    Map<String, String> handleValidationExceptions(MethodArgumentNotValidException ex);
 }

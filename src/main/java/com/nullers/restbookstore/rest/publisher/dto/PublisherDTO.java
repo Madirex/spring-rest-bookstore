@@ -1,7 +1,7 @@
 package com.nullers.restbookstore.rest.publisher.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.nullers.restbookstore.rest.book.models.Book;
+import com.nullers.restbookstore.rest.book.model.Book;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -27,4 +27,5 @@ public class PublisherDTO {
     private Set<Book> books;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
+    private Boolean active;
 }

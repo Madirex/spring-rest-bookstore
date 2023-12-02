@@ -5,8 +5,8 @@ import com.nullers.restbookstore.rest.user.dto.UserRequest;
 import com.nullers.restbookstore.rest.user.dto.UserResponse;
 import com.nullers.restbookstore.rest.user.exceptions.UserNameOrEmailExists;
 import com.nullers.restbookstore.rest.user.exceptions.UserNotFound;
-import com.nullers.restbookstore.rest.user.mappers.UserMapper;
-import com.nullers.restbookstore.rest.user.model.User;
+import com.nullers.restbookstore.rest.user.mapper.UserMapper;
+import com.nullers.restbookstore.rest.user.models.User;
 import com.nullers.restbookstore.rest.user.repository.UserRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.annotation.CacheConfig;
@@ -16,6 +16,7 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -34,16 +35,19 @@ public class UserServiceImpl implements UserService {
     public static final String USER_NOT_FOUND_MSG = "Usuario no encontrado";
     private final UserRepository userRepository;
     private final UserMapper userMapper;
+    private final PasswordEncoder passwordEncode;
 
     /**
      * Constructor de la clase
      *
      * @param userRepository repositorio de usuarios
      * @param userMapper     mapper de usuarios
+     * @param passwordEncode
      */
-    public UserServiceImpl(UserRepository userRepository, UserMapper userMapper) {
+    public UserServiceImpl(UserRepository userRepository, UserMapper userMapper, PasswordEncoder passwordEncode) {
         this.userRepository = userRepository;
         this.userMapper = userMapper;
+        this.passwordEncode = passwordEncode;
     }
 
     /**
@@ -113,6 +117,7 @@ public class UserServiceImpl implements UserService {
                 .ifPresent(user -> {
                     throw new UserNameOrEmailExists("El usuario ya existe");
                 });
+        userRequest.setPassword(passwordEncode.encode(userRequest.getPassword()));
         return userMapper.toUserResponse(userRepository.save(userMapper.toUser(userRequest)));
     }
 
@@ -134,6 +139,7 @@ public class UserServiceImpl implements UserService {
                         throw new UserNameOrEmailExists("El usuario ya existe");
                     });
         }
+        userRequest.setPassword(passwordEncode.encode(userRequest.getPassword()));
         return userMapper.toUserResponse(userRepository.save(userMapper.toUser(userRequest, id)));
     }
 
@@ -145,7 +151,6 @@ public class UserServiceImpl implements UserService {
      * @return Usuario actualizado parcialmente
      */
 
-    @Override
     public UserResponse patch(UUID id, UserRequest userRequest) {
         log.info("Actualizando usuario: " + userRequest);
         userRepository.findById(id).orElseThrow(() -> new UserNotFound(USER_NOT_FOUND_MSG));
