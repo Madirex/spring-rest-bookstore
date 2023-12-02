@@ -22,6 +22,8 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Stream;
@@ -33,6 +35,7 @@ import java.util.stream.Stream;
 @Slf4j
 public class FileSystemStorageService implements StorageService {
     private final Path rootLocation;
+    private final List<String> currentImageTypesAllowed = List.of("png", "jpeg", "jpg");
 
     /**
      * Constructor
@@ -180,5 +183,21 @@ public class FileSystemStorageService implements StorageService {
         return MvcUriComponentsBuilder
                 .fromMethodName(StorageController.class, "serveFile", filename, null)
                 .build().toUriString();
+    }
+
+    /**
+     * Get image URL
+     *
+     * @param id      ID
+     * @param image   Image
+     * @param withUrl With URL
+     * @return Image URL
+     * @throws IOException IOException
+     */
+    public String getImageUrl(String id, MultipartFile image, Boolean withUrl) throws IOException {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd-HH-mm-ss-SSSSSS");
+        String imageStored = store(image, currentImageTypesAllowed, id
+                + "-" + LocalDateTime.now().format(formatter));
+        return Boolean.FALSE.equals(withUrl) ? imageStored : getUrl(imageStored);
     }
 }

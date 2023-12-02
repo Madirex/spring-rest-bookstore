@@ -27,4 +27,6 @@ public interface StorageService {
     void deleteAll();
 
     String getUrl(String filename);
+
+    String getImageUrl(String id, MultipartFile image, Boolean withUrl) throws IOException;
 }
