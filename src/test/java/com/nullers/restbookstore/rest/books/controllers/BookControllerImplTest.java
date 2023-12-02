@@ -45,7 +45,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest(properties = "spring.config.name=application-test")
 @AutoConfigureMockMvc
 @AutoConfigureJsonTesters
-@WithMockUser(username = "admin", password = "adminPassword123", roles = {"ADMIN", "USER"})
+@WithMockUser(username = "admin", password = "Nullers123", roles = {"ADMIN", "USER"})
 class BookControllerImplTest {
     private final ObjectMapper mapper = new ObjectMapper();
     @Autowired
