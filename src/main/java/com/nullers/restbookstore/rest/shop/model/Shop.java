@@ -20,6 +20,7 @@ import org.springframework.data.annotation.LastModifiedDate;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 /**
@@ -57,13 +58,13 @@ public class Shop {
     @JoinColumn(name = "book_id")
     @NotNull(message = "La tienda debe tener al menos un libro")
     @Builder.Default()
-    private List<Book> books = List.of();
+    private Set<Book> books = Set.of();
 
 
     @OneToMany
     @JoinColumn(name = "client_id")
     @NotNull(message = "La tienda debe tener al menos un cliente")
     @Builder.Default()
-    private List<Client> clients = List.of();
+    private Set<Client> clients = Set.of();
 
 }
