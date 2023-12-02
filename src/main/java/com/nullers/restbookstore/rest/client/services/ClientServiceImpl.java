@@ -57,10 +57,7 @@ public class ClientServiceImpl implements ClientService{
 
     private final List<String> contentTypesAllowed = List.of("png", "jpeg", "jpg");
 
-
     private final ClientRepository clientRepository;
-
-    private final BookServiceImpl bookService;
     private final OrderRepository orderRepository;
 
     private final StorageService storageService;
@@ -71,20 +68,17 @@ public class ClientServiceImpl implements ClientService{
 
     private final ObjectMapper mapper;
 
-    private final BookMapperImpl bookMapper;
 
 
     @Autowired
     public ClientServiceImpl(ClientRepository clientRepository, BookServiceImpl bookService, OrderRepository orderRepository, StorageService storageService, WebSocketConfig webSocketConfig, ClientNotificationMapper clientNotificationMapper, BookMapperImpl bookMapper) {
         this.clientRepository = clientRepository;
-        this.bookService = bookService;
         this.orderRepository = orderRepository;
         this.storageService = storageService;
         this.webSocketConfig = webSocketConfig;
         this.clientNotificationMapper = clientNotificationMapper;
         webSocketService = webSocketConfig.webSocketClientsHandler();
         mapper = new ObjectMapper();
-        this.bookMapper = bookMapper;
         mapper.registerModule(new JavaTimeModule());
     }
 
