@@ -6,6 +6,5 @@ package com.nullers.restbookstore.rest.user.models;
  * @Author: Binwei Wang
  */
 public enum Role {
-    USER,
-    ROLE_USER, ADMIN
+    USER, ADMIN
 }
