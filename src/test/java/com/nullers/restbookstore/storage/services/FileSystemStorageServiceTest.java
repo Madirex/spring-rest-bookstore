@@ -64,7 +64,7 @@ class FileSystemStorageServiceTest {
     @Test
     void testStorePng() throws IOException {
         var id = UUID.randomUUID().toString();
-        String file = fileSystemStorageService.store(new MockMultipartFile("funko", "funko.png",
+        String file = fileSystemStorageService.store(new MockMultipartFile("libro", "libro.png",
                 "image/png", bytesPNG), List.of("jpg", "jpeg", "png"), id);
 
         assertAll(
@@ -81,7 +81,7 @@ class FileSystemStorageServiceTest {
     @Test
     void testStoreJpg() throws IOException {
         var id = UUID.randomUUID().toString();
-        String file = fileSystemStorageService.store(new MockMultipartFile("funko", "funko.jpg",
+        String file = fileSystemStorageService.store(new MockMultipartFile("libro", "libro.jpg",
                 "image/jpg", bytesJPEG), List.of("jpg", "jpeg", "png"), id);
 
         assertAll(
@@ -98,7 +98,7 @@ class FileSystemStorageServiceTest {
     @Test
     void testStoreJpeg() throws IOException {
         var id = UUID.randomUUID().toString();
-        String file = fileSystemStorageService.store(new MockMultipartFile("funko", "funko.jpeg",
+        String file = fileSystemStorageService.store(new MockMultipartFile("libro", "libro.jpeg",
                 "image/jpeg", bytesPNG), List.of("jpg", "jpeg", "png"), id);
 
         assertAll(
@@ -114,7 +114,7 @@ class FileSystemStorageServiceTest {
     void testStoreGifNotAllowed() {
         var id = UUID.randomUUID().toString();
         var list = List.of("jpg", "jpeg", "png");
-        var multiPart = new MockMultipartFile("funko", "funko.gif",
+        var multiPart = new MockMultipartFile("libro", "libro.gif",
                 "image/gif", bytesGIF);
         assertThrows(StorageBadRequest.class, () -> fileSystemStorageService.store(multiPart, list, id));
     }
@@ -126,7 +126,7 @@ class FileSystemStorageServiceTest {
     void testStoreGifNotAllowedFormat() {
         var id = UUID.randomUUID().toString();
         var list = List.of("jpg", "jpeg", "png", "gif");
-        var multiPart = new MockMultipartFile("funko", "funko.gif", "image/gif", bytesGIF);
+        var multiPart = new MockMultipartFile("libro", "libro.gif", "image/gif", bytesGIF);
         assertThrows(StorageBadRequest.class, () -> fileSystemStorageService.store(multiPart, list, id));
     }
 
