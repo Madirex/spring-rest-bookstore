@@ -3,6 +3,7 @@ package com.nullers.restbookstore.rest.category.model;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.ColumnDefault;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
@@ -18,7 +19,7 @@ public class Categoria {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    private UUID id = UUID.randomUUID();
+    private UUID id;
 
     @Column(nullable = false, unique = true)
     private String nombre;
@@ -30,7 +31,8 @@ public class Categoria {
     private LocalDateTime fecha_creacion;
 
     @Temporal(TemporalType.TIMESTAMP)
-    @ColumnDefault(value = "CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP")
+    @ColumnDefault(value = "CURRENT_TIMESTAMP")
+    @UpdateTimestamp
     private LocalDateTime fecha_actualizacion;
 
     @PrePersist
@@ -43,8 +45,4 @@ public class Categoria {
         }
     }
 
-    @PreUpdate
-    protected void onUpdate() {
-        fecha_actualizacion = LocalDateTime.now();
-    }
 }
