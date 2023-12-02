@@ -17,8 +17,10 @@ import com.nullers.restbookstore.rest.book.model.Book;
 import com.nullers.restbookstore.rest.book.notification.BookNotificationResponse;
 import com.nullers.restbookstore.rest.book.repository.BookRepository;
 import com.nullers.restbookstore.rest.category.exceptions.CategoriaNotFoundException;
+import com.nullers.restbookstore.rest.category.exceptions.CategoryInvalidID;
 import com.nullers.restbookstore.rest.category.model.Categoria;
 import com.nullers.restbookstore.rest.category.repository.CategoriasRepositoryJpa;
+import com.nullers.restbookstore.rest.category.services.CategoriaServiceJpa;
 import com.nullers.restbookstore.rest.publisher.exceptions.PublisherIDNotValid;
 import com.nullers.restbookstore.rest.publisher.exceptions.PublisherNotFound;
 import com.nullers.restbookstore.rest.publisher.mappers.PublisherMapper;
@@ -45,6 +47,7 @@ import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 /**
  * Clase BookServiceImpl
@@ -67,6 +70,7 @@ public class BookServiceImpl implements BookService {
     private WebSocketHandler webSocketService;
     private final StorageService storageService;
     private final PublisherService publisherService;
+    private final CategoriaServiceJpa categoryService;
     private final ObjectMapper mapper;
     private final BookNotificationMapper bookNotificationMapper;
     private final CategoriasRepositoryJpa categoriasRepositoryJpa;
@@ -81,12 +85,14 @@ public class BookServiceImpl implements BookService {
      * @param webSocketConfig        WebSocketConfig
      * @param storageService         StorageService
      * @param publisherService       PublisherService
+     * @param categoryService        CategoryService
      * @param bookNotificationMapper BookNotificationMapper
      */
     @Autowired
     public BookServiceImpl(BookRepository bookRepository, BookMapperImpl bookMapperImpl,
                            PublisherMapper publisherMapper, WebSocketConfig webSocketConfig, StorageService storageService,
-                           PublisherService publisherService, BookNotificationMapper bookNotificationMapper, CategoriasRepositoryJpa categoriasRepositoryJpa) {
+                           PublisherService publisherService, CategoriaServiceJpa categoryService,
+                           BookNotificationMapper bookNotificationMapper, CategoriasRepositoryJpa categoryRepository) {
         this.bookRepository = bookRepository;
         this.bookMapperImpl = bookMapperImpl;
         this.publisherMapper = publisherMapper;
@@ -94,9 +100,10 @@ public class BookServiceImpl implements BookService {
         this.webSocketService = webSocketConfig.webSocketHandler();
         this.storageService = storageService;
         this.publisherService = publisherService;
+        this.categoryService = categoryService;
         this.bookNotificationMapper = bookNotificationMapper;
         this.mapper = new ObjectMapper();
-        this.categoriasRepositoryJpa = categoriasRepositoryJpa;
+        this.categoriasRepositoryJpa = categoryRepository;
     }
 
     /**
@@ -219,6 +226,14 @@ public class BookServiceImpl implements BookService {
         opt.get().setUpdatedAt(LocalDateTime.now());
         if (book.getPublisherId() != null) {
             opt.get().setPublisher(publisherMapper.toPublisher(publisherService.findById(book.getPublisherId())));
+        }
+        if (book.getCategory() != null) {
+            try {
+                var uuid = UUID.fromString(book.getCategory());
+                opt.get().setCategory(categoryService.getCategoriaById(uuid));
+            } catch (IllegalArgumentException e) {
+                throw new CategoryInvalidID(book.getCategory());
+            }
         }
         Book modified = bookRepository.save(opt.get());
         var bookDTO = bookMapperImpl.toGetBookDTO(modified, publisherMapper.toPublisherData(modified.getPublisher()));
