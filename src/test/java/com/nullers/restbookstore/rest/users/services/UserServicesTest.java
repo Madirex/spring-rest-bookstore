@@ -33,7 +33,7 @@ import static org.mockito.Mockito.*;
 /**
  * Test for {@link UserService}
  *
- * @Author: Binwei Wang
+ * @Author Binwei Wang
  */
 
 @ExtendWith(MockitoExtension.class)

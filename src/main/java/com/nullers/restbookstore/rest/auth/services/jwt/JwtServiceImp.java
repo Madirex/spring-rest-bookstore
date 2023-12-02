@@ -16,7 +16,7 @@ import java.util.function.Function;
 /**
  * Implementación de JwtService
  *
- * @Author: Binwei Wang
+ * @Author Binwei Wang
  */
 @Service
 public class JwtServiceImp implements JwtService {

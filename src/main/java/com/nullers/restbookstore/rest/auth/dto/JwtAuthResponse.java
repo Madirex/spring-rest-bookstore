@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 /**
  * DTO for JWT response
  *
- * @Author: Binwei Wang
+ * @Author Binwei Wang
  */
 @Data
 @Builder

@@ -11,7 +11,7 @@ import org.hibernate.validator.constraints.Length;
 /**
  * DTO para el registro de usuarios
  *
- * @Author: Binwei Wang
+ * @Author Binwei Wang
  */
 @Data
 @NoArgsConstructor

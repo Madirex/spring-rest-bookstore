@@ -9,7 +9,7 @@ import java.util.UUID;
 /**
  * Repository for the User entity
  *
- * @Author: Binwei Wang
+ * @Author Binwei Wang
  */
 
 public interface AuthUsersRepository extends JpaRepository<User, UUID> {

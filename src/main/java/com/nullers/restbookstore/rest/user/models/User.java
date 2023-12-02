@@ -20,7 +20,7 @@ import java.util.stream.Collectors;
 /**
  * Entidad User
  *
- * @Author: Binwei Wang
+ * @Author Binwei Wang
  */
 @Entity
 @Getter

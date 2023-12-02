@@ -7,7 +7,7 @@ import com.nullers.restbookstore.rest.auth.dto.UserSignUpRequest;
 /**
  * Authentication service interface
  *
- * @Author: Binwei Wang
+ * @Author Binwei Wang
  */
 public interface AuthenticationService {
     /**

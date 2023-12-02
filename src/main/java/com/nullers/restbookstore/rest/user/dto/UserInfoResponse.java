@@ -9,7 +9,7 @@ import java.util.UUID;
 /**
  * Respuesta de usuario con info
  *
- * @Author: Binwei Wang
+ * @Author Binwei Wang
  */
 @Getter
 @Builder

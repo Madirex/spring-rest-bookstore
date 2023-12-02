@@ -8,7 +8,7 @@ import org.springframework.stereotype.Service;
 /**
  * AuthUsersServiceImp implements AuthUsersService
  *
- * @Author: Binwei Wang
+ * @Author Binwei Wang
  */
 @Service("userDetailsService")
 public class AuthUsersServiceImp implements AuthUsersService {

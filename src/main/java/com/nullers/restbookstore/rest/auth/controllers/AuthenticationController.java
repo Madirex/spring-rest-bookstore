@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 /**
  * Controlador de auth
  *
- * @Author: Binwei Wang
+ * @Author Binwei Wang
  */
 
 @RestController

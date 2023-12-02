@@ -10,7 +10,7 @@ import org.hibernate.validator.constraints.Length;
 /**
  * DTO para el request de inicio de sesión
  *
- * @Author: Binwei Wang
+ * @Author Binwei Wang
  */
 @Data
 @Builder

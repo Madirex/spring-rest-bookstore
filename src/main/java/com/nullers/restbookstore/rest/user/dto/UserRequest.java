@@ -15,7 +15,7 @@ import java.util.Set;
 /**
  * Petición de usuario para crear
  *
- * @Author: Binwei Wang
+ * @Author Binwei Wang
  */
 @Data
 @Builder

@@ -20,7 +20,7 @@ import org.springframework.stereotype.Service;
 /**
  * Authentication service implementation
  *
- * @Author: Binwei Wang
+ * @Author Binwei Wang
  */
 @Service
 @Slf4j

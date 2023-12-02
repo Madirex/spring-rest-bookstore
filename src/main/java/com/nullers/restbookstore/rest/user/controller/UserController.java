@@ -28,7 +28,7 @@ import java.util.UUID;
 /**
  * Controlador de usuarios
  *
- * @Author: Binwei Wang
+ * @Author Binwei Wang
  */
 @RestController
 @Slf4j

@@ -6,7 +6,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 /**
  * AuthUsersService interface
  *
- * @Author: Binwei Wang
+ * @Author Binwei Wang
  */
 public interface AuthUsersService extends UserDetailsService {
     /**
