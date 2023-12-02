@@ -88,7 +88,7 @@ public class AuthenticationServiceImp implements AuthenticationService {
         log.info("Autenticando usuario: {}", request);
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(request.getUsername(), request.getPassword()));
-        var user = authUsersRepository.findByUsername(request.getUsername())
+        var user = authUsersRepository.findByUsernameIgnoreCase(request.getUsername())
                 .orElseThrow(() -> new AuthSingInInvalid("Usuario no encontrado"));
         var jwt =jwtService.generateToken(user);
         return JwtAuthResponse.builder()

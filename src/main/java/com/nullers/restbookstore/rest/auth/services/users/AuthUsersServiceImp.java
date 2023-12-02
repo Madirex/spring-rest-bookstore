@@ -34,7 +34,7 @@ public class AuthUsersServiceImp implements AuthUsersService {
      */
     @Override
     public UserDetails loadUserByUsername(String username) {
-        return authUsersRepository.findByUsername(username)
+        return authUsersRepository.findByUsernameIgnoreCase(username)
                 .orElseThrow(() -> new RuntimeException("Usuario con username " + username + " no encontrado"));
     }
 }
