@@ -13,12 +13,10 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.FieldError;
-import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -130,7 +128,8 @@ public class UserController {
 
     /**
      * Actualiza un usuario parcialmente
-     * @param id Id del usuario a actualizar
+     *
+     * @param id          Id del usuario a actualizar
      * @param userRequest Usuario a actualizar parcialmente
      * @return Usuario actualizado parcialmente
      */
@@ -174,29 +173,10 @@ public class UserController {
      * @param user Usuario autenticado
      * @return Respuesta vacía
      */
-//    @DeleteMapping("/me/profile")
-//    public ResponseEntity<Void> deleteMe(User user) {
-//        log.info("deleteMe: user: {}", user);
-//        usersService.deleteById(user.getId());
-//        return ResponseEntity.noContent().build();
-//    }
-
-    /**
-     * Maneja las excepciones de validación
-     *
-     * @param ex Excepción de validación
-     * @return Mapa de errores de validación
-     */
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    @ExceptionHandler(MethodArgumentNotValidException.class)
-    public Map<String, String> handleValidationExceptions(
-            MethodArgumentNotValidException ex) {
-        Map<String, String> errors = new HashMap<>();
-        ex.getBindingResult().getAllErrors().forEach(error -> {
-            String fieldName = ((FieldError) error).getField();
-            String errorMessage = error.getDefaultMessage();
-            errors.put(fieldName, errorMessage);
-        });
-        return errors;
+    @DeleteMapping("/me/profile")
+    public ResponseEntity<Void> deleteMe(User user) {
+        log.info("deleteMe: user: {}", user);
+        usersService.deleteById(user.getId());
+        return ResponseEntity.noContent().build();
     }
 }
