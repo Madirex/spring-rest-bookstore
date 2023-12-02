@@ -11,6 +11,7 @@ import org.bson.types.ObjectId;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 /**
@@ -30,9 +31,9 @@ public class GetShopDto {
 
     private Address location;
 
-    private List<Long> books_id;
+    private Set<Long> books_id;
 
-    private List<UUID> clients_id;
+    private Set<UUID> clients_id;
 
     @Setter
     private LocalDateTime createdAt;
