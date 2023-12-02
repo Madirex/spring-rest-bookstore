@@ -1,6 +1,7 @@
 package com.nullers.restbookstore.rest.shop.controllers;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.nullers.restbookstore.rest.common.Address;
 import com.nullers.restbookstore.rest.shop.model.Shop;
 import com.nullers.restbookstore.rest.shop.services.ShopServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,7 +33,13 @@ class ShopControllerImplTest {
     private final Shop shop = Shop.builder()
             .id(UUID.randomUUID())
             .name("Shop1")
-            .location("https://via.placeholder.com/150")
+            .location(Address.builder()
+                    .city("city")
+                    .country("country")
+                    .number("1")
+                    .street("street")
+                    .province("province")
+                    .build())
             .createdAt(LocalDateTime.now())
             .updatedAt(LocalDateTime.now())
             .build();
@@ -40,7 +47,13 @@ class ShopControllerImplTest {
     private final Shop shop2 = Shop.builder()
             .id(UUID.randomUUID())
             .name("Shop2")
-            .location("https://via.placeholder.com/150")
+            .location(Address.builder()
+                    .city("city")
+                    .country("country")
+                    .number("1")
+                    .street("street")
+                    .province("province")
+                    .build())
             .createdAt(LocalDateTime.now())
             .updatedAt(LocalDateTime.now())
             .build();

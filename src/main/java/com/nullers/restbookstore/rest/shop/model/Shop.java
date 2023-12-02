@@ -1,12 +1,20 @@
 package com.nullers.restbookstore.rest.shop.model;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.nullers.restbookstore.rest.book.model.Book;
 import com.nullers.restbookstore.rest.client.model.Client;
+import com.nullers.restbookstore.rest.common.Address;
+import com.nullers.restbookstore.rest.orders.models.Order;
 import jakarta.persistence.*;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.bson.types.ObjectId;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 
@@ -26,32 +34,36 @@ import java.util.UUID;
 @Entity
 @Table(name = "shops")
 public class Shop {
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private UUID id;  // Identificador único para la tienda.
 
-    private String name;  // Nombre de la tienda.
-    private String location;  // Ubicación de la tienda.
+    @Id
+    @GeneratedValue(strategy = GenerationType.UUID)
+    private UUID id;
+
+    @NotBlank(message = "El nombre no puede estar vacío")
+    private String name;
+
+    @Embedded
+    @NotNull(message = "La ubicación no puede estar vacía")
+    @Valid
+    private Address location;
 
     @CreatedDate
-    private LocalDateTime createdAt;  // Fecha y hora de creación de la tienda.
+    private LocalDateTime createdAt;
 
     @LastModifiedDate
-    private LocalDateTime updatedAt;  // Fecha y hora de la última actualización de la tienda.
+    private LocalDateTime updatedAt;
 
-    /**
-     * Lista de libros asociados con la tienda.
-     * La relación es de uno a muchos, indicando que una tienda puede tener varios libros.
-     */
-//    @OneToMany
-//    @JoinColumn(name = "book_id")
-//    private List<Book> books;
+    @OneToMany
+    @JoinColumn(name = "book_id")
+    @NotNull(message = "La tienda debe tener al menos un libro")
+    @Builder.Default()
+    private List<Book> books = List.of();
 
-    /**
-     * Lista de clientes asociados con la tienda.
-     * La relación es de uno a muchos, indicando que una tienda puede tener varios clientes.
-     */
+
     @OneToMany
     @JoinColumn(name = "client_id")
-    private List<Client> clients;
+    @NotNull(message = "La tienda debe tener al menos un cliente")
+    @Builder.Default()
+    private List<Client> clients = List.of();
+
 }

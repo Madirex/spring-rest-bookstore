@@ -1,12 +1,16 @@
 package com.nullers.restbookstore.rest.shop.dto;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.nullers.restbookstore.rest.common.Address;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.bson.types.ObjectId;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.UUID;
 
 /**
@@ -24,7 +28,11 @@ public class GetShopDto {
 
     private String name;
 
-    private String location;
+    private Address location;
+
+    private List<Long> books_id;
+
+    private List<UUID> clients_id;
 
     @Setter
     private LocalDateTime createdAt;

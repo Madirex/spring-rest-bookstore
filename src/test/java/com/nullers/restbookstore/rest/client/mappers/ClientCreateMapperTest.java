@@ -1,7 +1,7 @@
 package com.nullers.restbookstore.rest.client.mappers;
 
 import com.nullers.restbookstore.rest.client.dto.ClientCreateDto;
-import com.nullers.restbookstore.rest.client.model.Address;
+import com.nullers.restbookstore.rest.common.Address;
 import com.nullers.restbookstore.rest.client.model.Client;
 import org.junit.jupiter.api.Test;
 

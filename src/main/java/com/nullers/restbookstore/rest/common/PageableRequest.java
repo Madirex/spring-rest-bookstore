@@ -1,4 +1,4 @@
-package com.nullers.restbookstore.rest.orders.dto;
+package com.nullers.restbookstore.rest.common;
 
 import jakarta.validation.constraints.Min;
 import lombok.AllArgsConstructor;
@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class OrderPageableRequest {
+public class PageableRequest {
 
     @Min(value = 0, message = "La página no puede ser inferior a 0")
     @Builder.Default()

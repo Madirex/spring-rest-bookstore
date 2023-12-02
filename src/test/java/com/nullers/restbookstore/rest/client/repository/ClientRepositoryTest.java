@@ -1,6 +1,6 @@
 package com.nullers.restbookstore.rest.client.repository;
 
-import com.nullers.restbookstore.rest.client.model.Address;
+import com.nullers.restbookstore.rest.common.Address;
 import com.nullers.restbookstore.rest.client.model.Client;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
