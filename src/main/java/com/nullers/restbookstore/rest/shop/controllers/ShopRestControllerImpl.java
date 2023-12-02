@@ -1,6 +1,5 @@
 package com.nullers.restbookstore.rest.shop.controllers;
 
-import com.nullers.restbookstore.pagination.exceptions.PageNotValidException;
 import com.nullers.restbookstore.pagination.models.ErrorResponse;
 import com.nullers.restbookstore.pagination.models.PageResponse;
 import com.nullers.restbookstore.pagination.util.PaginationLinksUtils;
@@ -12,23 +11,19 @@ import com.nullers.restbookstore.rest.shop.dto.GetShopDto;
 import com.nullers.restbookstore.rest.shop.dto.UpdateShopDto;
 import com.nullers.restbookstore.rest.shop.exceptions.ShopHasOrders;
 import com.nullers.restbookstore.rest.shop.exceptions.ShopNotFoundException;
-import com.nullers.restbookstore.rest.shop.exceptions.ShopNotValidUUIDException;
 import com.nullers.restbookstore.rest.shop.services.ShopServiceImpl;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
-import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Repository;
-import org.springframework.validation.FieldError;
-import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 
-import java.util.*;
+import java.util.Optional;
+import java.util.UUID;
 
 /**
  * Implementación del controlador REST para la gestión de tiendas (Shops).
@@ -181,29 +176,5 @@ public class ShopRestControllerImpl implements ShopRestController {
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ResponseEntity<ErrorResponse> handleShopHasOrders(ShopHasOrders ex) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ErrorResponse(HttpStatus.BAD_REQUEST.value(), ex.getMessage()));
-    }
-
-    /**
-     * Manejador de excepciones de MethodArgumentNotValidException
-     *
-     * @param ex excepción
-     * @return ResponseEntity<Map < String, Object>> con el mensaje de error
-     */
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<Map<String, Object>> handleValidationExceptions(
-            MethodArgumentNotValidException ex) {
-        Map<String, String> errors = new HashMap<>();
-        ex.getBindingResult().getAllErrors().forEach(error -> {
-            String fieldName = ((FieldError) error).getField();
-            String errorMessage = error.getDefaultMessage();
-            errors.put(fieldName, errorMessage);
-        });
-
-        Map<String, Object> response = new LinkedHashMap<>();
-        response.put("code", HttpStatus.BAD_REQUEST.value());
-        response.put("errors", errors);
-
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
     }
 }
