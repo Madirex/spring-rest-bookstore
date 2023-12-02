@@ -1,6 +1,5 @@
 package com.nullers.restbookstore.rest.book.controllers;
 
-import com.nullers.restbookstore.pagination.exceptions.PageNotValidException;
 import com.nullers.restbookstore.pagination.models.PageResponse;
 import com.nullers.restbookstore.pagination.util.PaginationLinksUtils;
 import com.nullers.restbookstore.rest.book.dto.CreateBookDTO;
@@ -10,6 +9,7 @@ import com.nullers.restbookstore.rest.book.dto.UpdateBookDTO;
 import com.nullers.restbookstore.rest.book.exceptions.BookNotFoundException;
 import com.nullers.restbookstore.rest.book.exceptions.BookNotValidIDException;
 import com.nullers.restbookstore.rest.book.services.BookServiceImpl;
+import com.nullers.restbookstore.rest.common.PageableRequest;
 import com.nullers.restbookstore.rest.publisher.exceptions.PublisherIDNotValid;
 import com.nullers.restbookstore.rest.publisher.exceptions.PublisherNotFound;
 import jakarta.servlet.http.HttpServletRequest;
@@ -70,22 +70,19 @@ public class BookRestControllerImpl implements BookRestController {
             @Valid @RequestParam(required = false) Optional<String> publisher,
             @RequestParam(required = false) Optional<Double> maxPrice,
             @RequestParam(required = false) Optional<String> category,
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size,
-            @RequestParam(defaultValue = "id") String sortBy,
-            @RequestParam(defaultValue = "asc") String direction,
+            @Valid PageableRequest pageableRequest,
             HttpServletRequest request
     ) {
-        if (page < 0 || size < 1) {
-            throw new PageNotValidException("La página no puede ser menor que 0 y su tamaño no debe de ser menor a 1.");
-        }
-        Sort sort = direction.equalsIgnoreCase(
-                Sort.Direction.ASC.name()) ? Sort.by(sortBy).ascending() : Sort.by(sortBy).descending();
+        String orderBy = pageableRequest.getOrderBy();
+        String order = pageableRequest.getOrder();
+        Integer page = pageableRequest.getPage();
+        Integer size = pageableRequest.getSize();
+        Sort sort = order.equalsIgnoreCase(Sort.Direction.ASC.name()) ? Sort.by(orderBy).ascending() : Sort.by(orderBy).descending();
         UriComponentsBuilder uriBuilder = UriComponentsBuilder.fromHttpUrl(request.getRequestURL().toString());
         Page<GetBookDTO> pageResult = service.getAllBook(publisher, maxPrice, category, PageRequest.of(page, size, sort));
         return ResponseEntity.ok()
                 .header("link", paginationLinksUtils.createLinkHeader(pageResult, uriBuilder))
-                .body(PageResponse.of(pageResult, sortBy, direction));
+                .body(PageResponse.of(pageResult, orderBy, order));
     }
 
     /**
