@@ -3,6 +3,7 @@ package com.nullers.restbookstore.manager.error;
 import com.nullers.restbookstore.pagination.exceptions.PageNotValidException;
 import com.nullers.restbookstore.pagination.models.ErrorResponse;
 import com.nullers.restbookstore.rest.category.exceptions.CategoriaNotFoundException;
+import jakarta.servlet.http.HttpServletRequest;
 import org.apache.tomcat.util.http.fileupload.impl.FileSizeLimitExceededException;
 import org.springframework.data.mapping.PropertyReferenceException;
 import org.springframework.http.HttpStatus;
@@ -14,6 +15,9 @@ import org.springframework.web.bind.MissingPathVariableException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -52,6 +56,23 @@ public class GlobalExceptionHandler {
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ErrorResponse handleCategoryNotFound(CategoriaNotFoundException exception) {
         return new ErrorResponse(HttpStatus.BAD_REQUEST.value(), exception.getMessage());
+    }
+
+    /**
+     * Método para manejar las excepciones de ResponseStatusException
+     *
+     * @param ex Excepción
+     * @return Error en ResponseEntity (mensaje y código de estado)
+     */
+    @ExceptionHandler(ResponseStatusException.class)
+    public ResponseEntity<ErrorResponse> handleResponseStatusException(ResponseStatusException ex) {
+        HttpStatus httpStatus = HttpStatus.valueOf(ex.getStatusCode().value());
+        var errorResponse = new ErrorResponse(
+                httpStatus.value(),
+                ex.getReason()
+//                ,getCurrentHttpRequest().getRequestURI() //TODO: Agregar URI
+        );
+        return ResponseEntity.status(httpStatus).body(errorResponse);
     }
 
     /**
@@ -117,4 +138,14 @@ public class GlobalExceptionHandler {
                 .body("No has enviado todos los parámetros necesarios para la consulta en el Path");
     }
 
+    /**
+     * Método para obtener la petición HTTP actual
+     *
+     * @return HttpServletRequest
+     */
+    private HttpServletRequest getCurrentHttpRequest() {
+        ServletRequestAttributes requestAttributes = (ServletRequestAttributes)
+                RequestContextHolder.currentRequestAttributes();
+        return requestAttributes.getRequest();
+    }
 }
