@@ -35,6 +35,7 @@ import java.util.*;
  */
 @RestController
 @RequestMapping("/api/shops")
+@PreAuthorize("hasRole('ADMIN')")
 public class ShopRestControllerImpl implements ShopRestController {
 
     private final ShopServiceImpl shopService;
