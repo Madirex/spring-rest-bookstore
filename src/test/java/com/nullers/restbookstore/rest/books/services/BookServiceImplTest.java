@@ -477,8 +477,6 @@ class BookServiceImplTest {
 
         when(bookRepository.findById(list.get(0).getId()))
                 .thenReturn(Optional.of(list.get(0)));
-        when(storageService.store(any(), any(), any()))
-                .thenReturn(imageUrl);
 
         //path
         var update = PatchBookDTO.builder().image(imageUrl).build();
