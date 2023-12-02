@@ -137,8 +137,8 @@ public class OrderControllerTest {
     Shop shop = Shop.builder()
             .id(UUID.fromString("b5f29063-77d8-4d5d-98ea-def0cc9ebc5f"))
             .name("name")
-            .books(List.of(book))
-            .clients(List.of(clientTest))
+            .books(Set.of(book))
+            .clients(Set.of(clientTest))
             .location(address)
             .build();
 
