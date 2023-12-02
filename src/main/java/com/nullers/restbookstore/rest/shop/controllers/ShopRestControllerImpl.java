@@ -1,13 +1,12 @@
 package com.nullers.restbookstore.rest.shop.controllers;
 
-import com.nullers.restbookstore.pagination.exceptions.PageNotValidException;
+import com.nullers.restbookstore.pagination.models.ErrorResponse;
 import com.nullers.restbookstore.pagination.models.PageResponse;
 import com.nullers.restbookstore.pagination.util.PaginationLinksUtils;
 import com.nullers.restbookstore.rest.shop.dto.CreateShopDto;
 import com.nullers.restbookstore.rest.shop.dto.GetShopDto;
 import com.nullers.restbookstore.rest.shop.dto.UpdateShopDto;
 import com.nullers.restbookstore.rest.shop.exceptions.ShopNotFoundException;
-import com.nullers.restbookstore.rest.shop.exceptions.ShopNotValidUUIDException;
 import com.nullers.restbookstore.rest.shop.services.ShopServiceImpl;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
@@ -20,6 +19,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.util.Optional;
+import java.util.UUID;
 
 /**
  * Implementación del controlador REST para la gestión de tiendas (Shops).
@@ -137,5 +137,54 @@ public class ShopRestControllerImpl implements ShopRestController {
         } catch (ShopNotValidUUIDException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build(); // UUID no válido
         }
+    }
+
+
+    @PatchMapping("/{id}/books/{bookId}")
+    public ResponseEntity<GetShopDto> addBookToShop(@Valid @PathVariable UUID id, @Valid @PathVariable Long bookId) {
+        return ResponseEntity.ok(shopService.addBookToShop(id, bookId));
+    }
+
+    @Override
+    @DeleteMapping("/{id}/books/{bookId}")
+    public ResponseEntity<GetShopDto> removeBookFromShop(UUID id, Long bookId) {
+        return ResponseEntity.ok(shopService.removeBookFromShop(id, bookId));
+    }
+
+    @Override
+    @PatchMapping("/{id}/clients/{clientId}")
+    public ResponseEntity<GetShopDto> addClientToShop(UUID id, UUID clientId) {
+        return ResponseEntity.ok(shopService.addClientToShop(id, clientId));
+    }
+
+    @Override
+    @DeleteMapping("/{id}/clients/{clientId}")
+    public ResponseEntity<GetShopDto> removeClientFromShop(UUID id, UUID clientId) {
+        return ResponseEntity.ok(shopService.removeClientFromShop(id, clientId));
+    }
+
+
+    @ExceptionHandler(ClientNotFound.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public ResponseEntity<ErrorResponse> handleClientNotFound(ClientNotFound ex) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ErrorResponse(HttpStatus.NOT_FOUND.value(), ex.getMessage()));
+    }
+
+    @ExceptionHandler(ShopNotFoundException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public ResponseEntity<ErrorResponse> handleShopNotFound(ShopNotFoundException ex) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ErrorResponse(HttpStatus.NOT_FOUND.value(), ex.getMessage()));
+    }
+
+    @ExceptionHandler(BookNotFoundException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public ResponseEntity<ErrorResponse> handleBookNotFound(BookNotFoundException ex) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ErrorResponse(HttpStatus.NOT_FOUND.value(), ex.getMessage()));
+    }
+
+    @ExceptionHandler(ShopHasOrders.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ResponseEntity<ErrorResponse> handleShopHasOrders(ShopHasOrders ex) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ErrorResponse(HttpStatus.BAD_REQUEST.value(), ex.getMessage()));
     }
 }
