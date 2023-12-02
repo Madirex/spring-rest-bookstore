@@ -1,8 +1,7 @@
 package com.nullers.restbookstore.rest.category.services;
 
 
-import com.nullers.restbookstore.rest.book.dto.GetBookDTO;
-import com.nullers.restbookstore.rest.book.services.BookServiceImpl;
+import com.nullers.restbookstore.rest.book.repository.BookRepository;
 import com.nullers.restbookstore.rest.category.dto.CategoriaCreateDto;
 import com.nullers.restbookstore.rest.category.exceptions.CategoriaConflictException;
 import com.nullers.restbookstore.rest.category.exceptions.CategoriaNotFoundException;
@@ -13,7 +12,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheConfig;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
@@ -23,21 +21,20 @@ import java.util.UUID;
 
 @Service
 @CacheConfig(cacheNames = "categories")
-public class CategoriaServiceJpaImpl implements CategoriaServiceJpa{
+public class CategoriaServiceJpaImpl implements CategoriaServiceJpa {
 
     CategoriasRepositoryJpa repository;
-
-    BookServiceImpl bookService;
+    private final BookRepository bookRepository;
 
     @Autowired
-    public CategoriaServiceJpaImpl(CategoriasRepositoryJpa repository, BookServiceImpl bookService) {
+    public CategoriaServiceJpaImpl(CategoriasRepositoryJpa repository, BookRepository bookRepository) {
         this.repository = repository;
-        this.bookService = bookService;
+        this.bookRepository = bookRepository;
     }
 
     @Override
     @Cacheable
-    public Page<Categoria> getAll(Optional<String> nombre, Optional<Boolean> activa, Pageable pageable){
+    public Page<Categoria> getAll(Optional<String> nombre, Optional<Boolean> activa, Pageable pageable) {
         Specification<Categoria> specName = (((root, query, criteriaBuilder) -> nombre.map(value -> criteriaBuilder.like(root.get("nombre"), "%" + value + "%")).orElseGet(() -> criteriaBuilder.isTrue(criteriaBuilder.literal(true)))));
 
         Specification<Categoria> specActive = (((root, query, criteriaBuilder) -> activa.map(value -> criteriaBuilder.equal(root.get("activa"), value)).orElseGet(() -> criteriaBuilder.isTrue(criteriaBuilder.literal(true)))));
@@ -49,7 +46,7 @@ public class CategoriaServiceJpaImpl implements CategoriaServiceJpa{
     @Override
     @Cacheable(key = "#id")
     public Categoria getCategoriaById(UUID id) {
-    return repository.findById(id).orElseThrow(() -> new CategoriaNotFoundException(id));
+        return repository.findById(id).orElseThrow(() -> new CategoriaNotFoundException(id));
     }
 
     @Override
@@ -85,9 +82,8 @@ public class CategoriaServiceJpaImpl implements CategoriaServiceJpa{
     @Cacheable(key = "#id")
     public void deleteById(UUID id) {
         Categoria categoria = repository.findById(id).orElseThrow(() -> new CategoriaNotFoundException(id));
-        Page<GetBookDTO> book =  bookService.getAllBook(Optional.empty(), Optional.empty(), Optional.of(categoria.getNombre()), PageRequest.of(0, 10000));
-        if(!book.getContent().isEmpty()){
-            throw new CategoriaConflictException("No se puede eliminar la categoria porque tiene libros asociados");
+        if (!bookRepository.findByCategory_Nombre(categoria.getNombre()).isEmpty()) {
+            throw new CategoriaConflictException("No se puede eliminar la categoría porque tiene libros asociados");
         }
         repository.deleteById(id);
 
