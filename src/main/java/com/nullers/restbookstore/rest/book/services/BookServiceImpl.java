@@ -18,7 +18,7 @@ import com.nullers.restbookstore.rest.book.notification.BookNotificationResponse
 import com.nullers.restbookstore.rest.book.repository.BookRepository;
 import com.nullers.restbookstore.rest.category.exceptions.CategoriaNotFoundException;
 import com.nullers.restbookstore.rest.category.exceptions.CategoryInvalidID;
-import com.nullers.restbookstore.rest.category.model.Categoria;
+import com.nullers.restbookstore.rest.category.model.Category;
 import com.nullers.restbookstore.rest.category.repository.CategoriasRepositoryJpa;
 import com.nullers.restbookstore.rest.category.services.CategoriaServiceJpa;
 import com.nullers.restbookstore.rest.publisher.exceptions.PublisherIDNotValid;
@@ -192,7 +192,7 @@ public class BookServiceImpl implements BookService {
             PublisherNotFound, PublisherIDNotValid, BookNotFoundException {
         Book existingBook = bookRepository.findById(id)
                 .orElseThrow(() -> new BookNotFoundException("Book no encontrado"));
-        Categoria category = checkCategory(book.getCategory());
+        Category category = checkCategory(book.getCategory());
         var publisher = publisherMapper.toPublisher(publisherService.findById(book.getPublisherId()));
         Book f = bookMapperImpl.toBook(existingBook, book, publisher, category);
         f.setId(id);
@@ -328,9 +328,9 @@ public class BookServiceImpl implements BookService {
      * @param category nombre de la categoría
      * @return categoría
      */
-    public Categoria checkCategory(String category) {
+    public Category checkCategory(String category) {
         var res = categoriasRepositoryJpa.findByNombre(category);
-        if (res.isEmpty() || !res.get().isActiva()) {
+        if (res.isEmpty() || !res.get().getIsActive()) {
             throw new CategoriaNotFoundException("La categoría no existe o no esta activa");
         }
         return res.get();

@@ -58,7 +58,7 @@ public class Order {
     private LocalDateTime updatedAt = LocalDateTime.now();
 
     @Builder.Default
-    private boolean isDeleted = false;
+    private Boolean isDeleted = false;
 
     @JsonProperty("id")
     public String get_id() {

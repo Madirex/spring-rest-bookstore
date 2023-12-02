@@ -58,7 +58,7 @@ class ClientControllerTest {
             .country("USA")
             .province("Springfield")
             .number("123")
-            .PostalCode("12345")
+            .postalCode("12345")
             .build();
 
     private final Client clientTest = Client.builder()

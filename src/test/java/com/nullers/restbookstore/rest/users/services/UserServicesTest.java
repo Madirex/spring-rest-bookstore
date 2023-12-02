@@ -40,7 +40,7 @@ import static org.mockito.Mockito.*;
 class UserServicesTest {
     private final UserRequest userRequest = UserRequest.builder()
             .name("test")
-            .surnames("test")
+            .surname("test")
             .password("test")
             .username("test")
             .email("test@test.com")

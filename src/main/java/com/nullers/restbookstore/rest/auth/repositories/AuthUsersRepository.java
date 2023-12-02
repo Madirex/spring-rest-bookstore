@@ -15,6 +15,7 @@ import java.util.UUID;
 public interface AuthUsersRepository extends JpaRepository<User, UUID> {
     /**
      * Busca un usuario por su username
+     *
      * @param username username del usuario
      * @return Optional con el usuario encontrado
      */

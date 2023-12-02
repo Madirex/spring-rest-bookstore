@@ -4,12 +4,10 @@ import com.nullers.restbookstore.rest.book.model.Book;
 import com.nullers.restbookstore.rest.common.Address;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
-import jdk.dynalink.linker.LinkerServices;
 import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
 
 import java.time.LocalDateTime;
-import java.util.List;
 import java.util.UUID;
 
 /**
@@ -51,7 +49,6 @@ public class Client {
     private LocalDateTime createdAt;
 
     @NotNull(message = "La dirección no puede estar vacía")
-
     @Embedded
     private Address address;
 }

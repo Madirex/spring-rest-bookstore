@@ -1,6 +1,6 @@
 package com.nullers.restbookstore.rest.user.dto;
 
-import com.nullers.restbookstore.rest.user.models.Role;
+import com.nullers.restbookstore.rest.user.models.UserRole;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
@@ -22,11 +22,11 @@ import java.util.Set;
 @NoArgsConstructor
 @AllArgsConstructor
 public class UserRequest {
-    @NotBlank(message = "Nombre no puede estar vacío")
+    @NotBlank(message = "Name no puede estar vacío")
     private String name;
 
-    @NotBlank(message = "Apellidos no puede estar vacío")
-    private String surnames;
+    @NotBlank(message = "Surname no puede estar vacío")
+    private String surname;
 
     @NotBlank(message = "Username no puede estar vacío")
     private String username;
@@ -41,7 +41,7 @@ public class UserRequest {
     private String password;
 
     @Builder.Default
-    private Set<Role> roles = Set.of(Role.USER);
+    private Set<UserRole> userRoles = Set.of(UserRole.USER);
 
     @Builder.Default
     private Boolean isDeleted = false;

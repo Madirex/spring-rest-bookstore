@@ -1,8 +1,8 @@
 package com.nullers.restbookstore.rest.user.controller;
 
-import com.nullers.restbookstore.pagination.exceptions.PageNotValidException;
 import com.nullers.restbookstore.pagination.models.PageResponse;
 import com.nullers.restbookstore.pagination.util.PaginationLinksUtils;
+import com.nullers.restbookstore.rest.common.PageableRequest;
 import com.nullers.restbookstore.rest.user.dto.UserInfoResponse;
 import com.nullers.restbookstore.rest.user.dto.UserRequest;
 import com.nullers.restbookstore.rest.user.dto.UserResponse;
@@ -32,8 +32,8 @@ import java.util.UUID;
  */
 @RestController
 @Slf4j
-@RequestMapping("/api/users") // Es la ruta del controlador
-@PreAuthorize("hasRole('USER')") // Solo los administradores pueden acceder a este controlador
+@RequestMapping("/api/users")
+@PreAuthorize("hasRole('USER')")
 public class UserController {
     /**
      * Servicio de usuarios
@@ -45,7 +45,7 @@ public class UserController {
      * Constructor de la clase
      *
      * @param userService          Servicio de usuarios
-     * @param paginationLinksUtils
+     * @param paginationLinksUtils Utilidad para crear los links de paginación
      */
     @Autowired
     public UserController(UserService userService, PaginationLinksUtils paginationLinksUtils) {
@@ -56,13 +56,10 @@ public class UserController {
     /**
      * Obtiene todos los usuarios
      *
-     * @param username  Nombre de usuario
-     * @param email     Email del usuario
-     * @param isDeleted Si el usuario está borrado
-     * @param page      Página
-     * @param size      Tamaño de la página
-     * @param sortBy    Campo por el que ordenar
-     * @param direction Dirección de la ordenación
+     * @param username        Nombre de usuario
+     * @param email           Email del usuario
+     * @param isDeleted       Si el usuario está borrado
+     * @param pageableRequest Objeto PageableRequest con los parámetros de paginación
      * @return Lista de usuarios
      */
     @GetMapping
@@ -71,21 +68,19 @@ public class UserController {
             @RequestParam(required = false) Optional<String> username,
             @RequestParam(required = false) Optional<String> email,
             @RequestParam(required = false) Optional<Boolean> isDeleted,
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size,
-            @RequestParam(defaultValue = "id") String sortBy,
-            @RequestParam(defaultValue = "asc") String direction,
+            @Valid PageableRequest pageableRequest,
             HttpServletRequest request
     ) {
-        if (page < 0 || size < 1) {
-            throw new PageNotValidException("La página no puede ser menor que 0 y su tamaño no debe de ser menor a 1.");
-        }
-        Sort sort = direction.equalsIgnoreCase(Sort.Direction.ASC.name()) ? Sort.by(sortBy).ascending() : Sort.by(sortBy).descending();
+        String orderBy = pageableRequest.getOrderBy();
+        String order = pageableRequest.getOrder();
+        Integer page = pageableRequest.getPage();
+        Integer size = pageableRequest.getSize();
+        Sort sort = order.equalsIgnoreCase(Sort.Direction.ASC.name()) ? Sort.by(orderBy).ascending() : Sort.by(orderBy).descending();
         UriComponentsBuilder uriBuilder = UriComponentsBuilder.fromHttpUrl(request.getRequestURL().toString());
         Page<UserResponse> pageResult = usersService.findAll(username, email, isDeleted, PageRequest.of(page, size, sort));
         return ResponseEntity.ok()
                 .header("link", paginationLinksUtils.createLinkHeader(pageResult, uriBuilder))
-                .body(PageResponse.of(pageResult, sortBy, direction));
+                .body(PageResponse.of(pageResult, orderBy, order));
 
     }
 
@@ -169,7 +164,6 @@ public class UserController {
     @PreAuthorize("hasRole('USER')")
     public ResponseEntity<UserInfoResponse> me(@AuthenticationPrincipal User user) {
         log.info("Obteniendo usuario");
-        // Esta autenticado, por lo que devolvemos sus datos ya sabemos su id
         return ResponseEntity.ok(usersService.findById(user.getId()));
     }
 

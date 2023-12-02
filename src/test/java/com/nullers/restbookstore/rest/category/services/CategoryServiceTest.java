@@ -6,7 +6,7 @@ import com.nullers.restbookstore.rest.book.services.BookServiceImpl;
 import com.nullers.restbookstore.rest.category.exceptions.CategoriaConflictException;
 import com.nullers.restbookstore.rest.category.exceptions.CategoriaNotFoundException;
 import com.nullers.restbookstore.rest.category.mappers.CategoriaCreateMapper;
-import com.nullers.restbookstore.rest.category.model.Categoria;
+import com.nullers.restbookstore.rest.category.model.Category;
 import com.nullers.restbookstore.rest.category.repository.CategoriasRepositoryJpa;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -25,7 +25,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-public class CategoriaServiceTest {
+public class CategoryServiceTest {
 
     @Mock
     private CategoriasRepositoryJpa repository;
@@ -36,29 +36,29 @@ public class CategoriaServiceTest {
     @InjectMocks
     private CategoriaServiceJpaImpl service;
 
-    Categoria categoria1 = Categoria.builder()
+    Category category1 = Category.builder()
             .id(UUID.fromString("3930e05a-7ebf-4aa1-8aa8-5d7466fa9734"))
-            .nombre("categoria 1")
-            .activa(true)
+            .name("categoria 1")
+            .isActive(true)
             .build();
 
-    Categoria categoria2 = Categoria.builder()
+    Category category2 = Category.builder()
             .id(UUID.fromString("3930e05a-7ebf-4aa1-8aa8-5d7466fa9735"))
-            .nombre("categoria 2")
-            .activa(true)
+            .name("categoria 2")
+            .isActive(true)
             .build();
 
     @Test
     void getAll_ShoulReturnAllBooksWithoutParamsPageable(){
-        List<Categoria> expectedCategorias = List.of(categoria1, categoria2);
+        List<Category> expectedCategories = List.of(category1, category2);
 
         Pageable pageable = PageRequest.of(0, 10, Sort.by("id").ascending());
 
-        Page<Categoria> expectedPage = new PageImpl(expectedCategorias);
+        Page<Category> expectedPage = new PageImpl(expectedCategories);
 
         when(repository.findAll(any(Specification.class), any(Pageable.class))).thenReturn(expectedPage);
 
-        Page<Categoria> result = service.getAll(Optional.empty(), Optional.empty(), pageable);
+        Page<Category> result = service.getAll(Optional.empty(), Optional.empty(), pageable);
 
         assertAll(
                 () -> assertNotNull(result),
@@ -67,25 +67,25 @@ public class CategoriaServiceTest {
                 () -> assertEquals(expectedPage.getNumber(), result.getNumber()),
                 () -> assertEquals(expectedPage.getNumberOfElements(), result.getNumberOfElements()),
                 () -> assertEquals(expectedPage.getSize(), result.getSize()),
-                () -> assertEquals(expectedPage.getContent().get(0).getNombre(), result.getContent().get(0).getNombre()),
-                () -> assertEquals(expectedPage.getContent().get(0).isActiva(), result.getContent().get(0).isActiva()),
-                () -> assertEquals(expectedPage.getContent().get(1).getNombre(), result.getContent().get(1).getNombre()),
-                () -> assertEquals(expectedPage.getContent().get(1).isActiva(), result.getContent().get(1).isActiva())
+                () -> assertEquals(expectedPage.getContent().get(0).getName(), result.getContent().get(0).getName()),
+                () -> assertEquals(expectedPage.getContent().get(0).getIsActive(), result.getContent().get(0).getIsActive()),
+                () -> assertEquals(expectedPage.getContent().get(1).getName(), result.getContent().get(1).getName()),
+                () -> assertEquals(expectedPage.getContent().get(1).getIsActive(), result.getContent().get(1).getIsActive())
         );
 
     }
 
     @Test
     void getAll_ShoulReturnAllBooksNameParamPageable(){
-        List<Categoria> expectedCategorias = List.of(categoria1);
+        List<Category> expectedCategories = List.of(category1);
 
         Pageable pageable = PageRequest.of(0, 10, Sort.by("id").ascending());
 
-        Page<Categoria> expectedPage = new PageImpl(expectedCategorias);
+        Page<Category> expectedPage = new PageImpl(expectedCategories);
 
         when(repository.findAll(any(Specification.class), any(Pageable.class))).thenReturn(expectedPage);
 
-        Page<Categoria> result = service.getAll(Optional.of("categoria 1"), Optional.empty(), pageable);
+        Page<Category> result = service.getAll(Optional.of("categoria 1"), Optional.empty(), pageable);
 
         assertAll(
                 () -> assertNotNull(result),
@@ -94,22 +94,22 @@ public class CategoriaServiceTest {
                 () -> assertEquals(expectedPage.getNumber(), result.getNumber()),
                 () -> assertEquals(expectedPage.getNumberOfElements(), result.getNumberOfElements()),
                 () -> assertEquals(expectedPage.getSize(), result.getSize()),
-                () -> assertEquals(categoria1.getNombre(), result.getContent().get(0).getNombre()),
-                () -> assertEquals(categoria1.isActiva(), result.getContent().get(0).isActiva())
+                () -> assertEquals(category1.getName(), result.getContent().get(0).getName()),
+                () -> assertEquals(category1.getIsActive(), result.getContent().get(0).getIsActive())
         );
     }
 
     @Test
     void getAll_ShoulReturnAllBooksActivaParamPageable(){
-        List<Categoria> expectedCategorias = List.of(categoria1);
+        List<Category> expectedCategories = List.of(category1);
 
         Pageable pageable = PageRequest.of(0, 10, Sort.by("id").ascending());
 
-        Page<Categoria> expectedPage = new PageImpl(expectedCategorias);
+        Page<Category> expectedPage = new PageImpl(expectedCategories);
 
         when(repository.findAll(any(Specification.class), any(Pageable.class))).thenReturn(expectedPage);
 
-        Page<Categoria> result = service.getAll(Optional.empty(), Optional.of(true), pageable);
+        Page<Category> result = service.getAll(Optional.empty(), Optional.of(true), pageable);
 
         assertAll(
                 () -> assertNotNull(result),
@@ -118,22 +118,22 @@ public class CategoriaServiceTest {
                 () -> assertEquals(expectedPage.getNumber(), result.getNumber()),
                 () -> assertEquals(expectedPage.getNumberOfElements(), result.getNumberOfElements()),
                 () -> assertEquals(expectedPage.getSize(), result.getSize()),
-                () -> assertEquals(categoria1.getNombre(), result.getContent().get(0).getNombre()),
-                () -> assertEquals(categoria1.isActiva(), result.getContent().get(0).isActiva())
+                () -> assertEquals(category1.getName(), result.getContent().get(0).getName()),
+                () -> assertEquals(category1.getIsActive(), result.getContent().get(0).getIsActive())
         );
     }
 
     @Test
     void getAll_ShoulReturnAllBooksActivaFalseParamPageable(){
-        List<Categoria> expectedCategorias = List.of();
+        List<Category> expectedCategories = List.of();
 
         Pageable pageable = PageRequest.of(0, 10, Sort.by("id").ascending());
 
-        Page<Categoria> expectedPage = new PageImpl(expectedCategorias);
+        Page<Category> expectedPage = new PageImpl(expectedCategories);
 
         when(repository.findAll(any(Specification.class), any(Pageable.class))).thenReturn(expectedPage);
 
-        Page<Categoria> result = service.getAll(Optional.empty(), Optional.of(false), pageable);
+        Page<Category> result = service.getAll(Optional.empty(), Optional.of(false), pageable);
 
         assertAll(
                 () -> assertNotNull(result),
@@ -147,14 +147,14 @@ public class CategoriaServiceTest {
 
     @Test
     void getCategoriaById(){
-        when(repository.findById(UUID.fromString("3930e05a-7ebf-4aa1-8aa8-5d7466fa9734"))).thenReturn(Optional.of(categoria1));
+        when(repository.findById(UUID.fromString("3930e05a-7ebf-4aa1-8aa8-5d7466fa9734"))).thenReturn(Optional.of(category1));
 
         var categoria = service.getCategoriaById(UUID.fromString("3930e05a-7ebf-4aa1-8aa8-5d7466fa9734"));
 
         assertAll(
                 () -> assertNotNull(categoria),
-                () -> assertEquals(categoria1.getNombre(), categoria.getNombre()),
-                () -> assertEquals(categoria1.isActiva(), categoria.isActiva())
+                () -> assertEquals(category1.getName(), categoria.getName()),
+                () -> assertEquals(category1.getIsActive(), categoria.getIsActive())
         );
     }
 
@@ -168,14 +168,14 @@ public class CategoriaServiceTest {
 
     @Test
     void getCategoriaByNombre(){
-        when(repository.findByNombre("categoria 1")).thenReturn(Optional.of(categoria1));
+        when(repository.findByNombre("categoria 1")).thenReturn(Optional.of(category1));
 
         var categoria = service.getCategoriaByNombre("categoria 1");
 
         assertAll(
                 () -> assertNotNull(categoria),
-                () -> assertEquals(categoria1.getNombre(), categoria.getNombre()),
-                () -> assertEquals(categoria1.isActiva(), categoria.isActiva())
+                () -> assertEquals(category1.getName(), categoria.getName()),
+                () -> assertEquals(category1.getIsActive(), categoria.getIsActive())
         );
     }
 
@@ -189,39 +189,39 @@ public class CategoriaServiceTest {
 
     @Test
     void createCategoria(){
-        when(repository.save(any(Categoria.class))).thenReturn(categoria1);
+        when(repository.save(any(Category.class))).thenReturn(category1);
         when(repository.findByNombre("categoria 1")).thenReturn(Optional.empty());
 
-        var categoria = service.createCategoria(CategoriaCreateMapper.toDto(categoria1));
+        var categoria = service.createCategoria(CategoriaCreateMapper.toDto(category1));
 
         assertAll(
                 () -> assertNotNull(categoria),
-                () -> assertEquals(categoria1.getNombre(), categoria.getNombre()),
-                () -> assertEquals(categoria1.isActiva(), categoria.isActiva())
+                () -> assertEquals(category1.getName(), categoria.getName()),
+                () -> assertEquals(category1.getIsActive(), categoria.getIsActive())
         );
     }
 
     @Test
     void createCategoriaConflict(){
-        when(repository.findByNombre("categoria 1")).thenReturn(Optional.of(categoria1));
+        when(repository.findByNombre("categoria 1")).thenReturn(Optional.of(category1));
 
 
-        var res = assertThrows(CategoriaConflictException.class, () -> service.createCategoria(CategoriaCreateMapper.toDto(categoria1)));
+        var res = assertThrows(CategoriaConflictException.class, () -> service.createCategoria(CategoriaCreateMapper.toDto(category1)));
         assertEquals("Ya existe una categoria con el nombre: categoria 1", res.getMessage());
     }
 
     @Test
     void updateCategoria(){
-        when(repository.save(any(Categoria.class))).thenReturn(categoria1);
-        when(repository.findById(UUID.fromString("3930e05a-7ebf-4aa1-8aa8-5d7466fa9734"))).thenReturn(Optional.of(categoria1));
+        when(repository.save(any(Category.class))).thenReturn(category1);
+        when(repository.findById(UUID.fromString("3930e05a-7ebf-4aa1-8aa8-5d7466fa9734"))).thenReturn(Optional.of(category1));
         when(repository.findByNombre("categoria 1")).thenReturn(Optional.empty());
 
-        var categoria = service.updateCategoria(UUID.fromString("3930e05a-7ebf-4aa1-8aa8-5d7466fa9734"), CategoriaCreateMapper.toDto(categoria1));
+        var categoria = service.updateCategoria(UUID.fromString("3930e05a-7ebf-4aa1-8aa8-5d7466fa9734"), CategoriaCreateMapper.toDto(category1));
 
         assertAll(
                 () -> assertNotNull(categoria),
-                () -> assertEquals(categoria1.getNombre(), categoria.getNombre()),
-                () -> assertEquals(categoria1.isActiva(), categoria.isActiva())
+                () -> assertEquals(category1.getName(), categoria.getName()),
+                () -> assertEquals(category1.getIsActive(), categoria.getIsActive())
         );
     }
 
@@ -229,27 +229,27 @@ public class CategoriaServiceTest {
     void updateCategoriaNotFound(){
         when(repository.findById(UUID.fromString("3930e05a-7ebf-4aa1-8aa8-999966fa9734"))).thenReturn(Optional.empty());
 
-        var res = assertThrows(CategoriaNotFoundException.class, () -> service.updateCategoria(UUID.fromString("3930e05a-7ebf-4aa1-8aa8-999966fa9734"), CategoriaCreateMapper.toDto(categoria1)));
+        var res = assertThrows(CategoriaNotFoundException.class, () -> service.updateCategoria(UUID.fromString("3930e05a-7ebf-4aa1-8aa8-999966fa9734"), CategoriaCreateMapper.toDto(category1)));
         assertEquals("Categoria con id 3930e05a-7ebf-4aa1-8aa8-999966fa9734 no encontrada", res.getMessage());
     }
 
     @Test
     void updateCategoriaConflict(){
-        when(repository.findById(UUID.fromString("3930e05a-7ebf-4aa1-8aa8-5d7466fa9734"))).thenReturn(Optional.of(categoria1));
-        when(repository.findByNombre("categoria 1")).thenReturn(Optional.of(categoria2));
+        when(repository.findById(UUID.fromString("3930e05a-7ebf-4aa1-8aa8-5d7466fa9734"))).thenReturn(Optional.of(category1));
+        when(repository.findByNombre("categoria 1")).thenReturn(Optional.of(category2));
 
-        var res = assertThrows(CategoriaConflictException.class, () -> service.updateCategoria(UUID.fromString("3930e05a-7ebf-4aa1-8aa8-5d7466fa9734"), CategoriaCreateMapper.toDto(categoria1)));
+        var res = assertThrows(CategoriaConflictException.class, () -> service.updateCategoria(UUID.fromString("3930e05a-7ebf-4aa1-8aa8-5d7466fa9734"), CategoriaCreateMapper.toDto(category1)));
         assertEquals("Ya existe una categoria con el nombre: categoria 1", res.getMessage());
     }
 
     @Test
     void deleteCategoriaWithBooks(){
-        List<Categoria> expectedCategorias = List.of(categoria1);
+        List<Category> expectedCategories = List.of(category1);
 
         Pageable pageable = PageRequest.of(0, 10, Sort.by("id").ascending());
 
-        Page<Categoria> expectedPage = new PageImpl(expectedCategorias);
-        when(repository.findById(UUID.fromString("3930e05a-7ebf-4aa1-8aa8-5d7466fa9734"))).thenReturn(Optional.of(categoria1));
+        Page<Category> expectedPage = new PageImpl(expectedCategories);
+        when(repository.findById(UUID.fromString("3930e05a-7ebf-4aa1-8aa8-5d7466fa9734"))).thenReturn(Optional.of(category1));
         when(bookService.getAllBook(any(Optional.class),any(Optional.class),any(Optional.class), any(PageRequest.class))).thenReturn(expectedPage);
 
         var res = assertThrows(CategoriaConflictException.class, () -> service.deleteById(UUID.fromString("3930e05a-7ebf-4aa1-8aa8-5d7466fa9734")));
@@ -272,7 +272,7 @@ public class CategoriaServiceTest {
         Pageable pageable = PageRequest.of(0, 10, Sort.by("id").ascending());
 
         Page<GetBookDTO> expectedPage = new PageImpl(expectedbooks);
-        when(repository.findById(UUID.fromString("3930e05a-7ebf-4aa1-8aa8-5d7466fa9734"))).thenReturn(Optional.of(categoria1));
+        when(repository.findById(UUID.fromString("3930e05a-7ebf-4aa1-8aa8-5d7466fa9734"))).thenReturn(Optional.of(category1));
         when(bookService.getAllBook(any(Optional.class),any(Optional.class),any(Optional.class), any(PageRequest.class))).thenReturn(expectedPage);
 
         service.deleteById(UUID.fromString("3930e05a-7ebf-4aa1-8aa8-5d7466fa9734"));

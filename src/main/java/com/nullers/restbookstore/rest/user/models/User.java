@@ -39,7 +39,7 @@ public class User implements UserDetails {
     private String name;
     @NotBlank(message = "El apellido no puede estar vacío")
     @Column(nullable = false)
-    private String surnames;
+    private String surname;
     @NotBlank(message = "El nombre de usuario no puede estar vacío")
     @Column(nullable = false, unique = true)
     private String username;
@@ -59,34 +59,65 @@ public class User implements UserDetails {
     @Builder.Default
     private Boolean isDeleted = false;
     @Enumerated(EnumType.STRING)
-    private Set<Role> roles;
+    private Set<UserRole> userRoles;
 
+    /**
+     * Retorna los roles del usuario
+     *
+     * @return roles del usuario
+     */
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return roles.stream()
+        return userRoles.stream()
                 .map(role -> new SimpleGrantedAuthority("ROLE_" + role.name()))
                 .collect(Collectors.toSet());
     }
 
+    /**
+     * Retorna la clave primaria (username)
+     *
+     * @return username
+     */
     @Override
-    public String getUsername(){
+    public String getUsername() {
         return username;
     }
+
+    /**
+     * Comprueba si la cuenta del usuario ha expirado
+     *
+     * @return true si no ha expirado, false si lo ha hecho
+     */
     @Override
     public boolean isAccountNonExpired() {
         return true;
     }
 
+    /**
+     * Comprueba si la cuenta del usuario está bloqueada
+     *
+     * @return true si no está bloqueada, false si lo está
+     */
     @Override
     public boolean isAccountNonLocked() {
         return true;
     }
 
+    /**
+     * Comprueba si las credenciales del usuario han expirado
+     *
+     * @return true si no han expirado, false si lo han hecho
+     */
     @Override
     public boolean isCredentialsNonExpired() {
         return true;
     }
 
+    /**
+     * Comprueba si el usuario está borrado
+     *
+     * @return true si no está borrado, false si lo está
+     */
     @Override
     public boolean isEnabled() {
         return !isDeleted;

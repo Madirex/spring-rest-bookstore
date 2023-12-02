@@ -4,7 +4,7 @@ import com.nullers.restbookstore.rest.book.dto.CreateBookDTO;
 import com.nullers.restbookstore.rest.book.dto.GetBookDTO;
 import com.nullers.restbookstore.rest.book.dto.UpdateBookDTO;
 import com.nullers.restbookstore.rest.book.model.Book;
-import com.nullers.restbookstore.rest.category.model.Categoria;
+import com.nullers.restbookstore.rest.category.model.Category;
 import com.nullers.restbookstore.rest.publisher.dto.PublisherData;
 import com.nullers.restbookstore.rest.publisher.model.Publisher;
 import org.springframework.stereotype.Component;
@@ -72,7 +72,7 @@ public class BookMapperImpl implements BookMapper {
      * @param category  Categoría a mapear
      * @return Book mapeado
      */
-    public Book toBook(CreateBookDTO dto, Publisher publisher, Categoria category) {
+    public Book toBook(CreateBookDTO dto, Publisher publisher, Category category) {
         return Book.builder()
                 .name(dto.getName())
                 .author(dto.getAuthor())
@@ -121,7 +121,7 @@ public class BookMapperImpl implements BookMapper {
      * @param category  Categoría a mapear
      * @return Book mapeado
      */
-    public Book toBook(Book book, UpdateBookDTO dto, Publisher publisher, Categoria category) {
+    public Book toBook(Book book, UpdateBookDTO dto, Publisher publisher, Category category) {
         return Book.builder()
                 .id(book.getId())
                 .name(dto.getName())
@@ -156,7 +156,7 @@ public class BookMapperImpl implements BookMapper {
                 .createdAt(book.getCreatedAt())
                 .updatedAt(book.getUpdatedAt())
                 .active(book.getActive())
-                .category(book.getCategory().getNombre())
+                .category(book.getCategory().getName())
                 .stock(book.getStock())
                 .build();
     }
@@ -178,7 +178,7 @@ public class BookMapperImpl implements BookMapper {
                 .createdAt(book.getCreatedAt())
                 .updatedAt(book.getUpdatedAt())
                 .active(book.getActive())
-                .category(book.getCategory().getNombre())
+                .category(book.getCategory().getName())
                 .stock(book.getStock())
                 .build();
     }

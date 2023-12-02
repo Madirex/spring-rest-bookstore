@@ -11,7 +11,8 @@ import com.nullers.restbookstore.rest.auth.dto.UserSignUpRequest;
  */
 public interface AuthenticationService {
     /**
-     *  Registrar usuario
+     * Registrar usuario
+     *
      * @param request UserSignUpRequest
      * @return JwtAuthResponse con token
      */
@@ -19,6 +20,7 @@ public interface AuthenticationService {
 
     /**
      * Iniciar sesión de usuario
+     *
      * @param request UserSignInRequest
      * @return JwtAuthResponse con token
      */

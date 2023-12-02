@@ -6,11 +6,16 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 /**
  * Exception para cuando el usuario no existe
  *
- * @Autor: Binwei Wang
+ * @Author Binwei Wang
  */
 @ResponseStatus(HttpStatus.BAD_REQUEST)
-public class UserDiferentePasswords extends AuthException {
-    public UserDiferentePasswords(String message) {
+public class UserPasswordsDiffers extends AuthException {
+    /**
+     * Constructor
+     *
+     * @param message Mensaje de error
+     */
+    public UserPasswordsDiffers(String message) {
         super(message);
     }
 }

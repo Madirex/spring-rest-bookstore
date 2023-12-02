@@ -19,7 +19,7 @@ import java.util.function.Function;
  * @Author Binwei Wang
  */
 @Service
-public class JwtServiceImp implements JwtService {
+public class JwtServiceImpl implements JwtService {
     /**
      * Atributos de configuración de JWT
      */
@@ -30,16 +30,18 @@ public class JwtServiceImp implements JwtService {
 
     /**
      * Extrae el nombre de usuario del token
+     *
      * @param token jwt token de autenticación
      * @return nombre de usuario
      */
     @Override
     public String extractUserName(String token) {
-        return extractClaim(token,DecodedJWT::getSubject);
+        return extractClaim(token, DecodedJWT::getSubject);
     }
 
     /**
      * Genera un token de autenticación
+     *
      * @param userDetails username y password
      * @return jwt token
      */
@@ -50,7 +52,8 @@ public class JwtServiceImp implements JwtService {
 
     /**
      * Genera un token de autenticación con claims extra
-     * @param token jwt token
+     *
+     * @param token       jwt token
      * @param userDetails user details
      * @return jwt token
      */
@@ -62,6 +65,7 @@ public class JwtServiceImp implements JwtService {
 
     /**
      * Verifica si el token ha expirado
+     *
      * @param token jwt token
      * @return true si el token ha expirado
      */
@@ -72,19 +76,21 @@ public class JwtServiceImp implements JwtService {
 
     /**
      * Extrae la fecha de expiración del token
+     *
      * @param token jwt token
      * @return fecha de expiración
      */
     private Date extractExpiration(String token) {
-        return extractClaim(token,DecodedJWT::getExpiresAt);
+        return extractClaim(token, DecodedJWT::getExpiresAt);
     }
 
     /**
      * Extrae un claim del token
-     * @param token jwt token
+     *
+     * @param token          jwt token
      * @param claimsResolver función que extrae el claim
+     * @param <T>            tipo de dato del claim
      * @return claim extraído
-     * @param <T> tipo de dato del claim
      */
     private <T> T extractClaim(String token, Function<DecodedJWT, T> claimsResolver) {
         final DecodedJWT jwt = JWT.decode(token);
@@ -93,35 +99,38 @@ public class JwtServiceImp implements JwtService {
 
     /**
      * Genera un token de autenticación
+     *
      * @param extraClaims claims extra
      * @param userDetails username y password
      * @return jwt token
      */
-    private String generateToken(HashMap<String,Object> extraClaims, UserDetails userDetails) {
+    private String generateToken(HashMap<String, Object> extraClaims, UserDetails userDetails) {
         Algorithm algorithm = Algorithm.HMAC512(getSigningKey());
         Date now = new Date();
-        Date expiration = new Date(now.getTime() + (1000*jwtExpiration));
+        Date expiration = new Date(now.getTime() + (1000 * jwtExpiration));
         return JWT.create()
                 .withHeader(createHeader())
                 .withSubject(userDetails.getUsername())
                 .withIssuedAt(now)
                 .withExpiresAt(expiration)
-                .withClaim("extra",extraClaims)
+                .withClaim("extra", extraClaims)
                 .sign(algorithm);
     }
 
     /**
      * Crea el header del token
+     *
      * @return header
      */
-    private Map<String,Object> createHeader() {
-        Map<String,Object> header = new HashMap<>();
-        header.put("typ","JWT");
+    private Map<String, Object> createHeader() {
+        Map<String, Object> header = new HashMap<>();
+        header.put("typ", "JWT");
         return header;
     }
 
     /**
      * Obtiene la llave de firma
+     *
      * @return llave de firma
      */
     private byte[] getSigningKey() {

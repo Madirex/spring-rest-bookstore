@@ -42,7 +42,7 @@ public class UserServiceImpl implements UserService {
      *
      * @param userRepository repositorio de usuarios
      * @param userMapper     mapper de usuarios
-     * @param passwordEncode
+     * @param passwordEncode encoder de contraseñas
      */
     public UserServiceImpl(UserRepository userRepository, UserMapper userMapper, PasswordEncoder passwordEncode) {
         this.userRepository = userRepository;
@@ -146,7 +146,7 @@ public class UserServiceImpl implements UserService {
     /**
      * Actualiza parcialmente un usuario en la base de datos
      *
-     * @param id          ID del usuario a actualizar
+     * @param id          Id del usuario a actualizar
      * @param userRequest Usuario a actualizar parcialmente
      * @return Usuario actualizado parcialmente
      */

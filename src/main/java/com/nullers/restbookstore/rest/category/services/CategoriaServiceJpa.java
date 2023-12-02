@@ -2,7 +2,7 @@ package com.nullers.restbookstore.rest.category.services;
 
 
 import com.nullers.restbookstore.rest.category.dto.CategoriaCreateDto;
-import com.nullers.restbookstore.rest.category.model.Categoria;
+import com.nullers.restbookstore.rest.category.model.Category;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -11,16 +11,16 @@ import java.util.UUID;
 
 public interface CategoriaServiceJpa {
 
-    Page<Categoria> getAll(Optional<String> nombre, Optional<Boolean> activa, Pageable pageable);
+    Page<Category> getAll(Optional<String> nombre, Optional<Boolean> activa, Pageable pageable);
 
-    Categoria getCategoriaById(UUID id);
+    Category getCategoriaById(UUID id);
 
-    Categoria updateCategoria(UUID id, CategoriaCreateDto categoriaCreateDto);
+    Category updateCategoria(UUID id, CategoriaCreateDto categoriaCreateDto);
 
     void deleteById(UUID categoria);
 
-    Categoria getCategoriaByNombre(String nombre);
+    Category getCategoriaByNombre(String nombre);
 
-    Categoria createCategoria(CategoriaCreateDto categoriaCreateDto);
+    Category createCategoria(CategoriaCreateDto categoriaCreateDto);
 
 }

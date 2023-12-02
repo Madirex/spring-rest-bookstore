@@ -19,6 +19,7 @@ public class AuthUsersServiceImp implements AuthUsersService {
 
     /**
      * Constructor for AuthUsersServiceImp
+     *
      * @param authUsersRepository AuthUsersRepository
      */
 
@@ -29,6 +30,7 @@ public class AuthUsersServiceImp implements AuthUsersService {
 
     /**
      * loadUserByUsername
+     *
      * @param username Nombre de usuario
      * @return UserDetails
      */
