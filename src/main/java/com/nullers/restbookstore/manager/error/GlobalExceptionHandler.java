@@ -3,7 +3,11 @@ package com.nullers.restbookstore.manager.error;
 import com.mongodb.MongoTimeoutException;
 import com.nullers.restbookstore.pagination.exceptions.PageNotValidException;
 import com.nullers.restbookstore.pagination.models.ErrorResponse;
+import com.nullers.restbookstore.rest.book.exceptions.BookNotFoundException;
 import com.nullers.restbookstore.rest.category.exceptions.CategoryNotFoundException;
+import com.nullers.restbookstore.rest.client.exceptions.ClientNotFound;
+import com.nullers.restbookstore.rest.shop.exceptions.ShopHasOrders;
+import com.nullers.restbookstore.rest.shop.exceptions.ShopNotFoundException;
 import jakarta.servlet.http.HttpServletRequest;
 import org.apache.tomcat.util.http.fileupload.impl.FileSizeLimitExceededException;
 import org.springframework.data.mapping.PropertyReferenceException;
@@ -107,6 +111,59 @@ public class GlobalExceptionHandler {
 //                ,getCurrentHttpRequest().getRequestURI() //TODO: Agregar URI
         );
         return ResponseEntity.status(HttpStatus.REQUEST_TIMEOUT).body(errorResponse);
+    }
+
+    /**
+     * Excepciones de Shop
+     *
+     * @param ex Excepción
+     * @return ResponseEntity con el código de estado
+     */
+    @ExceptionHandler(ShopNotFoundException.class)
+    public ResponseEntity<ErrorResponse> handleException(ShopNotFoundException ex) {
+        var errorResponse = new ErrorResponse(
+                HttpStatus.NOT_FOUND.value(),
+                ex.getMessage()
+//                ,getCurrentHttpRequest().getRequestURI() //TODO: Agregar URI
+        );
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorResponse);
+    }
+
+    /**
+     * Excepciones de Shop
+     *
+     * @param ex Excepción
+     * @return ResponseEntity con el código de estado
+     */
+    @ExceptionHandler(ShopHasOrders.class)
+    public ResponseEntity<ErrorResponse> handleException(ShopHasOrders ex) {
+        var errorResponse = new ErrorResponse(
+                HttpStatus.BAD_REQUEST.value(),
+                ex.getMessage()
+//                ,getCurrentHttpRequest().getRequestURI() //TODO: Agregar URI
+        );
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
+    }
+
+
+    @ExceptionHandler(ClientNotFound.class)
+    public ResponseEntity<ErrorResponse> handleException(ClientNotFound ex) {
+        var errorResponse = new ErrorResponse(
+                HttpStatus.NOT_FOUND.value(),
+                ex.getMessage()
+//                ,getCurrentHttpRequest().getRequestURI() //TODO: Agregar URI
+        );
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorResponse);
+    }
+
+    @ExceptionHandler(BookNotFoundException.class)
+    public ResponseEntity<ErrorResponse> handleException(BookNotFoundException ex) {
+        var errorResponse = new ErrorResponse(
+                HttpStatus.NOT_FOUND.value(),
+                ex.getMessage()
+//                ,getCurrentHttpRequest().getRequestURI() //TODO: Agregar URI
+        );
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorResponse);
     }
 
     /**

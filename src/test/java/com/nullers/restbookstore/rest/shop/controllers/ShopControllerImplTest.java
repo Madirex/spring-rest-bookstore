@@ -1053,7 +1053,7 @@ class ShopControllerImplTest {
 
     @Test
     void removeClientFromShop_ShouldReturnShopNotFound() throws Exception {
-        when(service.removeClientFromShop(any(UUID.class), any(UUID.class))).thenThrow(new ShopNotFoundException("Tienda no encontrada con ID: " + shop.getId()));
+        when(service.removeClientFromShop(any(UUID.class), any(UUID.class))).thenThrow(new ShopNotFoundException(shop.getId().toString()));
 
         MockHttpServletResponse response = mockMvc.perform(
                 delete(endpoint + "/{id}/clients/{clientId}", shop.getId(), clientTest.getId())
@@ -1065,7 +1065,7 @@ class ShopControllerImplTest {
 
         assertAll(
                 () -> assertEquals(404, response.getStatus()),
-                () -> assertEquals("Tienda no encontrada - " + "Tienda no encontrada con ID: " + shop.getId(), errorResponse.msg())
+                () -> assertEquals("Tienda no encontrada - " + shop.getId(), errorResponse.msg())
         );
 
         verify(service, times(1)).removeClientFromShop(any(UUID.class), any(UUID.class));
