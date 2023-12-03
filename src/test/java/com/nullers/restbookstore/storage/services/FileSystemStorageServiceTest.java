@@ -30,7 +30,7 @@ class FileSystemStorageServiceTest {
     private Path rootLocation;
 
     @InjectMocks
-    private final FileSystemStorageService fileSystemStorageService = new FileSystemStorageService("books-images");
+    private final FileSystemStorageService fileSystemStorageService = new FileSystemStorageService("test-images");
 
     byte[] bytesPNG = { (byte) 137, (byte) 80, (byte) 78, (byte) 71, 13, 10, 26, 10, 0, 0, 0, 13, 73, 72, 68, 82,
             0, 0, 0, 1, 0, 0, 0, 1, 8, 6, 0, 0, 0, 31, 21, (byte) -60, (byte) -60,
