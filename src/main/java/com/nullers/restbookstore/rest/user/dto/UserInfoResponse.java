@@ -1,9 +1,10 @@
 package com.nullers.restbookstore.rest.user.dto;
 
-import com.nullers.restbookstore.rest.orders.models.Order;
-import lombok.*;
+import com.nullers.restbookstore.rest.user.models.UserRole;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
@@ -24,7 +25,7 @@ public class UserInfoResponse {
     private String email;
     @Builder.Default
     private Set<UserRole> userRoles = Set.of(UserRole.USER);
-    private List<String> order = new ArrayList<>();
+    private List<String> order;
     @Builder.Default
     private Boolean isDeleted = false;
 }

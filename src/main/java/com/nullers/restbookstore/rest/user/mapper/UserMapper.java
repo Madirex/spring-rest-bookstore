@@ -1,11 +1,9 @@
 package com.nullers.restbookstore.rest.user.mapper;
 
-import com.nullers.restbookstore.rest.orders.models.Order;
 import com.nullers.restbookstore.rest.user.dto.UserInfoResponse;
 import com.nullers.restbookstore.rest.user.dto.UserRequest;
 import com.nullers.restbookstore.rest.user.dto.UserResponse;
 import com.nullers.restbookstore.rest.user.models.User;
-import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Component;
 
 import java.util.List;

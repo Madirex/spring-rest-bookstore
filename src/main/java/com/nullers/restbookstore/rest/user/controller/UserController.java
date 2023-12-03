@@ -24,13 +24,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.validation.FieldError;
-import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -209,12 +205,13 @@ public class UserController {
 
     /**
      * Obtiene los pedidos del usuario autenticado
-     * @param user Usuario autenticado
-     * @param page Página
-     * @param size Tamaño de la página
+     *
+     * @param user   Usuario autenticado
+     * @param page   Página
+     * @param size   Tamaño de la página
      * @param sortBy Campo por el que ordenar
-     * @param order Dirección de la ordenación
-     * @return
+     * @param order  Dirección de la ordenación
+     * @return Pedidos del usuario autenticado
      */
 
     @GetMapping("/me/orders")
@@ -233,7 +230,8 @@ public class UserController {
 
     /**
      * Obtiene un pedido del usuario autenticado
-     * @param user Usuario autenticado
+     *
+     * @param user    Usuario autenticado
      * @param orderId Id del pedido
      * @return Pedido del usuario autenticado
      */
@@ -252,7 +250,8 @@ public class UserController {
 
     /**
      * Crea un pedido para el usuario autenticado
-     * @param user Usuario autenticado
+     *
+     * @param user  Usuario autenticado
      * @param order Pedido a crear
      * @return Pedido creado para el usuario autenticado
      */
@@ -262,11 +261,13 @@ public class UserController {
         order.setClientId(user.getId());
         return ResponseEntity.status(HttpStatus.CREATED).body(orderService.createOrder(order));
     }
+
     /**
      * Actualiza un pedido del usuario autenticado
-     * @param user Usuario autenticado
+     *
+     * @param user    Usuario autenticado
      * @param orderId Id del pedido
-     * @param order Pedido a actualizar
+     * @param order   Pedido a actualizar
      * @return Pedido actualizado
      */
     @PutMapping("/me/orders/{id}")
@@ -278,9 +279,11 @@ public class UserController {
         order.setClientId(user.getId());
         return ResponseEntity.ok(orderService.updateOrder(orderId, order));
     }
+
     /**
      * Borra un pedido del usuario autenticado
-     * @param user Usuario autenticado
+     *
+     * @param user    Usuario autenticado
      * @param orderId Id del pedido
      * @return Respuesta vacía
      */
@@ -295,23 +298,5 @@ public class UserController {
         }
         orderService.deleteOrder(orderId);
         return ResponseEntity.noContent().build();
-    }
-
-    /**
-     * Manejador de excepciones de validación
-     * @param ex Excepción
-     * @return Mapa de errores
-     */
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    @ExceptionHandler(MethodArgumentNotValidException.class)
-    public Map<String, String> handleValidationExceptions(
-            MethodArgumentNotValidException ex) {
-        Map<String, String> errors = new HashMap<>();
-        ex.getBindingResult().getAllErrors().forEach((error) -> {
-            String fieldName = ((FieldError) error).getField();
-            String errorMessage = error.getDefaultMessage();
-            errors.put(fieldName, errorMessage);
-        });
-        return errors;
     }
 }

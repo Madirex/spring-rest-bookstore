@@ -8,6 +8,7 @@ import com.nullers.restbookstore.rest.user.models.UserRole;
 import com.nullers.restbookstore.rest.user.models.User;
 import org.junit.jupiter.api.Test;
 
+import java.util.ArrayList;
 import java.util.Set;
 import java.util.UUID;
 
@@ -85,7 +86,7 @@ public class UserDtoTest {
 
     @Test
     void toUserInfoResponse(){
-        UserInfoResponse userInfoResponse = userMapper.toUserInfoResponse(user);
+        UserInfoResponse userInfoResponse = userMapper.toUserInfoResponse(user, new ArrayList<>());
 
         assertAll("ToUserInfoResponse",
                 () -> assertEquals(userInfoResponse.getId(), user.getId()),
