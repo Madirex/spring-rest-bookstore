@@ -265,8 +265,7 @@ class BookServiceImplTest {
         var publisherDTO = PublisherDTO.builder().id(1L).build();
         when(publisherService.findById(1L)).thenReturn(any());
         when(publisherMapper.toPublisher(publisherDTO)).thenReturn(publisher);
-        when(categoriasRepositoryJpa.findByName(any()))
-                .thenReturn(Optional.of(Category.builder().name("category").build()));
+        when(categoriasRepositoryJpa.findByName(any())).thenReturn(Optional.empty());
         assertThrows(CategoriaNotFoundException.class, () -> bookService.postBook(insert));
     }
 
