@@ -87,7 +87,7 @@ class CategoryControllerTest {
 
     @Test
     @WithAnonymousUser
-    void getAllCategorias_WithAnonymousUser() throws Exception {
+    void getAllCategories_WithAnonymousUser() throws Exception {
         MockHttpServletResponse response = mockMvc.perform(get(endPoint)
                         .accept(MediaType.APPLICATION_JSON))
                 .andReturn().getResponse();
@@ -101,7 +101,7 @@ class CategoryControllerTest {
 
     @Test
     @WithAnonymousUser
-    void getCategoria_WithAnonymousUser() throws Exception {
+    void getCategory_WithAnonymousUser() throws Exception {
         MockHttpServletResponse response = mockMvc.perform(get(endPoint + "/3930e05a-7ebf-4aa1-8aa8-5d7466fa9734")
                         .accept(MediaType.APPLICATION_JSON))
                 .andReturn().getResponse();
@@ -115,7 +115,7 @@ class CategoryControllerTest {
 
     @Test
     @WithAnonymousUser
-    void addCategoria_WithAnonymousUser() throws Exception {
+    void addCategory_WithAnonymousUser() throws Exception {
         MockHttpServletResponse response = mockMvc.perform(post(endPoint)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(mapper.writeValueAsString(categoryCreateDTO)))
@@ -130,7 +130,7 @@ class CategoryControllerTest {
 
     @Test
     @WithAnonymousUser
-    void updateCategoria_WithAnonymousUser() throws Exception {
+    void updateCategory_WithAnonymousUser() throws Exception {
         MockHttpServletResponse response = mockMvc.perform(put(endPoint + "/3930e05a-7ebf-4aa1-8aa8-5d7466fa9734")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(mapper.writeValueAsString(categoryCreateDTO)))
@@ -145,7 +145,7 @@ class CategoryControllerTest {
 
     @Test
     @WithAnonymousUser
-    void deleteCategoria_WithAnonymousUser() throws Exception {
+    void deleteCategory_WithAnonymousUser() throws Exception {
         MockHttpServletResponse response = mockMvc.perform(delete(endPoint + "/3930e05a-7ebf-4aa1-8aa8-5d7466fa9734")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andReturn().getResponse();
@@ -159,9 +159,9 @@ class CategoryControllerTest {
 
 
     @Test
-    void getAllCategorias_WithoutParams() throws Exception {
-        List<Category> categorys = List.of(category1, category2);
-        when(service.getAll(any(Optional.class), any(Optional.class), any(Pageable.class))).thenReturn(new PageImpl(categorys));
+    void getAllCategories_WithoutParams() throws Exception {
+        List<Category> categories = List.of(category1, category2);
+        when(service.getAll(any(Optional.class), any(Optional.class), any(Pageable.class))).thenReturn(new PageImpl(categories));
 
         MockHttpServletResponse response = mockMvc.perform(get(endPoint)
                         .accept(MediaType.APPLICATION_JSON))
@@ -185,9 +185,9 @@ class CategoryControllerTest {
     }
 
     @Test
-    void getAllCategorias_ShouldReturnCategorias_withAllParams() throws Exception {
-        List<Category> categorys = List.of(category1);
-        when(service.getAll(any(Optional.class), any(Optional.class), any(Pageable.class))).thenReturn(new PageImpl(categorys));
+    void getAllCategories_ShouldReturnCategories_withAllParams() throws Exception {
+        List<Category> categories = List.of(category1);
+        when(service.getAll(any(Optional.class), any(Optional.class), any(Pageable.class))).thenReturn(new PageImpl(categories));
 
         MockHttpServletResponse response = mockMvc.perform(get(endPoint)
                         .param("nombre", "categoría 1")
@@ -215,9 +215,9 @@ class CategoryControllerTest {
     }
 
     @Test
-    void getAllCategorias_ShouldReturnCategoria_withNameParam() throws Exception {
-        List<Category> categorys = List.of(category1);
-        when(service.getAll(any(Optional.class), any(Optional.class), any(Pageable.class))).thenReturn(new PageImpl(categorys));
+    void getAllCategories_ShouldReturnCategory_withNameParam() throws Exception {
+        List<Category> categories = List.of(category1);
+        when(service.getAll(any(Optional.class), any(Optional.class), any(Pageable.class))).thenReturn(new PageImpl(categories));
 
         MockHttpServletResponse response = mockMvc.perform(get(endPoint)
                         .param("nombre", "category 1")
@@ -240,9 +240,9 @@ class CategoryControllerTest {
     }
 
     @Test
-    void getAllCategorias_ShouldReturnEmpty_withNameButIsInactive() throws Exception {
-        List<Category> categorys = List.of();
-        when(service.getAll(any(Optional.class), any(Optional.class), any(Pageable.class))).thenReturn(new PageImpl(categorys));
+    void getAllCategories_ShouldReturnEmpty_withNameButIsInactive() throws Exception {
+        List<Category> categories = List.of();
+        when(service.getAll(any(Optional.class), any(Optional.class), any(Pageable.class))).thenReturn(new PageImpl(categories));
 
         MockHttpServletResponse response = mockMvc.perform(get(endPoint)
                         .param("nombre", "category 2")
@@ -263,9 +263,9 @@ class CategoryControllerTest {
     }
 
     @Test
-    void getAllCategorias_ShouldReturnCategoria_withSorted() throws Exception {
-        List<Category> categorys = List.of(category3, category1);
-        when(service.getAll(any(Optional.class), any(Optional.class), any(Pageable.class))).thenReturn(new PageImpl(categorys));
+    void getAllCategories_ShouldReturnCategory_withSorted() throws Exception {
+        List<Category> categories = List.of(category3, category1);
+        when(service.getAll(any(Optional.class), any(Optional.class), any(Pageable.class))).thenReturn(new PageImpl(categories));
 
         MockHttpServletResponse response = mockMvc.perform(get(endPoint)
                         .param("sortBy", "name")
@@ -292,7 +292,7 @@ class CategoryControllerTest {
     }
 
     @Test
-    void getAllCategorias_ShouldReturnError_withPageInvalid() throws Exception {
+    void getAllCategories_ShouldReturnError_withPageInvalid() throws Exception {
         MockHttpServletResponse response = mockMvc.perform(get(endPoint)
                         .param("page", "-1")
                         .accept(MediaType.APPLICATION_JSON))
@@ -310,7 +310,7 @@ class CategoryControllerTest {
     }
 
     @Test
-    void getAllCategorias_ShouldReturnError_withSizeInvalid() throws Exception {
+    void getAllCategories_ShouldReturnError_withSizeInvalid() throws Exception {
         MockHttpServletResponse response = mockMvc.perform(get(endPoint)
                         .param("size", "-1")
                         .accept(MediaType.APPLICATION_JSON))
@@ -328,9 +328,9 @@ class CategoryControllerTest {
     }
 
     @Test
-    void getAllCategorias_shouldReturnCategorias_withNameAndActive() throws Exception {
-        List<Category> categorys = List.of(category1);
-        when(service.getAll(any(Optional.class), any(Optional.class), any(Pageable.class))).thenReturn(new PageImpl(categorys));
+    void getAllCategories_shouldReturnCategories_withNameAndActive() throws Exception {
+        List<Category> categories = List.of(category1);
+        when(service.getAll(any(Optional.class), any(Optional.class), any(Pageable.class))).thenReturn(new PageImpl(categories));
 
         MockHttpServletResponse response = mockMvc.perform(get(endPoint)
                         .param("nombre", "categoría 1")
@@ -354,7 +354,7 @@ class CategoryControllerTest {
     }
 
     @Test
-    void getAllCategorias_ShouldReturnError_withSortParamIsInvalid() throws Exception {
+    void getAllCategories_ShouldReturnError_withSortParamIsInvalid() throws Exception {
         when(service.getAll(any(Optional.class), any(Optional.class), any(Pageable.class))).thenThrow(new IllegalArgumentException("Error al procesar la propiedad en la consulta: pepe"));
 
         MockHttpServletResponse response = mockMvc.perform(get(endPoint)
@@ -374,7 +374,7 @@ class CategoryControllerTest {
     }
 
     @Test
-    void getCategoria() throws Exception {
+    void getCategory() throws Exception {
         when(service.getCategoryById(UUID.fromString("3930e05a-7ebf-4aa1-8aa8-5d7466fa9734"))).thenReturn(category1);
 
         MockHttpServletResponse response = mockMvc.perform(get(endPoint + "/3930e05a-7ebf-4aa1-8aa8-5d7466fa9734").accept(MediaType.APPLICATION_JSON))
@@ -401,14 +401,14 @@ class CategoryControllerTest {
         ErrorResponse errorResponse = mapper.readValue(response.getContentAsString(StandardCharsets.UTF_8), ErrorResponse.class);
         assertAll(
                 () -> assertEquals(HttpStatus.NOT_FOUND.value(), response.getStatus()),
-                () -> assertEquals("Categoria con id 3930e05a-7ebf-4aa1-8aa8-5d7466fa9734 no encontrada", errorResponse.msg())
+                () -> assertEquals("Category con id 3930e05a-7ebf-4aa1-8aa8-5d7466fa9734 no encontrada", errorResponse.msg())
         );
 
         verify(service, times(1)).getCategoryById(UUID.fromString("3930e05a-7ebf-4aa1-8aa8-5d7466fa9734"));
     }
 
     @Test
-    void addCategoria() throws Exception {
+    void addCategory() throws Exception {
         when(service.createCategory(categoryCreateDTO)).thenReturn(category1);
 
         MockHttpServletResponse response = mockMvc.perform(post(endPoint)
@@ -451,7 +451,7 @@ class CategoryControllerTest {
     }
 
     @Test
-    void addCategoriaAlreadyExistSameName() throws Exception {
+    void addCategoryAlreadyExistSameName() throws Exception {
         when(service.createCategory(categoryCreateDTO)).thenThrow(new CategoryConflictException("Ya existe una category con el nombre: " + categoryCreateDTO.getName()));
 
         MockHttpServletResponse response = mockMvc.perform(post(endPoint)
@@ -469,7 +469,7 @@ class CategoryControllerTest {
     }
 
     @Test
-    void updateCategoria() throws Exception {
+    void updateCategory() throws Exception {
         when(service.updateCategory(UUID.fromString("3930e05a-7ebf-4aa1-8aa8-5d7466fa9734"), categoryCreateDTO)).thenReturn(category1);
 
         MockHttpServletResponse response = mockMvc.perform(put(endPoint + "/3930e05a-7ebf-4aa1-8aa8-5d7466fa9734")
@@ -503,7 +503,7 @@ class CategoryControllerTest {
     }
 
     @Test
-    void updateCategoriaAlreadyExistSameName() throws Exception {
+    void updateCategoryAlreadyExistSameName() throws Exception {
         when(service.updateCategory(UUID.fromString("3930e05a-7ebf-4aa1-8aa8-5d7466fa9734"), categoryCreateDTO)).thenThrow(new CategoryConflictException("Ya existe una category con el nombre: " + categoryCreateDTO.getName()));
 
         MockHttpServletResponse response = mockMvc.perform(put(endPoint + "/3930e05a-7ebf-4aa1-8aa8-5d7466fa9734")
@@ -521,7 +521,7 @@ class CategoryControllerTest {
     }
 
     @Test
-    void updateCategoriaNotFound() throws Exception {
+    void updateCategoryNotFound() throws Exception {
         when(service.updateCategory(UUID.fromString("3930e05a-7ebf-4aa1-8aa8-5d7466fa9734"), categoryCreateDTO)).thenThrow(new CategoryNotFoundException(UUID.fromString("3930e05a-7ebf-4aa1-8aa8-5d7466fa9734")));
 
         MockHttpServletResponse response = mockMvc.perform(put(endPoint + "/3930e05a-7ebf-4aa1-8aa8-5d7466fa9734")
@@ -532,14 +532,14 @@ class CategoryControllerTest {
         ErrorResponse errorResponse = mapper.readValue(response.getContentAsString(StandardCharsets.UTF_8), ErrorResponse.class);
         assertAll(
                 () -> assertEquals(HttpStatus.NOT_FOUND.value(), response.getStatus()),
-                () -> assertEquals("Categoria con id 3930e05a-7ebf-4aa1-8aa8-5d7466fa9734 no encontrada", errorResponse.msg())
+                () -> assertEquals("Category con id 3930e05a-7ebf-4aa1-8aa8-5d7466fa9734 no encontrada", errorResponse.msg())
         );
 
         verify(service, times(1)).updateCategory(UUID.fromString("3930e05a-7ebf-4aa1-8aa8-5d7466fa9734"), categoryCreateDTO);
     }
 
     @Test
-    void deleteCategoria() throws Exception {
+    void deleteCategory() throws Exception {
         MockHttpServletResponse response = mockMvc.perform(delete(endPoint + "/3930e05a-7ebf-4aa1-8aa8-5d7466fa9734")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andReturn().getResponse();
@@ -552,7 +552,7 @@ class CategoryControllerTest {
     }
 
     @Test
-    void deleteCategoriaNotFound() throws Exception {
+    void deleteCategoryNotFound() throws Exception {
         doThrow(new CategoryNotFoundException(UUID.fromString("3930e05a-7ebf-4aa1-8aa8-5d7466fa9734"))).when(service).deleteById(UUID.fromString("3930e05a-7ebf-4aa1-8aa8-5d7466fa9734"));
 
         MockHttpServletResponse response = mockMvc.perform(delete(endPoint + "/3930e05a-7ebf-4aa1-8aa8-5d7466fa9734")
@@ -562,14 +562,14 @@ class CategoryControllerTest {
         ErrorResponse errorResponse = mapper.readValue(response.getContentAsString(StandardCharsets.UTF_8), ErrorResponse.class);
         assertAll(
                 () -> assertEquals(HttpStatus.NOT_FOUND.value(), response.getStatus()),
-                () -> assertEquals("Categoria con id 3930e05a-7ebf-4aa1-8aa8-5d7466fa9734 no encontrada", errorResponse.msg())
+                () -> assertEquals("Category con id 3930e05a-7ebf-4aa1-8aa8-5d7466fa9734 no encontrada", errorResponse.msg())
         );
 
         verify(service, times(1)).deleteById(UUID.fromString("3930e05a-7ebf-4aa1-8aa8-5d7466fa9734"));
     }
 
     @Test
-    void deleteCategoriaBadRequest() throws Exception {
+    void deleteCategoryBadRequest() throws Exception {
         doThrow(new CategoryConflictException("No se puede eliminar la category porque tiene libros asociados")).when(service).deleteById(UUID.fromString("3930e05a-7ebf-4aa1-8aa8-5d7466fa9734"));
 
         MockHttpServletResponse response = mockMvc.perform(delete(endPoint + "/3930e05a-7ebf-4aa1-8aa8-5d7466fa9734")

@@ -1,8 +1,18 @@
 package com.nullers.restbookstore.rest.orders.exceptions;
 
-import org.bson.types.ObjectId;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.ResponseStatus;
 
-public class OrderNotItemsExceptions extends OrderException{
+/**
+ * Clase OrderNotFoundException
+ */
+@ResponseStatus(HttpStatus.BAD_REQUEST)
+public class OrderNotItemsExceptions extends RuntimeException {
+    /**
+     * Constructor OrderNotFoundException
+     *
+     * @param id id del pedido
+     */
     public OrderNotItemsExceptions(String id) {
         super("El pedido con id " + id + " no tiene items");
     }

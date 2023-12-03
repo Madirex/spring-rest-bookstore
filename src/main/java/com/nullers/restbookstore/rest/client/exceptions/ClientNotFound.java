@@ -1,7 +1,20 @@
 package com.nullers.restbookstore.rest.client.exceptions;
 
-public class ClientNotFound extends ClientException{
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.ResponseStatus;
+
+/**
+ * Class ClientNotFound
+ */
+@ResponseStatus(HttpStatus.NOT_FOUND)
+public class ClientNotFound extends RuntimeException {
+    /**
+     * Constructor ClientNotFound
+     *
+     * @param key   The key of the client
+     * @param value The value of the client
+     */
     public ClientNotFound(String key, Object value) {
-        super("Client con "+key+": " + value + " no existe");
+        super("Client con " + key + ": " + value + " no existe");
     }
 }

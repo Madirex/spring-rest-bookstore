@@ -32,16 +32,16 @@ class CategoryRepositoryTest {
         entityManager.merge(category1);
         entityManager.flush();
 
-        var categorys = categoryRepositoryJpa.findAll();
+        var categories = categoryRepositoryJpa.findAll();
 
         assertAll(
-                () -> assertNotNull(categorys),
-                () -> assertTrue(!categorys.isEmpty())
+                () -> assertNotNull(categories),
+                () -> assertTrue(!categories.isEmpty())
         );
     }
 
     @Test
-    void getCategoriaById(){
+    void getCategoryById(){
         var res = entityManager.merge(category1);
         entityManager.flush();
 
@@ -55,7 +55,7 @@ class CategoryRepositoryTest {
     }
 
     @Test
-    void getCategoriaByName(){
+    void getCategoryByName(){
         var res = entityManager.merge(category1);
         entityManager.flush();
 
@@ -69,7 +69,7 @@ class CategoryRepositoryTest {
     }
 
     @Test
-    void createCategoria(){
+    void createCategory(){
         var category = categoryRepositoryJpa.save(category1);
 
         assertAll(
@@ -80,7 +80,7 @@ class CategoryRepositoryTest {
     }
 
     @Test
-    void updateCategoria(){
+    void updateCategory(){
         var res = entityManager.merge(category1);
         entityManager.flush();
 
@@ -95,7 +95,7 @@ class CategoryRepositoryTest {
 
 
     @Test
-    void deleteCategoria(){
+    void deleteCategory(){
         var res = entityManager.merge(category1);
         entityManager.flush();
 

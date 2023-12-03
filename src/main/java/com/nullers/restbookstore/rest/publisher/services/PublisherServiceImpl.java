@@ -42,6 +42,7 @@ import java.util.Optional;
 @CacheConfig(cacheNames = "publishers")
 public class PublisherServiceImpl implements PublisherService {
     public static final String NO_EXISTS_STR = " no existe";
+    public static final String PUBLISHER_WITH_ID_STR = "El publisher con id ";
     private final PublisherRepository publisherRepository;
     private final BookRepository bookRepository;
     private final PublisherMapper publisherMapper;
@@ -131,7 +132,7 @@ public class PublisherServiceImpl implements PublisherService {
     @CachePut(key = "#result.id")
     @Override
     public PublisherDTO update(Long id, CreatePublisherDto publisherDTO) {
-        Publisher publisher = publisherRepository.findById(id).orElseThrow(() -> new PublisherNotFound("El publisher con id " + id + NO_EXISTS_STR));
+        Publisher publisher = publisherRepository.findById(id).orElseThrow(() -> new PublisherNotFound(PUBLISHER_WITH_ID_STR + id + NO_EXISTS_STR));
         var publisherUpdate = publisherMapper.toDto(publisher);
         Publisher updatedPublisher = publisherMapper.toPublisherModification(publisherDTO, publisherUpdate);
         return publisherMapper.toDto(publisherRepository.save(updatedPublisher));
@@ -148,7 +149,7 @@ public class PublisherServiceImpl implements PublisherService {
     @CachePut(key = "#id")
     public PublisherDTO addBookPublisher(Long id, Long bookId) {
         Book bookToAdd = bookRepository.findById(bookId).orElseThrow(() -> new BookNotFoundException("El libro con id " + bookId + NO_EXISTS_STR));
-        Publisher publisher = publisherRepository.findById(id).orElseThrow(() -> new PublisherNotFound("El publisher con id " + id + NO_EXISTS_STR));
+        Publisher publisher = publisherRepository.findById(id).orElseThrow(() -> new PublisherNotFound(PUBLISHER_WITH_ID_STR + id + NO_EXISTS_STR));
         publisher.getBooks().add(bookToAdd);
         Publisher publisherToUpdate = publisherRepository.save(publisher);
         return publisherMapper.toDto(publisherToUpdate);
@@ -166,7 +167,7 @@ public class PublisherServiceImpl implements PublisherService {
     public PublisherDTO removeBookPublisher(Long id, Long bookId) {
         Book bookToRemove = bookRepository.getReferenceById(bookId);
         var publisher = publisherRepository.findById(id)
-                .orElseThrow(() -> new PublisherNotFound("El publisher con id " + id + NO_EXISTS_STR));
+                .orElseThrow(() -> new PublisherNotFound(PUBLISHER_WITH_ID_STR + id + NO_EXISTS_STR));
         var publisherUpdate = publisherMapper.toDto(publisher);
         publisherUpdate.getBooks().remove(bookToRemove);
         publisherRepository.save(publisherMapper.toPublisher(publisherUpdate));

@@ -61,7 +61,7 @@ public class CategoryControllerRest {
      * @return ResponseEntity<PageResponse < Category>> con las categorías
      */
     @GetMapping
-    public ResponseEntity<PageResponse<Category>> getCategorias(
+    public ResponseEntity<PageResponse<Category>> getCategories(
             @RequestParam(required = false) Optional<String> name,
             @RequestParam(required = false) Optional<Boolean> isActive,
             @RequestParam(defaultValue = "0") int page,
@@ -80,22 +80,22 @@ public class CategoryControllerRest {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Category> getCategoria(@PathVariable UUID id) {
+    public ResponseEntity<Category> getCategory(@PathVariable UUID id) {
         return ResponseEntity.ok(service.getCategoryById(id));
     }
 
     @PostMapping
-    public ResponseEntity<Category> addCategoria(@Valid @RequestBody CategoryCreateDTO categoryCreateDTO) {
+    public ResponseEntity<Category> addCategory(@Valid @RequestBody CategoryCreateDTO categoryCreateDTO) {
         return ResponseEntity.ok(service.createCategory(categoryCreateDTO));
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Category> updateCategoria(@PathVariable UUID id, @Valid @RequestBody CategoryCreateDTO categoryCreateDTO) {
+    public ResponseEntity<Category> updateCategory(@PathVariable UUID id, @Valid @RequestBody CategoryCreateDTO categoryCreateDTO) {
         return ResponseEntity.ok(service.updateCategory(id, categoryCreateDTO));
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteCategoria(@PathVariable UUID id) {
+    public ResponseEntity<Void> deleteCategory(@PathVariable UUID id) {
         service.deleteById(id);
         return ResponseEntity.ok().build();
     }
@@ -122,7 +122,7 @@ public class CategoryControllerRest {
 
     @ExceptionHandler(CategoryConflictException.class)
     @ResponseStatus(HttpStatus.CONFLICT)
-    public ErrorResponse handleCategoriaConflictException(CategoryConflictException exception) {
+    public ErrorResponse handleCategoryConflictException(CategoryConflictException exception) {
         return new ErrorResponse(HttpStatus.CONFLICT.value(), exception.getMessage());
     }
 }

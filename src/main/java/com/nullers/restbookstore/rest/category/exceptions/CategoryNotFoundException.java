@@ -1,14 +1,31 @@
 package com.nullers.restbookstore.rest.category.exceptions;
 
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.ResponseStatus;
+
 import java.util.UUID;
 
-public class CategoryNotFoundException extends CategoryException {
+/**
+ * Class CategoryNotFoundException
+ */
+@ResponseStatus(HttpStatus.NOT_FOUND)
+public class CategoryNotFoundException extends RuntimeException {
 
-            public CategoryNotFoundException(UUID id) {
-                super("Categoria con id " + id + " no encontrada");
-            }
+    /**
+     * Constructor CategoryNotFoundException
+     *
+     * @param id Id de la categoría
+     */
+    public CategoryNotFoundException(UUID id) {
+        super("Category con id " + id + " no encontrada");
+    }
 
-            public CategoryNotFoundException(String name) {
-                super("Categoria con nombre " + name + " no encontrada");
-            }
+    /**
+     * Constructor CategoryNotFoundException
+     *
+     * @param name Nombre de la categoría
+     */
+    public CategoryNotFoundException(String name) {
+        super("Category con nombre " + name + " no encontrada");
+    }
 }
