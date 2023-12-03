@@ -1,8 +1,8 @@
 package com.nullers.restbookstore.rest.category.repositories;
 
-import com.nullers.restbookstore.rest.category.exceptions.CategoriaNotFoundException;
+import com.nullers.restbookstore.rest.category.exceptions.CategoryNotFoundException;
 import com.nullers.restbookstore.rest.category.model.Category;
-import com.nullers.restbookstore.rest.category.repository.CategoriasRepositoryJpa;
+import com.nullers.restbookstore.rest.category.repository.CategoryRepositoryJpa;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
@@ -16,7 +16,7 @@ import static org.junit.jupiter.api.Assertions.*;
 class CategoryRepositoryTest {
 
     @Autowired
-    private CategoriasRepositoryJpa categoriaRepositoryJpa;
+    private CategoryRepositoryJpa categoriaRepositoryJpa;
 
     @Autowired
     private TestEntityManager entityManager;
@@ -101,7 +101,7 @@ class CategoryRepositoryTest {
 
         categoriaRepositoryJpa.deleteById(res.getId());
 
-        assertThrows(CategoriaNotFoundException.class, () -> categoriaRepositoryJpa.findById(res.getId()).orElseThrow(() -> new CategoriaNotFoundException(res.getId())));
+        assertThrows(CategoryNotFoundException.class, () -> categoriaRepositoryJpa.findById(res.getId()).orElseThrow(() -> new CategoryNotFoundException(res.getId())));
     }
 
 }

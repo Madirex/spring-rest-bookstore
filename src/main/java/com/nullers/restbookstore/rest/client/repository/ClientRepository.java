@@ -8,10 +8,18 @@ import org.springframework.stereotype.Repository;
 import java.util.Optional;
 import java.util.UUID;
 
+/**
+ * Interfaz ClientRepository
+ */
 @Repository
 public interface ClientRepository extends JpaRepository<Client, UUID>, JpaSpecificationExecutor<Client> {
 
-    public Optional<Client> getClientByEmailEqualsIgnoreCase(String email);
-
+    /**
+     * Método para obtener un cliente por su email
+     *
+     * @param email email del cliente
+     * @return cliente
+     */
+    Optional<Client> getClientByEmailEqualsIgnoreCase(String email);
 
 }

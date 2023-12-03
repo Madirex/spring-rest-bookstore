@@ -228,7 +228,7 @@ public class OrderServiceTest {
         var res = assertThrows(OrderNotFoundException.class, () -> orderService.getOrderById(order.getId()));
 
         assertAll(
-                () -> assertEquals("El pedido con id " + order.get_id() + " no existe", res.getMessage())
+                () -> assertEquals("El pedido con id " + order.getId() + " no existe", res.getMessage())
         );
 
         verify(orderRepository, times(1)).findById(any(ObjectId.class));
@@ -464,7 +464,7 @@ public class OrderServiceTest {
         var res = assertThrows(OrderNotFoundException.class, () -> orderService.updateOrder(order.getId(), orderCreateDto));
 
         assertAll(
-                () -> assertEquals("El pedido con id " + order.get_id() + " no existe", res.getMessage())
+                () -> assertEquals("El pedido con id " + order.getId() + " no existe", res.getMessage())
         );
 
         verify(orderRepository, times(1)).findById(any(ObjectId.class));
@@ -623,7 +623,7 @@ public class OrderServiceTest {
         var res = assertThrows(OrderNotFoundException.class, () -> orderService.deleteOrder(order.getId()));
 
         assertAll(
-                () -> assertEquals("El pedido con id " + order.get_id() + " no existe", res.getMessage())
+                () -> assertEquals("El pedido con id " + order.getId() + " no existe", res.getMessage())
         );
 
         verify(orderRepository, times(1)).findById(any(ObjectId.class));
@@ -674,7 +674,7 @@ public class OrderServiceTest {
         var res = assertThrows(OrderNotFoundException.class, () -> orderService.deleteLogicOrder(order.getId()));
 
         assertAll(
-                () -> assertEquals("El pedido con id " + order.get_id() + " no existe", res.getMessage())
+                () -> assertEquals("El pedido con id " + order.getId() + " no existe", res.getMessage())
         );
 
         verify(orderRepository, times(1)).findById(any(ObjectId.class));
@@ -968,7 +968,7 @@ public class OrderServiceTest {
                 .build()));
 
         assertAll(
-                () -> assertEquals("El pedido con id " + order.get_id() + " no tiene items", res.getMessage())
+                () -> assertEquals("El pedido con id " + order.getId() + " no tiene items", res.getMessage())
         );
 
         verify(shopRepository, times(1)).findById(any(UUID.class));
@@ -1029,7 +1029,7 @@ public class OrderServiceTest {
                 .build()));
 
         assertAll(
-                () -> assertEquals("El pedido con id " + order.get_id() + " no tiene items", res.getMessage())
+                () -> assertEquals("El pedido con id " + order.getId() + " no tiene items", res.getMessage())
         );
 
         verify(bookRepository, times(0)).findById(any(Long.class));

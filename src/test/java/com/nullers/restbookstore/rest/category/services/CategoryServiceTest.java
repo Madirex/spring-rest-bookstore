@@ -3,11 +3,11 @@ package com.nullers.restbookstore.rest.category.services;
 
 import com.nullers.restbookstore.rest.book.dto.GetBookDTO;
 import com.nullers.restbookstore.rest.book.repository.BookRepository;
-import com.nullers.restbookstore.rest.category.exceptions.CategoriaConflictException;
-import com.nullers.restbookstore.rest.category.exceptions.CategoriaNotFoundException;
-import com.nullers.restbookstore.rest.category.mappers.CategoriaCreateMapper;
+import com.nullers.restbookstore.rest.category.exceptions.CategoryConflictException;
+import com.nullers.restbookstore.rest.category.exceptions.CategoryNotFoundException;
+import com.nullers.restbookstore.rest.category.mappers.CategoryCreateMapper;
 import com.nullers.restbookstore.rest.category.model.Category;
-import com.nullers.restbookstore.rest.category.repository.CategoriasRepositoryJpa;
+import com.nullers.restbookstore.rest.category.repository.CategoryRepositoryJpa;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -30,13 +30,13 @@ import static org.mockito.Mockito.when;
 public class CategoryServiceTest {
 
     @Mock
-    private CategoriasRepositoryJpa repository;
+    private CategoryRepositoryJpa repository;
 
     @Mock
     private BookRepository bookRepository;
 
     @InjectMocks
-    private CategoriaServiceJpaImpl service;
+    private CategoryServiceJpaImpl service;
 
     Category category1 = Category.builder()
             .id(UUID.fromString("3930e05a-7ebf-4aa1-8aa8-5d7466fa9734"))
@@ -151,7 +151,7 @@ public class CategoryServiceTest {
     void getCategoriaById() {
         when(repository.findById(UUID.fromString("3930e05a-7ebf-4aa1-8aa8-5d7466fa9734"))).thenReturn(Optional.of(category1));
 
-        var categoria = service.getCategoriaById(UUID.fromString("3930e05a-7ebf-4aa1-8aa8-5d7466fa9734"));
+        var categoria = service.getCategoryById(UUID.fromString("3930e05a-7ebf-4aa1-8aa8-5d7466fa9734"));
 
         assertAll(
                 () -> assertNotNull(categoria),
@@ -164,7 +164,7 @@ public class CategoryServiceTest {
     void getCategoriaByIdNotFound() {
         when(repository.findById(UUID.fromString("3930e05a-7ebf-4aa1-8aa8-5d7466f99999"))).thenReturn(Optional.empty());
 
-        var res = assertThrows(CategoriaNotFoundException.class, () -> service.getCategoriaById(UUID.fromString("3930e05a-7ebf-4aa1-8aa8-5d7466f99999")));
+        var res = assertThrows(CategoryNotFoundException.class, () -> service.getCategoryById(UUID.fromString("3930e05a-7ebf-4aa1-8aa8-5d7466f99999")));
         assertEquals("Categoria con id 3930e05a-7ebf-4aa1-8aa8-5d7466f99999 no encontrada", res.getMessage());
     }
 
@@ -172,7 +172,7 @@ public class CategoryServiceTest {
     void getCategoriaByName() {
         when(repository.findByName("categoria 1")).thenReturn(Optional.of(category1));
 
-        var categoria = service.getCategoriaByName("categoria 1");
+        var categoria = service.getCategoryByName("categoria 1");
 
         assertAll(
                 () -> assertNotNull(categoria),
@@ -185,7 +185,7 @@ public class CategoryServiceTest {
     void getCategoriaByNameNotFound() {
         when(repository.findByName("categoria 99")).thenReturn(Optional.empty());
 
-        var res = assertThrows(CategoriaNotFoundException.class, () -> service.getCategoriaByName("categoria 99"));
+        var res = assertThrows(CategoryNotFoundException.class, () -> service.getCategoryByName("categoria 99"));
         assertEquals("Categoria con nombre categoria 99 no encontrada", res.getMessage());
     }
 
@@ -194,7 +194,7 @@ public class CategoryServiceTest {
         when(repository.save(any(Category.class))).thenReturn(category1);
         when(repository.findByName("categoria 1")).thenReturn(Optional.empty());
 
-        var categoria = service.createCategoria(CategoriaCreateMapper.toDto(category1));
+        var categoria = service.createCategory(CategoryCreateMapper.toDto(category1));
 
         assertAll(
                 () -> assertNotNull(categoria),
@@ -207,7 +207,7 @@ public class CategoryServiceTest {
     void createCategoriaConflict() {
         when(repository.findByName("categoria 1")).thenReturn(Optional.of(category1));
 
-        var res = assertThrows(CategoriaConflictException.class, () -> service.createCategoria(CategoriaCreateMapper.toDto(category1)));
+        var res = assertThrows(CategoryConflictException.class, () -> service.createCategory(CategoryCreateMapper.toDto(category1)));
         assertEquals("Ya existe una categoria con el nombre: categoria 1", res.getMessage());
     }
 
@@ -217,7 +217,7 @@ public class CategoryServiceTest {
         when(repository.findById(UUID.fromString("3930e05a-7ebf-4aa1-8aa8-5d7466fa9734"))).thenReturn(Optional.of(category1));
         when(repository.findByName("categoria 1")).thenReturn(Optional.empty());
 
-        var categoria = service.updateCategoria(UUID.fromString("3930e05a-7ebf-4aa1-8aa8-5d7466fa9734"), CategoriaCreateMapper.toDto(category1));
+        var categoria = service.updateCategory(UUID.fromString("3930e05a-7ebf-4aa1-8aa8-5d7466fa9734"), CategoryCreateMapper.toDto(category1));
 
         assertAll(
                 () -> assertNotNull(categoria),
@@ -230,7 +230,7 @@ public class CategoryServiceTest {
     void updateCategoriaNotFound() {
         when(repository.findById(UUID.fromString("3930e05a-7ebf-4aa1-8aa8-999966fa9734"))).thenReturn(Optional.empty());
 
-        var res = assertThrows(CategoriaNotFoundException.class, () -> service.updateCategoria(UUID.fromString("3930e05a-7ebf-4aa1-8aa8-999966fa9734"), CategoriaCreateMapper.toDto(category1)));
+        var res = assertThrows(CategoryNotFoundException.class, () -> service.updateCategory(UUID.fromString("3930e05a-7ebf-4aa1-8aa8-999966fa9734"), CategoryCreateMapper.toDto(category1)));
         assertEquals("Categoria con id 3930e05a-7ebf-4aa1-8aa8-999966fa9734 no encontrada", res.getMessage());
     }
 
@@ -239,7 +239,7 @@ public class CategoryServiceTest {
         when(repository.findById(UUID.fromString("3930e05a-7ebf-4aa1-8aa8-5d7466fa9734"))).thenReturn(Optional.of(category1));
         when(repository.findByName("categoria 1")).thenReturn(Optional.of(category2));
 
-        var res = assertThrows(CategoriaConflictException.class, () -> service.updateCategoria(UUID.fromString("3930e05a-7ebf-4aa1-8aa8-5d7466fa9734"), CategoriaCreateMapper.toDto(category1)));
+        var res = assertThrows(CategoryConflictException.class, () -> service.updateCategory(UUID.fromString("3930e05a-7ebf-4aa1-8aa8-5d7466fa9734"), CategoryCreateMapper.toDto(category1)));
         assertEquals("Ya existe una categoria con el nombre: categoria 1", res.getMessage());
     }
 
@@ -247,9 +247,9 @@ public class CategoryServiceTest {
     void deleteCategoriaWithBooks() {
         when(repository.findById(UUID.fromString("3930e05a-7ebf-4aa1-8aa8-5d7466fa9734"))).thenReturn(Optional.of(category1));
         when(bookRepository.findByCategory_Name(any())).thenReturn(new ArrayList<>());
-        doThrow(new CategoriaConflictException("No se puede eliminar la categoría porque tiene libros asociados")).when(repository).deleteById(UUID.fromString("3930e05a-7ebf-4aa1-8aa8-5d7466fa9734"));
+        doThrow(new CategoryConflictException("No se puede eliminar la categoría porque tiene libros asociados")).when(repository).deleteById(UUID.fromString("3930e05a-7ebf-4aa1-8aa8-5d7466fa9734"));
 
-        var res = assertThrows(CategoriaConflictException.class, () -> service.deleteById(UUID.fromString("3930e05a-7ebf-4aa1-8aa8-5d7466fa9734")));
+        var res = assertThrows(CategoryConflictException.class, () -> service.deleteById(UUID.fromString("3930e05a-7ebf-4aa1-8aa8-5d7466fa9734")));
         assertEquals("No se puede eliminar la categoría porque tiene libros asociados", res.getMessage());
     }
 
@@ -258,7 +258,7 @@ public class CategoryServiceTest {
     void deleteCategoriaNotFound() {
         when(repository.findById(UUID.fromString("3930e05a-7ebf-4aa1-8aa8-999966fa9734"))).thenReturn(Optional.empty());
 
-        var res = assertThrows(CategoriaNotFoundException.class, () -> service.deleteById(UUID.fromString("3930e05a-7ebf-4aa1-8aa8-999966fa9734")));
+        var res = assertThrows(CategoryNotFoundException.class, () -> service.deleteById(UUID.fromString("3930e05a-7ebf-4aa1-8aa8-999966fa9734")));
         assertEquals("Categoria con id 3930e05a-7ebf-4aa1-8aa8-999966fa9734 no encontrada", res.getMessage());
     }
 

@@ -36,16 +36,26 @@ public class PublisherController {
     private final PublisherServiceImpl publisherService;
     private final PaginationLinksUtils paginationLinksUtils;
 
+    /**
+     * Constructor
+     *
+     * @param publisherService     Servicio de Publisher
+     * @param paginationLinksUtils Utilidad de paginación
+     */
     @Autowired
     public PublisherController(PublisherServiceImpl publisherService, PaginationLinksUtils paginationLinksUtils) {
         this.publisherService = publisherService;
         this.paginationLinksUtils = paginationLinksUtils;
     }
 
-
     /**
      * Método para obtener todas las editoriales
      *
+     * @param name      nombre por el que filtrar
+     * @param page      página
+     * @param size      tamaño de la página
+     * @param sortBy    campo por el que ordenar
+     * @param direction dirección de la ordenación
      * @return ResponseEntity<List < PublisherDto>> con las editoriales
      */
     @GetMapping

@@ -11,11 +11,11 @@ import java.time.LocalDateTime;
 import java.util.UUID;
 
 /**
- * @author daniel
+ * @author Daniel
  * @see Book
- * Modelo de cliente
  */
-@Data
+@Getter
+@Setter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
@@ -41,7 +41,7 @@ public class Client {
     @Column(nullable = false)
     private String phone;
 
-    @Column(columnDefinition = "TEXT default '" + DEFAULT_IMAGE + "'") // Por defecto una imagen
+    @Column(columnDefinition = "TEXT default '" + DEFAULT_IMAGE + "'")
     @Builder.Default
     private String image = DEFAULT_IMAGE;
 

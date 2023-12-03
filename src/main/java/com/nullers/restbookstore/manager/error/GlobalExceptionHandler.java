@@ -3,7 +3,7 @@ package com.nullers.restbookstore.manager.error;
 import com.mongodb.MongoTimeoutException;
 import com.nullers.restbookstore.pagination.exceptions.PageNotValidException;
 import com.nullers.restbookstore.pagination.models.ErrorResponse;
-import com.nullers.restbookstore.rest.category.exceptions.CategoriaNotFoundException;
+import com.nullers.restbookstore.rest.category.exceptions.CategoryNotFoundException;
 import jakarta.servlet.http.HttpServletRequest;
 import org.apache.tomcat.util.http.fileupload.impl.FileSizeLimitExceededException;
 import org.springframework.data.mapping.PropertyReferenceException;
@@ -55,9 +55,9 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
     }
 
-    @ExceptionHandler(CategoriaNotFoundException.class)
+    @ExceptionHandler(CategoryNotFoundException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ErrorResponse handleCategoryNotFound(CategoriaNotFoundException exception) {
+    public ErrorResponse handleCategoryNotFound(CategoryNotFoundException exception) {
         return new ErrorResponse(HttpStatus.BAD_REQUEST.value(), exception.getMessage());
     }
 

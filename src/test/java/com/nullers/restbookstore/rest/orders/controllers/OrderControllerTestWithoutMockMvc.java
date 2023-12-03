@@ -241,7 +241,7 @@ class OrderControllerTestWithoutMockMvc {
 
         assertAll(
                 () -> assertNotNull(res),
-                () -> assertEquals("El pedido con id " + order.get_id() + " no existe", res.getMessage())
+                () -> assertEquals("El pedido con id " + order.getId() + " no existe", res.getMessage())
         );
 
         verify(orderService, times(1)).getOrderById(any(ObjectId.class));
@@ -315,13 +315,13 @@ class OrderControllerTestWithoutMockMvc {
 
     @Test
     void createOrder_ShouldReturnOrderNotItemsException() {
-        when(orderService.createOrder(any(OrderCreateDto.class))).thenThrow(new OrderNotItemsExceptions(order.get_id()));
+        when(orderService.createOrder(any(OrderCreateDto.class))).thenThrow(new OrderNotItemsExceptions(order.getId()));
 
         var res = assertThrows(OrderNotItemsExceptions.class, () -> orderController.createOrder(orderCreateDto));
 
         assertAll(
                 () -> assertNotNull(res),
-                () -> assertEquals("El pedido con id " + order.get_id() + " no tiene items", res.getMessage())
+                () -> assertEquals("El pedido con id " + order.getId() + " no tiene items", res.getMessage())
         );
 
         verify(orderService, times(1)).createOrder(any(OrderCreateDto.class));
@@ -450,7 +450,7 @@ class OrderControllerTestWithoutMockMvc {
 
         assertAll(
                 () -> assertNotNull(res),
-                () -> assertEquals("El pedido con id " + order.get_id() + " no existe", res.getMessage())
+                () -> assertEquals("El pedido con id " + order.getId() + " no existe", res.getMessage())
         );
 
         verify(orderService, times(1)).updateOrder(any(ObjectId.class), any(OrderCreateDto.class));
@@ -513,13 +513,13 @@ class OrderControllerTestWithoutMockMvc {
 
     @Test
     void updateOrder_ShouldReturnOrderNotItemsException() {
-        when(orderService.updateOrder(any(ObjectId.class), any(OrderCreateDto.class))).thenThrow(new OrderNotItemsExceptions(order.get_id()));
+        when(orderService.updateOrder(any(ObjectId.class), any(OrderCreateDto.class))).thenThrow(new OrderNotItemsExceptions(order.getId()));
 
         var res = assertThrows(OrderNotItemsExceptions.class, () -> orderController.updateOrder(order.getId(), orderCreateDto));
 
         assertAll(
                 () -> assertNotNull(res),
-                () -> assertEquals("El pedido con id " + order.get_id() + " no tiene items", res.getMessage())
+                () -> assertEquals("El pedido con id " + order.getId() + " no tiene items", res.getMessage())
         );
 
         verify(orderService, times(1)).updateOrder(any(ObjectId.class), any(OrderCreateDto.class));
@@ -623,7 +623,7 @@ class OrderControllerTestWithoutMockMvc {
 
         assertAll(
                 () -> assertNotNull(res),
-                () -> assertEquals("El pedido con id " + order.get_id() + " no existe", res.getMessage())
+                () -> assertEquals("El pedido con id " + order.getId() + " no existe", res.getMessage())
         );
 
         verify(orderService, times(1)).deleteOrder(any(ObjectId.class));
@@ -688,7 +688,7 @@ class OrderControllerTestWithoutMockMvc {
 
         assertAll(
                 () -> assertNotNull(res),
-                () -> assertEquals("El pedido con id " + order.get_id() + " no existe", res.getMessage())
+                () -> assertEquals("El pedido con id " + order.getId() + " no existe", res.getMessage())
         );
 
         verify(orderService, times(1)).deleteLogicOrder(any(ObjectId.class));

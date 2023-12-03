@@ -12,6 +12,9 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.validator.constraints.Length;
 
+/**
+ * Clase ClientUpdateDto
+ */
 @Builder
 @Data
 @NoArgsConstructor
@@ -25,10 +28,10 @@ public class ClientUpdateDto {
     @Email(message = "El email debe tener un formato valido")
     private String email;
 
-    @Size(max = 11, min =3, message = "El telefono debe tener como maximo 11 caracteres y como minimo 3")
-    @Pattern(regexp = "^\\d*$", message = "El telefono debe contener solo digitos")
+    @Size(max = 11, min = 3, message = "El teléfono debe tener como máximo 11 caracteres y como mínimo 3")
+    @Pattern(regexp = "^\\d*$", message = "El teléfono debe contener solo dígitos")
     private String phone;
 
-    @NotNull(message = "La direccion no puede estar vacia")
+    @NotNull(message = "La dirección no puede estar vacía")
     private @Valid Address address;
 }

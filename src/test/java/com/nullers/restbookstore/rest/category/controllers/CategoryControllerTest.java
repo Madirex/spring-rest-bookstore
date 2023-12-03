@@ -3,11 +3,11 @@ package com.nullers.restbookstore.rest.category.controllers;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nullers.restbookstore.pagination.models.ErrorResponse;
 import com.nullers.restbookstore.pagination.models.PageResponse;
-import com.nullers.restbookstore.rest.category.dto.CategoriaCreateDto;
-import com.nullers.restbookstore.rest.category.exceptions.CategoriaConflictException;
-import com.nullers.restbookstore.rest.category.exceptions.CategoriaNotFoundException;
+import com.nullers.restbookstore.rest.category.dto.CategoryCreateDTO;
+import com.nullers.restbookstore.rest.category.exceptions.CategoryConflictException;
+import com.nullers.restbookstore.rest.category.exceptions.CategoryNotFoundException;
 import com.nullers.restbookstore.rest.category.model.Category;
-import com.nullers.restbookstore.rest.category.services.CategoriaServiceJpaImpl;
+import com.nullers.restbookstore.rest.category.services.CategoryServiceJpaImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -42,7 +42,7 @@ class CategoryControllerTest {
     private final ObjectMapper mapper = new ObjectMapper();
 
     @MockBean
-    CategoriaServiceJpaImpl service;
+    CategoryServiceJpaImpl service;
 
     @Autowired
     MockMvc mockMvc;
@@ -65,7 +65,7 @@ class CategoryControllerTest {
             .isActive(true)
             .build();
 
-    CategoriaCreateDto categoriaCreateDto = CategoriaCreateDto.builder()
+    CategoryCreateDTO categoryCreateDTO = CategoryCreateDTO.builder()
             .name("categoria 1")
             .isActive(true)
             .build();
@@ -75,13 +75,13 @@ class CategoryControllerTest {
 
     @BeforeEach
     void setUp() {
-        categoriaCreateDto = CategoriaCreateDto.builder()
+        categoryCreateDTO = CategoryCreateDTO.builder()
                 .name("categoria 1")
                 .build();
     }
 
     @Autowired
-    public CategoryControllerTest(CategoriaServiceJpaImpl service) {
+    public CategoryControllerTest(CategoryServiceJpaImpl service) {
         this.service = service;
     }
 
@@ -110,7 +110,7 @@ class CategoryControllerTest {
                 () -> assertEquals(HttpStatus.FORBIDDEN.value(), response.getStatus())
         );
 
-        verify(service, times(0)).getCategoriaById(UUID.fromString("3930e05a-7ebf-4aa1-8aa8-5d7466fa9734"));
+        verify(service, times(0)).getCategoryById(UUID.fromString("3930e05a-7ebf-4aa1-8aa8-5d7466fa9734"));
     }
 
     @Test
@@ -118,14 +118,14 @@ class CategoryControllerTest {
     void addCategoria_WithAnonymousUser() throws Exception {
         MockHttpServletResponse response = mockMvc.perform(post(endPoint)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(mapper.writeValueAsString(categoriaCreateDto)))
+                        .content(mapper.writeValueAsString(categoryCreateDTO)))
                 .andReturn().getResponse();
 
         assertAll(
                 () -> assertEquals(HttpStatus.FORBIDDEN.value(), response.getStatus())
         );
 
-        verify(service, times(0)).createCategoria(categoriaCreateDto);
+        verify(service, times(0)).createCategory(categoryCreateDTO);
     }
 
     @Test
@@ -133,14 +133,14 @@ class CategoryControllerTest {
     void updateCategoria_WithAnonymousUser() throws Exception {
         MockHttpServletResponse response = mockMvc.perform(put(endPoint + "/3930e05a-7ebf-4aa1-8aa8-5d7466fa9734")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(mapper.writeValueAsString(categoriaCreateDto)))
+                        .content(mapper.writeValueAsString(categoryCreateDTO)))
                 .andReturn().getResponse();
 
         assertAll(
                 () -> assertEquals(HttpStatus.FORBIDDEN.value(), response.getStatus())
         );
 
-        verify(service, times(0)).updateCategoria(UUID.fromString("3930e05a-7ebf-4aa1-8aa8-5d7466fa9734"), categoriaCreateDto);
+        verify(service, times(0)).updateCategory(UUID.fromString("3930e05a-7ebf-4aa1-8aa8-5d7466fa9734"), categoryCreateDTO);
     }
 
     @Test
@@ -375,7 +375,7 @@ class CategoryControllerTest {
 
     @Test
     void getCategoria() throws Exception {
-        when(service.getCategoriaById(UUID.fromString("3930e05a-7ebf-4aa1-8aa8-5d7466fa9734"))).thenReturn(category1);
+        when(service.getCategoryById(UUID.fromString("3930e05a-7ebf-4aa1-8aa8-5d7466fa9734"))).thenReturn(category1);
 
         MockHttpServletResponse response = mockMvc.perform(get(endPoint + "/3930e05a-7ebf-4aa1-8aa8-5d7466fa9734").accept(MediaType.APPLICATION_JSON))
                 .andReturn().getResponse();
@@ -388,12 +388,12 @@ class CategoryControllerTest {
                 () -> assertEquals(category1.getName(), category.getName())
         );
 
-        verify(service, times(1)).getCategoriaById(UUID.fromString("3930e05a-7ebf-4aa1-8aa8-5d7466fa9734"));
+        verify(service, times(1)).getCategoryById(UUID.fromString("3930e05a-7ebf-4aa1-8aa8-5d7466fa9734"));
     }
 
     @Test
     void getCategorieNotFound() throws Exception {
-        when(service.getCategoriaById(UUID.fromString("3930e05a-7ebf-4aa1-8aa8-5d7466fa9734"))).thenThrow(new CategoriaNotFoundException(UUID.fromString("3930e05a-7ebf-4aa1-8aa8-5d7466fa9734")));
+        when(service.getCategoryById(UUID.fromString("3930e05a-7ebf-4aa1-8aa8-5d7466fa9734"))).thenThrow(new CategoryNotFoundException(UUID.fromString("3930e05a-7ebf-4aa1-8aa8-5d7466fa9734")));
 
         MockHttpServletResponse response = mockMvc.perform(get(endPoint + "/3930e05a-7ebf-4aa1-8aa8-5d7466fa9734").accept(MediaType.APPLICATION_JSON))
                 .andReturn().getResponse();
@@ -404,16 +404,16 @@ class CategoryControllerTest {
                 () -> assertEquals("Categoria con id 3930e05a-7ebf-4aa1-8aa8-5d7466fa9734 no encontrada", errorResponse.msg())
         );
 
-        verify(service, times(1)).getCategoriaById(UUID.fromString("3930e05a-7ebf-4aa1-8aa8-5d7466fa9734"));
+        verify(service, times(1)).getCategoryById(UUID.fromString("3930e05a-7ebf-4aa1-8aa8-5d7466fa9734"));
     }
 
     @Test
     void addCategoria() throws Exception {
-        when(service.createCategoria(categoriaCreateDto)).thenReturn(category1);
+        when(service.createCategory(categoryCreateDTO)).thenReturn(category1);
 
         MockHttpServletResponse response = mockMvc.perform(post(endPoint)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(mapper.writeValueAsString(categoriaCreateDto)))
+                        .content(mapper.writeValueAsString(categoryCreateDTO)))
                 .andReturn().getResponse();
 
         Category category = mapper.readValue(response.getContentAsString(), Category.class);
@@ -424,16 +424,16 @@ class CategoryControllerTest {
                 () -> assertEquals(category1.getName(), category.getName())
         );
 
-        verify(service, times(1)).createCategoria(categoriaCreateDto);
+        verify(service, times(1)).createCategory(categoryCreateDTO);
     }
 
     @Test
     void addCategoryWithoutName() throws Exception {
-        categoriaCreateDto.setName(null);
+        categoryCreateDTO.setName(null);
 
         MockHttpServletResponse response = mockMvc.perform(post(endPoint)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(mapper.writeValueAsString(categoriaCreateDto)))
+                        .content(mapper.writeValueAsString(categoryCreateDTO)))
                 .andReturn().getResponse();
 
         ObjectMapper mapper = new ObjectMapper();
@@ -447,34 +447,34 @@ class CategoryControllerTest {
                 () -> assertEquals("El nombre no puede estar vacío", errors.get("name"))
         );
 
-        verify(service, times(0)).createCategoria(categoriaCreateDto);
+        verify(service, times(0)).createCategory(categoryCreateDTO);
     }
 
     @Test
     void addCategoriaAlreadyExistSameName() throws Exception {
-        when(service.createCategoria(categoriaCreateDto)).thenThrow(new CategoriaConflictException("Ya existe una categoria con el nombre: " + categoriaCreateDto.getName()));
+        when(service.createCategory(categoryCreateDTO)).thenThrow(new CategoryConflictException("Ya existe una categoria con el nombre: " + categoryCreateDTO.getName()));
 
         MockHttpServletResponse response = mockMvc.perform(post(endPoint)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(mapper.writeValueAsString(categoriaCreateDto)))
+                        .content(mapper.writeValueAsString(categoryCreateDTO)))
                 .andReturn().getResponse();
 
         ErrorResponse errorResponse = mapper.readValue(response.getContentAsString(), ErrorResponse.class);
         assertAll(
                 () -> assertEquals(HttpStatus.CONFLICT.value(), response.getStatus()),
-                () -> assertEquals("Ya existe una categoria con el nombre: " + categoriaCreateDto.getName(), errorResponse.msg())
+                () -> assertEquals("Ya existe una categoria con el nombre: " + categoryCreateDTO.getName(), errorResponse.msg())
         );
 
-        verify(service, times(1)).createCategoria(categoriaCreateDto);
+        verify(service, times(1)).createCategory(categoryCreateDTO);
     }
 
     @Test
     void updateCategoria() throws Exception {
-        when(service.updateCategoria(UUID.fromString("3930e05a-7ebf-4aa1-8aa8-5d7466fa9734"), categoriaCreateDto)).thenReturn(category1);
+        when(service.updateCategory(UUID.fromString("3930e05a-7ebf-4aa1-8aa8-5d7466fa9734"), categoryCreateDTO)).thenReturn(category1);
 
         MockHttpServletResponse response = mockMvc.perform(put(endPoint + "/3930e05a-7ebf-4aa1-8aa8-5d7466fa9734")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(mapper.writeValueAsString(categoriaCreateDto)))
+                        .content(mapper.writeValueAsString(categoryCreateDTO)))
                 .andReturn().getResponse();
 
         Category category = mapper.readValue(response.getContentAsString(), Category.class);
@@ -485,16 +485,16 @@ class CategoryControllerTest {
                 () -> assertEquals(category1.getName(), category.getName())
         );
 
-        verify(service, times(1)).updateCategoria(UUID.fromString("3930e05a-7ebf-4aa1-8aa8-5d7466fa9734"), categoriaCreateDto);
+        verify(service, times(1)).updateCategory(UUID.fromString("3930e05a-7ebf-4aa1-8aa8-5d7466fa9734"), categoryCreateDTO);
     }
 
     @Test
     void updateWithoutName() throws Exception {
-        categoriaCreateDto.setName(null);
+        categoryCreateDTO.setName(null);
 
         MockHttpServletResponse response = mockMvc.perform(put(endPoint + "/3930e05a-7ebf-4aa1-8aa8-5d7466fa9734")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(mapper.writeValueAsString(categoriaCreateDto)))
+                        .content(mapper.writeValueAsString(categoryCreateDTO)))
                 .andReturn().getResponse();
 
         ObjectMapper mapper = new ObjectMapper();
@@ -504,29 +504,29 @@ class CategoryControllerTest {
 
     @Test
     void updateCategoriaAlreadyExistSameName() throws Exception {
-        when(service.updateCategoria(UUID.fromString("3930e05a-7ebf-4aa1-8aa8-5d7466fa9734"), categoriaCreateDto)).thenThrow(new CategoriaConflictException("Ya existe una categoria con el nombre: " + categoriaCreateDto.getName()));
+        when(service.updateCategory(UUID.fromString("3930e05a-7ebf-4aa1-8aa8-5d7466fa9734"), categoryCreateDTO)).thenThrow(new CategoryConflictException("Ya existe una categoria con el nombre: " + categoryCreateDTO.getName()));
 
         MockHttpServletResponse response = mockMvc.perform(put(endPoint + "/3930e05a-7ebf-4aa1-8aa8-5d7466fa9734")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(mapper.writeValueAsString(categoriaCreateDto)))
+                        .content(mapper.writeValueAsString(categoryCreateDTO)))
                 .andReturn().getResponse();
 
         ErrorResponse errorResponse = mapper.readValue(response.getContentAsString(), ErrorResponse.class);
         assertAll(
                 () -> assertEquals(HttpStatus.CONFLICT.value(), response.getStatus()),
-                () -> assertEquals("Ya existe una categoria con el nombre: " + categoriaCreateDto.getName(), errorResponse.msg())
+                () -> assertEquals("Ya existe una categoria con el nombre: " + categoryCreateDTO.getName(), errorResponse.msg())
         );
 
-        verify(service, times(1)).updateCategoria(UUID.fromString("3930e05a-7ebf-4aa1-8aa8-5d7466fa9734"), categoriaCreateDto);
+        verify(service, times(1)).updateCategory(UUID.fromString("3930e05a-7ebf-4aa1-8aa8-5d7466fa9734"), categoryCreateDTO);
     }
 
     @Test
     void updateCategoriaNotFound() throws Exception {
-        when(service.updateCategoria(UUID.fromString("3930e05a-7ebf-4aa1-8aa8-5d7466fa9734"), categoriaCreateDto)).thenThrow(new CategoriaNotFoundException(UUID.fromString("3930e05a-7ebf-4aa1-8aa8-5d7466fa9734")));
+        when(service.updateCategory(UUID.fromString("3930e05a-7ebf-4aa1-8aa8-5d7466fa9734"), categoryCreateDTO)).thenThrow(new CategoryNotFoundException(UUID.fromString("3930e05a-7ebf-4aa1-8aa8-5d7466fa9734")));
 
         MockHttpServletResponse response = mockMvc.perform(put(endPoint + "/3930e05a-7ebf-4aa1-8aa8-5d7466fa9734")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(mapper.writeValueAsString(categoriaCreateDto)))
+                        .content(mapper.writeValueAsString(categoryCreateDTO)))
                 .andReturn().getResponse();
 
         ErrorResponse errorResponse = mapper.readValue(response.getContentAsString(), ErrorResponse.class);
@@ -535,7 +535,7 @@ class CategoryControllerTest {
                 () -> assertEquals("Categoria con id 3930e05a-7ebf-4aa1-8aa8-5d7466fa9734 no encontrada", errorResponse.msg())
         );
 
-        verify(service, times(1)).updateCategoria(UUID.fromString("3930e05a-7ebf-4aa1-8aa8-5d7466fa9734"), categoriaCreateDto);
+        verify(service, times(1)).updateCategory(UUID.fromString("3930e05a-7ebf-4aa1-8aa8-5d7466fa9734"), categoryCreateDTO);
     }
 
     @Test
@@ -553,7 +553,7 @@ class CategoryControllerTest {
 
     @Test
     void deleteCategoriaNotFound() throws Exception {
-        doThrow(new CategoriaNotFoundException(UUID.fromString("3930e05a-7ebf-4aa1-8aa8-5d7466fa9734"))).when(service).deleteById(UUID.fromString("3930e05a-7ebf-4aa1-8aa8-5d7466fa9734"));
+        doThrow(new CategoryNotFoundException(UUID.fromString("3930e05a-7ebf-4aa1-8aa8-5d7466fa9734"))).when(service).deleteById(UUID.fromString("3930e05a-7ebf-4aa1-8aa8-5d7466fa9734"));
 
         MockHttpServletResponse response = mockMvc.perform(delete(endPoint + "/3930e05a-7ebf-4aa1-8aa8-5d7466fa9734")
                         .contentType(MediaType.APPLICATION_JSON))
@@ -570,7 +570,7 @@ class CategoryControllerTest {
 
     @Test
     void deleteCategoriaBadRequest() throws Exception {
-        doThrow(new CategoriaConflictException("No se puede eliminar la categoria porque tiene libros asociados")).when(service).deleteById(UUID.fromString("3930e05a-7ebf-4aa1-8aa8-5d7466fa9734"));
+        doThrow(new CategoryConflictException("No se puede eliminar la categoria porque tiene libros asociados")).when(service).deleteById(UUID.fromString("3930e05a-7ebf-4aa1-8aa8-5d7466fa9734"));
 
         MockHttpServletResponse response = mockMvc.perform(delete(endPoint + "/3930e05a-7ebf-4aa1-8aa8-5d7466fa9734")
                         .contentType(MediaType.APPLICATION_JSON))

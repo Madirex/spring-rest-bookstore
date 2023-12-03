@@ -1,7 +1,6 @@
 package com.nullers.restbookstore.rest.orders.models;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.nullers.restbookstore.rest.client.model.Client;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
@@ -19,6 +18,9 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
+/**
+ * Clase Order
+ */
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -37,7 +39,7 @@ public class Order {
     @NotNull(message = "El cliente no puede ser nulo")
     private UUID clientId;
 
-    @NotNull(message = "La tienda no puede ser nula")
+    @NotNull(message = "El id de la tienda no puede ser nulo")
     private UUID shopId;
 
     @NotNull(message = "El pedido debe tener al menos una línea de pedido")
@@ -60,12 +62,20 @@ public class Order {
     @Builder.Default
     private Boolean isDeleted = false;
 
+    /**
+     * Método que devuelve el ID del pedido
+     *
+     * @return id del pedido
+     */
     @JsonProperty("id")
-    public String get_id() {
+    public String getId() {
         return id.toHexString();
     }
 
-    public void calculateLines(){
+    /**
+     * Método que calcula el total y el total de libros del pedido
+     */
+    public void calculateLines() {
         this.totalBooks = orderLines != null ? orderLines.size() : 0;
         this.total = orderLines != null ? orderLines.stream().mapToDouble(OrderLine::getTotal).sum() : 0.0;
     }

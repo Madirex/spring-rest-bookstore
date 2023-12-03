@@ -7,6 +7,9 @@ import org.hibernate.annotations.ColumnDefault;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
+/**
+ * Category entity
+ */
 @Builder
 @Getter
 @Setter
@@ -34,6 +37,9 @@ public class Category {
     @ColumnDefault(value = "CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP")
     private LocalDateTime updatedAt;
 
+    /**
+     * Set createdAt and updatedAt timestamps
+     */
     @PrePersist
     protected void onCreate() {
         if (createdAt == null) {

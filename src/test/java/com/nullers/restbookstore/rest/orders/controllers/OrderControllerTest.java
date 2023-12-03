@@ -426,7 +426,7 @@ public class OrderControllerTest {
 
         assertAll(
                 () -> assertEquals(HttpStatus.NOT_FOUND.value(), response.getStatus()),
-                () -> assertEquals("El pedido con id " + order.get_id() + " no existe", errorResponse.msg())
+                () -> assertEquals("El pedido con id " + order.getId() + " no existe", errorResponse.msg())
         );
 
         verify(orderService, times(1)).getOrderById(any(ObjectId.class));
@@ -471,7 +471,7 @@ public class OrderControllerTest {
 
         assertAll(
                 () -> assertEquals(HttpStatus.NOT_FOUND.value(), response.getStatus()),
-                () -> assertEquals("El pedido con id " + order.get_id() + " no existe", errorResponse.msg())
+                () -> assertEquals("El pedido con id " + order.getId() + " no existe", errorResponse.msg())
         );
 
         verify(orderService, times(1)).createOrder(any(OrderCreateDto.class));
@@ -550,7 +550,7 @@ public class OrderControllerTest {
 
         assertAll(
                 () -> assertEquals(HttpStatus.BAD_REQUEST.value(), response.getStatus()),
-                () -> assertEquals("El pedido con id " + order.get_id() + " no tiene items", errorResponse.msg())
+                () -> assertEquals("El pedido con id " + order.getId() + " no tiene items", errorResponse.msg())
         );
 
         verify(orderService, times(1)).createOrder(any(OrderCreateDto.class));
@@ -879,7 +879,7 @@ public class OrderControllerTest {
 
         assertAll(
                 () -> assertEquals(HttpStatus.NOT_FOUND.value(), response.getStatus()),
-                () -> assertEquals("El pedido con id " + order.get_id() + " no existe", errorResponse.msg())
+                () -> assertEquals("El pedido con id " + order.getId() + " no existe", errorResponse.msg())
         );
 
         verify(orderService, times(1)).updateOrder(any(ObjectId.class), any(OrderCreateDto.class));
@@ -958,7 +958,7 @@ public class OrderControllerTest {
 
         assertAll(
                 () -> assertEquals(HttpStatus.BAD_REQUEST.value(), response.getStatus()),
-                () -> assertEquals("El pedido con id " + order.get_id() + " no tiene items", errorResponse.msg())
+                () -> assertEquals("El pedido con id " + order.getId() + " no tiene items", errorResponse.msg())
         );
 
         verify(orderService, times(1)).updateOrder(any(ObjectId.class), any(OrderCreateDto.class));

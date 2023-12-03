@@ -2,13 +2,13 @@ package com.nullers.restbookstore.rest.category.exceptions;
 
 import java.util.UUID;
 
-public class CategoriaNotFoundException extends CategoriaException{
+public class CategoryNotFoundException extends CategoryException {
 
-            public CategoriaNotFoundException(UUID id) {
+            public CategoryNotFoundException(UUID id) {
                 super("Categoria con id " + id + " no encontrada");
             }
 
-            public CategoriaNotFoundException(String name) {
+            public CategoryNotFoundException(String name) {
                 super("Categoria con nombre " + name + " no encontrada");
             }
 }

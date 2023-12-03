@@ -8,10 +8,17 @@ import org.springframework.stereotype.Repository;
 import java.util.Optional;
 import java.util.UUID;
 
+/**
+ * Interfaz CategoryRepositoryJpa
+ */
 @Repository
-public interface CategoriasRepositoryJpa extends JpaRepository<Category, UUID>, JpaSpecificationExecutor<Category> {
+public interface CategoryRepositoryJpa extends JpaRepository<Category, UUID>, JpaSpecificationExecutor<Category> {
 
-    public Optional<Category> findById(UUID id);
-
-    public Optional<Category> findByName(String name);
+    /**
+     * Método para obtener una categoría por su nombre
+     *
+     * @param name nombre de la categoría
+     * @return categoría
+     */
+    Optional<Category> findByName(String name);
 }

@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
  * @author Madirex
  */
 @ResponseStatus(HttpStatus.BAD_REQUEST)
-public class CategoryInvalidID extends CategoriaException {
+public class CategoryInvalidID extends CategoryException {
     /**
      * Constructor CategoryInvalidID
      *

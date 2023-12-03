@@ -15,10 +15,10 @@ import com.nullers.restbookstore.rest.book.mappers.BookNotificationMapper;
 import com.nullers.restbookstore.rest.book.model.Book;
 import com.nullers.restbookstore.rest.book.repository.BookRepository;
 import com.nullers.restbookstore.rest.book.services.BookServiceImpl;
-import com.nullers.restbookstore.rest.category.exceptions.CategoriaNotFoundException;
+import com.nullers.restbookstore.rest.category.exceptions.CategoryNotFoundException;
 import com.nullers.restbookstore.rest.category.model.Category;
-import com.nullers.restbookstore.rest.category.repository.CategoriasRepositoryJpa;
-import com.nullers.restbookstore.rest.category.services.CategoriaServiceJpa;
+import com.nullers.restbookstore.rest.category.repository.CategoryRepositoryJpa;
+import com.nullers.restbookstore.rest.category.services.CategoryServiceJpa;
 import com.nullers.restbookstore.rest.publisher.dto.PublisherDTO;
 import com.nullers.restbookstore.rest.publisher.dto.PublisherData;
 import com.nullers.restbookstore.rest.publisher.mappers.PublisherMapper;
@@ -66,7 +66,7 @@ class BookServiceImplTest {
     private PublisherService publisherService;
 
     @Mock
-    private CategoriasRepositoryJpa categoriasRepositoryJpa;
+    private CategoryRepositoryJpa categoryRepositoryJpa;
 
     @Mock
     private StorageService storageService;
@@ -83,7 +83,7 @@ class BookServiceImplTest {
     private ObjectMapper objectMapper;
 
     @Mock
-    private CategoriaServiceJpa categoryService;
+    private CategoryServiceJpa categoryService;
 
     @InjectMocks
     private BookServiceImpl bookService;
@@ -234,7 +234,7 @@ class BookServiceImplTest {
         when(publisherService.findById(1L)).thenReturn(any());
         when(publisherMapper.toPublisher(publisherDTO)).thenReturn(publisher);
         when(bookRepository.save(inserted)).thenReturn(inserted);
-        when(categoriasRepositoryJpa.findByName(any()))
+        when(categoryRepositoryJpa.findByName(any()))
                 .thenReturn(Optional.of(category));
         when(bookMapperImpl.toBook(insert, publisher, category)).thenReturn(inserted);
         when(publisherMapper.toPublisherData(any())).thenReturn(publisherData);
@@ -265,8 +265,8 @@ class BookServiceImplTest {
         var publisherDTO = PublisherDTO.builder().id(1L).build();
         when(publisherService.findById(1L)).thenReturn(any());
         when(publisherMapper.toPublisher(publisherDTO)).thenReturn(publisher);
-        when(categoriasRepositoryJpa.findByName(any())).thenReturn(Optional.empty());
-        assertThrows(CategoriaNotFoundException.class, () -> bookService.postBook(insert));
+        when(categoryRepositoryJpa.findByName(any())).thenReturn(Optional.empty());
+        assertThrows(CategoryNotFoundException.class, () -> bookService.postBook(insert));
     }
 
     /**
@@ -296,7 +296,7 @@ class BookServiceImplTest {
         when(publisherService.findById(1L)).thenReturn(any());
         when(publisherMapper.toPublisher(publisherDTO)).thenReturn(publisher);
         when(bookRepository.save(inserted)).thenReturn(inserted);
-        when(categoriasRepositoryJpa.findByName(any()))
+        when(categoryRepositoryJpa.findByName(any()))
                 .thenReturn(Optional.of(category));
         when(bookRepository.findById(inserted.getId())).thenReturn(Optional.of(inserted));
         when(bookMapperImpl.toBook(inserted, update, publisher, category)).thenReturn(inserted);
@@ -350,7 +350,7 @@ class BookServiceImplTest {
                 .publisher(publisher).description("descripción")
                 .createdAt(LocalDateTime.now()).updatedAt(LocalDateTime.now()).active(true).build();
         when(publisherService.findById(1L)).thenReturn(any());
-        when(categoryService.getCategoriaById(categoryId)).thenReturn(any());
+        when(categoryService.getCategoryById(categoryId)).thenReturn(any());
         when(publisherMapper.toPublisher(publisherDTO)).thenReturn(publisher);
         when(bookRepository.save(inserted)).thenReturn(inserted);
         when(bookRepository.findById(inserted.getId())).thenReturn(Optional.of(inserted));

@@ -1,14 +1,13 @@
 package com.nullers.restbookstore.rest.category.controller;
 
-
 import com.nullers.restbookstore.pagination.models.ErrorResponse;
 import com.nullers.restbookstore.pagination.models.PageResponse;
 import com.nullers.restbookstore.pagination.util.PaginationLinksUtils;
-import com.nullers.restbookstore.rest.category.dto.CategoriaCreateDto;
-import com.nullers.restbookstore.rest.category.exceptions.CategoriaConflictException;
-import com.nullers.restbookstore.rest.category.exceptions.CategoriaNotFoundException;
+import com.nullers.restbookstore.rest.category.dto.CategoryCreateDTO;
+import com.nullers.restbookstore.rest.category.exceptions.CategoryConflictException;
+import com.nullers.restbookstore.rest.category.exceptions.CategoryNotFoundException;
 import com.nullers.restbookstore.rest.category.model.Category;
-import com.nullers.restbookstore.rest.category.services.CategoriaServiceJpa;
+import com.nullers.restbookstore.rest.category.services.CategoryServiceJpa;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,21 +24,42 @@ import org.springframework.web.util.UriComponentsBuilder;
 import java.util.Optional;
 import java.util.UUID;
 
+/**
+ * Clase CategoryControllerRest
+ */
 @RestController
 @RequestMapping("/api/categories")
 @PreAuthorize("hasRole('ADMIN')")
-public class CategoriaControllerRest {
+public class CategoryControllerRest {
 
-    private final CategoriaServiceJpa service;
+    private final CategoryServiceJpa service;
 
     private final PaginationLinksUtils paginationLinksUtils;
 
+    /**
+     * Constructor
+     *
+     * @param service              servicio de categoría
+     * @param paginationLinksUtils utilidad de paginación
+     */
     @Autowired
-    public CategoriaControllerRest(CategoriaServiceJpa service, PaginationLinksUtils paginationLinksUtils) {
+    public CategoryControllerRest(CategoryServiceJpa service, PaginationLinksUtils paginationLinksUtils) {
         this.service = service;
         this.paginationLinksUtils = paginationLinksUtils;
     }
 
+    /**
+     * Método para obtener todas las categorías
+     *
+     * @param name     nombre por el que filtrar
+     * @param isActive activa o no
+     * @param page     página
+     * @param size     tamaño de la página
+     * @param sortBy   campo por el que ordenar
+     * @param order    dirección de la ordenación
+     * @param request  petición
+     * @return ResponseEntity<PageResponse < Category>> con las categorías
+     */
     @GetMapping
     public ResponseEntity<PageResponse<Category>> getCategorias(
             @RequestParam(required = false) Optional<String> name,
@@ -61,17 +81,17 @@ public class CategoriaControllerRest {
 
     @GetMapping("/{id}")
     public ResponseEntity<Category> getCategoria(@PathVariable UUID id) {
-        return ResponseEntity.ok(service.getCategoriaById(id));
+        return ResponseEntity.ok(service.getCategoryById(id));
     }
 
     @PostMapping
-    public ResponseEntity<Category> addCategoria(@Valid @RequestBody CategoriaCreateDto categoriaCreateDto) {
-        return ResponseEntity.ok(service.createCategoria(categoriaCreateDto));
+    public ResponseEntity<Category> addCategoria(@Valid @RequestBody CategoryCreateDTO categoryCreateDTO) {
+        return ResponseEntity.ok(service.createCategory(categoryCreateDTO));
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Category> updateCategoria(@PathVariable UUID id, @Valid @RequestBody CategoriaCreateDto categoriaCreateDto) {
-        return ResponseEntity.ok(service.updateCategoria(id, categoriaCreateDto));
+    public ResponseEntity<Category> updateCategoria(@PathVariable UUID id, @Valid @RequestBody CategoryCreateDTO categoryCreateDTO) {
+        return ResponseEntity.ok(service.updateCategory(id, categoryCreateDTO));
     }
 
     @DeleteMapping("/{id}")
@@ -80,9 +100,9 @@ public class CategoriaControllerRest {
         return ResponseEntity.ok().build();
     }
 
-    @ExceptionHandler(CategoriaNotFoundException.class)
+    @ExceptionHandler(CategoryNotFoundException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
-    public ErrorResponse handleCategoryNotFound(CategoriaNotFoundException exception) {
+    public ErrorResponse handleCategoryNotFound(CategoryNotFoundException exception) {
         return new ErrorResponse(HttpStatus.NOT_FOUND.value(), exception.getMessage());
     }
 
@@ -100,9 +120,9 @@ public class CategoriaControllerRest {
     }
 
 
-    @ExceptionHandler(CategoriaConflictException.class)
+    @ExceptionHandler(CategoryConflictException.class)
     @ResponseStatus(HttpStatus.CONFLICT)
-    public ErrorResponse handleCategoriaConflictException(CategoriaConflictException exception) {
+    public ErrorResponse handleCategoriaConflictException(CategoryConflictException exception) {
         return new ErrorResponse(HttpStatus.CONFLICT.value(), exception.getMessage());
     }
 }

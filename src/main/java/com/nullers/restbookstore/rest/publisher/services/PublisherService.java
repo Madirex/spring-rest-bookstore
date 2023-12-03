@@ -43,8 +43,7 @@ public interface PublisherService {
     void deleteById(Long id);
 
     void deleteAll();
-
-
+    
     PublisherDTO updateImage(Long id, MultipartFile image, Boolean withUrl) throws BookNotFoundException,
             PublisherNotFound, PublisherIDNotValid, IOException;
 }

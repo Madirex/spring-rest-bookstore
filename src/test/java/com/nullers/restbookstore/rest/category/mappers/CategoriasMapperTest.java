@@ -1,6 +1,6 @@
 package com.nullers.restbookstore.rest.category.mappers;
 
-import com.nullers.restbookstore.rest.category.dto.CategoriaCreateDto;
+import com.nullers.restbookstore.rest.category.dto.CategoryCreateDTO;
 import com.nullers.restbookstore.rest.category.model.Category;
 import org.junit.jupiter.api.Test;
 
@@ -15,28 +15,28 @@ public class CategoriasMapperTest {
             .name("categoria 2")
             .build();
 
-    CategoriaCreateDto categoriaCreateDto = CategoriaCreateDto.builder()
+    CategoryCreateDTO categoryCreateDTO = CategoryCreateDTO.builder()
             .name("categoria 1")
             .isActive(true)
             .build();
 
     @Test
     void toEntity() {
-        Category category = CategoriaCreateMapper.toEntity(categoriaCreateDto);
+        Category category = CategoryCreateMapper.toEntity(categoryCreateDTO);
 
         assertAll(
-                () -> assertEquals(categoriaCreateDto.getName(), category.getName()),
-                () -> assertEquals(categoriaCreateDto.isActive(), category.getIsActive())
+                () -> assertEquals(categoryCreateDTO.getName(), category.getName()),
+                () -> assertEquals(categoryCreateDTO.isActive(), category.getIsActive())
         );
     }
 
     @Test
     void toEntity2() {
-        Category category = CategoriaCreateMapper.toEntity(categoriaCreateDto, category2);
+        Category category = CategoryCreateMapper.toEntity(categoryCreateDTO, category2);
 
         assertAll(
-                () -> assertEquals(categoriaCreateDto.getName(), category.getName()),
-                () -> assertEquals(categoriaCreateDto.isActive(), category.getIsActive()),
+                () -> assertEquals(categoryCreateDTO.getName(), category.getName()),
+                () -> assertEquals(categoryCreateDTO.isActive(), category.getIsActive()),
                 () -> assertEquals(category2.getId(), category.getId()),
                 () -> assertEquals(category2.getCreatedAt(), category.getCreatedAt())
         );
@@ -44,11 +44,11 @@ public class CategoriasMapperTest {
 
     @Test
     void toDto() {
-        CategoriaCreateDto categoriaCreateDto = CategoriaCreateMapper.toDto(category2);
+        CategoryCreateDTO categoryCreateDTO = CategoryCreateMapper.toDto(category2);
 
         assertAll(
-                () -> assertEquals(category2.getName(), categoriaCreateDto.getName()),
-                () -> assertEquals(category2.getIsActive(), categoriaCreateDto.isActive())
+                () -> assertEquals(category2.getName(), categoryCreateDTO.getName()),
+                () -> assertEquals(category2.getIsActive(), categoryCreateDTO.isActive())
         );
     }
 

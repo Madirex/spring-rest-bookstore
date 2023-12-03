@@ -16,11 +16,11 @@ import com.nullers.restbookstore.rest.book.mappers.BookNotificationMapper;
 import com.nullers.restbookstore.rest.book.model.Book;
 import com.nullers.restbookstore.rest.book.notification.BookNotificationResponse;
 import com.nullers.restbookstore.rest.book.repository.BookRepository;
-import com.nullers.restbookstore.rest.category.exceptions.CategoriaNotFoundException;
+import com.nullers.restbookstore.rest.category.exceptions.CategoryNotFoundException;
 import com.nullers.restbookstore.rest.category.exceptions.CategoryInvalidID;
 import com.nullers.restbookstore.rest.category.model.Category;
-import com.nullers.restbookstore.rest.category.repository.CategoriasRepositoryJpa;
-import com.nullers.restbookstore.rest.category.services.CategoriaServiceJpa;
+import com.nullers.restbookstore.rest.category.repository.CategoryRepositoryJpa;
+import com.nullers.restbookstore.rest.category.services.CategoryServiceJpa;
 import com.nullers.restbookstore.rest.publisher.exceptions.PublisherIDNotValid;
 import com.nullers.restbookstore.rest.publisher.exceptions.PublisherNotFound;
 import com.nullers.restbookstore.rest.publisher.mappers.PublisherMapper;
@@ -70,10 +70,10 @@ public class BookServiceImpl implements BookService {
     private WebSocketHandler webSocketService;
     private final StorageService storageService;
     private final PublisherService publisherService;
-    private final CategoriaServiceJpa categoryService;
+    private final CategoryServiceJpa categoryService;
     private final ObjectMapper mapper;
     private final BookNotificationMapper bookNotificationMapper;
-    private final CategoriasRepositoryJpa categoriasRepositoryJpa;
+    private final CategoryRepositoryJpa categoryRepositoryJpa;
 
 
     /**
@@ -91,8 +91,8 @@ public class BookServiceImpl implements BookService {
     @Autowired
     public BookServiceImpl(BookRepository bookRepository, BookMapperImpl bookMapperImpl,
                            PublisherMapper publisherMapper, WebSocketConfig webSocketConfig, StorageService storageService,
-                           PublisherService publisherService, CategoriaServiceJpa categoryService,
-                           BookNotificationMapper bookNotificationMapper, CategoriasRepositoryJpa categoryRepository) {
+                           PublisherService publisherService, CategoryServiceJpa categoryService,
+                           BookNotificationMapper bookNotificationMapper, CategoryRepositoryJpa categoryRepository) {
         this.bookRepository = bookRepository;
         this.bookMapperImpl = bookMapperImpl;
         this.publisherMapper = publisherMapper;
@@ -103,7 +103,7 @@ public class BookServiceImpl implements BookService {
         this.categoryService = categoryService;
         this.bookNotificationMapper = bookNotificationMapper;
         this.mapper = new ObjectMapper();
-        this.categoriasRepositoryJpa = categoryRepository;
+        this.categoryRepositoryJpa = categoryRepository;
     }
 
     /**
@@ -230,7 +230,7 @@ public class BookServiceImpl implements BookService {
         if (book.getCategory() != null) {
             try {
                 var uuid = UUID.fromString(book.getCategory());
-                opt.get().setCategory(categoryService.getCategoriaById(uuid));
+                opt.get().setCategory(categoryService.getCategoryById(uuid));
             } catch (IllegalArgumentException e) {
                 throw new CategoryInvalidID(book.getCategory());
             }
@@ -329,9 +329,9 @@ public class BookServiceImpl implements BookService {
      * @return categoría
      */
     public Category checkCategory(String category) {
-        var res = categoriasRepositoryJpa.findByName(category);
+        var res = categoryRepositoryJpa.findByName(category);
         if (res.isEmpty() || Boolean.TRUE.equals(!res.get().getIsActive())) {
-            throw new CategoriaNotFoundException("La categoría no existe o no esta activa");
+            throw new CategoryNotFoundException("La categoría no existe o no esta activa");
         }
         return res.get();
     }

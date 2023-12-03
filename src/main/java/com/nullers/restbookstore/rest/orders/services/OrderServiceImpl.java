@@ -155,7 +155,7 @@ public class OrderServiceImpl implements OrderService {
         orderLines = order.getOrderLines();
 
         if (orderLines == null || orderLines.isEmpty()) {
-            throw new OrderNotItemsExceptions(order.get_id());
+            throw new OrderNotItemsExceptions(order.getId());
         }
 
         orderLines.stream().forEach(lp -> {
@@ -172,7 +172,7 @@ public class OrderServiceImpl implements OrderService {
     Order reserveStockOrder(Order order) {
         List<OrderLine> orderLines = order.getOrderLines();
         if (orderLines == null || orderLines.isEmpty()) {
-            throw new OrderNotItemsExceptions(order.get_id());
+            throw new OrderNotItemsExceptions(order.getId());
         }
 
         orderLines.stream().forEach(lp -> {
@@ -189,7 +189,7 @@ public class OrderServiceImpl implements OrderService {
 
     void returnStockPedido(Order order) {
         if (order.getOrderLines() != null || !order.getOrderLines().isEmpty()) {
-            order.getOrderLines().stream().forEach(lp -> {
+            order.getOrderLines().forEach(lp -> {
                 Book book = bookRepository.findById(lp.getBookId()).orElseThrow(() -> new BookNotFoundException("El libro con id " + lp.getBookId() + " no existe"));
                 book.setStock(book.getStock() + lp.getQuantity());
                 bookRepository.save(book);

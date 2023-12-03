@@ -34,7 +34,7 @@ import java.util.UUID;
 /**
  * Controlador de Clientes
  *
- * @author daniel
+ * @author Daniel
  * @see ClientServiceImpl
  * @see PaginationLinksUtils
  * @see ClientCreateDto
