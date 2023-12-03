@@ -203,7 +203,7 @@ public class ClientController {
      * @return ResponseEntity<Void>
      */
     @Operation(summary = "Eimina un cliente", description = "Elimina un cliente")
-    @Parameter(name = "id", description = "Id de la editorial a eliminar", example = "550e8400-e29b-41d4-a716-446655440000", required = true)
+    @Parameter(name = "id", description = "Id del cliente a eliminar", example = "550e8400-e29b-41d4-a716-446655440000", required = true)
     @ApiResponses(value = {
             @ApiResponse(responseCode = "204", description = "Cliente borrado"),
             @ApiResponse(responseCode = "404", description = "Cliente no encontrado"),
