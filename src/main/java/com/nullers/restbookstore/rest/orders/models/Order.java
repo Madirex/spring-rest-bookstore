@@ -68,7 +68,7 @@ public class Order {
      * @return id del pedido
      */
     @JsonProperty("id")
-    public String getId() {
+    public String getIdStr() {
         return id.toHexString();
     }
 

@@ -155,7 +155,7 @@ public class OrderServiceImpl implements OrderService {
         orderLines = order.getOrderLines();
 
         if (orderLines == null || orderLines.isEmpty()) {
-            throw new OrderNotItemsExceptions(order.getId());
+            throw new OrderNotItemsExceptions(order.getIdStr());
         }
 
         orderLines.stream().forEach(lp -> {
@@ -172,7 +172,7 @@ public class OrderServiceImpl implements OrderService {
     Order reserveStockOrder(Order order) {
         List<OrderLine> orderLines = order.getOrderLines();
         if (orderLines == null || orderLines.isEmpty()) {
-            throw new OrderNotItemsExceptions(order.getId());
+            throw new OrderNotItemsExceptions(order.getIdStr());
         }
 
         orderLines.stream().forEach(lp -> {

@@ -315,7 +315,7 @@ class OrderControllerTestWithoutMockMvc {
 
     @Test
     void createOrder_ShouldReturnOrderNotItemsException() {
-        when(orderService.createOrder(any(OrderCreateDto.class))).thenThrow(new OrderNotItemsExceptions(order.getId()));
+        when(orderService.createOrder(any(OrderCreateDto.class))).thenThrow(new OrderNotItemsExceptions(order.getIdStr()));
 
         var res = assertThrows(OrderNotItemsExceptions.class, () -> orderController.createOrder(orderCreateDto));
 
@@ -513,7 +513,7 @@ class OrderControllerTestWithoutMockMvc {
 
     @Test
     void updateOrder_ShouldReturnOrderNotItemsException() {
-        when(orderService.updateOrder(any(ObjectId.class), any(OrderCreateDto.class))).thenThrow(new OrderNotItemsExceptions(order.getId()));
+        when(orderService.updateOrder(any(ObjectId.class), any(OrderCreateDto.class))).thenThrow(new OrderNotItemsExceptions(order.getIdStr()));
 
         var res = assertThrows(OrderNotItemsExceptions.class, () -> orderController.updateOrder(order.getId(), orderCreateDto));
 
