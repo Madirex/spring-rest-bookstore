@@ -80,7 +80,7 @@ class SwaggerConfig {
     public GroupedOpenApi httpApi() {
         return GroupedOpenApi.builder()
                 .group("https")
-                .pathsToMatch("/api/books/**")
+                .pathsToMatch("/api/books/**", "/api/auth/**")
                 .displayName("Tienda libros")
                 .build();
     }
