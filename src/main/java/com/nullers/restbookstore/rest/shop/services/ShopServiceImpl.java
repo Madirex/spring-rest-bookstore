@@ -6,7 +6,6 @@ import com.nullers.restbookstore.rest.book.repository.BookRepository;
 import com.nullers.restbookstore.rest.client.exceptions.ClientNotFound;
 import com.nullers.restbookstore.rest.client.model.Client;
 import com.nullers.restbookstore.rest.client.repository.ClientRepository;
-import com.nullers.restbookstore.rest.orders.exceptions.OrderNotFoundException;
 import com.nullers.restbookstore.rest.orders.models.Order;
 import com.nullers.restbookstore.rest.orders.repositories.OrderRepository;
 import com.nullers.restbookstore.rest.shop.dto.CreateShopDto;
@@ -14,11 +13,9 @@ import com.nullers.restbookstore.rest.shop.dto.GetShopDto;
 import com.nullers.restbookstore.rest.shop.dto.UpdateShopDto;
 import com.nullers.restbookstore.rest.shop.exceptions.ShopHasOrders;
 import com.nullers.restbookstore.rest.shop.exceptions.ShopNotFoundException;
-import com.nullers.restbookstore.rest.shop.exceptions.ShopNotValidUUIDException;
 import com.nullers.restbookstore.rest.shop.mappers.ShopMapperImpl;
 import com.nullers.restbookstore.rest.shop.model.Shop;
 import com.nullers.restbookstore.rest.shop.repository.ShopRepository;
-import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
@@ -28,9 +25,8 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.cache.annotation.CacheEvict;
 
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * Servicio que implementa las operaciones de negocio para la entidad Shop.
@@ -76,8 +72,8 @@ public class ShopServiceImpl implements ShopService {
     @Cacheable("shops")
     public Page<GetShopDto> getAllShops(Optional<String> name, Optional<String> locate, PageRequest pageable) {
         Specification<Shop> nameType = (root, query, criteriaBuilder) -> name.map(m -> {try {return criteriaBuilder.equal(criteriaBuilder.upper(root.get("name")), m.toUpperCase());} catch (IllegalArgumentException e) {return criteriaBuilder.isTrue(criteriaBuilder.literal(false));}}).orElseGet(() -> criteriaBuilder.isTrue(criteriaBuilder.literal(true)));
-        Specification<Shop> locateType = (root, query, criteriaBuilder) -> locate.map(m -> {try {return criteriaBuilder.equal(criteriaBuilder.upper(root.get("name")), m.toUpperCase());} catch (IllegalArgumentException e) {return criteriaBuilder.isTrue(criteriaBuilder.literal(false));}}).orElseGet(() -> criteriaBuilder.isTrue(criteriaBuilder.literal(true)));
-
+        Specification<Shop> locateType = (root, query, criteriaBuilder) -> locate.map(m -> {try {return criteriaBuilder.equal(criteriaBuilder.upper(root.get("location")), m.toUpperCase());} catch (IllegalArgumentException e) {return criteriaBuilder.isTrue(criteriaBuilder.literal(false));}}).orElseGet(() -> criteriaBuilder.isTrue(criteriaBuilder.literal(true)));
+        //TODO: VER COMO HACER QUE EL FILTRO DE LOCATION FUNCIONE
         Specification<Shop> criterion = Specification.where(nameType)
                 .and(locateType);
         Page<Shop> shopPage = shopRepository.findAll(criterion, pageable);
@@ -92,11 +88,10 @@ public class ShopServiceImpl implements ShopService {
      * Obtiene una tienda por su UUID y la convierte a DTO.
      * @param id Identificador UUID de la tienda.
      * @return DTO de la tienda encontrada.
-     * @throws ShopNotValidUUIDException Si el UUID proporcionado no es válido.
      * @throws ShopNotFoundException Si la tienda no se encuentra.
      */
     @Override
-    public GetShopDto getShopById(UUID id) throws ShopNotValidUUIDException, ShopNotFoundException {
+    public GetShopDto getShopById(UUID id) throws  ShopNotFoundException {
         Shop shop = shopRepository.findById(id)
                 .orElseThrow(() -> new ShopNotFoundException("Tienda no encontrada con ID: " + id));
         return shopMapper.toGetShopDto(shop);
@@ -119,11 +114,10 @@ public class ShopServiceImpl implements ShopService {
      * @param id Identificador UUID de la tienda a actualizar.
      * @param shopDto DTO con los datos actualizados.
      * @return DTO de la tienda actualizada.
-     * @throws ShopNotValidUUIDException Si el UUID proporcionado no es válido.
      * @throws ShopNotFoundException Si la tienda no se encuentra.
      */
     @Override
-    public GetShopDto updateShop(UUID id, UpdateShopDto shopDto) throws ShopNotValidUUIDException, ShopNotFoundException {
+    public GetShopDto updateShop(UUID id, UpdateShopDto shopDto) throws  ShopNotFoundException {
         Shop shop = shopRepository.findById(id)
                 .orElseThrow(() -> new ShopNotFoundException("Tienda no encontrada con ID: " + id));
         shop = shopMapper.toShop(shop, shopDto);
@@ -135,7 +129,6 @@ public class ShopServiceImpl implements ShopService {
      * Elimina una tienda de la base de datos por su UUID y evita la caché relacionada.
      * @param id Identificador UUID de la tienda a eliminar.
      * @throws ShopNotFoundException Si la tienda no se encuentra.
-     * @throws ShopNotValidUUIDException Si el UUID proporcionado no es válido.
      */
     @CacheEvict(value = "shops", allEntries = true)
     @Override
@@ -156,8 +149,10 @@ public class ShopServiceImpl implements ShopService {
                 .orElseThrow(() -> new BookNotFoundException(bookId.toString()));
         Shop shop = shopRepository.findById(id)
                 .orElseThrow(() -> new ShopNotFoundException(id.toString()));
+        Set<Book> books = new HashSet<>(shop.getBooks());
 
-        shop.getBooks().add(book);
+        books.add(book);
+        shop.setBooks(books);
         return shopMapper.toGetShopDto(shopRepository.save(shop));
     }
 
@@ -168,7 +163,11 @@ public class ShopServiceImpl implements ShopService {
         Shop shop = shopRepository.findById(id)
                 .orElseThrow(() -> new ShopNotFoundException(id.toString()));
 
-        shop.getBooks().remove(book);
+        Set<Book> books = shop.getBooks()
+                .stream()
+                .filter(b -> !b.equals(book))
+                .collect(Collectors.toSet());
+        shop.setBooks(books);
         return shopMapper.toGetShopDto(shopRepository.save(shop));
     }
 
@@ -179,7 +178,9 @@ public class ShopServiceImpl implements ShopService {
         Shop shop = shopRepository.findById(id)
                 .orElseThrow(() -> new ShopNotFoundException(id.toString()));
 
-        shop.getClients().add(client);
+        Set<Client> clients = new HashSet<>(shop.getClients());
+        clients.add(client);
+        shop.setClients(clients);
         return shopMapper.toGetShopDto(shopRepository.save(shop));
     }
 
@@ -190,7 +191,11 @@ public class ShopServiceImpl implements ShopService {
         Shop shop = shopRepository.findById(id)
                 .orElseThrow(() -> new ShopNotFoundException(id.toString()));
 
-        shop.getClients().remove(client);
+        Set<Client> clients = shop.getClients()
+                .stream()
+                .filter(c -> !c.equals(client))
+                .collect(Collectors.toSet());
+        shop.setClients(clients);
         return shopMapper.toGetShopDto(shopRepository.save(shop));
     }
 

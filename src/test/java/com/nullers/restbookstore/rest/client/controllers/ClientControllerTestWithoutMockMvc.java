@@ -98,11 +98,6 @@ public class ClientControllerTestWithoutMockMvc {
             .build();
 
 
-
-    @BeforeEach
-    void setUp() {
-    }
-
     @Test
     void getAll(){
         when(clientService.findAll(any(Optional.class), any(Optional.class), any(Optional.class), any(Optional.class), any(Optional.class), any(PageRequest.class))).thenReturn(new PageImpl(List.of(clientTest, clientTest2)));

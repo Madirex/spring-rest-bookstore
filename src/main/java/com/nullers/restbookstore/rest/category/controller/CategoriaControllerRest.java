@@ -26,6 +26,7 @@ import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/categories")
+@PreAuthorize("hasRole('ADMIN')")
 public class CategoriaControllerRest {
 
     private final CategoriaServiceJpa service;

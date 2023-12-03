@@ -13,6 +13,7 @@ import com.nullers.restbookstore.rest.orders.exceptions.OrderNotItemsExceptions;
 import com.nullers.restbookstore.rest.orders.exceptions.OrderNotStockException;
 import com.nullers.restbookstore.rest.orders.models.Order;
 import com.nullers.restbookstore.rest.orders.services.OrderService;
+import com.nullers.restbookstore.rest.orders.services.OrderServiceImpl;
 import com.nullers.restbookstore.rest.shop.exceptions.ShopNotFoundException;
 import com.nullers.restbookstore.rest.user.exceptions.UserNotFound;
 import jakarta.servlet.http.HttpServletRequest;
@@ -31,14 +32,15 @@ import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/orders")
+@PreAuthorize("hasRole('ADMIN')")
 public class OrderRestController {
 
-    private final OrderService orderService;
+    private final OrderServiceImpl orderService;
 
     private final PaginationLinksUtils paginationLinksUtils;
 
     @Autowired
-    public OrderRestController(OrderService orderService, PaginationLinksUtils paginationLinksUtils) {
+    public OrderRestController(OrderServiceImpl orderService, PaginationLinksUtils paginationLinksUtils) {
         this.orderService = orderService;
         this.paginationLinksUtils = paginationLinksUtils;
     }
@@ -55,7 +57,6 @@ public class OrderRestController {
         Sort sort = order.equalsIgnoreCase("ASC") ? Sort.by(orderBy).ascending() : Sort.by(orderBy).descending();
         Page<Order> orders = orderService.getAllOrders(PageRequest.of(page, size, sort));
         UriComponentsBuilder uriBuilder = UriComponentsBuilder.fromHttpUrl(request.getRequestURL().toString());
-
         return ResponseEntity.ok()
                 .header("link", paginationLinksUtils.createLinkHeader(orders, uriBuilder))
                 .body(PageResponse.of(orders, orderBy, order));
@@ -68,7 +69,7 @@ public class OrderRestController {
 
     @PostMapping
     public ResponseEntity<Order> createOrder(@Valid @RequestBody OrderCreateDto order) {
-        return ResponseEntity.ok(orderService.createOrder(order));
+        return ResponseEntity.status(HttpStatus.CREATED).body(orderService.createOrder(order));
     }
 
     @PutMapping("/{id}")
