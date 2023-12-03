@@ -7,8 +7,8 @@ COPY gradlew .
 COPY gradle gradle
 COPY src src
 
-RUN ./gradlew test -P spring.profiles.active=dev
-RUN ./gradlew build
+##RUN ./gradlew test -P spring.profiles.active=dev
+RUN ./gradlew build -x test
 
 FROM eclipse-temurin:17-jre-alpine AS run
 

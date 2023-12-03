@@ -40,7 +40,7 @@ services:
     restart: always
     env_file: .env
     ports:
-      - ${API_PORT}:3000
+      - ${API_PORT}:8080
     volumes:
       - book-images:/app/book-images
     networks:
