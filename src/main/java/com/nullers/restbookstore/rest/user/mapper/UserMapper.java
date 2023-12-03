@@ -29,7 +29,7 @@ public class UserMapper {
                 .username(request.getUsername())
                 .email(request.getEmail())
                 .password(request.getPassword())
-                .userRoles(request.getUserRoles())
+                .roles(request.getRoles())
                 .isDeleted(request.getIsDeleted())
                 .build();
     }
@@ -49,7 +49,7 @@ public class UserMapper {
                 .username(request.getUsername())
                 .email(request.getEmail())
                 .password(request.getPassword())
-                .userRoles(request.getUserRoles())
+                .roles(request.getRoles())
                 .isDeleted(request.getIsDeleted())
                 .build();
     }
@@ -67,7 +67,7 @@ public class UserMapper {
                 .surname(user.getSurname())
                 .username(user.getUsername())
                 .email(user.getEmail())
-                .userRoles(user.getUserRoles())
+                .roles(user.getRoles())
                 .isDeleted(user.getIsDeleted())
                 .build();
     }
@@ -85,7 +85,7 @@ public class UserMapper {
                 .surname(user.getSurname())
                 .username(user.getUsername())
                 .email(user.getEmail())
-                .userRoles(user.getUserRoles())
+                .roles(user.getRoles())
                 .order(order)
                 .isDeleted(user.getIsDeleted())
                 .build();

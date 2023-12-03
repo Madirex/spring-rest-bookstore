@@ -22,7 +22,7 @@ import com.nullers.restbookstore.rest.shop.exceptions.ShopNotFoundException;
 import com.nullers.restbookstore.rest.shop.model.Shop;
 import com.nullers.restbookstore.rest.user.exceptions.UserNotFound;
 import com.nullers.restbookstore.rest.user.models.User;
-import com.nullers.restbookstore.rest.user.models.UserRole;
+import com.nullers.restbookstore.rest.user.models.Role;
 import org.bson.types.ObjectId;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -129,7 +129,7 @@ public class OrderControllerTest {
             .password("123456789")
             .surname("García")
             .isDeleted(false)
-            .userRoles(Set.of(UserRole.USER))
+            .roles(Set.of(Role.USER))
             .build();
 
     Shop shop = Shop.builder()

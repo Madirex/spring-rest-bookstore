@@ -4,7 +4,7 @@ import com.nullers.restbookstore.rest.user.dto.UserInfoResponse;
 import com.nullers.restbookstore.rest.user.dto.UserRequest;
 import com.nullers.restbookstore.rest.user.dto.UserResponse;
 import com.nullers.restbookstore.rest.user.mapper.UserMapper;
-import com.nullers.restbookstore.rest.user.models.UserRole;
+import com.nullers.restbookstore.rest.user.models.Role;
 import com.nullers.restbookstore.rest.user.models.User;
 import org.junit.jupiter.api.Test;
 
@@ -24,7 +24,7 @@ public class UserDtoTest {
             .username("test")
             .email("test@test.com")
             .isDeleted(false)
-            .userRoles(Set.of(UserRole.USER))
+            .roles(Set.of(Role.USER))
             .build();
 
     private final User user = User.builder()
@@ -34,7 +34,7 @@ public class UserDtoTest {
             .username("test")
             .email("test@user.com")
             .isDeleted(false)
-            .userRoles(Set.of(UserRole.USER))
+            .roles(Set.of(Role.USER))
             .build();
     private final UUID uuid = UUID.fromString("123e4567-e89b-12d3-a456-426614174000");
 
@@ -47,7 +47,7 @@ public class UserDtoTest {
                 ()-> assertEquals(user.getPassword(), userRequest.getPassword()),
                 ()-> assertEquals(user.getUsername(), userRequest.getUsername()),
                 ()-> assertEquals(user.getEmail(), userRequest.getEmail()),
-                ()-> assertEquals(user.getUserRoles(), userRequest.getUserRoles()),
+                ()-> assertEquals(user.getRoles(), userRequest.getRoles()),
                 ()-> assertEquals(user.getIsDeleted(), userRequest.getIsDeleted())
         );
     }
@@ -63,7 +63,7 @@ public class UserDtoTest {
                 ()-> assertEquals(userToUser.getPassword(), userRequest.getPassword()),
                 ()-> assertEquals(userToUser.getUsername(), userRequest.getUsername()),
                 ()-> assertEquals(userToUser.getEmail(), userRequest.getEmail()),
-                ()-> assertEquals(userToUser.getUserRoles(), userRequest.getUserRoles()),
+                ()-> assertEquals(userToUser.getRoles(), userRequest.getRoles()),
                 ()-> assertEquals(userToUser.getIsDeleted(), userRequest.getIsDeleted())
 
                 );
@@ -79,7 +79,7 @@ public class UserDtoTest {
                 () -> assertEquals(userResponse.getSurname(), user.getSurname()),
                 () -> assertEquals(userResponse.getUsername(), user.getUsername()),
                 () -> assertEquals(userResponse.getEmail(), user.getEmail()),
-                () -> assertEquals(userResponse.getUserRoles(), user.getUserRoles()),
+                () -> assertEquals(userResponse.getRoles(), user.getRoles()),
                 () -> assertEquals(userResponse.getIsDeleted(), user.getIsDeleted())
         );
     }
@@ -94,7 +94,7 @@ public class UserDtoTest {
                 () -> assertEquals(userInfoResponse.getSurname(), user.getSurname()),
                 () -> assertEquals(userInfoResponse.getUsername(), user.getUsername()),
                 () -> assertEquals(userInfoResponse.getEmail(), user.getEmail()),
-                () -> assertEquals(userInfoResponse.getUserRoles(), user.getUserRoles()),
+                () -> assertEquals(userInfoResponse.getRoles(), user.getRoles()),
                 () -> assertEquals(userInfoResponse.getIsDeleted(), user.getIsDeleted()
                 )
         );

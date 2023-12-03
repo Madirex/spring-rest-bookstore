@@ -1,6 +1,6 @@
 package com.nullers.restbookstore.rest.user.dto;
 
-import com.nullers.restbookstore.rest.user.models.UserRole;
+import com.nullers.restbookstore.rest.user.models.Role;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -25,6 +25,6 @@ public class UserResponse {
     private String username;
     private String email;
     @Builder.Default
-    private Set<UserRole> userRoles = Set.of(UserRole.USER);
+    private Set<Role> roles = Set.of(Role.USER);
     private Boolean isDeleted = false;
 }

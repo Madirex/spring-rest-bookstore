@@ -258,7 +258,8 @@ class BookServiceImplTest {
     @Test
     void testPostBookNotFoundCategory() {
         var insert = CreateBookDTO.builder()
-                .name("nombre").price(2.2).image("imagen").publisherId(1L).build();
+                .name("nombre").price(2.2).image("imagen").publisherId(1L)
+                .category(UUID.randomUUID().toString()).build();
         var publisher = Publisher.builder().id(1L).createdAt(LocalDateTime.now())
                 .updatedAt(LocalDateTime.now()).build();
         var publisherDTO = PublisherDTO.builder().id(1L).build();

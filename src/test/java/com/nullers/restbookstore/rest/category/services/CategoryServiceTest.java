@@ -2,7 +2,7 @@ package com.nullers.restbookstore.rest.category.services;
 
 
 import com.nullers.restbookstore.rest.book.dto.GetBookDTO;
-import com.nullers.restbookstore.rest.book.services.BookServiceImpl;
+import com.nullers.restbookstore.rest.book.repository.BookRepository;
 import com.nullers.restbookstore.rest.category.exceptions.CategoriaConflictException;
 import com.nullers.restbookstore.rest.category.exceptions.CategoriaNotFoundException;
 import com.nullers.restbookstore.rest.category.mappers.CategoriaCreateMapper;
@@ -16,6 +16,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.*;
 import org.springframework.data.jpa.domain.Specification;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -31,7 +32,7 @@ public class CategoryServiceTest {
     private CategoriasRepositoryJpa repository;
 
     @Mock
-    private BookServiceImpl bookService;
+    private BookRepository bookRepository;
 
     @InjectMocks
     private CategoriaServiceJpaImpl service;
@@ -250,10 +251,10 @@ public class CategoryServiceTest {
 
         Page<Category> expectedPage = new PageImpl(expectedCategories);
         when(repository.findById(UUID.fromString("3930e05a-7ebf-4aa1-8aa8-5d7466fa9734"))).thenReturn(Optional.of(category1));
-        when(bookService.getAllBook(any(Optional.class),any(Optional.class),any(Optional.class), any(PageRequest.class))).thenReturn(expectedPage);
+        when(bookRepository.findByCategory_Name(any())).thenReturn(new ArrayList<>());
 
         var res = assertThrows(CategoriaConflictException.class, () -> service.deleteById(UUID.fromString("3930e05a-7ebf-4aa1-8aa8-5d7466fa9734")));
-        assertEquals("No se puede eliminar la categoria porque tiene libros asociados", res.getMessage());
+        assertEquals("No se puede eliminar la categoría porque tiene libros asociados", res.getMessage());
     }
 
 
@@ -273,7 +274,7 @@ public class CategoryServiceTest {
 
         Page<GetBookDTO> expectedPage = new PageImpl(expectedbooks);
         when(repository.findById(UUID.fromString("3930e05a-7ebf-4aa1-8aa8-5d7466fa9734"))).thenReturn(Optional.of(category1));
-        when(bookService.getAllBook(any(Optional.class),any(Optional.class),any(Optional.class), any(PageRequest.class))).thenReturn(expectedPage);
+        when(bookRepository.findByCategory_Name(any())).thenReturn(new ArrayList<>());
 
         service.deleteById(UUID.fromString("3930e05a-7ebf-4aa1-8aa8-5d7466fa9734"));
     }

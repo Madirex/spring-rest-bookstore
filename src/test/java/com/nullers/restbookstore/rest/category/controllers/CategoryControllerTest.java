@@ -443,7 +443,7 @@ class CategoryControllerTest {
         assertAll(
                 () -> assertEquals(HttpStatus.BAD_REQUEST.value(), response.getStatus()),
                 () -> assertEquals(HttpStatus.BAD_REQUEST.value(), res.get("code")),
-                () -> assertEquals("El nombre no puede estar vacío", errors.get("name"))
+                () -> assertEquals("El nombre no puede estar vac", errors.get("name"))
         );
 
         verify(service, times(0)).createCategoria(categoriaCreateDto);

@@ -60,7 +60,7 @@ public class User implements UserDetails {
     private Boolean isDeleted = false;
     @ElementCollection(fetch = FetchType.EAGER)
     @Enumerated(EnumType.STRING)
-    private Set<UserRole> userRoles;
+    private Set<Role> roles;
 
     /**
      * Retorna los roles del usuario
@@ -69,7 +69,7 @@ public class User implements UserDetails {
      */
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return userRoles.stream()
+        return roles.stream()
                 .map(role -> new SimpleGrantedAuthority("ROLE_" + role.name()))
                 .collect(Collectors.toSet());
     }

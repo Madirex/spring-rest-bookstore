@@ -22,7 +22,7 @@ import com.nullers.restbookstore.rest.orders.models.OrderLine;
 import com.nullers.restbookstore.rest.orders.repositories.OrderRepository;
 import com.nullers.restbookstore.rest.publisher.model.Publisher;
 import com.nullers.restbookstore.rest.user.models.User;
-import com.nullers.restbookstore.rest.user.models.UserRole;
+import com.nullers.restbookstore.rest.user.models.Role;
 import com.nullers.restbookstore.storage.services.StorageService;
 import org.bson.types.ObjectId;
 import org.junit.jupiter.api.BeforeEach;
@@ -136,7 +136,7 @@ class ClientServiceTest {
             .password("123456789")
             .surname("García")
             .isDeleted(false)
-            .userRoles(Set.of(UserRole.USER))
+            .roles(Set.of(Role.USER))
             .build();
 
     Order order = Order.builder()

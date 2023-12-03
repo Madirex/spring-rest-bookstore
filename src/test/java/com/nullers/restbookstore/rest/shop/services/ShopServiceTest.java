@@ -21,7 +21,7 @@ import com.nullers.restbookstore.rest.shop.mappers.ShopMapperImpl;
 import com.nullers.restbookstore.rest.shop.model.Shop;
 import com.nullers.restbookstore.rest.shop.repository.ShopRepository;
 import com.nullers.restbookstore.rest.user.models.User;
-import com.nullers.restbookstore.rest.user.models.UserRole;
+import com.nullers.restbookstore.rest.user.models.Role;
 import org.bson.types.ObjectId;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -169,7 +169,7 @@ public class ShopServiceTest {
             .password("123456789")
             .surname("García")
             .isDeleted(false)
-            .userRoles(Set.of(UserRole.USER))
+            .roles(Set.of(Role.USER))
             .build();
 
 
