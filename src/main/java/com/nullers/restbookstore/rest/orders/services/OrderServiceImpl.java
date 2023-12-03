@@ -34,10 +34,15 @@ import java.util.Objects;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+/**
+ * Clase OrderServiceImpl
+ */
 @Service
 @CacheConfig(cacheNames = "orders")
 public class OrderServiceImpl implements OrderService {
 
+    public static final String BOOK_WITH_ID_STR = "El libro con id ";
+    public static final String NO_EXISTS_MSG = " no existe";
     private final OrderRepository orderRepository;
 
     private final BookRepository bookRepository;
@@ -48,6 +53,15 @@ public class OrderServiceImpl implements OrderService {
 
     private final ShopRepository shopRepository;
 
+    /**
+     * Constructor para crear una nueva OrderServiceImpl
+     *
+     * @param orderRepository  order repository
+     * @param bookRepository   book repository
+     * @param userRepository   user repository
+     * @param clientRepository client repository
+     * @param shopRepository   shop repository
+     */
     @Autowired
     public OrderServiceImpl(OrderRepository orderRepository, BookRepository bookRepository, UserRepository userRepository, ClientRepository clientRepository, ShopRepository shopRepository) {
         this.orderRepository = orderRepository;
@@ -57,17 +71,35 @@ public class OrderServiceImpl implements OrderService {
         this.shopRepository = shopRepository;
     }
 
+    /**
+     * Método que devuelve todos los pedidos
+     *
+     * @param pageable paginación
+     * @return todos los pedidos
+     */
     @Override
     public Page<Order> getAllOrders(Pageable pageable) {
         return orderRepository.findAll(pageable);
     }
 
+    /**
+     * Método que devuelve un pedido por el ID
+     *
+     * @param id id del pedido
+     * @return pedido por el ID
+     */
     @Override
     @Cacheable(key = "#id")
     public Order getOrderById(ObjectId id) {
         return orderRepository.findById(id).orElseThrow(() -> new OrderNotFoundException(id));
     }
 
+    /**
+     * Método que crea un pedido
+     *
+     * @param orderCreateDto pedido
+     * @return pedido creado
+     */
     @Override
     @CachePut(key = "#result.id")
     public Order createOrder(OrderCreateDto orderCreateDto) {
@@ -77,64 +109,121 @@ public class OrderServiceImpl implements OrderService {
         return orderRepository.save(order);
     }
 
+    /**
+     * Método que actualiza un pedido por el ID
+     *
+     * @param id             id del pedido
+     * @param orderCreateDto pedido
+     * @return pedido actualizado
+     */
     @Override
     @CachePut(key = "#id")
     public Order updateOrder(ObjectId id, OrderCreateDto orderCreateDto) {
-        Order orderToUpdate = getOrderById(id);
+        Order orderToUpdate = orderRepository.findById(id).orElseThrow(() -> new OrderNotFoundException(id));
         Order order = OrderCreateMapper.toOrder(orderCreateDto);
         checkOrder(order);
-        returnStockPedido(orderToUpdate);
+        returnStockOrder(orderToUpdate);
         ObjectId idOrder = orderToUpdate.getId();
         orderToUpdate = reserveStockOrder(order);
         orderToUpdate.setId(idOrder);
-
         return orderRepository.save(orderToUpdate);
     }
 
+    /**
+     * Método que elimina un pedido por el ID
+     *
+     * @param id id del pedido
+     * @throws OrderNotFoundException excepción si no existe el pedido
+     */
     @Override
     @CacheEvict(key = "#id")
     public void deleteOrder(ObjectId id) throws OrderNotFoundException {
-        Order order = getOrderById(id);
-        returnStockPedido(order);
+        Order order = orderRepository.findById(id).orElseThrow(() -> new OrderNotFoundException(id));
+        returnStockOrder(order);
         orderRepository.deleteById(id);
     }
 
+    /**
+     * Método que devuelve los pedidos de un usuario por el ID del usuario
+     *
+     * @param userId   id del usuario
+     * @param pageable paginación
+     * @return pedidos de un usuario por el ID del usuario
+     */
     @Override
     public Page<Order> getOrdersByUserId(UUID userId, Pageable pageable) {
         return orderRepository.findByUserId(userId, pageable);
     }
 
+    /**
+     * Método que devuelve los pedidos de un usuario por el ID del cliente
+     *
+     * @param clientId id del cliente
+     * @param pageable paginación
+     * @return pedidos de un usuario por el ID del cliente
+     */
     @Override
     public Page<Order> getOrdersByClientId(UUID clientId, Pageable pageable) {
         return orderRepository.findByClientId(clientId, pageable);
     }
 
+    /**
+     * Método que devuelve los pedidos de una tienda por el ID de la tienda
+     *
+     * @param shopId   id de la tienda
+     * @param pageable paginación
+     * @return pedidos de una tienda por el ID de la tienda
+     */
     @Override
     public Page<Order> getOrdersByShopId(UUID shopId, Pageable pageable) {
         return orderRepository.findByShopId(shopId, pageable);
     }
 
+    /**
+     * Método que devuelve si existe un pedido por el ID del usuario
+     *
+     * @param userId id del usuario
+     * @return true si existe un pedido por el ID del usuario
+     */
     @Override
     public boolean existsByUserId(UUID userId) {
         return orderRepository.existsByUserId(userId);
     }
 
+    /**
+     * Método que devuelve si existe un pedido por el ID del cliente
+     *
+     * @param id id del pedido
+     * @return true si existe un pedido por el ID del cliente
+     */
     @Override
     public Order deleteLogicOrder(ObjectId id) {
-        Order order = getOrderById(id);
+        Order order = orderRepository.findById(id).orElseThrow(() -> new OrderNotFoundException(id));
         order.setIsDeleted(true);
         return orderRepository.save(order);
     }
 
-
+    /**
+     * Método que comprueba si un pedido es correcto
+     *
+     * @param order pedido
+     */
     public void checkOrder(Order order) {
-
         UUID idUser = order.getUserId();
-        userRepository.findById(idUser).orElseThrow(() -> new UserNotFound("El usuario con id " + idUser + " no existe"));
         UUID idClient = order.getClientId();
-        clientRepository.findById(idClient).orElseThrow(() -> new ClientNotFound("id", idClient.toString()));
         UUID idShop = order.getShopId();
-        shopRepository.findById(idShop).orElseThrow(() -> new ShopNotFoundException("La tienda con id " + idShop + " no existe"));
+        var user = userRepository.findById(idUser);
+        if (user.isEmpty()) {
+            throw new UserNotFound("El usuario con id " + idUser + NO_EXISTS_MSG);
+        }
+        var client = clientRepository.findById(idClient);
+        if (client.isEmpty()) {
+            throw new ClientNotFound("id", idClient.toString());
+        }
+        var shop = shopRepository.findById(idShop);
+        if (shop.isEmpty()) {
+            throw new ShopNotFoundException("La tienda con id " + idShop + NO_EXISTS_MSG);
+        }
 
         List<OrderLine> orderLines = order.getOrderLines();
 
@@ -149,7 +238,7 @@ public class OrderServiceImpl implements OrderService {
                         })
                         .orElse(null))
                 .filter(Objects::nonNull)
-                .collect(Collectors.toList());
+                .toList();
 
         order.setOrderLines(mergedOrderLines);
         orderLines = order.getOrderLines();
@@ -158,8 +247,9 @@ public class OrderServiceImpl implements OrderService {
             throw new OrderNotItemsExceptions(order.getIdStr());
         }
 
-        orderLines.stream().forEach(lp -> {
-            Book book = bookRepository.findById(lp.getBookId()).orElseThrow(() -> new BookNotFoundException("El libro con id " + lp.getBookId() + " no existe"));
+        orderLines.forEach(lp -> {
+            Book book = bookRepository.findById(lp.getBookId()).orElseThrow(() ->
+                    new BookNotFoundException(BOOK_WITH_ID_STR + lp.getBookId() + NO_EXISTS_MSG));
             if (book.getStock() < lp.getQuantity() && lp.getQuantity() > 0) {
                 throw new OrderNotStockException(book.getId());
             }
@@ -169,32 +259,44 @@ public class OrderServiceImpl implements OrderService {
         });
     }
 
-    Order reserveStockOrder(Order order) {
+    /**
+     * Método que reserva el stock de un pedido
+     *
+     * @param order pedido
+     * @return pedido
+     */
+    public Order reserveStockOrder(Order order) {
         List<OrderLine> orderLines = order.getOrderLines();
         if (orderLines == null || orderLines.isEmpty()) {
             throw new OrderNotItemsExceptions(order.getIdStr());
         }
 
-        orderLines.stream().forEach(lp -> {
-            Book book = bookRepository.findById(lp.getBookId()).orElseThrow(() -> new BookNotFoundException("El libro con id " + lp.getBookId() + " no existe"));
+        orderLines.forEach(lp -> {
+            Book book = bookRepository.findById(lp.getBookId()).orElseThrow(() ->
+                    new BookNotFoundException(BOOK_WITH_ID_STR + lp.getBookId() + NO_EXISTS_MSG));
             book.setStock(book.getStock() - lp.getQuantity());
             bookRepository.save(book);
             lp.setTotal(lp.getQuantity() * lp.getPrice());
         });
 
         order.calculateLines();
-        order.getOrderLines().stream().forEach(lineaPedido -> lineaPedido.calculatePrice(lineaPedido.getPrice()));
+        order.getOrderLines().forEach(line -> line.calculatePrice(line.getPrice()));
         return order;
     }
 
-    void returnStockPedido(Order order) {
-        if (order.getOrderLines() != null || !order.getOrderLines().isEmpty()) {
+    /**
+     * Método que devuelve el stock de un pedido
+     *
+     * @param order pedido
+     */
+    public void returnStockOrder(Order order) {
+        if (order.getOrderLines() != null && !order.getOrderLines().isEmpty()) {
             order.getOrderLines().forEach(lp -> {
-                Book book = bookRepository.findById(lp.getBookId()).orElseThrow(() -> new BookNotFoundException("El libro con id " + lp.getBookId() + " no existe"));
+                Book book = bookRepository.findById(lp.getBookId())
+                        .orElseThrow(() -> new BookNotFoundException(BOOK_WITH_ID_STR + lp.getBookId() + NO_EXISTS_MSG));
                 book.setStock(book.getStock() + lp.getQuantity());
                 bookRepository.save(book);
             });
         }
     }
-
 }

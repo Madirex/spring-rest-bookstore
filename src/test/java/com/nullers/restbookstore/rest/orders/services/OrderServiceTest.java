@@ -1040,7 +1040,7 @@ public class OrderServiceTest {
     void returnStokOrder_ShouldOk() {
         when(bookRepository.findById(any(Long.class))).thenReturn(Optional.of(book));
 
-        orderService.returnStockPedido(order);
+        orderService.returnStockOrder(order);
 
         verify(bookRepository, times(2)).findById(any(Long.class));
         verify(bookRepository, times(2)).save(any(Book.class));
@@ -1050,7 +1050,7 @@ public class OrderServiceTest {
     void returnStokOrder_ShouldThrowBookNotFoundException() {
         when(bookRepository.findById(any(Long.class))).thenReturn(Optional.empty());
 
-        var res = assertThrows(BookNotFoundException.class, () -> orderService.returnStockPedido(order));
+        var res = assertThrows(BookNotFoundException.class, () -> orderService.returnStockOrder(order));
 
         assertAll(
                 () -> assertEquals("Libro no encontrado - El libro con id " + orderLine.getBookId() + " no existe", res.getMessage())
@@ -1063,7 +1063,7 @@ public class OrderServiceTest {
     @Test
     void returnStokOrder_NotItemsOrder() {
 
-        orderService.returnStockPedido(Order.builder()
+        orderService.returnStockOrder(Order.builder()
                 .id(order.getId())
                 .userId(order.getUserId())
                 .clientId(order.getClientId())
