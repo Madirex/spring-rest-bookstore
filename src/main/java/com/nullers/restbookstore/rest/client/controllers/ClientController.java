@@ -1,23 +1,21 @@
 package com.nullers.restbookstore.rest.client.controllers;
 
-import com.nullers.restbookstore.pagination.models.ErrorResponse;
 import com.nullers.restbookstore.pagination.models.PageResponse;
 import com.nullers.restbookstore.pagination.util.PaginationLinksUtils;
 import com.nullers.restbookstore.rest.client.dto.ClientCreateDto;
 import com.nullers.restbookstore.rest.client.dto.ClientDto;
 import com.nullers.restbookstore.rest.client.dto.ClientUpdateDto;
-import com.nullers.restbookstore.rest.client.exceptions.ClientAlreadyExists;
 import com.nullers.restbookstore.rest.client.exceptions.ClientBadRequest;
-import com.nullers.restbookstore.rest.client.exceptions.ClientInOrderException;
 import com.nullers.restbookstore.rest.client.exceptions.ClientNotFound;
 import com.nullers.restbookstore.rest.client.services.ClientServiceImpl;
+import com.nullers.restbookstore.rest.common.PageableRequest;
+import com.nullers.restbookstore.rest.common.PageableUtil;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -45,13 +43,17 @@ import java.util.UUID;
 @PreAuthorize("hasRole('ADMIN')")
 public class ClientController {
 
-
-    private ClientServiceImpl clientService;
+    private final ClientServiceImpl clientService;
     private final PaginationLinksUtils paginationLinksUtils;
 
     private final List<String> contentTypesAllowed = List.of("image/png", "image/jpeg");
 
-
+    /**
+     * Constructor de ClientController
+     *
+     * @param clientService        servicio de clientes
+     * @param paginationLinksUtils utilidades de paginación
+     */
     @Autowired
     public ClientController(ClientServiceImpl clientService, PaginationLinksUtils paginationLinksUtils) {
         this.clientService = clientService;
@@ -62,16 +64,13 @@ public class ClientController {
     /**
      * Obtiene todos los clientes
      *
-     * @param name    nombre del cliente
-     * @param surname apellido del cliente
-     * @param email   email del cliente
-     * @param phone   teléfono del cliente
-     * @param address dirección del cliente
-     * @param page    número de página
-     * @param size    tamaño de la página
-     * @param sortBy  campo por el que se ordena
-     * @param order   orden de la página
-     * @param request petición
+     * @param name            nombre del cliente
+     * @param surname         apellido del cliente
+     * @param email           email del cliente
+     * @param phone           teléfono del cliente
+     * @param address         dirección del cliente
+     * @param pageableRequest paginación
+     * @param request         petición
      * @return ResponseEntity<PageResponse < ClientDto>> con los clientes
      */
     @GetMapping
@@ -81,22 +80,16 @@ public class ClientController {
             @RequestParam(required = false) Optional<String> email,
             @RequestParam(required = false) Optional<String> phone,
             @RequestParam(required = false) Optional<String> address,
-            @RequestParam(defaultValue = "0") Integer page,
-            @RequestParam(defaultValue = "10") Integer size,
-            @RequestParam(defaultValue = "id") String sortBy,
-            @RequestParam(defaultValue = "asc") String order,
+            @Valid PageableRequest pageableRequest,
             HttpServletRequest request
     ) {
-        if (page < 0 || size <= 0) {
-            throw new IllegalArgumentException("El numero de pagina no debe ser menor a 0 y el tamano de la pagina debe ser mayor que 0");
-        }
-        Sort sort = order.equalsIgnoreCase(Sort.Direction.ASC.name()) ? Sort.by(sortBy).ascending() : Sort.by(sortBy).descending();
-        Pageable pageable = PageRequest.of(page, size, sort);
+        Pageable pageable = PageRequest.of(pageableRequest.getPage(), pageableRequest.getSize(),
+                PageableUtil.getSort(pageableRequest));
         UriComponentsBuilder uriBuilder = UriComponentsBuilder.fromHttpUrl(request.getRequestURL().toString());
         Page<ClientDto> pageResult = clientService.findAll(name, surname, email, phone, address, pageable);
         return ResponseEntity.ok()
                 .header("link", paginationLinksUtils.createLinkHeader(pageResult, uriBuilder))
-                .body(PageResponse.of(pageResult, sortBy, order));
+                .body(PageResponse.of(pageResult, pageableRequest.getOrderBy(), pageableRequest.getOrder()));
     }
 
 
@@ -171,63 +164,5 @@ public class ClientController {
         } else {
             throw new ClientBadRequest("El archivo no es una imagen o esta vacío");
         }
-    }
-
-    /**
-     * Manejador de excepciones de ClientNotFound
-     *
-     * @param exception excepción
-     * @return ErrorResponse con el mensaje de error
-     */
-    @ExceptionHandler(ClientNotFound.class)
-    @ResponseStatus(HttpStatus.NOT_FOUND)
-    public ErrorResponse handleClientNotFound(ClientNotFound exception) {
-        return new ErrorResponse(HttpStatus.NOT_FOUND.value(), exception.getMessage());
-    }
-
-
-    /**
-     * Manejador de excepciones de ClientAlreadyExists
-     *
-     * @param exception excepción
-     * @return ErrorResponse con el mensaje de error
-     */
-    @ExceptionHandler(ClientAlreadyExists.class)
-    @ResponseStatus(HttpStatus.CONFLICT)
-    public ErrorResponse handleClientAlreadyExists(ClientAlreadyExists exception) {
-        return new ErrorResponse(HttpStatus.CONFLICT.value(), exception.getMessage());
-    }
-
-
-    /**
-     * Manejador de excepciones de ClientBadRequest
-     *
-     * @param exception excepción
-     * @return ErrorResponse con el mensaje de error
-     */
-    @ExceptionHandler(ClientBadRequest.class)
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ErrorResponse handleClientBadRequest(ClientBadRequest exception) {
-        return new ErrorResponse(HttpStatus.BAD_REQUEST.value(), exception.getMessage());
-    }
-
-
-    @ExceptionHandler(ClientInOrderException.class)
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ErrorResponse handleClientInOrderException(ClientInOrderException exception) {
-        return new ErrorResponse(HttpStatus.BAD_REQUEST.value(), exception.getMessage());
-    }
-
-
-    /**
-     * Manejador de excepciones de IllegalArgumentException
-     *
-     * @param exception excepción
-     * @return ErrorResponse con el mensaje de error
-     */
-    @ExceptionHandler(IllegalArgumentException.class)
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ErrorResponse handleIllegelAlrgumentException(IllegalArgumentException exception) {
-        return new ErrorResponse(HttpStatus.BAD_REQUEST.value(), exception.getMessage());
     }
 }

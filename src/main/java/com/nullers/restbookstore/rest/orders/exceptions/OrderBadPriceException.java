@@ -1,5 +1,6 @@
 package com.nullers.restbookstore.rest.orders.exceptions;
 
+import com.nullers.restbookstore.manager.error.exceptions.ResponseExceptionBadRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
@@ -7,7 +8,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
  * Clase OrderBadPriceException
  */
 @ResponseStatus(HttpStatus.BAD_REQUEST)
-public class OrderBadPriceException extends RuntimeException {
+public class OrderBadPriceException extends ResponseExceptionBadRequest {
     /**
      * Constructor OrderBadPriceException
      *

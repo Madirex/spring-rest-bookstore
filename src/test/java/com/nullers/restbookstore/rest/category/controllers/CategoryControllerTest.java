@@ -315,6 +315,7 @@ class CategoryControllerTest {
                         .param("size", "-1")
                         .accept(MediaType.APPLICATION_JSON))
                 .andReturn().getResponse();
+        System.out.println("====>" + response.getContentAsString(StandardCharsets.UTF_8));
 
         ErrorResponse errorResponse = mapper.readValue(response.getContentAsString(StandardCharsets.UTF_8), ErrorResponse.class);
 
@@ -392,7 +393,7 @@ class CategoryControllerTest {
     }
 
     @Test
-    void getCategorieNotFound() throws Exception {
+    void getCategoryNotFound() throws Exception {
         when(service.getCategoryById(UUID.fromString("3930e05a-7ebf-4aa1-8aa8-5d7466fa9734"))).thenThrow(new CategoryNotFoundException(UUID.fromString("3930e05a-7ebf-4aa1-8aa8-5d7466fa9734")));
 
         MockHttpServletResponse response = mockMvc.perform(get(endPoint + "/3930e05a-7ebf-4aa1-8aa8-5d7466fa9734").accept(MediaType.APPLICATION_JSON))

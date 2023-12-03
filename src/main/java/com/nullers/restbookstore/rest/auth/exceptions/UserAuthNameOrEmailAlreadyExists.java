@@ -1,5 +1,6 @@
 package com.nullers.restbookstore.rest.auth.exceptions;
 
+import com.nullers.restbookstore.manager.error.exceptions.ResponseExceptionBadRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
@@ -9,7 +10,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
  * @Author Binwei Wang
  */
 @ResponseStatus(HttpStatus.BAD_REQUEST)
-public class UserAuthNameOrEmailAlreadyExists extends AuthException {
+public class UserAuthNameOrEmailAlreadyExists extends ResponseExceptionBadRequest {
     /**
      * Constructor
      *

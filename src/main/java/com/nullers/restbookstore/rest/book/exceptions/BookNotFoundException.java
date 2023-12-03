@@ -1,5 +1,6 @@
 package com.nullers.restbookstore.rest.book.exceptions;
 
+import com.nullers.restbookstore.manager.error.exceptions.ResponseExceptionNotFound;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
@@ -9,7 +10,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
  * @Author Madirex
  */
 @ResponseStatus(HttpStatus.NOT_FOUND)
-public class BookNotFoundException extends BookException {
+public class BookNotFoundException extends ResponseExceptionNotFound {
     /**
      * Constructor BookNotFoundException
      *

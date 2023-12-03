@@ -10,6 +10,7 @@ import com.nullers.restbookstore.rest.book.exceptions.BookNotFoundException;
 import com.nullers.restbookstore.rest.book.exceptions.BookNotValidIDException;
 import com.nullers.restbookstore.rest.book.services.BookServiceImpl;
 import com.nullers.restbookstore.rest.common.PageableRequest;
+import com.nullers.restbookstore.rest.common.PageableUtil;
 import com.nullers.restbookstore.rest.publisher.exceptions.PublisherIDNotValid;
 import com.nullers.restbookstore.rest.publisher.exceptions.PublisherNotFound;
 import io.swagger.v3.oas.annotations.Operation;
@@ -21,7 +22,6 @@ import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -88,16 +88,12 @@ public class BookRestControllerImpl implements BookRestController {
             @Valid PageableRequest pageableRequest,
             HttpServletRequest request
     ) {
-        String orderBy = pageableRequest.getOrderBy();
-        String order = pageableRequest.getOrder();
-        Integer page = pageableRequest.getPage();
-        Integer size = pageableRequest.getSize();
-        Sort sort = order.equalsIgnoreCase(Sort.Direction.ASC.name()) ? Sort.by(orderBy).ascending() : Sort.by(orderBy).descending();
         UriComponentsBuilder uriBuilder = UriComponentsBuilder.fromHttpUrl(request.getRequestURL().toString());
-        Page<GetBookDTO> pageResult = service.getAllBook(publisher, maxPrice, category, PageRequest.of(page, size, sort));
+        Page<GetBookDTO> pageResult = service.getAllBook(publisher, maxPrice, category,
+                PageRequest.of(pageableRequest.getPage(), pageableRequest.getSize(), PageableUtil.getSort(pageableRequest)));
         return ResponseEntity.ok()
                 .header("link", paginationLinksUtils.createLinkHeader(pageResult, uriBuilder))
-                .body(PageResponse.of(pageResult, orderBy, order));
+                .body(PageResponse.of(pageResult, pageableRequest.getOrderBy(), pageableRequest.getOrder()));
     }
 
     /**

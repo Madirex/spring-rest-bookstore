@@ -1,13 +1,11 @@
 package com.nullers.restbookstore.manager.error;
 
 import com.mongodb.MongoTimeoutException;
+import com.nullers.restbookstore.manager.error.exceptions.ResponseExceptionBadRequest;
+import com.nullers.restbookstore.manager.error.exceptions.ResponseExceptionConflict;
+import com.nullers.restbookstore.manager.error.exceptions.ResponseExceptionNotFound;
 import com.nullers.restbookstore.pagination.exceptions.PageNotValidException;
 import com.nullers.restbookstore.pagination.models.ErrorResponse;
-import com.nullers.restbookstore.rest.book.exceptions.BookNotFoundException;
-import com.nullers.restbookstore.rest.category.exceptions.CategoryNotFoundException;
-import com.nullers.restbookstore.rest.client.exceptions.ClientNotFound;
-import com.nullers.restbookstore.rest.shop.exceptions.ShopHasOrders;
-import com.nullers.restbookstore.rest.shop.exceptions.ShopNotFoundException;
 import jakarta.servlet.http.HttpServletRequest;
 import org.apache.tomcat.util.http.fileupload.impl.FileSizeLimitExceededException;
 import org.springframework.beans.factory.annotation.Value;
@@ -42,7 +40,7 @@ public class GlobalExceptionHandler {
 
     @Value("${spring.servlet.multipart.max-request-size}")
     private String maxSize;
-    
+
     /**
      * Método para manejar las excepciones de validación
      *
@@ -66,12 +64,6 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
     }
 
-    @ExceptionHandler(CategoryNotFoundException.class)
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ErrorResponse handleCategoryNotFound(CategoryNotFoundException exception) {
-        return new ErrorResponse(HttpStatus.BAD_REQUEST.value(), exception.getMessage());
-    }
-
     /**
      * Método para manejar las excepciones de tipo MethodArgumentTypeMismatchException
      *
@@ -83,7 +75,7 @@ public class GlobalExceptionHandler {
         var errorResponse = new ErrorResponse(
                 HttpStatus.BAD_REQUEST.value(),
                 ex.getMessage()
-//                ,getCurrentHttpRequest().getRequestURI() //TODO: Agregar URI
+                , getCurrentHttpRequest().getRequestURI()
         );
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
     }
@@ -99,7 +91,7 @@ public class GlobalExceptionHandler {
         var errorResponse = new ErrorResponse(
                 HttpStatus.BAD_REQUEST.value(),
                 "El formato de la consulta enviada es incorrecta."
-//                ,getCurrentHttpRequest().getRequestURI() //TODO: Agregar URI
+                , getCurrentHttpRequest().getRequestURI()
         );
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
     }
@@ -115,63 +107,59 @@ public class GlobalExceptionHandler {
         var errorResponse = new ErrorResponse(
                 HttpStatus.REQUEST_TIMEOUT.value(),
                 ex.getMessage()
-//                ,getCurrentHttpRequest().getRequestURI() //TODO: Agregar URI
+                , getCurrentHttpRequest().getRequestURI()
         );
         return ResponseEntity.status(HttpStatus.REQUEST_TIMEOUT).body(errorResponse);
     }
 
     /**
-     * Excepciones de Shop
+     * ResponseExceptionBadRequest
      *
      * @param ex Excepción
      * @return ResponseEntity con el código de estado
      */
-    @ExceptionHandler(ShopNotFoundException.class)
-    public ResponseEntity<ErrorResponse> handleException(ShopNotFoundException ex) {
-        var errorResponse = new ErrorResponse(
-                HttpStatus.NOT_FOUND.value(),
-                ex.getMessage()
-//                ,getCurrentHttpRequest().getRequestURI() //TODO: Agregar URI
-        );
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorResponse);
-    }
-
-    /**
-     * Excepciones de Shop
-     *
-     * @param ex Excepción
-     * @return ResponseEntity con el código de estado
-     */
-    @ExceptionHandler(ShopHasOrders.class)
-    public ResponseEntity<ErrorResponse> handleException(ShopHasOrders ex) {
+    @ExceptionHandler(ResponseExceptionBadRequest.class)
+    public ResponseEntity<ErrorResponse> handleException(ResponseExceptionBadRequest ex) {
         var errorResponse = new ErrorResponse(
                 HttpStatus.BAD_REQUEST.value(),
                 ex.getMessage()
-//                ,getCurrentHttpRequest().getRequestURI() //TODO: Agregar URI
+                , getCurrentHttpRequest().getRequestURI()
         );
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
     }
 
+    /**
+     * ResponseExceptionConflict
+     *
+     * @param ex Excepción
+     * @return ResponseEntity con el código de estado
+     */
+    @ExceptionHandler(ResponseExceptionConflict.class)
+    public ResponseEntity<ErrorResponse> handleException(ResponseExceptionConflict ex) {
+        var errorResponse = new ErrorResponse(
+                HttpStatus.CONFLICT.value(),
+                ex.getMessage()
+                , getCurrentHttpRequest().getRequestURI()
+        );
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(errorResponse);
+    }
 
-    @ExceptionHandler(ClientNotFound.class)
-    public ResponseEntity<ErrorResponse> handleException(ClientNotFound ex) {
+    /**
+     * ResponseExceptionNotFound
+     *
+     * @param ex Excepción
+     * @return ResponseEntity con el código de estado
+     */
+    @ExceptionHandler(ResponseExceptionNotFound.class)
+    public ResponseEntity<ErrorResponse> handleException(ResponseExceptionNotFound ex) {
         var errorResponse = new ErrorResponse(
                 HttpStatus.NOT_FOUND.value(),
                 ex.getMessage()
-//                ,getCurrentHttpRequest().getRequestURI() //TODO: Agregar URI
+                , getCurrentHttpRequest().getRequestURI()
         );
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorResponse);
     }
 
-    @ExceptionHandler(BookNotFoundException.class)
-    public ResponseEntity<ErrorResponse> handleException(BookNotFoundException ex) {
-        var errorResponse = new ErrorResponse(
-                HttpStatus.NOT_FOUND.value(),
-                ex.getMessage()
-//                ,getCurrentHttpRequest().getRequestURI() //TODO: Agregar URI
-        );
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorResponse);
-    }
 
     /**
      * Handle MaxUploadSizeExceededException
@@ -187,7 +175,7 @@ public class GlobalExceptionHandler {
 
         String message = "El tamaño del archivo supera el límite permitido. (" + maxSize + ")";
         return new ResponseEntity<>(
-                new ErrorResponse(HttpStatus.BAD_REQUEST.value(), message),
+                new ErrorResponse(HttpStatus.BAD_REQUEST.value(), message, getCurrentHttpRequest().getRequestURI()),
                 new HttpHeaders(),
                 HttpStatus.BAD_REQUEST
         );
@@ -205,13 +193,13 @@ public class GlobalExceptionHandler {
         var errorResponse = new ErrorResponse(
                 httpStatus.value(),
                 ex.getReason()
-//                ,getCurrentHttpRequest().getRequestURI() //TODO: Agregar URI
+                , getCurrentHttpRequest().getRequestURI()
         );
         return ResponseEntity.status(httpStatus).body(errorResponse);
     }
 
     /**
-     * Manejador de excepciones de tamaño de fichero excedido
+     * Handler de excepciones de tamaño de fichero excedido
      *
      * @param ex Excepción
      * @return Respuesta HTTP
@@ -222,13 +210,13 @@ public class GlobalExceptionHandler {
         var errorResponse = new ErrorResponse(
                 HttpStatus.PAYLOAD_TOO_LARGE.value(),
                 "El tamaño del archivo excede el límite permitido. Máximo permitido: " + ex.getPermittedSize()
-//                ,getCurrentHttpRequest().getRequestURI() //TODO: Agregar URI
+                , getCurrentHttpRequest().getRequestURI()
         );
         return ResponseEntity.status(HttpStatus.PAYLOAD_TOO_LARGE).body(errorResponse);
     }
 
     /**
-     * Manejador de excepciones de referencia a una propiedad no existente
+     * Handler de excepciones de referencia a una propiedad no existente
      *
      * @param ex Excepción
      * @return Respuesta HTTP
@@ -239,13 +227,13 @@ public class GlobalExceptionHandler {
         var errorResponse = new ErrorResponse(
                 HttpStatus.BAD_REQUEST.value(),
                 "Error al procesar la propiedad en la consulta: " + ex.getPropertyName()
-//                ,getCurrentHttpRequest().getRequestURI() //TODO: Agregar URI
+                , getCurrentHttpRequest().getRequestURI()
         );
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
     }
 
     /**
-     * Manejador de excepciones de paginación
+     * Handler de excepciones de paginación
      *
      * @param ex Excepción
      * @return Respuesta
@@ -270,15 +258,31 @@ public class GlobalExceptionHandler {
     }
 
     /**
-     * Manejador de excepciones de MissingPathVariableException
+     * Handler de excepciones de MissingPathVariableException
      *
      * @param ex Excepción
      * @return Respuesta
      */
     @ExceptionHandler(MissingPathVariableException.class)
-    public ResponseEntity<String> handleMissingPathVariable(MissingPathVariableException ex) { //TODO: Mejorar
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                .body("No has enviado todos los parámetros necesarios para la consulta en el Path");
+    public ResponseEntity<ErrorResponse> handleMissingPathVariable(MissingPathVariableException ex) {
+        var errorResponse = new ErrorResponse(HttpStatus.BAD_REQUEST.value(),
+                "No has enviado todos los parámetros necesarios para la consulta en el Path",
+                getCurrentHttpRequest().getRequestURI());
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
+    }
+
+
+    /**
+     * Handler de excepciones de IllegalArgumentException
+     *
+     * @param exception excepción
+     * @return ErrorResponse con el mensaje de error
+     */
+    @ExceptionHandler(IllegalArgumentException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ErrorResponse handleIllegalArgumentException(IllegalArgumentException exception) {
+        return new ErrorResponse(HttpStatus.BAD_REQUEST.value(), exception.getMessage(),
+                getCurrentHttpRequest().getRequestURI());
     }
 
     /**
@@ -286,7 +290,7 @@ public class GlobalExceptionHandler {
      *
      * @return HttpServletRequest
      */
-    private HttpServletRequest getCurrentHttpRequest() { //TODO: Mejorar
+    private HttpServletRequest getCurrentHttpRequest() {
         ServletRequestAttributes requestAttributes = (ServletRequestAttributes)
                 RequestContextHolder.currentRequestAttributes();
         return requestAttributes.getRequest();

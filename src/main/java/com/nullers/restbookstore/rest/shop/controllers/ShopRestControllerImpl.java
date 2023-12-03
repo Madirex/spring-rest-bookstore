@@ -3,6 +3,7 @@ package com.nullers.restbookstore.rest.shop.controllers;
 import com.nullers.restbookstore.pagination.models.PageResponse;
 import com.nullers.restbookstore.pagination.util.PaginationLinksUtils;
 import com.nullers.restbookstore.rest.common.PageableRequest;
+import com.nullers.restbookstore.rest.common.PageableUtil;
 import com.nullers.restbookstore.rest.shop.dto.CreateShopDto;
 import com.nullers.restbookstore.rest.shop.dto.GetShopDto;
 import com.nullers.restbookstore.rest.shop.dto.UpdateShopDto;
@@ -12,7 +13,6 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -60,17 +60,12 @@ public class ShopRestControllerImpl implements ShopRestController {
             @Valid PageableRequest pageableRequest,
             HttpServletRequest request
     ) {
-        int page = pageableRequest.getPage();
-        int size = pageableRequest.getSize();
-        String sortBy = pageableRequest.getOrderBy();
-        String direction = pageableRequest.getOrder();
-        Sort sort = direction.equalsIgnoreCase(
-                Sort.Direction.ASC.name()) ? Sort.by(sortBy).ascending() : Sort.by(sortBy).descending();
         UriComponentsBuilder uriBuilder = UriComponentsBuilder.fromHttpUrl(request.getRequestURL().toString());
-        var pageResult = shopService.getAllShops(name, location, PageRequest.of(page, size, sort));
+        var pageResult = shopService.getAllShops(name, location, PageRequest.of(pageableRequest.getPage(),
+                pageableRequest.getSize(), PageableUtil.getSort(pageableRequest)));
         return ResponseEntity.ok()
                 .header("link", paginationLinksUtils.createLinkHeader(pageResult, uriBuilder))
-                .body(PageResponse.of(pageResult, sortBy, direction));
+                .body(PageResponse.of(pageResult, pageableRequest.getOrderBy(), pageableRequest.getOrder()));
     }
 
     /**

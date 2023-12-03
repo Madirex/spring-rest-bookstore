@@ -6,10 +6,10 @@ import com.nullers.restbookstore.rest.client.dto.ClientDto;
 import com.nullers.restbookstore.rest.client.dto.ClientUpdateDto;
 import com.nullers.restbookstore.rest.client.exceptions.ClientAlreadyExists;
 import com.nullers.restbookstore.rest.client.exceptions.ClientNotFound;
-import com.nullers.restbookstore.rest.common.Address;
 import com.nullers.restbookstore.rest.client.model.Client;
 import com.nullers.restbookstore.rest.client.services.ClientServiceImpl;
-import org.junit.jupiter.api.BeforeEach;
+import com.nullers.restbookstore.rest.common.Address;
+import com.nullers.restbookstore.rest.common.PageableRequest;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -66,7 +66,6 @@ public class ClientControllerTestWithoutMockMvc {
             .build();
 
 
-
     private final Client clientTest2 = Client.builder()
             .id(UUID.fromString("6dbcbf5e-8e1c-47cc-8578-7b0a33ebc154"))
             .name("Pepe 2")
@@ -99,7 +98,7 @@ public class ClientControllerTestWithoutMockMvc {
 
 
     @Test
-    void getAll(){
+    void getAll() {
         when(clientService.findAll(any(Optional.class), any(Optional.class), any(Optional.class), any(Optional.class), any(Optional.class), any(PageRequest.class))).thenReturn(new PageImpl(List.of(clientTest, clientTest2)));
 
         MockHttpServletRequest requestMock = new MockHttpServletRequest();
@@ -107,10 +106,9 @@ public class ClientControllerTestWithoutMockMvc {
         requestMock.setServerPort(8080);
 
 
-
         var res = clientController.getAll(
                 Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty(),
-                0 , 10, "id", "asc",
+                new PageableRequest(0, 10, "id", "asc"),
                 requestMock
         );
 
@@ -133,7 +131,7 @@ public class ClientControllerTestWithoutMockMvc {
 
         var res = clientController.getAll(
                 Optional.of("Daniel"), Optional.of("Garcia"), Optional.of("daniel@gmail.com"), Optional.of("123456789"), Optional.of("Calle Falsa 123"),
-                0, 10, "name", "desc",
+                new PageableRequest(0, 10, "name", "desc"),
                 requestMock
         );
 
@@ -150,7 +148,7 @@ public class ClientControllerTestWithoutMockMvc {
     }
 
     @Test
-    void getAllClients_ShouldReturnEmptyList(){
+    void getAllClients_ShouldReturnEmptyList() {
         when(clientService.findAll(any(Optional.class), any(Optional.class), any(Optional.class), any(Optional.class), any(Optional.class), any(PageRequest.class))).thenReturn(new PageImpl(List.of()));
 
         MockHttpServletRequest requestMock = new MockHttpServletRequest();
@@ -159,7 +157,7 @@ public class ClientControllerTestWithoutMockMvc {
 
         var res = clientController.getAll(
                 Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty(),
-                0 , 10, "id", "asc",
+                new PageableRequest(0, 10, "id", "asc"),
                 requestMock
         );
 
@@ -172,7 +170,7 @@ public class ClientControllerTestWithoutMockMvc {
     }
 
     @Test
-    void getAllClients_ShouldReturnAllClients_withNameParam(){
+    void getAllClients_ShouldReturnAllClients_withNameParam() {
         when(clientService.findAll(any(Optional.class), any(Optional.class), any(Optional.class), any(Optional.class), any(Optional.class), any(PageRequest.class))).thenReturn(new PageImpl(List.of(clientDtoTest)));
 
         MockHttpServletRequest requestMock = new MockHttpServletRequest();
@@ -181,7 +179,7 @@ public class ClientControllerTestWithoutMockMvc {
 
         var res = clientController.getAll(
                 Optional.of("Daniel"), Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty(),
-                0 , 10, "id", "asc",
+                new PageableRequest(0, 10, "id", "asc"),
                 requestMock
         );
 
@@ -196,7 +194,7 @@ public class ClientControllerTestWithoutMockMvc {
     }
 
     @Test
-    void getAllClients_ShouldReturnAllClients_withSurnameParam(){
+    void getAllClients_ShouldReturnAllClients_withSurnameParam() {
         when(clientService.findAll(any(Optional.class), any(Optional.class), any(Optional.class), any(Optional.class), any(Optional.class), any(PageRequest.class))).thenReturn(new PageImpl(List.of(clientDtoTest)));
 
         MockHttpServletRequest requestMock = new MockHttpServletRequest();
@@ -205,7 +203,7 @@ public class ClientControllerTestWithoutMockMvc {
 
         var res = clientController.getAll(
                 Optional.empty(), Optional.of("Garcia"), Optional.empty(), Optional.empty(), Optional.empty(),
-                0 , 10, "id", "asc",
+                new PageableRequest(0, 10, "id", "asc"),
                 requestMock
         );
 
@@ -229,7 +227,7 @@ public class ClientControllerTestWithoutMockMvc {
 
         var res = clientController.getAll(
                 Optional.empty(), Optional.empty(), Optional.of("@gmail.com"), Optional.empty(), Optional.empty(),
-                0, 10, "id", "asc",
+                new PageableRequest(0, 10, "id", "asc"),
                 requestMock
         );
 
@@ -253,7 +251,7 @@ public class ClientControllerTestWithoutMockMvc {
 
         var res = clientController.getAll(
                 Optional.empty(), Optional.empty(), Optional.empty(), Optional.of("123456789"), Optional.empty(),
-                0, 10, "id", "asc",
+                new PageableRequest(0, 10, "id", "asc"),
                 requestMock
         );
 
@@ -278,7 +276,7 @@ public class ClientControllerTestWithoutMockMvc {
 
         var res = clientController.getAll(
                 Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty(), Optional.of("Calle Falsa 123"),
-                0, 10, "id", "asc",
+                new PageableRequest(0, 10, "id", "asc"),
                 requestMock
         );
 
@@ -294,7 +292,7 @@ public class ClientControllerTestWithoutMockMvc {
     }
 
     @Test
-    void getAllClients_ShouldReturnAllClients_withPageParam(){
+    void getAllClients_ShouldReturnAllClients_withPageParam() {
         when(clientService.findAll(any(Optional.class), any(Optional.class), any(Optional.class), any(Optional.class), any(Optional.class), any(PageRequest.class))).thenReturn(new PageImpl(List.of(clientDtoTest2)));
 
         MockHttpServletRequest requestMock = new MockHttpServletRequest();
@@ -303,7 +301,7 @@ public class ClientControllerTestWithoutMockMvc {
 
         var res = clientController.getAll(
                 Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty(),
-                1 , 1, "id", "asc",
+                new PageableRequest(1, 1, "id", "asc"),
                 requestMock
         );
 
@@ -319,7 +317,7 @@ public class ClientControllerTestWithoutMockMvc {
     }
 
     @Test
-    void getAllClients_ShouldReturnAllClients_withSortParam(){
+    void getAllClients_ShouldReturnAllClients_withSortParam() {
         when(clientService.findAll(any(Optional.class), any(Optional.class), any(Optional.class), any(Optional.class), any(Optional.class), any(PageRequest.class))).thenReturn(new PageImpl(List.of(clientDtoTest2, clientDtoTest)));
 
         MockHttpServletRequest requestMock = new MockHttpServletRequest();
@@ -328,7 +326,7 @@ public class ClientControllerTestWithoutMockMvc {
 
         var resDesc = clientController.getAll(
                 Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty(),
-                0 , 10, "id", "desc",
+                new PageableRequest(0, 10, "id", "desc"),
                 requestMock
         );
 
@@ -345,7 +343,7 @@ public class ClientControllerTestWithoutMockMvc {
     }
 
     @Test
-    void getAllClients_ShouldReturnAllClients_withAllParamsAndPageable(){
+    void getAllClients_ShouldReturnAllClients_withAllParamsAndPageable() {
         when(clientService.findAll(any(Optional.class), any(Optional.class), any(Optional.class), any(Optional.class), any(Optional.class), any(PageRequest.class))).thenReturn(
                 new PageImpl(List.of(clientDtoTest2))
         );
@@ -356,7 +354,7 @@ public class ClientControllerTestWithoutMockMvc {
 
         var resDesc = clientController.getAll(
                 Optional.of("Pepe 2"), Optional.of("ruiz"), Optional.of("@gmail.com"), Optional.of("123456789"), Optional.of("Calle Falsa 321"),
-                0 , 1, "id", "desc",
+                new PageableRequest(0, 1, "id", "desc"),
                 requestMock
         );
 
@@ -372,50 +370,50 @@ public class ClientControllerTestWithoutMockMvc {
 
 
     @Test
-    void getAll_ShouldReturnErrorResponse_withInvalidPageParam(){
+    void getAll_ShouldReturnErrorResponse_withInvalidPageParam() {
         MockHttpServletRequest requestMock = new MockHttpServletRequest();
         requestMock.setRequestURI("/clients");
         requestMock.setServerPort(8080);
 
-        var res = assertThrows(IllegalArgumentException.class,() -> clientController.getAll(
+        var res = assertThrows(IllegalArgumentException.class, () -> clientController.getAll(
                 Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty(),
-                -1 , 10, "id", "asc",
+                new PageableRequest(-1, 10, "id", "asc"),
                 requestMock
         ));
 
         assertAll(
-                () -> assertEquals("El numero de pagina no debe ser menor a 0 y el tamano de la pagina debe ser mayor que 0", res.getMessage())
+                () -> assertEquals("El numero de pagina no debe ser menor a 0 y el tamaño de la pagina debe ser mayor que 0", res.getMessage())
         );
     }
 
     @Test
-    void getAll_ShouldReturnErrorResponse_withInvalidSizeParam(){
+    void getAll_ShouldReturnErrorResponse_withInvalidSizeParam() {
         MockHttpServletRequest requestMock = new MockHttpServletRequest();
         requestMock.setRequestURI("/clients");
         requestMock.setServerPort(8080);
 
-        var res = assertThrows(IllegalArgumentException.class,() -> clientController.getAll(
+        var res = assertThrows(IllegalArgumentException.class, () -> clientController.getAll(
                 Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty(),
-                0 , 0, "id", "asc",
+                new PageableRequest(0, 0, "id", "asc"),
                 requestMock
         ));
 
         assertAll(
-                () -> assertEquals("El numero de pagina no debe ser menor a 0 y el tamano de la pagina debe ser mayor que 0", res.getMessage())
+                () -> assertEquals("El numero de pagina no debe ser menor a 0 y el tamaño de la pagina debe ser mayor que 0", res.getMessage())
         );
     }
 
     @Test
-    void getAll_ShouldReturnErrorResponse_withInvalidSortByParam(){
+    void getAll_ShouldReturnErrorResponse_withInvalidSortByParam() {
         when(clientService.findAll(any(Optional.class), any(Optional.class), any(Optional.class), any(Optional.class), any(Optional.class), any(PageRequest.class))).thenThrow(new IllegalArgumentException("No property 'id2' found for type 'Client'"));
 
         MockHttpServletRequest requestMock = new MockHttpServletRequest();
         requestMock.setRequestURI("/clients");
         requestMock.setServerPort(8080);
 
-        var res = assertThrows(IllegalArgumentException.class,() -> clientController.getAll(
+        var res = assertThrows(IllegalArgumentException.class, () -> clientController.getAll(
                 Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty(),
-                0 , 10, "id2", "asc",
+                new PageableRequest(0, 10, "id2", "asc"),
                 requestMock
         ));
 
@@ -427,7 +425,7 @@ public class ClientControllerTestWithoutMockMvc {
     }
 
     @Test
-    void getById_ShouldReturnClient(){
+    void getById_ShouldReturnClient() {
         when(clientService.findById(any(UUID.class))).thenReturn(clientDtoTest);
 
         var res = clientController.getById(UUID.fromString("9def16db-362b-44c4-9fc9-77117758b5b0"));
@@ -447,7 +445,7 @@ public class ClientControllerTestWithoutMockMvc {
     }
 
     @Test
-    void getById_ShouldReturnClientNotFound(){
+    void getById_ShouldReturnClientNotFound() {
         when(clientService.findById(any(UUID.class))).thenThrow(new ClientNotFound("id", UUID.fromString("9def16db-362b-44c4-9fc9-77117758b5b9")));
 
         var res = assertThrows(ClientNotFound.class, () -> clientController.getById(UUID.fromString("9def16db-362b-44c4-9fc9-77117758b5b9")));
@@ -461,7 +459,7 @@ public class ClientControllerTestWithoutMockMvc {
 
 
     @Test
-    void getByEmail_ShouldReturnClient(){
+    void getByEmail_ShouldReturnClient() {
         when(clientService.findByEmail(any(String.class))).thenReturn(Optional.of(clientDtoTest));
 
         var res = clientController.getByEmail("daniel@gmail.com");
@@ -481,7 +479,7 @@ public class ClientControllerTestWithoutMockMvc {
     }
 
     @Test
-    void findByEmail_ShouldReturnNotFound(){
+    void findByEmail_ShouldReturnNotFound() {
         when(clientService.findByEmail(any(String.class))).thenReturn(Optional.empty());
 
         var res = assertThrows(ClientNotFound.class, () -> clientController.getByEmail("daniel@sdfnj.com"));
@@ -494,7 +492,7 @@ public class ClientControllerTestWithoutMockMvc {
     }
 
     @Test
-    void save_ShouldReturnCreateAndClient(){
+    void save_ShouldReturnCreateAndClient() {
         when(clientService.save(any(ClientCreateDto.class))).thenReturn(clientDtoTest);
 
         var res = clientController.create(
@@ -522,7 +520,7 @@ public class ClientControllerTestWithoutMockMvc {
     }
 
     @Test
-    void createClient_ShouldReturnClientNotFound(){
+    void createClient_ShouldReturnClientNotFound() {
         when(clientService.findById(any(UUID.class))).thenThrow(new ClientNotFound("id", UUID.fromString("9def16db-362b-44c4-9fc9-77117758b5b9")));
 
         var res = assertThrows(ClientNotFound.class, () -> clientController.getById(UUID.fromString("9def16db-362b-44c4-9fc9-77117758b5b9")));
@@ -537,7 +535,7 @@ public class ClientControllerTestWithoutMockMvc {
     }
 
     @Test
-    void createClient_ShouldReturnErrorResponse_withDuplicateEmail(){
+    void createClient_ShouldReturnErrorResponse_withDuplicateEmail() {
         when(clientService.save(any(ClientCreateDto.class))).thenThrow(new ClientAlreadyExists("email", "daniel@gmail.com"));
 
         var res = assertThrows(ClientAlreadyExists.class, () -> clientController.create(
@@ -558,8 +556,8 @@ public class ClientControllerTestWithoutMockMvc {
     }
 
     @Test
-    void update_ShouldReturnClient(){
-        when(clientService.update(any(UUID.class),any(ClientUpdateDto.class))).thenReturn(clientDtoTest);
+    void update_ShouldReturnClient() {
+        when(clientService.update(any(UUID.class), any(ClientUpdateDto.class))).thenReturn(clientDtoTest);
 
         var res = clientController.update(
                 clientTest.getId(),
@@ -583,35 +581,35 @@ public class ClientControllerTestWithoutMockMvc {
                 () -> assertEquals(clientDtoTest.getImage(), res.getBody().getImage())
         );
 
-        verify(clientService, times(1)).update(any(UUID.class),any(ClientUpdateDto.class));
+        verify(clientService, times(1)).update(any(UUID.class), any(ClientUpdateDto.class));
     }
 
     @Test
-    void update_ShouldReturnClientNotFound(){
-        when(clientService.update(any(UUID.class),any(ClientUpdateDto.class))).thenThrow(new ClientNotFound("id", clientTest.getId()));
+    void update_ShouldReturnClientNotFound() {
+        when(clientService.update(any(UUID.class), any(ClientUpdateDto.class))).thenThrow(new ClientNotFound("id", clientTest.getId()));
 
         var res = assertThrows(ClientNotFound.class, () -> clientController.update(
-                        clientTest.getId(),
-                        ClientUpdateDto.builder()
-                                .name("Daniel")
-                                .surname("Garcia")
-                                .email("daniel@gmail.com")
-                                .phone("123456789")
-                                .address(address)
-                                .build()
-                ));
+                clientTest.getId(),
+                ClientUpdateDto.builder()
+                        .name("Daniel")
+                        .surname("Garcia")
+                        .email("daniel@gmail.com")
+                        .phone("123456789")
+                        .address(address)
+                        .build()
+        ));
 
         assertAll(
                 () -> assertEquals("Client con id: 9def16db-362b-44c4-9fc9-77117758b5b0 no existe", res.getMessage())
         );
 
-        verify(clientService, times(1)).update(any(UUID.class),any(ClientUpdateDto.class));
+        verify(clientService, times(1)).update(any(UUID.class), any(ClientUpdateDto.class));
     }
 
     @Test
-    void update_ShouldReturnErrorResponse_withDuplicateEmail(){
+    void update_ShouldReturnErrorResponse_withDuplicateEmail() {
 
-        when(clientService.update(any(UUID.class),any(ClientUpdateDto.class))).thenThrow(new ClientAlreadyExists("email", clientTest.getEmail()));
+        when(clientService.update(any(UUID.class), any(ClientUpdateDto.class))).thenThrow(new ClientAlreadyExists("email", clientTest.getEmail()));
 
         var res = assertThrows(ClientAlreadyExists.class, () -> clientController.update(
                 clientTest.getId(),
@@ -628,11 +626,11 @@ public class ClientControllerTestWithoutMockMvc {
                 () -> assertEquals("Client con email: daniel@gmail.com ya existe", res.getMessage())
         );
 
-        verify(clientService, times(1)).update(any(UUID.class),any(ClientUpdateDto.class));
+        verify(clientService, times(1)).update(any(UUID.class), any(ClientUpdateDto.class));
     }
 
     @Test
-    void deleteClient(){
+    void deleteClient() {
         doNothing().when(clientService).deleteById(any(UUID.class));
 
         var res = clientController.delete(clientTest.getId());
@@ -645,7 +643,7 @@ public class ClientControllerTestWithoutMockMvc {
     }
 
     @Test
-    void deleteClient_ShouldThrowClientNotFound(){
+    void deleteClient_ShouldThrowClientNotFound() {
         doThrow(new ClientNotFound("id", clientTest.getId())).when(clientService).deleteById(any(UUID.class));
 
         var res = assertThrows(ClientNotFound.class, () -> clientController.delete(clientTest.getId()));
@@ -700,8 +698,6 @@ public class ClientControllerTestWithoutMockMvc {
 
         verify(clientService, times(1)).updateImage(any(UUID.class), any(MultipartFile.class));
     }
-
-
 
 
 }

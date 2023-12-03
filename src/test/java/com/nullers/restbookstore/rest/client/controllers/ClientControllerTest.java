@@ -533,7 +533,7 @@ class ClientControllerTest {
 
         assertAll(
                 () -> assertEquals(HttpStatus.BAD_REQUEST.value(), res.status()),
-                () -> assertEquals("El numero de pagina no debe ser menor a 0 y el tamano de la pagina debe ser mayor que 0", res.msg())
+                () -> assertEquals("El numero de pagina no debe ser menor a 0 y el tamaño de la pagina debe ser mayor que 0", res.msg())
         );
 
         verify(clientService, times(0)).findAll(any(Optional.class), any(Optional.class), any(Optional.class), any(Optional.class), any(Optional.class), any(PageRequest.class));
@@ -549,7 +549,7 @@ class ClientControllerTest {
 
         assertAll(
                 () -> assertEquals(HttpStatus.BAD_REQUEST.value(), res.status()),
-                () -> assertEquals("El numero de pagina no debe ser menor a 0 y el tamano de la pagina debe ser mayor que 0", res.msg())
+                () -> assertEquals("El numero de pagina no debe ser menor a 0 y el tamaño de la pagina debe ser mayor que 0", res.msg())
         );
 
         verify(clientService, times(0)).findAll(any(Optional.class), any(Optional.class), any(Optional.class), any(Optional.class), any(Optional.class), any(PageRequest.class));
