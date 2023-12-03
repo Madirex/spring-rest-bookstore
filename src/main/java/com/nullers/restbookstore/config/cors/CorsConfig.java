@@ -24,7 +24,7 @@ public class CorsConfig {
              */
             @Override
             public void addCorsMappings(@NonNull CorsRegistry registry) {
-                registry.addMapping("/api/books/**")
+                registry.addMapping("/api/**")
                         .allowedMethods("GET", "POST", "PATCH", "PUT", "DELETE")
                         .maxAge(3600);
             }

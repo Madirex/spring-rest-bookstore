@@ -5,7 +5,6 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 
 /**
  * Class PageNotValidException
- *
  */
 @ResponseStatus(HttpStatus.NOT_FOUND)
 public class PageNotValidException extends PaginationException {

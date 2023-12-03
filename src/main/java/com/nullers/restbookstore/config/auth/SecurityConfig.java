@@ -78,7 +78,7 @@ public class SecurityConfig {
                         //Acceso a los endpoints de la API solo para administradores
                         .requestMatchers("/api/orders/**").hasRole("ADMIN")
                         //Acceso al perfil para usuarios autenticados
-                        .requestMatchers("/api/**").permitAll() //TODO: DO
+                        .requestMatchers("/api/**").permitAll()
                         .anyRequest().authenticated())
                 .authenticationProvider(authenticationProvider()).addFilterBefore(
                         jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
