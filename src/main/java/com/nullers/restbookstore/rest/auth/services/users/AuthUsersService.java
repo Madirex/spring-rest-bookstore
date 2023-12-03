@@ -11,6 +11,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 public interface AuthUsersService extends UserDetailsService {
     /**
      * Cargar los datos de un usuario a partir de su nombre de usuario.
+     *
      * @param username Nombre de usuario
      * @return UserDetails
      */

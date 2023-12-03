@@ -16,7 +16,7 @@ import com.nullers.restbookstore.rest.book.model.Book;
 import com.nullers.restbookstore.rest.book.repository.BookRepository;
 import com.nullers.restbookstore.rest.book.services.BookServiceImpl;
 import com.nullers.restbookstore.rest.category.exceptions.CategoriaNotFoundException;
-import com.nullers.restbookstore.rest.category.model.Categoria;
+import com.nullers.restbookstore.rest.category.model.Category;
 import com.nullers.restbookstore.rest.category.repository.CategoriasRepositoryJpa;
 import com.nullers.restbookstore.rest.category.services.CategoriaServiceJpa;
 import com.nullers.restbookstore.rest.publisher.dto.PublisherDTO;
@@ -225,7 +225,7 @@ class BookServiceImplTest {
         var publisher = Publisher.builder().id(1L).createdAt(LocalDateTime.now())
                 .updatedAt(LocalDateTime.now()).build();
         var publisherDTO = PublisherDTO.builder().id(1L).build();
-        var category = Categoria.builder().activa(true).nombre("category").build();
+        var category = Category.builder().isActive(true).name("category").build();
         var inserted = Book.builder().id(1L).name("nombre").price(2.2).image("imagen")
                 .publisher(publisher).description("descripción")
                 .category(category)
@@ -265,7 +265,7 @@ class BookServiceImplTest {
         when(publisherService.findById(1L)).thenReturn(any());
         when(publisherMapper.toPublisher(publisherDTO)).thenReturn(publisher);
         when(categoriasRepositoryJpa.findByNombre(any()))
-                .thenReturn(Optional.of(Categoria.builder().nombre("category").build()));
+                .thenReturn(Optional.of(Category.builder().name("category").build()));
         assertThrows(CategoriaNotFoundException.class, () -> bookService.postBook(insert));
     }
 
@@ -286,7 +286,7 @@ class BookServiceImplTest {
                 .build();
         var publisher = Publisher.builder().id(1L).createdAt(LocalDateTime.now())
                 .updatedAt(LocalDateTime.now()).build();
-        var category = Categoria.builder().activa(true).nombre("category").build();
+        var category = Category.builder().isActive(true).name("category").build();
         var publisherDTO = PublisherDTO.builder().id(1L).build();
         var publisherData = PublisherData.builder().id(1L).build();
         var inserted = Book.builder().id(1L).name("nombre").price(2.2).image("imagen")

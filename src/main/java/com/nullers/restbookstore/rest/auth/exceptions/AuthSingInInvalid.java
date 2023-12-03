@@ -10,6 +10,11 @@ import org.springframework.web.bind.annotation.ResponseStatus;
  */
 @ResponseStatus(HttpStatus.NOT_FOUND)
 public class AuthSingInInvalid extends AuthException {
+    /**
+     * Constructor
+     *
+     * @param message Mensaje de error
+     */
     public AuthSingInInvalid(String message) {
         super(message);
     }

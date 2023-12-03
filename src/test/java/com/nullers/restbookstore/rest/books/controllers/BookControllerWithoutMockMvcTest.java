@@ -4,7 +4,7 @@ import com.nullers.restbookstore.pagination.util.PaginationLinksUtils;
 import com.nullers.restbookstore.rest.book.controllers.BookRestControllerImpl;
 import com.nullers.restbookstore.rest.book.model.Book;
 import com.nullers.restbookstore.rest.book.services.BookServiceImpl;
-import com.nullers.restbookstore.rest.category.model.Categoria;
+import com.nullers.restbookstore.rest.category.model.Category;
 import com.nullers.restbookstore.rest.publisher.model.Publisher;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -40,7 +40,7 @@ class BookControllerWithoutMockMvcTest {
             .createdAt(LocalDateTime.now())
             .build();
 
-    private Categoria category = Categoria.builder()
+    private Category category = Category.builder()
             .id(UUID.fromString("9def16db-362b-44c4-9fc9-77117758b5c8"))
             .build();
 

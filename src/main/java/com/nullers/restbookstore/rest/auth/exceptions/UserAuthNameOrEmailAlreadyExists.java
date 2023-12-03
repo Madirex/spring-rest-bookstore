@@ -9,8 +9,13 @@ import org.springframework.web.bind.annotation.ResponseStatus;
  * @Author Binwei Wang
  */
 @ResponseStatus(HttpStatus.BAD_REQUEST)
-public class UserAuthNameOrEmailExisten extends AuthException {
-    public UserAuthNameOrEmailExisten(String message) {
+public class UserAuthNameOrEmailAlreadyExists extends AuthException {
+    /**
+     * Constructor
+     *
+     * @param message Mensaje de error
+     */
+    public UserAuthNameOrEmailAlreadyExists(String message) {
         super(message);
     }
 }

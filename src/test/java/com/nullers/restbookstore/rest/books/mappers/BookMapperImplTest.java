@@ -6,7 +6,7 @@ import com.nullers.restbookstore.rest.book.dto.UpdateBookDTO;
 import com.nullers.restbookstore.rest.book.mappers.BookMapperImpl;
 import com.nullers.restbookstore.rest.book.mappers.BookNotificationMapper;
 import com.nullers.restbookstore.rest.book.model.Book;
-import com.nullers.restbookstore.rest.category.model.Categoria;
+import com.nullers.restbookstore.rest.category.model.Category;
 import com.nullers.restbookstore.rest.publisher.dto.PublisherData;
 import com.nullers.restbookstore.rest.publisher.model.Publisher;
 import org.junit.jupiter.api.BeforeEach;
@@ -109,7 +109,7 @@ class BookMapperImplTest {
                 .createdAt(LocalDateTime.now())
                 .updatedAt(LocalDateTime.now())
                 .active(true)
-                .category(Categoria.builder().nombre("test").build())
+                .category(Category.builder().name("test").build())
                 .build();
         var mapped = bookMapperImpl.toGetBookDTO(book, PublisherData.builder().id(1L).build());
         assertAll("Book properties",
@@ -136,7 +136,7 @@ class BookMapperImplTest {
                 .createdAt(LocalDateTime.now())
                 .updatedAt(LocalDateTime.now())
                 .active(true)
-                .category(Categoria.builder().nombre("test").nombre("dsfsdf").build())
+                .category(Category.builder().name("test").name("dsfsdf").build())
                 .build();
         var mapped = bookMapperImpl.toGetBookDTO(book);
         assertAll("Book properties",
@@ -161,7 +161,7 @@ class BookMapperImplTest {
                 .createdAt(LocalDateTime.now())
                 .updatedAt(LocalDateTime.now())
                 .active(true)
-                .category(Categoria.builder().nombre("test").build())
+                .category(Category.builder().name("test").build())
                 .build();
         var updatedBook = UpdateBookDTO.builder()
                 .name("nombre")
@@ -170,7 +170,7 @@ class BookMapperImplTest {
                 .image("imagen")
                 .description("descripción")
                 .build();
-        var mapped = bookMapperImpl.toBook(book, updatedBook, Publisher.builder().id(1L).build(), Categoria.builder()
+        var mapped = bookMapperImpl.toBook(book, updatedBook, Publisher.builder().id(1L).build(), Category.builder()
                 .build());
         assertAll("Book properties",
                 () -> assertNotNull(mapped.getId(), "El ID no debe ser nulo"),
@@ -194,7 +194,7 @@ class BookMapperImplTest {
                 .image("imagen")
                 .description("descripción")
                 .build();
-        var mapped = bookMapperImpl.toBook(book, Publisher.builder().id(1L).build(), Categoria.builder().build());
+        var mapped = bookMapperImpl.toBook(book, Publisher.builder().id(1L).build(), Category.builder().build());
         assertAll("Book properties",
                 () -> assertEquals(book.getName(), mapped.getName(), "El nombre debe coincidir"),
                 () -> assertEquals(book.getPrice(), mapped.getPrice(), "El precio debe coincidir"),
@@ -236,7 +236,7 @@ class BookMapperImplTest {
                 .price(2.2)
                 .image("imagen")
                 .description("descripción")
-                .category(Categoria.builder().nombre("test").build())
+                .category(Category.builder().name("test").build())
                 .createdAt(LocalDateTime.now())
                 .updatedAt(LocalDateTime.now())
                 .active(true)

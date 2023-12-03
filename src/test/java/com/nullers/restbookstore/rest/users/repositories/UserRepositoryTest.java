@@ -24,7 +24,7 @@ public class UserRepositoryTest {
     private final User user = User.builder()
             .id(UUID.fromString("123e4567-e89b-12d3-a456-426614174000"))
             .name("user")
-            .surnames("test")
+            .surname("test")
             .password("tests")
             .username("test")
             .email("user@user.com")

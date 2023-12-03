@@ -36,7 +36,7 @@ import java.util.stream.Collectors;
 
 @Service
 @CacheConfig(cacheNames = "orders")
-public class OrderServiceImpl implements OrderService{
+public class OrderServiceImpl implements OrderService {
 
     private final OrderRepository orderRepository;
 
@@ -122,12 +122,12 @@ public class OrderServiceImpl implements OrderService{
     @Override
     public Order deleteLogicOrder(ObjectId id) {
         Order order = getOrderById(id);
-        order.setDeleted(true);
+        order.setIsDeleted(true);
         return orderRepository.save(order);
     }
 
 
-    public void checkOrder(Order order){
+    public void checkOrder(Order order) {
 
         UUID idUser = order.getUserId();
         userRepository.findById(idUser).orElseThrow(() -> new UserNotFound("El usuario con id " + idUser + " no existe"));
@@ -154,24 +154,24 @@ public class OrderServiceImpl implements OrderService{
         order.setOrderLines(mergedOrderLines);
         orderLines = order.getOrderLines();
 
-        if(orderLines == null || orderLines.isEmpty()) {
+        if (orderLines == null || orderLines.isEmpty()) {
             throw new OrderNotItemsExceptions(order.get_id());
         }
 
         orderLines.stream().forEach(lp -> {
             Book book = bookRepository.findById(lp.getBookId()).orElseThrow(() -> new BookNotFoundException("El libro con id " + lp.getBookId() + " no existe"));
-            if(book.getStock() < lp.getQuantity() && lp.getQuantity() > 0) {
+            if (book.getStock() < lp.getQuantity() && lp.getQuantity() > 0) {
                 throw new OrderNotStockException(book.getId());
             }
-            if(!lp.getPrice().equals(book.getPrice())) {
+            if (!lp.getPrice().equals(book.getPrice())) {
                 throw new OrderBadPriceException(book.getId());
             }
         });
     }
 
-    Order reserveStockOrder(Order order){
+    Order reserveStockOrder(Order order) {
         List<OrderLine> orderLines = order.getOrderLines();
-        if(orderLines == null || orderLines.isEmpty()) {
+        if (orderLines == null || orderLines.isEmpty()) {
             throw new OrderNotItemsExceptions(order.get_id());
         }
 
@@ -187,8 +187,8 @@ public class OrderServiceImpl implements OrderService{
         return order;
     }
 
-    void returnStockPedido(Order order){
-        if(order.getOrderLines() != null || !order.getOrderLines().isEmpty() ){
+    void returnStockPedido(Order order) {
+        if (order.getOrderLines() != null || !order.getOrderLines().isEmpty()) {
             order.getOrderLines().stream().forEach(lp -> {
                 Book book = bookRepository.findById(lp.getBookId()).orElseThrow(() -> new BookNotFoundException("El libro con id " + lp.getBookId() + " no existe"));
                 book.setStock(book.getStock() + lp.getQuantity());

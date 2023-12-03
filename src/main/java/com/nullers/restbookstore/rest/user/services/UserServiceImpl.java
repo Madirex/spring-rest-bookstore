@@ -1,5 +1,6 @@
 package com.nullers.restbookstore.rest.user.services;
 
+import com.nullers.restbookstore.rest.orders.repositories.OrderRepository;
 import com.nullers.restbookstore.rest.user.dto.UserInfoResponse;
 import com.nullers.restbookstore.rest.user.dto.UserRequest;
 import com.nullers.restbookstore.rest.user.dto.UserResponse;
@@ -34,18 +35,21 @@ import java.util.UUID;
 public class UserServiceImpl implements UserService {
     public static final String USER_NOT_FOUND_MSG = "Usuario no encontrado";
     private final UserRepository userRepository;
+    private final OrderRepository orderRepository;
     private final UserMapper userMapper;
     private final PasswordEncoder passwordEncode;
 
     /**
      * Constructor de la clase
      *
-     * @param userRepository repositorio de usuarios
-     * @param userMapper     mapper de usuarios
-     * @param passwordEncode
+     * @param userRepository  repositorio de usuarios
+     * @param orderRepository repositorio Order
+     * @param userMapper      mapper de usuarios
+     * @param passwordEncode  encoder de contraseñas
      */
-    public UserServiceImpl(UserRepository userRepository, UserMapper userMapper, PasswordEncoder passwordEncode) {
+    public UserServiceImpl(UserRepository userRepository, OrderRepository orderRepository, UserMapper userMapper, PasswordEncoder passwordEncode) {
         this.userRepository = userRepository;
+        this.orderRepository = orderRepository;
         this.userMapper = userMapper;
         this.passwordEncode = passwordEncode;
     }
@@ -99,7 +103,8 @@ public class UserServiceImpl implements UserService {
     public UserInfoResponse findById(UUID id) {
         log.info("Buscando usuario por id: " + id);
         var user = userRepository.findById(id).orElseThrow(() -> new UserNotFound(USER_NOT_FOUND_MSG));
-        return userMapper.toUserInfoResponse(user);
+        var order = orderRepository.findOrderIdsByClientId(id).stream().map(p -> p.getId().toHexString()).toList();
+        return userMapper.toUserInfoResponse(user, order);
     }
 
     /**
@@ -146,14 +151,16 @@ public class UserServiceImpl implements UserService {
     /**
      * Actualiza parcialmente un usuario en la base de datos
      *
-     * @param id          ID del usuario a actualizar
+     * @param id          Id del usuario a actualizar
      * @param userRequest Usuario a actualizar parcialmente
      * @return Usuario actualizado parcialmente
      */
-
     public UserResponse patch(UUID id, UserRequest userRequest) {
         log.info("Actualizando usuario: " + userRequest);
-        userRepository.findById(id).orElseThrow(() -> new UserNotFound(USER_NOT_FOUND_MSG));
+        Optional<User> user = userRepository.findById(id);
+        if (user.isEmpty()) {
+            throw new UserNotFound(USER_NOT_FOUND_MSG);
+        }
         return userMapper.toUserResponse(userRepository.save(userMapper.toUser(userRequest, id)));
     }
 
@@ -168,6 +175,10 @@ public class UserServiceImpl implements UserService {
     public void deleteById(UUID id) {
         log.info("Borrando usuario por id: " + id);
         User user = userRepository.findById(id).orElseThrow(() -> new UserNotFound(USER_NOT_FOUND_MSG));
-        userRepository.delete(user);
+        if (orderRepository.existsByUserId(id)) {
+            userRepository.updateIsDeletedToTrueById(id);
+        } else {
+            userRepository.delete(user);
+        }
     }
 }

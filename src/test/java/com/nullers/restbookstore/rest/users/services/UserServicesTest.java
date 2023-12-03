@@ -40,7 +40,7 @@ import static org.mockito.Mockito.*;
 class UserServicesTest {
     private final UserRequest userRequest = UserRequest.builder()
             .name("test")
-            .surnames("test")
+            .surname("test")
             .password("test")
             .username("test")
             .email("test@test.com")
@@ -81,7 +81,7 @@ class UserServicesTest {
     void findById() {
         // Arrange
         when(userRepository.findById(any(UUID.class))).thenReturn(Optional.of(user));
-        when(userMapper.toUserInfoResponse(any(User.class))).thenReturn(userInfoResponse);
+        when(userMapper.toUserInfoResponse(any(User.class), new ArrayList<>())).thenReturn(userInfoResponse);
 
         // Act
         UserInfoResponse result = userService.findById(UUID.fromString("c671d981-bd6f-4e75-b7cc-fd3ca96582d5"));
@@ -166,10 +166,10 @@ class UserServicesTest {
     }
 
     @Test
-    void patchUser(){
-            // Arrange
+    void patchUser() {
+        // Arrange
         when(userRepository.findById(any(UUID.class))).thenReturn(Optional.of(user));
-        when(userMapper.toUser(any(UserRequest.class),any(UUID.class))).thenReturn(user);
+        when(userMapper.toUser(any(UserRequest.class), any(UUID.class))).thenReturn(user);
         when(userRepository.save(user)).thenReturn(user);
         when(userMapper.toUserResponse(any(User.class))).thenReturn(userResponse);
 
@@ -180,7 +180,8 @@ class UserServicesTest {
         assertAll(
                 () -> assertNotNull(result),
                 () -> assertEquals("test", result.getUsername())
-        ); }
+        );
+    }
 
     @Test
     void updateUserNotFound() {

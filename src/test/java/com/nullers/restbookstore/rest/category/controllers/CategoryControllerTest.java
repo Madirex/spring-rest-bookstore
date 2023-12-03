@@ -1,13 +1,13 @@
 package com.nullers.restbookstore.rest.category.controllers;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.nullers.restbookstore.pagination.models.ErrorResponse;
 import com.nullers.restbookstore.pagination.models.PageResponse;
 import com.nullers.restbookstore.rest.category.dto.CategoriaCreateDto;
 import com.nullers.restbookstore.rest.category.exceptions.CategoriaConflictException;
 import com.nullers.restbookstore.rest.category.exceptions.CategoriaNotFoundException;
-import com.nullers.restbookstore.rest.category.model.Categoria;
+import com.nullers.restbookstore.rest.category.model.Category;
 import com.nullers.restbookstore.rest.category.services.CategoriaServiceJpaImpl;
-import com.nullers.restbookstore.pagination.models.ErrorResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -33,7 +33,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 @AutoConfigureMockMvc
 @ExtendWith(MockitoExtension.class)
 @SpringBootTest(properties = "spring.config.name=application-test")
-class CategoriaControllerTest {
+class CategoryControllerTest {
 
     private final ObjectMapper mapper = new ObjectMapper();
 
@@ -43,27 +43,27 @@ class CategoriaControllerTest {
     @Autowired
     MockMvc mockMvc;
 
-    Categoria categoria1 = Categoria.builder()
+    Category category1 = Category.builder()
             .id(UUID.fromString("3930e05a-7ebf-4aa1-8aa8-5d7466fa9734"))
-            .nombre("categoria 1")
-            .activa(true)
+            .name("categoria 1")
+            .isActive(true)
             .build();
 
-    Categoria categoria2 = Categoria.builder()
+    Category category2 = Category.builder()
             .id(UUID.fromString("3930e05a-7ebf-4aa1-8aa8-5d7466fa9734"))
-            .nombre("categoria 2")
-            .activa(false)
+            .name("categoria 2")
+            .isActive(false)
             .build();
 
-    Categoria categoria3 = Categoria.builder()
+    Category category3 = Category.builder()
             .id(UUID.fromString("3930e05a-7ebf-4aa1-8aa8-5d7466fa9634"))
-            .nombre("categoria 3")
-            .activa(true)
+            .name("categoria 3")
+            .isActive(true)
             .build();
 
     CategoriaCreateDto categoriaCreateDto = CategoriaCreateDto.builder()
-            .nombre("categoria 1")
-            .activa(true)
+            .name("categoria 1")
+            .isActive(true)
             .build();
 
     String endPoint = "/api/categories";
@@ -72,37 +72,37 @@ class CategoriaControllerTest {
     @BeforeEach
     void setUp() {
         categoriaCreateDto = CategoriaCreateDto.builder()
-                .nombre("categoria 1")
+                .name("categoria 1")
                 .build();
     }
 
     @Autowired
-    public CategoriaControllerTest(CategoriaServiceJpaImpl service) {
+    public CategoryControllerTest(CategoriaServiceJpaImpl service) {
         this.service = service;
     }
 
 
     @Test
     void getAllCategorias_WithoutParams() throws Exception {
-        List<Categoria> categorias = List.of(categoria1, categoria2);
-        when(service.getAll(any(Optional.class), any(Optional.class), any(Pageable.class))).thenReturn(new PageImpl(categorias));
+        List<Category> categories = List.of(category1, category2);
+        when(service.getAll(any(Optional.class), any(Optional.class), any(Pageable.class))).thenReturn(new PageImpl(categories));
 
         MockHttpServletResponse response = mockMvc.perform(get(endPoint)
-                .accept(MediaType.APPLICATION_JSON))
+                        .accept(MediaType.APPLICATION_JSON))
                 .andReturn().getResponse();
 
         ObjectMapper mapper = new ObjectMapper();
-        PageResponse<Categoria> pageResponse = mapper.readValue(response.getContentAsString(), mapper.getTypeFactory().constructParametricType(PageResponse.class, Categoria.class));
+        PageResponse<Category> pageResponse = mapper.readValue(response.getContentAsString(), mapper.getTypeFactory().constructParametricType(PageResponse.class, Category.class));
 
         assertAll(
                 () -> assertEquals(HttpStatus.OK.value(), response.getStatus()),
                 () -> assertEquals(2, pageResponse.totalElements()),
                 () -> assertEquals(1, pageResponse.totalPages()),
                 () -> assertEquals(2, pageResponse.content().size()),
-                () -> assertEquals(categoria1.getId(), pageResponse.content().get(0).getId()),
-                () -> assertEquals(categoria1.getNombre(), pageResponse.content().get(0).getNombre()),
-                () -> assertEquals(categoria2.getId(), pageResponse.content().get(1).getId()),
-                () -> assertEquals(categoria2.getNombre(), pageResponse.content().get(1).getNombre())
+                () -> assertEquals(category1.getId(), pageResponse.content().get(0).getId()),
+                () -> assertEquals(category1.getName(), pageResponse.content().get(0).getName()),
+                () -> assertEquals(category2.getId(), pageResponse.content().get(1).getId()),
+                () -> assertEquals(category2.getName(), pageResponse.content().get(1).getName())
         );
 
         verify(service, times(1)).getAll(any(Optional.class), any(Optional.class), any(Pageable.class));
@@ -110,8 +110,8 @@ class CategoriaControllerTest {
 
     @Test
     void getAllCategorias_ShouldReturnCategorias_withAllParams() throws Exception {
-        List<Categoria> categorias = List.of(categoria1);
-        when(service.getAll(any(Optional.class), any(Optional.class), any(Pageable.class))).thenReturn(new PageImpl(categorias));
+        List<Category> categories = List.of(category1);
+        when(service.getAll(any(Optional.class), any(Optional.class), any(Pageable.class))).thenReturn(new PageImpl(categories));
 
         MockHttpServletResponse response = mockMvc.perform(get(endPoint)
                         .param("nombre", "categoria 1")
@@ -124,15 +124,15 @@ class CategoriaControllerTest {
                 .andReturn().getResponse();
 
         ObjectMapper mapper = new ObjectMapper();
-        PageResponse<Categoria> pageResponse = mapper.readValue(response.getContentAsString(), mapper.getTypeFactory().constructParametricType(PageResponse.class, Categoria.class));
+        PageResponse<Category> pageResponse = mapper.readValue(response.getContentAsString(), mapper.getTypeFactory().constructParametricType(PageResponse.class, Category.class));
 
         assertAll(
                 () -> assertEquals(HttpStatus.OK.value(), response.getStatus()),
                 () -> assertEquals(1, pageResponse.totalElements()),
                 () -> assertEquals(1, pageResponse.totalPages()),
                 () -> assertEquals(1, pageResponse.content().size()),
-                () -> assertEquals(categoria1.getId(), pageResponse.content().get(0).getId()),
-                () -> assertEquals(categoria1.getNombre(), pageResponse.content().get(0).getNombre())
+                () -> assertEquals(category1.getId(), pageResponse.content().get(0).getId()),
+                () -> assertEquals(category1.getName(), pageResponse.content().get(0).getName())
         );
 
         verify(service, times(1)).getAll(any(Optional.class), any(Optional.class), any(Pageable.class));
@@ -140,8 +140,8 @@ class CategoriaControllerTest {
 
     @Test
     void getAllCategorias_ShouldReturnCategoria_withNameParam() throws Exception {
-        List<Categoria> categorias = List.of(categoria1);
-        when(service.getAll(any(Optional.class), any(Optional.class), any(Pageable.class))).thenReturn(new PageImpl(categorias));
+        List<Category> categories = List.of(category1);
+        when(service.getAll(any(Optional.class), any(Optional.class), any(Pageable.class))).thenReturn(new PageImpl(categories));
 
         MockHttpServletResponse response = mockMvc.perform(get(endPoint)
                         .param("nombre", "categoria 1")
@@ -149,15 +149,15 @@ class CategoriaControllerTest {
                 .andReturn().getResponse();
 
         ObjectMapper mapper = new ObjectMapper();
-        PageResponse<Categoria> pageResponse = mapper.readValue(response.getContentAsString(), mapper.getTypeFactory().constructParametricType(PageResponse.class, Categoria.class));
+        PageResponse<Category> pageResponse = mapper.readValue(response.getContentAsString(), mapper.getTypeFactory().constructParametricType(PageResponse.class, Category.class));
 
         assertAll(
                 () -> assertEquals(HttpStatus.OK.value(), response.getStatus()),
                 () -> assertEquals(1, pageResponse.totalElements()),
                 () -> assertEquals(1, pageResponse.totalPages()),
                 () -> assertEquals(1, pageResponse.content().size()),
-                () -> assertEquals(categoria1.getId(), pageResponse.content().get(0).getId()),
-                () -> assertEquals(categoria1.getNombre(), pageResponse.content().get(0).getNombre())
+                () -> assertEquals(category1.getId(), pageResponse.content().get(0).getId()),
+                () -> assertEquals(category1.getName(), pageResponse.content().get(0).getName())
         );
 
         verify(service, times(1)).getAll(any(Optional.class), any(Optional.class), any(Pageable.class));
@@ -165,8 +165,8 @@ class CategoriaControllerTest {
 
     @Test
     void getAllCategorias_ShouldReturnEmpty_withNameButIsInactive() throws Exception {
-        List<Categoria> categorias = List.of();
-        when(service.getAll(any(Optional.class), any(Optional.class), any(Pageable.class))).thenReturn(new PageImpl(categorias));
+        List<Category> categories = List.of();
+        when(service.getAll(any(Optional.class), any(Optional.class), any(Pageable.class))).thenReturn(new PageImpl(categories));
 
         MockHttpServletResponse response = mockMvc.perform(get(endPoint)
                         .param("nombre", "categoria 2")
@@ -174,7 +174,7 @@ class CategoriaControllerTest {
                 .andReturn().getResponse();
 
         ObjectMapper mapper = new ObjectMapper();
-        PageResponse<Categoria> pageResponse = mapper.readValue(response.getContentAsString(), mapper.getTypeFactory().constructParametricType(PageResponse.class, Categoria.class));
+        PageResponse<Category> pageResponse = mapper.readValue(response.getContentAsString(), mapper.getTypeFactory().constructParametricType(PageResponse.class, Category.class));
 
         assertAll(
                 () -> assertEquals(HttpStatus.OK.value(), response.getStatus()),
@@ -188,8 +188,8 @@ class CategoriaControllerTest {
 
     @Test
     void getAllCategorias_ShouldReturnCategoria_withSorted() throws Exception {
-        List<Categoria> categorias = List.of(categoria3, categoria1);
-        when(service.getAll(any(Optional.class), any(Optional.class), any(Pageable.class))).thenReturn(new PageImpl(categorias));
+        List<Category> categories = List.of(category3, category1);
+        when(service.getAll(any(Optional.class), any(Optional.class), any(Pageable.class))).thenReturn(new PageImpl(categories));
 
         MockHttpServletResponse response = mockMvc.perform(get(endPoint)
                         .param("sortBy", "nombre")
@@ -198,17 +198,17 @@ class CategoriaControllerTest {
                 .andReturn().getResponse();
 
         ObjectMapper mapper = new ObjectMapper();
-        PageResponse<Categoria> pageResponse = mapper.readValue(response.getContentAsString(), mapper.getTypeFactory().constructParametricType(PageResponse.class, Categoria.class));
+        PageResponse<Category> pageResponse = mapper.readValue(response.getContentAsString(), mapper.getTypeFactory().constructParametricType(PageResponse.class, Category.class));
 
         assertAll(
                 () -> assertEquals(HttpStatus.OK.value(), response.getStatus()),
                 () -> assertEquals(2, pageResponse.totalElements()),
                 () -> assertEquals(1, pageResponse.totalPages()),
                 () -> assertEquals(2, pageResponse.content().size()),
-                () -> assertEquals(categoria3.getId(), pageResponse.content().get(0).getId()),
-                () -> assertEquals(categoria3.getNombre(), pageResponse.content().get(0).getNombre()),
-                () -> assertEquals(categoria1.getId(), pageResponse.content().get(1).getId()),
-                () -> assertEquals(categoria1.getNombre(), pageResponse.content().get(1).getNombre())
+                () -> assertEquals(category3.getId(), pageResponse.content().get(0).getId()),
+                () -> assertEquals(category3.getName(), pageResponse.content().get(0).getName()),
+                () -> assertEquals(category1.getId(), pageResponse.content().get(1).getId()),
+                () -> assertEquals(category1.getName(), pageResponse.content().get(1).getName())
 
         );
 
@@ -234,7 +234,7 @@ class CategoriaControllerTest {
     }
 
     @Test
-    void getAllCategorias_ShouldReturnError_withSizeInvalid() throws Exception{
+    void getAllCategorias_ShouldReturnError_withSizeInvalid() throws Exception {
         MockHttpServletResponse response = mockMvc.perform(get(endPoint)
                         .param("size", "-1")
                         .accept(MediaType.APPLICATION_JSON))
@@ -253,8 +253,8 @@ class CategoriaControllerTest {
 
     @Test
     void getAllCategorias_shouldReturnCategorias_withNameAndActive() throws Exception {
-        List<Categoria> categorias = List.of(categoria1);
-        when(service.getAll(any(Optional.class), any(Optional.class), any(Pageable.class))).thenReturn(new PageImpl(categorias));
+        List<Category> categories = List.of(category1);
+        when(service.getAll(any(Optional.class), any(Optional.class), any(Pageable.class))).thenReturn(new PageImpl(categories));
 
         MockHttpServletResponse response = mockMvc.perform(get(endPoint)
                         .param("nombre", "categoria 1")
@@ -263,15 +263,15 @@ class CategoriaControllerTest {
                 .andReturn().getResponse();
 
         ObjectMapper mapper = new ObjectMapper();
-        PageResponse<Categoria> pageResponse = mapper.readValue(response.getContentAsString(), mapper.getTypeFactory().constructParametricType(PageResponse.class, Categoria.class));
+        PageResponse<Category> pageResponse = mapper.readValue(response.getContentAsString(), mapper.getTypeFactory().constructParametricType(PageResponse.class, Category.class));
 
         assertAll(
                 () -> assertEquals(HttpStatus.OK.value(), response.getStatus()),
                 () -> assertEquals(1, pageResponse.totalElements()),
                 () -> assertEquals(1, pageResponse.totalPages()),
                 () -> assertEquals(1, pageResponse.content().size()),
-                () -> assertEquals(categoria1.getId(), pageResponse.content().get(0).getId()),
-                () -> assertEquals(categoria1.getNombre(), pageResponse.content().get(0).getNombre())
+                () -> assertEquals(category1.getId(), pageResponse.content().get(0).getId()),
+                () -> assertEquals(category1.getName(), pageResponse.content().get(0).getName())
         );
 
         verify(service, times(1)).getAll(any(Optional.class), any(Optional.class), any(Pageable.class));
@@ -299,17 +299,17 @@ class CategoriaControllerTest {
 
     @Test
     void getCategoria() throws Exception {
-        when(service.getCategoriaById(UUID.fromString("3930e05a-7ebf-4aa1-8aa8-5d7466fa9734"))).thenReturn(categoria1);
+        when(service.getCategoriaById(UUID.fromString("3930e05a-7ebf-4aa1-8aa8-5d7466fa9734"))).thenReturn(category1);
 
         MockHttpServletResponse response = mockMvc.perform(get(endPoint + "/3930e05a-7ebf-4aa1-8aa8-5d7466fa9734").accept(MediaType.APPLICATION_JSON))
                 .andReturn().getResponse();
 
-        Categoria categoria = mapper.readValue(response.getContentAsString(), Categoria.class);
+        Category category = mapper.readValue(response.getContentAsString(), Category.class);
 
         assertAll(
                 () -> assertEquals(HttpStatus.OK.value(), response.getStatus()),
-                () -> assertEquals(categoria1.getId(), categoria.getId()),
-                () -> assertEquals(categoria1.getNombre(), categoria.getNombre())
+                () -> assertEquals(category1.getId(), category.getId()),
+                () -> assertEquals(category1.getName(), category.getName())
         );
 
         verify(service, times(1)).getCategoriaById(UUID.fromString("3930e05a-7ebf-4aa1-8aa8-5d7466fa9734"));
@@ -333,19 +333,19 @@ class CategoriaControllerTest {
 
     @Test
     void addCategoria() throws Exception {
-        when(service.createCategoria(categoriaCreateDto)).thenReturn(categoria1);
+        when(service.createCategoria(categoriaCreateDto)).thenReturn(category1);
 
         MockHttpServletResponse response = mockMvc.perform(post(endPoint)
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(mapper.writeValueAsString(categoriaCreateDto)))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(mapper.writeValueAsString(categoriaCreateDto)))
                 .andReturn().getResponse();
 
-        Categoria categoria = mapper.readValue(response.getContentAsString(), Categoria.class);
+        Category category = mapper.readValue(response.getContentAsString(), Category.class);
 
         assertAll(
                 () -> assertEquals(HttpStatus.OK.value(), response.getStatus()),
-                () -> assertEquals(categoria1.getId(), categoria.getId()),
-                () -> assertEquals(categoria1.getNombre(), categoria.getNombre())
+                () -> assertEquals(category1.getId(), category.getId()),
+                () -> assertEquals(category1.getName(), category.getName())
         );
 
         verify(service, times(1)).createCategoria(categoriaCreateDto);
@@ -353,7 +353,7 @@ class CategoriaControllerTest {
 
     @Test
     void addCategoriaWithoutName() throws Exception {
-        categoriaCreateDto.setNombre(null);
+        categoriaCreateDto.setName(null);
 
         MockHttpServletResponse response = mockMvc.perform(post(endPoint)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -361,13 +361,13 @@ class CategoriaControllerTest {
                 .andReturn().getResponse();
 
         ObjectMapper mapper = new ObjectMapper();
-        Map<String, Object> res = mapper.readValue(response.getContentAsString(), mapper.getTypeFactory().constructMapType(Map.class, String.class, Object.class) );
+        Map<String, Object> res = mapper.readValue(response.getContentAsString(), mapper.getTypeFactory().constructMapType(Map.class, String.class, Object.class));
         LinkedHashMap<String, Object> errors = (LinkedHashMap<String, Object>) res.get("errors");
 
 
         assertAll(
                 () -> assertEquals(HttpStatus.BAD_REQUEST.value(), response.getStatus()),
-                () -> assertEquals( HttpStatus.BAD_REQUEST.value(),res.get("code")),
+                () -> assertEquals(HttpStatus.BAD_REQUEST.value(), res.get("code")),
                 () -> assertEquals("El nombre no puede estar vacio", errors.get("nombre"))
         );
 
@@ -376,17 +376,17 @@ class CategoriaControllerTest {
 
     @Test
     void addCategoriaAlreadyExistSameName() throws Exception {
-        when(service.createCategoria(categoriaCreateDto)).thenThrow(new CategoriaConflictException("Ya existe una categoria con el nombre: " + categoriaCreateDto.getNombre()));
+        when(service.createCategoria(categoriaCreateDto)).thenThrow(new CategoriaConflictException("Ya existe una categoria con el nombre: " + categoriaCreateDto.getName()));
 
         MockHttpServletResponse response = mockMvc.perform(post(endPoint)
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(mapper.writeValueAsString(categoriaCreateDto)))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(mapper.writeValueAsString(categoriaCreateDto)))
                 .andReturn().getResponse();
 
         ErrorResponse errorResponse = mapper.readValue(response.getContentAsString(), ErrorResponse.class);
         assertAll(
                 () -> assertEquals(HttpStatus.CONFLICT.value(), response.getStatus()),
-                () -> assertEquals("Ya existe una categoria con el nombre: " + categoriaCreateDto.getNombre(), errorResponse.msg())
+                () -> assertEquals("Ya existe una categoria con el nombre: " + categoriaCreateDto.getName(), errorResponse.msg())
         );
 
         verify(service, times(1)).createCategoria(categoriaCreateDto);
@@ -394,27 +394,27 @@ class CategoriaControllerTest {
 
     @Test
     void updateCategoria() throws Exception {
-        when(service.updateCategoria(UUID.fromString("3930e05a-7ebf-4aa1-8aa8-5d7466fa9734"), categoriaCreateDto)).thenReturn(categoria1);
+        when(service.updateCategoria(UUID.fromString("3930e05a-7ebf-4aa1-8aa8-5d7466fa9734"), categoriaCreateDto)).thenReturn(category1);
 
         MockHttpServletResponse response = mockMvc.perform(put(endPoint + "/3930e05a-7ebf-4aa1-8aa8-5d7466fa9734")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(mapper.writeValueAsString(categoriaCreateDto)))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(mapper.writeValueAsString(categoriaCreateDto)))
                 .andReturn().getResponse();
 
-        Categoria categoria = mapper.readValue(response.getContentAsString(), Categoria.class);
+        Category category = mapper.readValue(response.getContentAsString(), Category.class);
 
         assertAll(
                 () -> assertEquals(HttpStatus.OK.value(), response.getStatus()),
-                () -> assertEquals(categoria1.getId(), categoria.getId()),
-                () -> assertEquals(categoria1.getNombre(), categoria.getNombre())
+                () -> assertEquals(category1.getId(), category.getId()),
+                () -> assertEquals(category1.getName(), category.getName())
         );
 
         verify(service, times(1)).updateCategoria(UUID.fromString("3930e05a-7ebf-4aa1-8aa8-5d7466fa9734"), categoriaCreateDto);
     }
 
     @Test
-    void updateWithoutName() throws Exception{
-        categoriaCreateDto.setNombre(null);
+    void updateWithoutName() throws Exception {
+        categoriaCreateDto.setName(null);
 
         MockHttpServletResponse response = mockMvc.perform(put(endPoint + "/3930e05a-7ebf-4aa1-8aa8-5d7466fa9734")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -422,23 +422,23 @@ class CategoriaControllerTest {
                 .andReturn().getResponse();
 
         ObjectMapper mapper = new ObjectMapper();
-        Map<String, Object> res = mapper.readValue(response.getContentAsString(), mapper.getTypeFactory().constructMapType(Map.class, String.class, Object.class) );
+        Map<String, Object> res = mapper.readValue(response.getContentAsString(), mapper.getTypeFactory().constructMapType(Map.class, String.class, Object.class));
         LinkedHashMap<String, Object> errors = (LinkedHashMap<String, Object>) res.get("errors");
     }
 
     @Test
     void updateCategoriaAlreadyExistSameName() throws Exception {
-        when(service.updateCategoria(UUID.fromString("3930e05a-7ebf-4aa1-8aa8-5d7466fa9734"), categoriaCreateDto)).thenThrow(new CategoriaConflictException("Ya existe una categoria con el nombre: " + categoriaCreateDto.getNombre()));
+        when(service.updateCategoria(UUID.fromString("3930e05a-7ebf-4aa1-8aa8-5d7466fa9734"), categoriaCreateDto)).thenThrow(new CategoriaConflictException("Ya existe una categoria con el nombre: " + categoriaCreateDto.getName()));
 
         MockHttpServletResponse response = mockMvc.perform(put(endPoint + "/3930e05a-7ebf-4aa1-8aa8-5d7466fa9734")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(mapper.writeValueAsString(categoriaCreateDto)))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(mapper.writeValueAsString(categoriaCreateDto)))
                 .andReturn().getResponse();
 
         ErrorResponse errorResponse = mapper.readValue(response.getContentAsString(), ErrorResponse.class);
         assertAll(
                 () -> assertEquals(HttpStatus.CONFLICT.value(), response.getStatus()),
-                () -> assertEquals("Ya existe una categoria con el nombre: " + categoriaCreateDto.getNombre(), errorResponse.msg())
+                () -> assertEquals("Ya existe una categoria con el nombre: " + categoriaCreateDto.getName(), errorResponse.msg())
         );
 
         verify(service, times(1)).updateCategoria(UUID.fromString("3930e05a-7ebf-4aa1-8aa8-5d7466fa9734"), categoriaCreateDto);
@@ -449,8 +449,8 @@ class CategoriaControllerTest {
         when(service.updateCategoria(UUID.fromString("3930e05a-7ebf-4aa1-8aa8-5d7466fa9734"), categoriaCreateDto)).thenThrow(new CategoriaNotFoundException(UUID.fromString("3930e05a-7ebf-4aa1-8aa8-5d7466fa9734")));
 
         MockHttpServletResponse response = mockMvc.perform(put(endPoint + "/3930e05a-7ebf-4aa1-8aa8-5d7466fa9734")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(mapper.writeValueAsString(categoriaCreateDto)))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(mapper.writeValueAsString(categoriaCreateDto)))
                 .andReturn().getResponse();
 
         ErrorResponse errorResponse = mapper.readValue(response.getContentAsString(), ErrorResponse.class);
@@ -465,7 +465,7 @@ class CategoriaControllerTest {
     @Test
     void deleteCategoria() throws Exception {
         MockHttpServletResponse response = mockMvc.perform(delete(endPoint + "/3930e05a-7ebf-4aa1-8aa8-5d7466fa9734")
-                .contentType(MediaType.APPLICATION_JSON))
+                        .contentType(MediaType.APPLICATION_JSON))
                 .andReturn().getResponse();
 
         assertAll(
@@ -480,7 +480,7 @@ class CategoriaControllerTest {
         doThrow(new CategoriaNotFoundException(UUID.fromString("3930e05a-7ebf-4aa1-8aa8-5d7466fa9734"))).when(service).deleteById(UUID.fromString("3930e05a-7ebf-4aa1-8aa8-5d7466fa9734"));
 
         MockHttpServletResponse response = mockMvc.perform(delete(endPoint + "/3930e05a-7ebf-4aa1-8aa8-5d7466fa9734")
-                .contentType(MediaType.APPLICATION_JSON))
+                        .contentType(MediaType.APPLICATION_JSON))
                 .andReturn().getResponse();
 
         ErrorResponse errorResponse = mapper.readValue(response.getContentAsString(), ErrorResponse.class);
@@ -497,7 +497,7 @@ class CategoriaControllerTest {
         doThrow(new CategoriaConflictException("No se puede eliminar la categoria porque tiene libros asociados")).when(service).deleteById(UUID.fromString("3930e05a-7ebf-4aa1-8aa8-5d7466fa9734"));
 
         MockHttpServletResponse response = mockMvc.perform(delete(endPoint + "/3930e05a-7ebf-4aa1-8aa8-5d7466fa9734")
-                .contentType(MediaType.APPLICATION_JSON))
+                        .contentType(MediaType.APPLICATION_JSON))
                 .andReturn().getResponse();
 
         ErrorResponse errorResponse = mapper.readValue(response.getContentAsString(), ErrorResponse.class);
@@ -508,7 +508,6 @@ class CategoriaControllerTest {
 
         verify(service, times(1)).deleteById(UUID.fromString("3930e05a-7ebf-4aa1-8aa8-5d7466fa9734"));
     }
-
 
 
 }

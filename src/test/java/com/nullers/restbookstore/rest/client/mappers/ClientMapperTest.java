@@ -16,7 +16,7 @@ class ClientMapperTest {
             .country("USA")
             .province("Springfield")
             .number("123")
-            .PostalCode("12345")
+            .postalCode("12345")
             .build();
 
     Client client = Client.builder()

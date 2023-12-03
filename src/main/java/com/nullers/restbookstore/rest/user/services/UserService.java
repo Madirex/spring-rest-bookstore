@@ -53,15 +53,6 @@ public interface UserService {
     UserResponse update(UUID id, UserRequest userRequest);
 
     /**
-     * Actualiza parcialmente un usuario por ID
-     *
-     * @param id          id del usuario a actualizar
-     * @param userRequest petición de usuario con los campos a actualizar
-     * @return usuario actualizado parcialmente
-     */
-//    UserResponse patch(UUID id, UserRequest userRequest);
-
-    /**
      * Elimina un usuario por ID
      *
      * @param id id del usuario

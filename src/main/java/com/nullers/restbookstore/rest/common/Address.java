@@ -29,5 +29,5 @@ public record Address(
 
         @NotBlank(message = "El código postal no puede estar vacío")
         @Pattern(regexp = "^[0-9]{5}$", message = "El código postal debe tener 5 dígitos")
-        String PostalCode
+        String postalCode
 ) {}

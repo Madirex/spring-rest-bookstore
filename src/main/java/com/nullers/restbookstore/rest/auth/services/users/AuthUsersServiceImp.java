@@ -19,6 +19,7 @@ public class AuthUsersServiceImp implements AuthUsersService {
 
     /**
      * Constructor for AuthUsersServiceImp
+     *
      * @param authUsersRepository AuthUsersRepository
      */
 
@@ -29,12 +30,13 @@ public class AuthUsersServiceImp implements AuthUsersService {
 
     /**
      * loadUserByUsername
+     *
      * @param username Nombre de usuario
      * @return UserDetails
      */
     @Override
     public UserDetails loadUserByUsername(String username) {
-        return authUsersRepository.findByUsername(username)
+        return authUsersRepository.findByUsernameIgnoreCase(username)
                 .orElseThrow(() -> new RuntimeException("Usuario con username " + username + " no encontrado"));
     }
 }

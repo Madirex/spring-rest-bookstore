@@ -11,40 +11,41 @@ import java.util.UUID;
 @Getter
 @Setter
 @Entity
-@Table(name = "categorias")
+@Table(name = "categories")
 @NoArgsConstructor
 @AllArgsConstructor
-public class Categoria {
+public class Category {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id = UUID.randomUUID();
 
     @Column(nullable = false, unique = true)
-    private String nombre;
+    private String name;
 
-    private boolean activa;
+    @Builder.Default
+    private Boolean isActive = true;
 
     @Temporal(TemporalType.TIMESTAMP)
     @ColumnDefault(value = "CURRENT_TIMESTAMP")
-    private LocalDateTime fecha_creacion;
+    private LocalDateTime createdAt;
 
     @Temporal(TemporalType.TIMESTAMP)
     @ColumnDefault(value = "CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP")
-    private LocalDateTime fecha_actualizacion;
+    private LocalDateTime updatedAt;
 
     @PrePersist
     protected void onCreate() {
-        if (fecha_creacion == null) {
-            fecha_creacion = LocalDateTime.now();
+        if (createdAt == null) {
+            createdAt = LocalDateTime.now();
         }
-        if (fecha_actualizacion == null) {
-            fecha_actualizacion = LocalDateTime.now();
+        if (updatedAt == null) {
+            updatedAt = LocalDateTime.now();
         }
     }
 
     @PreUpdate
     protected void onUpdate() {
-        fecha_actualizacion = LocalDateTime.now();
+        updatedAt = LocalDateTime.now();
     }
 }

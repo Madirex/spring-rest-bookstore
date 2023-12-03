@@ -6,6 +6,7 @@ import com.nullers.restbookstore.rest.user.dto.UserResponse;
 import com.nullers.restbookstore.rest.user.models.User;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
 import java.util.UUID;
 
 /**
@@ -24,11 +25,11 @@ public class UserMapper {
     public User toUser(UserRequest request) {
         return User.builder()
                 .name(request.getName())
-                .surnames(request.getSurnames())
+                .surname(request.getSurname())
                 .username(request.getUsername())
                 .email(request.getEmail())
                 .password(request.getPassword())
-                .roles(request.getRoles())
+                .userRoles(request.getUserRoles())
                 .isDeleted(request.getIsDeleted())
                 .build();
     }
@@ -44,11 +45,11 @@ public class UserMapper {
         return User.builder()
                 .id(id)
                 .name(request.getName())
-                .surnames(request.getSurnames())
+                .surname(request.getSurname())
                 .username(request.getUsername())
                 .email(request.getEmail())
                 .password(request.getPassword())
-                .roles(request.getRoles())
+                .userRoles(request.getUserRoles())
                 .isDeleted(request.getIsDeleted())
                 .build();
     }
@@ -63,10 +64,10 @@ public class UserMapper {
         return UserResponse.builder()
                 .id(user.getId())
                 .name(user.getName())
-                .surnames(user.getSurnames())
+                .surname(user.getSurname())
                 .username(user.getUsername())
                 .email(user.getEmail())
-                .roles(user.getRoles())
+                .userRoles(user.getUserRoles())
                 .isDeleted(user.getIsDeleted())
                 .build();
     }
@@ -77,14 +78,15 @@ public class UserMapper {
      * @param user usuario autenticado
      * @return usuario mapeado con ID
      */
-    public UserInfoResponse toUserInfoResponse(User user) {
+    public UserInfoResponse toUserInfoResponse(User user, List<String> order) {
         return UserInfoResponse.builder()
                 .id(user.getId())
                 .name(user.getName())
-                .surnames(user.getSurnames())
+                .surname(user.getSurname())
                 .username(user.getUsername())
                 .email(user.getEmail())
-                .roles(user.getRoles())
+                .userRoles(user.getUserRoles())
+                .order(order)
                 .isDeleted(user.getIsDeleted())
                 .build();
     }

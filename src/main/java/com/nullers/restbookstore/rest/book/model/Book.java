@@ -2,7 +2,7 @@ package com.nullers.restbookstore.rest.book.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.nullers.restbookstore.rest.category.model.Categoria;
+import com.nullers.restbookstore.rest.category.model.Category;
 import com.nullers.restbookstore.rest.publisher.model.Publisher;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
@@ -83,7 +83,7 @@ public class Book {
     @ManyToOne
     @JoinColumn(name = "categoria_id")
     @Schema(description = "Categoría")
-    private Categoria category;
+    private Category category;
 
     @Min(value = 0, message = "El stock no puede estar en negativo")
     @Builder.Default

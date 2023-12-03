@@ -61,7 +61,10 @@ public class BookRestControllerImpl implements BookRestController {
     /**
      * Método para obtener todos los Books
      *
-     * @param publisher Publisher por la que filtrar
+     * @param publisher       Publisher por la que filtrar
+     * @param maxPrice        Precio máximo por la que filtrar
+     * @param category        Categoría por la que filtrar
+     * @param pageableRequest Objeto PageableRequest con los parámetros de paginación
      * @return ResponseEntity con el código de estado
      */
     @Operation(summary = "Obtiene todos los libros", description = "Obtiene una lista de libros")

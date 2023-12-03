@@ -10,6 +10,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 public interface JwtService {
     /**
      * Extract username from token
+     *
      * @param token jwt token
      * @return username string
      */
@@ -17,6 +18,7 @@ public interface JwtService {
 
     /**
      * Generate token
+     *
      * @param username username
      * @return jwt token
      */
@@ -25,10 +27,11 @@ public interface JwtService {
 
     /**
      * Validate token
-     * @param token jwt token
+     *
+     * @param token       jwt token
      * @param userDetails user details
      * @return vuelve verdadero si el token es válido
      */
 
-    boolean isTokenValid(String token,  UserDetails userDetails);
+    boolean isTokenValid(String token, UserDetails userDetails);
 }

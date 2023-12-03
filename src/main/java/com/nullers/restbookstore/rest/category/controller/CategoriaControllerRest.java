@@ -7,7 +7,7 @@ import com.nullers.restbookstore.pagination.util.PaginationLinksUtils;
 import com.nullers.restbookstore.rest.category.dto.CategoriaCreateDto;
 import com.nullers.restbookstore.rest.category.exceptions.CategoriaConflictException;
 import com.nullers.restbookstore.rest.category.exceptions.CategoriaNotFoundException;
-import com.nullers.restbookstore.rest.category.model.Categoria;
+import com.nullers.restbookstore.rest.category.model.Category;
 import com.nullers.restbookstore.rest.category.services.CategoriaServiceJpa;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
@@ -39,7 +39,7 @@ public class CategoriaControllerRest {
     }
 
     @GetMapping
-    public ResponseEntity<PageResponse<Categoria>> getCategorias(
+    public ResponseEntity<PageResponse<Category>> getCategorias(
             @RequestParam(required = false) Optional<String> nombre,
             @RequestParam(required = false) Optional<Boolean> activa,
             @RequestParam(defaultValue = "0") int page,
@@ -51,24 +51,24 @@ public class CategoriaControllerRest {
         Sort sort = order.equalsIgnoreCase("asc") ? Sort.by(sortBy).ascending() : Sort.by(sortBy).descending();
         Pageable pageable = PageRequest.of(page, size, sort);
         UriComponentsBuilder uriBuilder = UriComponentsBuilder.fromHttpUrl(request.getRequestURL().toString());
-        Page<Categoria> result = service.getAll(nombre, activa, pageable);
+        Page<Category> result = service.getAll(nombre, activa, pageable);
         return ResponseEntity.ok()
                 .header("link", paginationLinksUtils.createLinkHeader(result, uriBuilder))
                 .body(PageResponse.of(result, sortBy, order));
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Categoria> getCategoria(@PathVariable UUID id) {
+    public ResponseEntity<Category> getCategoria(@PathVariable UUID id) {
         return ResponseEntity.ok(service.getCategoriaById(id));
     }
 
     @PostMapping
-    public ResponseEntity<Categoria> addCategoria(@Valid @RequestBody CategoriaCreateDto categoriaCreateDto) {
+    public ResponseEntity<Category> addCategoria(@Valid @RequestBody CategoriaCreateDto categoriaCreateDto) {
         return ResponseEntity.ok(service.createCategoria(categoriaCreateDto));
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Categoria> updateCategoria(@PathVariable UUID id, @Valid @RequestBody CategoriaCreateDto categoriaCreateDto) {
+    public ResponseEntity<Category> updateCategoria(@PathVariable UUID id, @Valid @RequestBody CategoriaCreateDto categoriaCreateDto) {
         return ResponseEntity.ok(service.updateCategoria(id, categoriaCreateDto));
     }
 

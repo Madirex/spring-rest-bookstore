@@ -2,33 +2,33 @@ package com.nullers.restbookstore.rest.category.mappers;
 
 
 import com.nullers.restbookstore.rest.category.dto.CategoriaCreateDto;
-import com.nullers.restbookstore.rest.category.model.Categoria;
+import com.nullers.restbookstore.rest.category.model.Category;
 
 import java.util.UUID;
 
 public class CategoriaCreateMapper {
 
-    public static Categoria toEntity(CategoriaCreateDto dto){
-        return Categoria.builder()
+    public static Category toEntity(CategoriaCreateDto dto) {
+        return Category.builder()
                 .id(UUID.randomUUID())
-                .nombre(dto.getNombre())
-                .activa(dto.isActiva())
+                .name(dto.getName())
+                .isActive(dto.isActive())
                 .build();
     }
 
-    public static Categoria toEntity(CategoriaCreateDto dto, Categoria entity){
-        return Categoria.builder()
+    public static Category toEntity(CategoriaCreateDto dto, Category entity) {
+        return Category.builder()
                 .id(entity.getId() == null ? UUID.randomUUID() : entity.getId())
-                .nombre(dto.getNombre() == null ? entity.getNombre() : dto.getNombre())
-                .activa(dto.isActiva() == entity.isActiva() ? entity.isActiva() : dto.isActiva())
-                .fecha_creacion(entity.getFecha_creacion())
+                .name(dto.getName() == null ? entity.getName() : dto.getName())
+                .isActive(dto.isActive() == entity.getIsActive() ? entity.getIsActive() : dto.isActive())
+                .createdAt(entity.getCreatedAt())
                 .build();
     }
 
-    public static CategoriaCreateDto toDto(Categoria entity){
+    public static CategoriaCreateDto toDto(Category entity) {
         return CategoriaCreateDto.builder()
-                .nombre(entity.getNombre())
-                .activa(entity.isActiva())
+                .name(entity.getName())
+                .isActive(entity.getIsActive())
                 .build();
     }
 

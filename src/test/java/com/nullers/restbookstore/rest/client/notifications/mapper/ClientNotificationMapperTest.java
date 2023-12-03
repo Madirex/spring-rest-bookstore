@@ -1,6 +1,6 @@
 package com.nullers.restbookstore.rest.client.notifications.mapper;
 
-import com.nullers.restbookstore.rest.category.model.Categoria;
+import com.nullers.restbookstore.rest.category.model.Category;
 import com.nullers.restbookstore.rest.common.Address;
 import com.nullers.restbookstore.rest.client.model.Client;
 import com.nullers.restbookstore.rest.client.notifications.dto.ClientNotificationResponse;
@@ -20,9 +20,9 @@ class ClientNotificationMapperTest {
             .country("USA")
             .province("Springfield")
             .number("123")
-            .PostalCode("12345")
+            .postalCode("12345")
             .build();
-    private Categoria categoria = Categoria.builder()
+    private Category category = Category.builder()
             .id(UUID.fromString("9def16db-362b-44c4-9fc9-77117758b5c8"))
             .build();
 
