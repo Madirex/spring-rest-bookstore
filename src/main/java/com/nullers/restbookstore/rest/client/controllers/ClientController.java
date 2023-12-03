@@ -18,10 +18,10 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
-import org.springframework.data.mapping.PropertyReferenceException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.util.UriComponentsBuilder;
@@ -42,6 +42,7 @@ import java.util.UUID;
  */
 @RestController
 @RequestMapping("/api/clients")
+@PreAuthorize("hasRole('ADMIN')")
 public class ClientController {
 
 
@@ -210,17 +211,6 @@ public class ClientController {
         return new ErrorResponse(HttpStatus.BAD_REQUEST.value(), exception.getMessage());
     }
 
-    /**
-     * Manejador de excepciones de PropertyReferenceException
-     *
-     * @param exception excepción
-     * @return ErrorResponse con el mensaje de error
-     */
-    @ExceptionHandler(PropertyReferenceException.class)
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ErrorResponse handlePropertyReferenceException(PropertyReferenceException exception) {
-        return new ErrorResponse(HttpStatus.BAD_REQUEST.value(), exception.getMessage());
-    }
 
     @ExceptionHandler(ClientInOrderException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)

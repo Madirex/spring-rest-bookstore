@@ -17,6 +17,9 @@ import com.nullers.restbookstore.rest.orders.models.Order;
 import com.nullers.restbookstore.rest.orders.models.OrderLine;
 import com.nullers.restbookstore.rest.orders.repositories.OrderRepository;
 import com.nullers.restbookstore.rest.publisher.model.Publisher;
+import com.nullers.restbookstore.rest.shop.exceptions.ShopNotFoundException;
+import com.nullers.restbookstore.rest.shop.model.Shop;
+import com.nullers.restbookstore.rest.shop.repository.ShopRepository;
 import com.nullers.restbookstore.rest.user.exceptions.UserNotFound;
 import com.nullers.restbookstore.rest.user.models.User;
 import com.nullers.restbookstore.rest.user.models.UserRole;
@@ -47,6 +50,9 @@ public class OrderServiceTest {
 
     @Mock
     private BookRepository bookRepository;
+
+    @Mock
+    private ShopRepository shopRepository;
 
     @Mock
     private UserRepository userRepository;
@@ -124,10 +130,19 @@ public class OrderServiceTest {
             .userRoles(Set.of(UserRole.USER))
             .build();
 
+    Shop shop = Shop.builder()
+            .id(UUID.fromString("b5f29063-77d8-4d5d-98ea-def0cc9ebc5f"))
+            .name("name")
+            .books(Set.of(book))
+            .clients(Set.of(clientTest))
+            .location(address)
+            .build();
+
     Order order = Order.builder()
             .id(new ObjectId())
             .userId(userTest.getId())
             .clientId(clientTest.getId())
+            .shopId(shop.getId())
             .isDeleted(false)
             .orderLines(List.of(orderLine, orderLine2))
             .updatedAt(LocalDateTime.now())
@@ -136,10 +151,12 @@ public class OrderServiceTest {
             .totalBooks(2)
             .build();
 
+
     OrderCreateDto orderCreateDto = OrderCreateDto.builder()
             .userId(userTest.getId())
             .clientId(clientTest.getId())
             .orderLines(List.of(orderLine, orderLine2))
+            .shopId(shop.getId())
             .build();
 
     @Test
@@ -223,7 +240,7 @@ public class OrderServiceTest {
         when(bookRepository.findById(any(Long.class))).thenReturn(Optional.of(book));
         when(userRepository.findById(any(UUID.class))).thenReturn(Optional.of(userTest));
         when(clientRepository.findById(any(UUID.class))).thenReturn(Optional.of(clientTest));
-
+        when(shopRepository.findById(any(UUID.class))).thenReturn(Optional.of(shop));
         Order result = orderService.createOrder(orderCreateDto);
 
         assertAll(
@@ -237,6 +254,7 @@ public class OrderServiceTest {
                 () -> assertEquals(order.getUpdatedAt(), result.getUpdatedAt())
         );
 
+        verify(shopRepository, times(1)).findById(any(UUID.class));
         verify(orderRepository, times(1)).save(any(Order.class));
         verify(bookRepository, times(4)).findById(any(Long.class));
         verify(userRepository, times(1)).findById(any(UUID.class));
@@ -282,12 +300,14 @@ public class OrderServiceTest {
     void createOrder_WithEmptyLines_ShouldThrowException() {
         OrderCreateDto orderCreateDto = OrderCreateDto.builder()
                 .userId(userTest.getId())
+                .shopId(shop.getId())
                 .clientId(clientTest.getId())
                 .orderLines(List.of())
                 .build();
 
         when(userRepository.findById(any(UUID.class))).thenReturn(Optional.of(userTest));
         when(clientRepository.findById(any(UUID.class))).thenReturn(Optional.of(clientTest));
+        when(shopRepository.findById(any(UUID.class))).thenReturn(Optional.of(shop));
 
         var res = assertThrows(OrderNotItemsExceptions.class, () -> orderService.createOrder(orderCreateDto));
 
@@ -296,6 +316,7 @@ public class OrderServiceTest {
                 () -> assertTrue(res.getMessage().contains(" no tiene items"))
         );
 
+        verify(shopRepository, times(1)).findById(any(UUID.class));
         verify(orderRepository, times(0)).save(any(Order.class));
         verify(bookRepository, times(0)).findById(any(Long.class));
         verify(userRepository, times(1)).findById(any(UUID.class));
@@ -307,6 +328,7 @@ public class OrderServiceTest {
         OrderCreateDto orderCreateDto = OrderCreateDto.builder()
                 .userId(userTest.getId())
                 .clientId(clientTest.getId())
+                .shopId(shop.getId())
                 .orderLines(List.of(
                         OrderLine.builder()
                                 .bookId(book.getId()).price(book.getPrice()).quantity(11).build()
@@ -316,6 +338,7 @@ public class OrderServiceTest {
         when(userRepository.findById(any(UUID.class))).thenReturn(Optional.of(userTest));
         when(clientRepository.findById(any(UUID.class))).thenReturn(Optional.of(clientTest));
         when(bookRepository.findById(any(Long.class))).thenReturn(Optional.of(book));
+        when(shopRepository.findById(any(UUID.class))).thenReturn(Optional.of(shop));
 
         var res = assertThrows(OrderNotStockException.class, () -> orderService.createOrder(orderCreateDto));
 
@@ -324,6 +347,7 @@ public class OrderServiceTest {
                 () -> assertTrue(res.getMessage().contains(" no tiene stock"))
         );
 
+        verify(shopRepository, times(1)).findById(any(UUID.class));
         verify(orderRepository, times(0)).save(any(Order.class));
         verify(bookRepository, times(1)).findById(any(Long.class));
         verify(userRepository, times(1)).findById(any(UUID.class));
@@ -335,6 +359,7 @@ public class OrderServiceTest {
         OrderCreateDto orderCreateDto = OrderCreateDto.builder()
                 .userId(userTest.getId())
                 .clientId(clientTest.getId())
+                .shopId(shop.getId())
                 .orderLines(List.of(
                         OrderLine.builder()
                                 .bookId(book.getId()).price(2.0).quantity(1).build()
@@ -344,6 +369,7 @@ public class OrderServiceTest {
         when(userRepository.findById(any(UUID.class))).thenReturn(Optional.of(userTest));
         when(clientRepository.findById(any(UUID.class))).thenReturn(Optional.of(clientTest));
         when(bookRepository.findById(any(Long.class))).thenReturn(Optional.of(book));
+        when(shopRepository.findById(any(UUID.class))).thenReturn(Optional.of(shop));
 
         var res = assertThrows(OrderBadPriceException.class, () -> orderService.createOrder(orderCreateDto));
 
@@ -352,10 +378,52 @@ public class OrderServiceTest {
                 () -> assertTrue(res.getMessage().contains(" no es correcto"))
         );
 
+        verify(shopRepository, times(1)).findById(any(UUID.class));
         verify(orderRepository, times(0)).save(any(Order.class));
         verify(bookRepository, times(1)).findById(any(Long.class));
         verify(userRepository, times(1)).findById(any(UUID.class));
         verify(clientRepository, times(1)).findById(any(UUID.class));
+    }
+
+    @Test
+    void createOrder_ShouldReturnShopNotFoundException() throws Exception {
+        when(userRepository.findById(any(UUID.class))).thenReturn(Optional.of(userTest));
+        when(clientRepository.findById(any(UUID.class))).thenReturn(Optional.of(clientTest));
+        when(shopRepository.findById(any(UUID.class))).thenReturn(Optional.empty());
+
+        var res = assertThrows(ShopNotFoundException.class, () -> orderService.createOrder(orderCreateDto));
+
+        assertAll(
+                () -> assertEquals("Tienda no encontrada - La tienda con id b5f29063-77d8-4d5d-98ea-def0cc9ebc5f no existe", res.getMessage())
+        );
+
+        verify(shopRepository, times(1)).findById(any(UUID.class));
+        verify(orderRepository, times(0)).save(any(Order.class));
+        verify(bookRepository, times(0)).findById(any(Long.class));
+        verify(clientRepository, times(1)).findById(any(UUID.class));
+        verify(userRepository, times(1)).findById(any(UUID.class));
+
+    }
+
+    @Test
+    void updateOrder_ShouldReturnShopNotFoundException() throws Exception {
+        when(orderRepository.findById(any(ObjectId.class))).thenReturn(Optional.of(order));
+        when(userRepository.findById(any(UUID.class))).thenReturn(Optional.of(userTest));
+        when(clientRepository.findById(any(UUID.class))).thenReturn(Optional.of(clientTest));
+        when(shopRepository.findById(any(UUID.class))).thenReturn(Optional.empty());
+
+        var res = assertThrows(ShopNotFoundException.class, () -> orderService.updateOrder(order.getId(), orderCreateDto));
+
+        assertAll(
+                () -> assertEquals("Tienda no encontrada - La tienda con id b5f29063-77d8-4d5d-98ea-def0cc9ebc5f no existe", res.getMessage())
+        );
+
+        verify(shopRepository, times(1)).findById(any(UUID.class));
+        verify(orderRepository, times(1)).findById(any(ObjectId.class));
+        verify(orderRepository, times(0)).save(any(Order.class));
+        verify(bookRepository, times(0)).findById(any(Long.class));
+        verify(clientRepository, times(1)).findById(any(UUID.class));
+        verify(userRepository, times(1)).findById(any(UUID.class));
     }
 
     @Test
@@ -365,6 +433,7 @@ public class OrderServiceTest {
         when(bookRepository.findById(any(Long.class))).thenReturn(Optional.of(book));
         when(userRepository.findById(any(UUID.class))).thenReturn(Optional.of(userTest));
         when(clientRepository.findById(any(UUID.class))).thenReturn(Optional.of(clientTest));
+        when(shopRepository.findById(any(UUID.class))).thenReturn(Optional.of(shop));
 
         Order result = orderService.updateOrder(order.getId(), orderCreateDto);
 
@@ -379,6 +448,7 @@ public class OrderServiceTest {
                 () -> assertEquals(order.getUpdatedAt(), result.getUpdatedAt())
         );
 
+        verify(shopRepository, times(1)).findById(any(UUID.class));
         verify(orderRepository, times(1)).findById(any(ObjectId.class));
         verify(orderRepository, times(1)).save(any(Order.class));
         verify(bookRepository, times(6)).findById(any(Long.class));
@@ -446,12 +516,14 @@ public class OrderServiceTest {
         OrderCreateDto orderCreateDto = OrderCreateDto.builder()
                 .userId(userTest.getId())
                 .clientId(clientTest.getId())
+                .shopId(shop.getId())
                 .orderLines(List.of())
                 .build();
 
         when(orderRepository.findById(any(ObjectId.class))).thenReturn(Optional.of(order));
         when(userRepository.findById(any(UUID.class))).thenReturn(Optional.of(userTest));
         when(clientRepository.findById(any(UUID.class))).thenReturn(Optional.of(clientTest));
+        when(shopRepository.findById(any(UUID.class))).thenReturn(Optional.of(shop));
 
         var res = assertThrows(OrderNotItemsExceptions.class, () -> orderService.updateOrder(order.getId(), orderCreateDto));
 
@@ -460,6 +532,7 @@ public class OrderServiceTest {
                 () -> assertTrue(res.getMessage().contains(" no tiene items"))
         );
 
+        verify(shopRepository, times(1)).findById(any(UUID.class));
         verify(orderRepository, times(1)).findById(any(ObjectId.class));
         verify(orderRepository, times(0)).save(any(Order.class));
         verify(bookRepository, times(0)).findById(any(Long.class));
@@ -472,6 +545,7 @@ public class OrderServiceTest {
         OrderCreateDto orderCreateDto = OrderCreateDto.builder()
                 .userId(userTest.getId())
                 .clientId(clientTest.getId())
+                .shopId(shop.getId())
                 .orderLines(List.of(
                         OrderLine.builder()
                                 .bookId(book.getId()).price(book.getPrice()).quantity(20).build()
@@ -482,6 +556,7 @@ public class OrderServiceTest {
         when(userRepository.findById(any(UUID.class))).thenReturn(Optional.of(userTest));
         when(clientRepository.findById(any(UUID.class))).thenReturn(Optional.of(clientTest));
         when(bookRepository.findById(any(Long.class))).thenReturn(Optional.of(book));
+        when(shopRepository.findById(any(UUID.class))).thenReturn(Optional.of(shop));
 
         var res = assertThrows(OrderNotStockException.class, () -> orderService.updateOrder(order.getId(), orderCreateDto));
 
@@ -490,6 +565,7 @@ public class OrderServiceTest {
                 () -> assertTrue(res.getMessage().contains(" no tiene stock"))
         );
 
+        verify(shopRepository, times(1)).findById(any(UUID.class));
         verify(orderRepository, times(1)).findById(any(ObjectId.class));
         verify(orderRepository, times(0)).save(any(Order.class));
         verify(bookRepository, times(1)).findById(any(Long.class));
@@ -502,6 +578,7 @@ public class OrderServiceTest {
         OrderCreateDto orderCreateDto = OrderCreateDto.builder()
                 .userId(userTest.getId())
                 .clientId(clientTest.getId())
+                .shopId(shop.getId())
                 .orderLines(List.of(
                         OrderLine.builder()
                                 .bookId(book.getId()).price(2.0).quantity(1).build()
@@ -512,6 +589,7 @@ public class OrderServiceTest {
         when(userRepository.findById(any(UUID.class))).thenReturn(Optional.of(userTest));
         when(clientRepository.findById(any(UUID.class))).thenReturn(Optional.of(clientTest));
         when(bookRepository.findById(any(Long.class))).thenReturn(Optional.of(book));
+        when(shopRepository.findById(any(UUID.class))).thenReturn(Optional.of(shop));
 
         var res = assertThrows(OrderBadPriceException.class, () -> orderService.updateOrder(order.getId(), orderCreateDto));
 
@@ -520,6 +598,7 @@ public class OrderServiceTest {
                 () -> assertTrue(res.getMessage().contains(" no es correcto"))
         );
 
+        verify(shopRepository, times(1)).findById(any(UUID.class));
         verify(orderRepository, times(1)).findById(any(ObjectId.class));
         verify(orderRepository, times(0)).save(any(Order.class));
         verify(bookRepository, times(1)).findById(any(Long.class));
@@ -684,6 +763,46 @@ public class OrderServiceTest {
     }
 
     @Test
+    void getOrdersByShopId_ShouldReturnOrder() throws Exception {
+        Pageable pageable = PageRequest.of(0, 10, Sort.by("id").ascending());
+        when(orderRepository.findByShopId(any(UUID.class), any(Pageable.class))).thenReturn(new PageImpl<>(List.of(order)));
+
+        Page<Order> result = orderService.getOrdersByShopId(shop.getId(), pageable);
+
+        assertAll(
+                () -> assertEquals(1, result.getTotalElements()),
+                () -> assertEquals(1, result.getTotalPages()),
+                () -> assertEquals(1, result.getContent().size()),
+                () -> assertEquals(order.getId(), result.getContent().get(0).getId()),
+                () -> assertEquals(order.getUserId(), result.getContent().get(0).getUserId()),
+                () -> assertEquals(order.getClientId(), result.getContent().get(0).getClientId()),
+                () -> assertEquals(order.getOrderLines().size(), result.getContent().get(0).getOrderLines().size()),
+                () -> assertEquals(order.getTotal(), result.getContent().get(0).getTotal()),
+                () -> assertEquals(order.getTotalBooks(), result.getContent().get(0).getTotalBooks()),
+                () -> assertEquals(order.getCreatedAt(), result.getContent().get(0).getCreatedAt()),
+                () -> assertEquals(order.getUpdatedAt(), result.getContent().get(0).getUpdatedAt())
+        );
+
+        verify(orderRepository, times(1)).findByShopId(any(UUID.class), any(Pageable.class));
+    }
+
+    @Test
+    void getOrdersByShopId_ShouldReturnEmptyList() throws Exception {
+        Pageable pageable = PageRequest.of(0, 10, Sort.by("id").ascending());
+        when(orderRepository.findByShopId(any(UUID.class), any(Pageable.class))).thenReturn(new PageImpl<>(List.of()));
+
+        Page<Order> result = orderService.getOrdersByShopId(shop.getId(), pageable);
+
+        assertAll(
+                () -> assertEquals(0, result.getTotalElements()),
+                () -> assertEquals(1, result.getTotalPages()),
+                () -> assertEquals(0, result.getContent().size())
+        );
+
+        verify(orderRepository, times(1)).findByShopId(any(UUID.class), any(Pageable.class));
+    }
+
+    @Test
     void existsByUserId_ShouldReturnTrue() {
         when(orderRepository.existsByUserId(any(UUID.class))).thenReturn(true);
 
@@ -715,9 +834,10 @@ public class OrderServiceTest {
         when(bookRepository.findById(any(Long.class))).thenReturn(Optional.of(book));
         when(userRepository.findById(any(UUID.class))).thenReturn(Optional.of(userTest));
         when(clientRepository.findById(any(UUID.class))).thenReturn(Optional.of(clientTest));
-
+        when(shopRepository.findById(any(UUID.class))).thenReturn(Optional.of(shop));
         orderService.checkOrder(order);
 
+        verify(shopRepository, times(1)).findById(any(UUID.class));
         verify(bookRepository, times(2)).findById(any(Long.class));
         verify(userRepository, times(1)).findById(any(UUID.class));
         verify(clientRepository, times(1)).findById(any(UUID.class));
@@ -760,12 +880,15 @@ public class OrderServiceTest {
         when(bookRepository.findById(any(Long.class))).thenReturn(Optional.empty());
         when(userRepository.findById(any(UUID.class))).thenReturn(Optional.of(userTest));
         when(clientRepository.findById(any(UUID.class))).thenReturn(Optional.of(clientTest));
+        when(shopRepository.findById(any(UUID.class))).thenReturn(Optional.of(shop));
+
         var res = assertThrows(BookNotFoundException.class, () -> orderService.checkOrder(order));
 
         assertAll(
                 () -> assertEquals("Libro no encontrado - El libro con id " + orderLine.getBookId() + " no existe", res.getMessage())
         );
 
+        verify(shopRepository, times(1)).findById(any(UUID.class));
         verify(bookRepository, times(1)).findById(any(Long.class));
         verify(userRepository, times(1)).findById(any(UUID.class));
         verify(clientRepository, times(1)).findById(any(UUID.class));
@@ -776,11 +899,13 @@ public class OrderServiceTest {
         when(bookRepository.findById(any(Long.class))).thenReturn(Optional.of(book));
         when(userRepository.findById(any(UUID.class))).thenReturn(Optional.of(userTest));
         when(clientRepository.findById(any(UUID.class))).thenReturn(Optional.of(clientTest));
+        when(shopRepository.findById(any(UUID.class))).thenReturn(Optional.of(shop));
 
         var res = assertThrows(OrderNotStockException.class, () -> orderService.checkOrder(
                 Order.builder()
                         .id(order.getId())
                         .userId(order.getUserId())
+                        .shopId(shop.getId())
                         .clientId(order.getClientId())
                         .isDeleted(order.getIsDeleted())
                         .orderLines(List.of(
@@ -798,6 +923,7 @@ public class OrderServiceTest {
                 () -> assertEquals("El producto con id " + orderLine.getBookId() + " no tiene stock", res.getMessage())
         );
 
+        verify(shopRepository, times(1)).findById(any(UUID.class));
         verify(bookRepository, times(1)).findById(any(Long.class));
         verify(userRepository, times(1)).findById(any(UUID.class));
         verify(clientRepository, times(1)).findById(any(UUID.class));
@@ -809,6 +935,7 @@ public class OrderServiceTest {
                 .id(book.getId()).price(2.0).stock(11).category(category).description("desc").publisher(publisher).name(book.getName()).active(true).build()));
         when(userRepository.findById(any(UUID.class))).thenReturn(Optional.of(userTest));
         when(clientRepository.findById(any(UUID.class))).thenReturn(Optional.of(clientTest));
+        when(shopRepository.findById(any(UUID.class))).thenReturn(Optional.of(shop));
 
         var res = assertThrows(OrderBadPriceException.class, () -> orderService.checkOrder(order));
 
@@ -816,6 +943,7 @@ public class OrderServiceTest {
                 () -> assertEquals("El precio del producto con id " + orderLine.getBookId() + " no es correcto", res.getMessage())
         );
 
+        verify(shopRepository, times(1)).findById(any(UUID.class));
         verify(bookRepository, times(1)).findById(any(Long.class));
         verify(userRepository, times(1)).findById(any(UUID.class));
         verify(clientRepository, times(1)).findById(any(UUID.class));
@@ -825,10 +953,11 @@ public class OrderServiceTest {
     void checkOrder_ShouldReturnOrderNotItemsExceptions() {
         when(userRepository.findById(any(UUID.class))).thenReturn(Optional.of(userTest));
         when(clientRepository.findById(any(UUID.class))).thenReturn(Optional.of(clientTest));
-
+        when(shopRepository.findById(any(UUID.class))).thenReturn(Optional.of(shop));
         var res = assertThrows(OrderNotItemsExceptions.class, () -> orderService.checkOrder(Order.builder()
                 .id(order.getId())
                 .userId(order.getUserId())
+                .shopId(shop.getId())
                 .clientId(order.getClientId())
                 .isDeleted(order.getIsDeleted())
                 .orderLines(List.of())
@@ -842,6 +971,7 @@ public class OrderServiceTest {
                 () -> assertEquals("El pedido con id " + order.get_id() + " no tiene items", res.getMessage())
         );
 
+        verify(shopRepository, times(1)).findById(any(UUID.class));
         verify(bookRepository, times(0)).findById(any(Long.class));
         verify(userRepository, times(1)).findById(any(UUID.class));
         verify(clientRepository, times(1)).findById(any(UUID.class));
@@ -948,6 +1078,121 @@ public class OrderServiceTest {
 
         verify(bookRepository, times(0)).findById(any(Long.class));
         verify(bookRepository, times(0)).save(any(Book.class));
+    }
+
+
+    @Test
+    void createOrder_ShouldReturnOrderWithLinesGroupById() throws Exception {
+        Order order = Order.builder()
+                .id(new ObjectId("5f8f4f8b9d6b9f2b3c9d4f1a"))
+                .userId(userTest.getId())
+                .shopId(shop.getId())
+                .clientId(clientTest.getId())
+                .isDeleted(false)
+                .orderLines(List.of(
+                        OrderLine.builder()
+                                .bookId(book.getId()).price(book.getPrice()).quantity(10).build()))
+                .updatedAt(LocalDateTime.now())
+                .createdAt(LocalDateTime.now())
+                .total(10.0)
+                .totalBooks(1)
+                .build();
+
+        when(userRepository.findById(any(UUID.class))).thenReturn(Optional.of(userTest));
+        when(clientRepository.findById(any(UUID.class))).thenReturn(Optional.of(clientTest));
+        when(shopRepository.findById(any(UUID.class))).thenReturn(Optional.of(shop));
+        when(bookRepository.findById(any(Long.class))).thenReturn(Optional.of(book));
+        when(orderRepository.save(any(Order.class))).thenReturn(order);
+        when(bookRepository.save(any(Book.class))).thenReturn(book);
+        Order result = orderService.createOrder(OrderCreateDto.builder()
+                .userId(userTest.getId())
+                .shopId(shop.getId())
+                .clientId(clientTest.getId())
+                .orderLines(List.of(
+                        OrderLine.builder()
+                                .bookId(book.getId()).price(book.getPrice()).quantity(5).build()
+                        , OrderLine.builder()
+                                .bookId(book.getId()).price(book.getPrice()).quantity(5).build()))
+                .build());
+
+        assertAll(
+                () -> assertEquals(order.getId(), result.getId()),
+                () -> assertEquals(order.getUserId(), result.getUserId()),
+                () -> assertEquals(order.getClientId(), result.getClientId()),
+                () -> assertEquals(order.getOrderLines().size(), result.getOrderLines().size()),
+                () -> assertEquals(order.getOrderLines().get(0).getQuantity(), 10),
+                () -> assertEquals(order.getOrderLines().get(0).getPrice(), 1.0),
+                () -> assertEquals(order.getOrderLines().get(0).getBookId(), result.getOrderLines().get(0).getBookId()),
+                () -> assertEquals(order.getTotal(), result.getTotal()),
+                () -> assertEquals(order.getTotalBooks(), result.getTotalBooks()),
+                () -> assertEquals(order.getCreatedAt(), result.getCreatedAt()),
+                () -> assertEquals(order.getUpdatedAt(), result.getUpdatedAt())
+        );
+
+        verify(shopRepository, times(1)).findById(any(UUID.class));
+        verify(orderRepository, times(1)).save(any(Order.class));
+        verify(bookRepository, times(2)).findById(any(Long.class));
+        verify(userRepository, times(1)).findById(any(UUID.class));
+        verify(clientRepository, times(1)).findById(any(UUID.class));
+        verify(bookRepository, times(1)).save(any(Book.class));
+    }
+
+    @Test
+    void updateOrder_ShouldReturnOrderWithLinesGroupById() throws Exception {
+        Order order = Order.builder()
+                .id(new ObjectId("5f8f4f8b9d6b9f2b3c9d4f1a"))
+                .userId(userTest.getId())
+                .shopId(shop.getId())
+                .clientId(clientTest.getId())
+                .isDeleted(false)
+                .orderLines(List.of(
+                        OrderLine.builder()
+                                .bookId(book.getId()).price(book.getPrice()).quantity(10).build()))
+                .updatedAt(LocalDateTime.now())
+                .createdAt(LocalDateTime.now())
+                .total(10.0)
+                .totalBooks(1)
+                .build();
+
+        when(orderRepository.findById(any(ObjectId.class))).thenReturn(Optional.of(order));
+        when(userRepository.findById(any(UUID.class))).thenReturn(Optional.of(userTest));
+        when(clientRepository.findById(any(UUID.class))).thenReturn(Optional.of(clientTest));
+        when(shopRepository.findById(any(UUID.class))).thenReturn(Optional.of(shop));
+        when(bookRepository.findById(any(Long.class))).thenReturn(Optional.of(book));
+        when(orderRepository.save(any(Order.class))).thenReturn(order);
+        when(bookRepository.save(any(Book.class))).thenReturn(book);
+        Order result = orderService.updateOrder(order.getId(), OrderCreateDto.builder()
+                .userId(userTest.getId())
+                .shopId(shop.getId())
+                .clientId(clientTest.getId())
+                .orderLines(List.of(
+                        OrderLine.builder()
+                                .bookId(book.getId()).price(book.getPrice()).quantity(5).build()
+                        , OrderLine.builder()
+                                .bookId(book.getId()).price(book.getPrice()).quantity(5).build()))
+                .build());
+
+        assertAll(
+                () -> assertEquals(order.getId(), result.getId()),
+                () -> assertEquals(order.getUserId(), result.getUserId()),
+                () -> assertEquals(order.getClientId(), result.getClientId()),
+                () -> assertEquals(order.getOrderLines().size(), result.getOrderLines().size()),
+                () -> assertEquals(order.getOrderLines().get(0).getQuantity(), 10),
+                () -> assertEquals(order.getOrderLines().get(0).getPrice(), 1.0),
+                () -> assertEquals(order.getOrderLines().get(0).getBookId(), result.getOrderLines().get(0).getBookId()),
+                () -> assertEquals(order.getTotal(), result.getTotal()),
+                () -> assertEquals(order.getTotalBooks(), result.getTotalBooks()),
+                () -> assertEquals(order.getCreatedAt(), result.getCreatedAt()),
+                () -> assertEquals(order.getUpdatedAt(), result.getUpdatedAt())
+        );
+
+        verify(shopRepository, times(1)).findById(any(UUID.class));
+        verify(orderRepository, times(1)).findById(any(ObjectId.class));
+        verify(orderRepository, times(1)).save(any(Order.class));
+        verify(bookRepository, times(3)).findById(any(Long.class));
+        verify(userRepository, times(1)).findById(any(UUID.class));
+        verify(clientRepository, times(1)).findById(any(UUID.class));
+        verify(bookRepository, times(2)).save(any(Book.class));
     }
 
 

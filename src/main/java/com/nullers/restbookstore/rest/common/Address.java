@@ -12,7 +12,6 @@ public record Address(
         String street,
 
         @NotBlank(message = "El número no puede estar vacío")
-        @Length(min = 0,message = "El número debe tener al menos 1 caracter")
         String number,
 
         @Length(min = 3, message = "La ciudad debe tener al menos 3 caracteres")

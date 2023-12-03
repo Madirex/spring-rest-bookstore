@@ -63,19 +63,5 @@ class ClientMapperTest {
         );
     }
 
-    @Test
-    void toDtoAndBooks(){
-        BookMapperImpl bookMapper = new BookMapperImpl();
-
-        ClientDto clientDtoMapped = ClientMapper.toDto(client);
-        assertAll(
-                () -> assertEquals(clientDto.getName(), clientDtoMapped.getName()),
-                () -> assertEquals(clientDto.getSurname(), clientDtoMapped.getSurname()),
-                () -> assertEquals(clientDto.getEmail(), clientDtoMapped.getEmail()),
-                () -> assertEquals(clientDto.getPhone(), clientDtoMapped.getPhone()),
-                () -> assertEquals(clientDto.getAddress(), clientDtoMapped.getAddress()),
-                () -> assertEquals(clientDto.getImage(), clientDtoMapped.getImage())
-        );
-    }
 
 }

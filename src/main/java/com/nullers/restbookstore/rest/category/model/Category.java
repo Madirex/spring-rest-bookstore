@@ -18,7 +18,7 @@ public class Category {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    private UUID id = UUID.randomUUID();
+    private UUID id;
 
     @Column(nullable = false, unique = true)
     private String name;
@@ -42,10 +42,5 @@ public class Category {
         if (updatedAt == null) {
             updatedAt = LocalDateTime.now();
         }
-    }
-
-    @PreUpdate
-    protected void onUpdate() {
-        updatedAt = LocalDateTime.now();
     }
 }

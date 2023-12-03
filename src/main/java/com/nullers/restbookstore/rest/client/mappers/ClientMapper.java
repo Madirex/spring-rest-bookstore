@@ -39,20 +39,6 @@ public class ClientMapper {
                 .build();
     }
 
-
-    public static Client toEntity(ClientDto dto, List<Book> books){
-        return Client.builder()
-                .id(dto.getId())
-                .name(dto.getName())
-                .surname(dto.getSurname())
-                .email(dto.getEmail())
-                .phone(dto.getPhone())
-                .address(dto.getAddress())
-                .image(dto.getImage())
-                .build();
-    }
-
-
     /**
      * Mapea los datos de un cliente a un dto
      * @param entity Cliente a mapear
@@ -69,19 +55,5 @@ public class ClientMapper {
                 .image(entity.getImage())
                 .build();
     }
-
-    public static ClientDto toDto(Client entity, List<GetBookDTO> books){
-        return ClientDto.builder()
-                .id(entity.getId())
-                .name(entity.getName())
-                .surname(entity.getSurname())
-                .email(entity.getEmail())
-                .phone(entity.getPhone())
-                .address(entity.getAddress())
-                .image(entity.getImage())
-                .build();
-    }
-
-
 
 }

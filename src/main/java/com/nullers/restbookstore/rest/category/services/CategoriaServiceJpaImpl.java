@@ -50,7 +50,7 @@ public class CategoriaServiceJpaImpl implements CategoriaServiceJpa {
     }
 
     @Override
-    @Cacheable(key = "#nombre")
+    @Cacheable(key = "#name")
     public Category getCategoriaByNombre(String nombre) {
         return repository.findByNombre(nombre).orElseThrow(() -> new CategoriaNotFoundException(nombre));
     }

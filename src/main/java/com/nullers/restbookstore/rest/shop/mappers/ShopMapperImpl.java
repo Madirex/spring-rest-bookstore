@@ -48,8 +48,8 @@ public class ShopMapperImpl implements ShopMapper {
                 .location(shop.getLocation())
                 .createdAt(shop.getCreatedAt())
                 .updatedAt(shop.getUpdatedAt())
-                .books_id(shop.getBooks().stream().map(Book::getId).toList())
-                .clients_id(shop.getClients().stream().map(Client::getId).toList())
+                .books_id(shop.getBooks().stream().map(Book::getId).collect(Collectors.toSet()))
+                .clients_id(shop.getClients().stream().map(Client::getId).collect(Collectors.toSet()))
                 .build();
     }
 
