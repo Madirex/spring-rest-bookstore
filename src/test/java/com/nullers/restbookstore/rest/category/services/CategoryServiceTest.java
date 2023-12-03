@@ -186,7 +186,7 @@ public class CategoryServiceTest {
         when(repository.findByNameEqualsIgnoreCase("category 99")).thenReturn(Optional.empty());
 
         var res = assertThrows(CategoryNotFoundException.class, () -> service.getCategoryByName("category 99"));
-        assertEquals("Category con nombre category 99 no encontrada", res.getMessage());
+        assertEquals("Category con nombre category 99 - no encontrada", res.getMessage());
     }
 
     @Test
