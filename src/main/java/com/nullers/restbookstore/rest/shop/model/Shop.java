@@ -63,13 +63,15 @@ public class Shop {
     @OneToMany
     @JoinColumn(name = "book_id")
     @Schema(description = "Conjunto de libros disponibles en la tienda")
+    @NotNull(message = "La tienda debe tener al menos un libro")
     @Builder.Default()
     private Set<Book> books = Set.of();
 
 
     @OneToMany
     @JoinColumn(name = "client_id")
-    @Schema(description = "Conjunto de clientes de la tienda")    @NotNull(message = "La tienda debe tener al menos un cliente")
+    @Schema(description = "Conjunto de clientes de la tienda")
+    @NotNull(message = "La tienda debe tener al menos un cliente")
     @Builder.Default()
     private Set<Client> clients = Set.of();
 
