@@ -46,6 +46,7 @@ public class CreateBookDTO {
 
     @Min(value = 0, message = "El stock no puede estar en negativo")
     @Builder.Default()
+    @NotNull(message = "El stock no puede estar vacío")
     @Schema(description = "Stock de los libros", example = "1")
     private Integer stock = 0;
 }

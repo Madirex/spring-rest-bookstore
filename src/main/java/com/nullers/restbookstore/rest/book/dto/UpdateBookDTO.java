@@ -41,11 +41,13 @@ public class UpdateBookDTO {
     private String description;
 
     @Schema(description = "UUID de la categoría", example = "8542eb90-1f3d-4d12-8ba7-8f5b46c03f18")
+    @NotBlank(message = "La categoría no puede estar vacía")
     private String category;
 
     @Min(value = 0, message = "El stock no puede estar en negativo")
     @Builder.Default
     @Schema(description = "Stock de los libros", example = "1")
+    @NotNull(message = "El stock no puede estar vacío")
     private Integer stock = 0;
 
 }

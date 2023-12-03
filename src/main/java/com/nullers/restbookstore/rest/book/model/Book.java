@@ -88,6 +88,7 @@ public class Book {
     @Min(value = 0, message = "El stock no puede estar en negativo")
     @Builder.Default
     @Schema(description = "Stock de los libros", example = "1")
+    @NotNull(message = "El stock no puede estar vacío")
     private Integer stock = 0;
 
     /**
