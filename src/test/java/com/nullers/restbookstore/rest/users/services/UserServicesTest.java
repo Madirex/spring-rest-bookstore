@@ -1,5 +1,7 @@
 package com.nullers.restbookstore.rest.users.services;
 
+import com.nullers.restbookstore.rest.orders.models.Order;
+import com.nullers.restbookstore.rest.orders.repositories.OrderRepository;
 import com.nullers.restbookstore.rest.user.dto.UserInfoResponse;
 import com.nullers.restbookstore.rest.user.dto.UserRequest;
 import com.nullers.restbookstore.rest.user.dto.UserResponse;
@@ -53,6 +55,8 @@ class UserServicesTest {
     @Mock
     private UserRepository userRepository;
     @Mock
+    private OrderRepository orderRepository;
+    @Mock
     private UserMapper userMapper;
 
     @Mock
@@ -85,7 +89,7 @@ class UserServicesTest {
     void findById() {
         // Arrange
         when(userRepository.findById(any(UUID.class))).thenReturn(Optional.of(user));
-        when(userMapper.toUserInfoResponse(any(User.class), new ArrayList<>())).thenReturn(userInfoResponse);
+        when(userMapper.toUserInfoResponse(any(User.class), eq(new ArrayList<>()))).thenReturn(userInfoResponse);
 
         // Act
         UserInfoResponse result = userService.findById(UUID.fromString("c671d981-bd6f-4e75-b7cc-fd3ca96582d5"));
@@ -158,29 +162,19 @@ class UserServicesTest {
 
     @Test
     void updateUsernameOrEmailExists() {
-        // Arrange
         UUID id = UUID.fromString("c671d981-bd6f-4e75-b7cc-fd3ca96582d5");
         when(userRepository.findById(id)).thenReturn(Optional.of(user));
         when(userRepository.findByUsernameEqualsIgnoreCaseOrEmailEqualsIgnoreCase(any(String.class), any(String.class))).thenReturn(Optional.of(user));
-
-        // Act
         assertThrows(UserNameOrEmailExists.class, () -> userService.update(UUID.fromString("c671d981-bd6f-4e75-b7cc-fd3ca96582d5"), userRequest));
-
-        // Assert
     }
 
     @Test
     void patchUser() {
-        // Arrange
         when(userRepository.findById(any(UUID.class))).thenReturn(Optional.of(user));
         when(userMapper.toUser(any(UserRequest.class), any(UUID.class))).thenReturn(user);
         when(userRepository.save(user)).thenReturn(user);
         when(userMapper.toUserResponse(any(User.class))).thenReturn(userResponse);
-
-        // Act
         UserResponse result = userService.patch(UUID.fromString("c671d981-bd6f-4e75-b7cc-fd3ca96582d5"), userRequest);
-
-        // Assert
         assertAll(
                 () -> assertNotNull(result),
                 () -> assertEquals("test", result.getUsername())
@@ -189,40 +183,24 @@ class UserServicesTest {
 
     @Test
     void updateUserNotFound() {
-        // Arrange
         UUID userId = UUID.fromString("c671d981-bd6f-4e75-b7cc-fd3ca96582d5");
         when(userRepository.findById(userId)).thenReturn(Optional.empty());
-
-        // Act
         assertThrows(UserNotFound.class, () -> userService.update(userId, userRequest));
-
-        // Assert
     }
 
     @Test
     void deleteById() {
-        // Arrange
         UUID id = UUID.fromString("c671d981-bd6f-4e75-b7cc-fd3ca96582d5");
         when(userRepository.findById(any(UUID.class))).thenReturn(Optional.of(user));
-
-        // Act
+        when(orderRepository.existsByUserId(id)).thenReturn(true);
         userService.deleteById(id);
-
-        // Assert
-
-        // Verify
         verify(userRepository, times(1)).findById(id);
     }
 
     @Test
     void deleteByIdNotFound() {
-        // Arrange
         UUID id = UUID.fromString("c671d981-bd6f-4e75-b7cc-fd3ca96582d5");
         when(userRepository.findById(any(UUID.class))).thenReturn(Optional.empty());
-
-        // Act
         assertThrows(UserNotFound.class, () -> userService.deleteById(id));
-
-        // Assert
     }
 }
