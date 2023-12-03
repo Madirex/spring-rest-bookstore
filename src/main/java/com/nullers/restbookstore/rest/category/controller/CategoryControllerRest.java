@@ -55,6 +55,7 @@ public class CategoryControllerRest {
      * @return ResponseEntity<PageResponse < Category>> con las categorías
      */
     @GetMapping
+    @PreAuthorize("hasRole('USER')")
     public ResponseEntity<PageResponse<Category>> getCategories(
             @RequestParam(required = false) Optional<String> name,
             @RequestParam(required = false) Optional<Boolean> isActive,
@@ -76,6 +77,7 @@ public class CategoryControllerRest {
      * @return ResponseEntity<Category> con la categoría
      */
     @GetMapping("/{id}")
+    @PreAuthorize("hasRole('USER')")
     public ResponseEntity<Category> getCategory(@PathVariable UUID id) {
         return ResponseEntity.ok(service.getCategoryById(id));
     }
@@ -87,6 +89,7 @@ public class CategoryControllerRest {
      * @return ResponseEntity<Category> con la categoría creada
      */
     @PostMapping
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Category> addCategory(@Valid @RequestBody CategoryCreateDTO categoryCreateDTO) {
         return ResponseEntity.ok(service.createCategory(categoryCreateDTO));
     }
@@ -99,6 +102,7 @@ public class CategoryControllerRest {
      * @return ResponseEntity<Category> con la categoría actualizada
      */
     @PutMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Category> updateCategory(@PathVariable UUID id, @Valid @RequestBody CategoryCreateDTO categoryCreateDTO) {
         return ResponseEntity.ok(service.updateCategory(id, categoryCreateDTO));
     }
@@ -110,6 +114,7 @@ public class CategoryControllerRest {
      * @return ResponseEntity<Void>
      */
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Void> deleteCategory(@PathVariable UUID id) {
         service.deleteById(id);
         return ResponseEntity.ok().build();

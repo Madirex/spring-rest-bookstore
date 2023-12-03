@@ -102,7 +102,7 @@ public class CategoryServiceTest {
     }
 
     @Test
-    void getAll_ShoulReturnAllBooksActivaParamPageable() {
+    void getAll_ShoulReturnAllBooksIsActiveParamPageable() {
         List<Category> expectedCategories = List.of(category1);
 
         Pageable pageable = PageRequest.of(0, 10, Sort.by("id").ascending());
@@ -126,7 +126,7 @@ public class CategoryServiceTest {
     }
 
     @Test
-    void getAll_ShoulReturnAllBooksActivaFalseParamPageable() {
+    void getAll_ShoulReturnAllBooksIsActiveFalseParamPageable() {
         List<Category> expectedCategories = List.of();
 
         Pageable pageable = PageRequest.of(0, 10, Sort.by("id").ascending());

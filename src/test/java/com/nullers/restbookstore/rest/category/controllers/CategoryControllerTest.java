@@ -190,8 +190,8 @@ class CategoryControllerTest {
         when(service.getAll(any(Optional.class), any(Optional.class), any(Pageable.class))).thenReturn(new PageImpl(categories));
 
         MockHttpServletResponse response = mockMvc.perform(get(endPoint)
-                        .param("nombre", "categoría 1")
-                        .param("activa", "true")
+                        .param("name", "categoría 1")
+                        .param("isActive", "true")
                         .param("page", "0")
                         .param("size", "10")
                         .param("orderBy", "name")
@@ -335,8 +335,8 @@ class CategoryControllerTest {
         when(service.getAll(any(Optional.class), any(Optional.class), any(Pageable.class))).thenReturn(new PageImpl(categories));
 
         MockHttpServletResponse response = mockMvc.perform(get(endPoint)
-                        .param("nombre", "categoría 1")
-                        .param("activa", "true")
+                        .param("name", "categoría 1")
+                        .param("isActive", "true")
                         .accept(MediaType.APPLICATION_JSON))
                 .andReturn().getResponse();
 

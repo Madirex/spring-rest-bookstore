@@ -52,8 +52,8 @@ public class CategoryServiceJpaImpl implements CategoryServiceJpa {
     @Override
     @Cacheable
     public Page<Category> getAll(Optional<String> name, Optional<Boolean> isActive, Pageable pageable) {
-        Specification<Category> specName = ((root, query, criteriaBuilder) -> name.map(value -> criteriaBuilder.like(root.get("nombre"), "%" + value + "%")).orElseGet(() -> criteriaBuilder.isTrue(criteriaBuilder.literal(true))));
-        Specification<Category> specActive = ((root, query, criteriaBuilder) -> isActive.map(value -> criteriaBuilder.equal(root.get("activa"), value)).orElseGet(() -> criteriaBuilder.isTrue(criteriaBuilder.literal(true))));
+        Specification<Category> specName = ((root, query, criteriaBuilder) -> name.map(value -> criteriaBuilder.like(root.get("name"), "%" + value + "%")).orElseGet(() -> criteriaBuilder.isTrue(criteriaBuilder.literal(true))));
+        Specification<Category> specActive = ((root, query, criteriaBuilder) -> isActive.map(value -> criteriaBuilder.equal(root.get("isActive"), value)).orElseGet(() -> criteriaBuilder.isTrue(criteriaBuilder.literal(true))));
         Specification<Category> cr = Specification.where(specName).and(specActive);
         return repository.findAll(cr, pageable);
     }
