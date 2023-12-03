@@ -59,7 +59,7 @@ class CategoryRepositoryTest {
         var res = entityManager.merge(category1);
         entityManager.flush();
 
-        var category = categoryRepositoryJpa.findByName(res.getName());
+        var category = categoryRepositoryJpa.findByNameEqualsIgnoreCase(res.getName());
 
         assertAll(
                 () -> assertNotNull(category),
