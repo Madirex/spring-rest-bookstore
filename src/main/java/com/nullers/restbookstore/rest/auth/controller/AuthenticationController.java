@@ -1,4 +1,4 @@
-package com.nullers.restbookstore.rest.auth.controllers;
+package com.nullers.restbookstore.rest.auth.controller;
 
 import com.nullers.restbookstore.rest.auth.dto.JwtAuthResponse;
 import com.nullers.restbookstore.rest.auth.dto.UserSignInRequest;

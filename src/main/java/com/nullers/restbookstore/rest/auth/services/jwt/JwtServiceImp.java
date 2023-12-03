@@ -3,6 +3,7 @@ package com.nullers.restbookstore.rest.auth.services.jwt;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.interfaces.DecodedJWT;
+import lombok.Data;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
@@ -19,6 +20,7 @@ import java.util.function.Function;
  * @Author: Binwei Wang
  */
 @Service
+@Data
 public class JwtServiceImp implements JwtService {
     /**
      * Atributos de configuración de JWT
