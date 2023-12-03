@@ -11,6 +11,11 @@ import com.nullers.restbookstore.rest.client.exceptions.ClientBadRequest;
 import com.nullers.restbookstore.rest.client.exceptions.ClientInOrderException;
 import com.nullers.restbookstore.rest.client.exceptions.ClientNotFound;
 import com.nullers.restbookstore.rest.client.services.ClientServiceImpl;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.Parameters;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -74,6 +79,22 @@ public class ClientController {
      * @param request petición
      * @return ResponseEntity<PageResponse < ClientDto>> con los clientes
      */
+    @Operation(summary = "Obtiene todos los clientes", description = "Obtiene una lista de clientes")
+    @Parameters({
+            @Parameter(name = "name", description = "Nombre del cliente", example = ""),
+            @Parameter(name = "surname", description = "Apellido del cliente", example = ""),
+            @Parameter(name = "email", description = "Email del cliente", example = ""),
+            @Parameter(name = "phone", description = "Teléfono del cliente", example = ""),
+            @Parameter(name = "adress", description = "Dirección del cliente", example = ""),
+            @Parameter(name = "page", description = "Número de la pagina", example = "0"),
+            @Parameter(name = "size", description = "Tamaño de la pagina", example = "10"),
+            @Parameter(name = "sortBy", description = "Campo de ordenación", example = "id"),
+            @Parameter(name = "order", description = "Dirección de ordenación", example = "asc")
+    })
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Página de clientes"),
+            @ApiResponse(responseCode = "400", description = "Petición de clientes no válida")
+    })
     @GetMapping
     public ResponseEntity<PageResponse<ClientDto>> getAll(
             @RequestParam(required = false) Optional<String> name,
@@ -106,6 +127,14 @@ public class ClientController {
      * @param id id del cliente
      * @return ResponseEntity<ClientDto> con el cliente
      */
+    @Operation(summary = "Obtiene un cliente dado un id", description = "Obtiene un cliente dado un id")
+    @Parameters({
+            @Parameter(name = "id", description = "id del cliente", example = "550e8400-e29b-41d4-a716-446655440000"),
+    })
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Cliente"),
+            @ApiResponse(responseCode = "404", description = "Cliente no encontrado")
+    })
     @GetMapping("/{id}")
     public ResponseEntity<ClientDto> getById(@PathVariable UUID id) {
         return ResponseEntity.ok(clientService.findById(id));
@@ -117,6 +146,14 @@ public class ClientController {
      * @param email email del cliente
      * @return ResponseEntity<ClientDto> con el cliente
      */
+    @Operation(summary = "Obtiene un cliente dado un email", description = "Obtiene un cliente dado un email")
+    @Parameters({
+            @Parameter(name = "email", description = "Email del cliente", example = "ejemplo@gmail.com"),
+    })
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Cliente"),
+            @ApiResponse(responseCode = "404", description = "Cliente no encontrado")
+    })
     @GetMapping("/email/{email}")
     public ResponseEntity<ClientDto> getByEmail(@PathVariable String email) {
         return ResponseEntity.ok(clientService.findByEmail(email).orElseThrow(() -> new ClientNotFound("email", email)));
@@ -128,6 +165,12 @@ public class ClientController {
      * @param clientDto cliente a crear
      * @return ResponseEntity<ClientDto> con el cliente creado
      */
+    @Operation(summary = "Crea un cliente", description = "Crea un cliente")
+    @io.swagger.v3.oas.annotations.parameters.RequestBody(description = "Cliente a crear", required = true)
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "201", description = "Cliente creado"),
+            @ApiResponse(responseCode = "400", description = "Cliente no válido")
+    })
     @PostMapping
     public ResponseEntity<ClientDto> create(@Valid @RequestBody ClientCreateDto clientDto) {
         return ResponseEntity.status(HttpStatus.CREATED).body(clientService.save(clientDto));
@@ -140,6 +183,14 @@ public class ClientController {
      * @param clientDto datos del cliente a actualizar
      * @return ResponseEntity<ClientDto> con el cliente actualizado
      */
+    @Operation(summary = "Actualiza un cliente", description = "Actualiza un cliente")
+    @Parameter(name = "id", description = "id del cliente a actualizar", example = "550e8400-e29b-41d4-a716-446655440000")
+    @io.swagger.v3.oas.annotations.parameters.RequestBody(description = "Cliente actualizado", required = true)
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Cliente actualizado"),
+            @ApiResponse(responseCode = "400", description = "Cliente no válido"),
+            @ApiResponse(responseCode = "404", description = "Cliente no encontrado")
+    })
     @PutMapping("/{id}")
     public ResponseEntity<ClientDto> update(@PathVariable UUID id, @Valid @RequestBody ClientUpdateDto clientDto) {
         return ResponseEntity.ok(clientService.update(id, clientDto));
@@ -151,6 +202,12 @@ public class ClientController {
      * @param id id del cliente
      * @return ResponseEntity<Void>
      */
+    @Operation(summary = "Eimina un cliente", description = "Elimina un cliente")
+    @Parameter(name = "id", description = "Id de la editorial a eliminar", example = "550e8400-e29b-41d4-a716-446655440000", required = true)
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "204", description = "Cliente borrado"),
+            @ApiResponse(responseCode = "404", description = "Cliente no encontrado"),
+    })
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable UUID id) {
         clientService.deleteById(id);
@@ -164,6 +221,16 @@ public class ClientController {
      * @param file imagen del cliente
      * @return ResponseEntity<ClientDto> con el cliente
      */
+    @Operation(summary = "Actualiza la imagen de un cliente", description = "Actualiza la imagen de un cliente")
+    @Parameters({
+            @Parameter(name = "id", description = "id del cliente a actualizar", example = "550e8400-e29b-41d4-a716-446655440000", required = true),
+            @Parameter(name = "file", description = "archivo de imagen", required = true)
+    })
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Cliente actualizado"),
+            @ApiResponse(responseCode = "400", description = "Cliente no válido"),
+            @ApiResponse(responseCode = "404", description = "Cliente no encontrado"),
+    })
     @PatchMapping(value = "{id}/image", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<ClientDto> updatePatchImage(@PathVariable UUID id, @RequestPart("file") MultipartFile file) throws IOException {
         if (!file.isEmpty() && contentTypesAllowed.contains(file.getContentType())) {
