@@ -117,13 +117,13 @@ public class GlobalExceptionHandler {
      * @return ResponseEntity con el código de estado
      */
     @ExceptionHandler(ResponseExceptionBadRequest.class)
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ErrorResponse handleException(ResponseExceptionBadRequest ex) {
-        return new ErrorResponse(
+    public ResponseEntity<ErrorResponse> handleException(ResponseExceptionBadRequest ex) {
+        var errorResponse = new ErrorResponse(
                 HttpStatus.BAD_REQUEST.value(),
                 ex.getMessage()
                 , getCurrentHttpRequest().getRequestURI()
         );
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
     }
 
     /**
@@ -133,13 +133,13 @@ public class GlobalExceptionHandler {
      * @return ResponseEntity con el código de estado
      */
     @ExceptionHandler(ResponseExceptionConflict.class)
-    @ResponseStatus(HttpStatus.CONFLICT)
-    public ErrorResponse handleException(ResponseExceptionConflict ex) {
-        return new ErrorResponse(
+    public ResponseEntity<ErrorResponse> handleException(ResponseExceptionConflict ex) {
+        var errorResponse = new ErrorResponse(
                 HttpStatus.CONFLICT.value(),
                 ex.getMessage()
                 , getCurrentHttpRequest().getRequestURI()
         );
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(errorResponse);
     }
 
     /**
@@ -149,13 +149,13 @@ public class GlobalExceptionHandler {
      * @return ResponseEntity con el código de estado
      */
     @ExceptionHandler(ResponseExceptionNotFound.class)
-    @ResponseStatus(HttpStatus.NOT_FOUND)
-    public ErrorResponse handleException(ResponseExceptionNotFound ex) {
-        return new ErrorResponse(
+    public ResponseEntity<ErrorResponse> handleException(ResponseExceptionNotFound ex) {
+        var errorResponse = new ErrorResponse(
                 HttpStatus.NOT_FOUND.value(),
                 ex.getMessage()
                 , getCurrentHttpRequest().getRequestURI()
         );
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorResponse);
     }
 
 
@@ -276,9 +276,10 @@ public class GlobalExceptionHandler {
      */
     @ExceptionHandler(IllegalArgumentException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ErrorResponse handleIllegalArgumentException(IllegalArgumentException exception) {
-        return new ErrorResponse(HttpStatus.BAD_REQUEST.value(), exception.getMessage(),
+    public ResponseEntity<ErrorResponse> handleIllegalArgumentException(IllegalArgumentException exception) {
+        var errorResponse = new ErrorResponse(HttpStatus.BAD_REQUEST.value(), exception.getMessage(),
                 getCurrentHttpRequest().getRequestURI());
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
     }
 
     /**

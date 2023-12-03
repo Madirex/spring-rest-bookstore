@@ -298,12 +298,13 @@ class CategoryControllerTest {
                         .accept(MediaType.APPLICATION_JSON))
                 .andReturn().getResponse();
 
-        ErrorResponse errorResponse = mapper.readValue(response.getContentAsString(StandardCharsets.UTF_8), ErrorResponse.class);
+        Map<String, Object> res = mapper.readValue(response.getContentAsString(StandardCharsets.UTF_8),
+                mapper.getTypeFactory().constructMapType(Map.class, String.class, Object.class));
 
         assertAll(
                 () -> assertEquals(HttpStatus.BAD_REQUEST.value(), response.getStatus()),
-                () -> assertEquals(HttpStatus.BAD_REQUEST.value(), errorResponse.status()),
-                () -> assertEquals("Page index must not be less than zero", errorResponse.msg())
+                () -> assertEquals(HttpStatus.BAD_REQUEST.value(), res.get("code")),
+                () -> assertEquals("{page=La página no puede ser inferior a 0}", res.get("errors").toString())
         );
 
         verify(service, times(0)).getAll(any(Optional.class), any(Optional.class), any(Pageable.class));
@@ -315,14 +316,14 @@ class CategoryControllerTest {
                         .param("size", "-1")
                         .accept(MediaType.APPLICATION_JSON))
                 .andReturn().getResponse();
-        System.out.println("====>" + response.getContentAsString(StandardCharsets.UTF_8));
 
-        ErrorResponse errorResponse = mapper.readValue(response.getContentAsString(StandardCharsets.UTF_8), ErrorResponse.class);
+        Map<String, Object> res = mapper.readValue(response.getContentAsString(StandardCharsets.UTF_8),
+                mapper.getTypeFactory().constructMapType(Map.class, String.class, Object.class));
 
         assertAll(
                 () -> assertEquals(HttpStatus.BAD_REQUEST.value(), response.getStatus()),
-                () -> assertEquals(HttpStatus.BAD_REQUEST.value(), errorResponse.status()),
-                () -> assertEquals("Page size must not be less than one", errorResponse.msg())
+                () -> assertEquals(HttpStatus.BAD_REQUEST.value(), res.get("code")),
+                () -> assertEquals("{size=El tamaño de la página no puede ser inferior a 1}", res.get("errors").toString())
         );
 
         verify(service, times(0)).getAll(any(Optional.class), any(Optional.class), any(Pageable.class));
@@ -368,7 +369,7 @@ class CategoryControllerTest {
         assertAll(
                 () -> assertEquals(HttpStatus.BAD_REQUEST.value(), response.getStatus()),
                 () -> assertEquals(HttpStatus.BAD_REQUEST.value(), errorResponse.status()),
-                () -> assertEquals("Error al procesar la propiedad en la consulta: pepe", errorResponse.msg())
+                () -> assertEquals("Error al procesar la propiedad en la consulta: pepe", errorResponse.error())
         );
 
         verify(service, times(1)).getAll(any(Optional.class), any(Optional.class), any(Pageable.class));
@@ -402,7 +403,7 @@ class CategoryControllerTest {
         ErrorResponse errorResponse = mapper.readValue(response.getContentAsString(StandardCharsets.UTF_8), ErrorResponse.class);
         assertAll(
                 () -> assertEquals(HttpStatus.NOT_FOUND.value(), response.getStatus()),
-                () -> assertEquals("Category con id 3930e05a-7ebf-4aa1-8aa8-5d7466fa9734 no encontrada", errorResponse.msg())
+                () -> assertEquals("Category con id 3930e05a-7ebf-4aa1-8aa8-5d7466fa9734 no encontrada", errorResponse.error())
         );
 
         verify(service, times(1)).getCategoryById(UUID.fromString("3930e05a-7ebf-4aa1-8aa8-5d7466fa9734"));
@@ -463,7 +464,7 @@ class CategoryControllerTest {
         ErrorResponse errorResponse = mapper.readValue(response.getContentAsString(StandardCharsets.UTF_8), ErrorResponse.class);
         assertAll(
                 () -> assertEquals(HttpStatus.CONFLICT.value(), response.getStatus()),
-                () -> assertEquals("Ya existe una category con el nombre: " + categoryCreateDTO.getName(), errorResponse.msg())
+                () -> assertEquals("Ya existe una category con el nombre: " + categoryCreateDTO.getName(), errorResponse.error())
         );
 
         verify(service, times(1)).createCategory(categoryCreateDTO);
@@ -515,7 +516,7 @@ class CategoryControllerTest {
         ErrorResponse errorResponse = mapper.readValue(response.getContentAsString(StandardCharsets.UTF_8), ErrorResponse.class);
         assertAll(
                 () -> assertEquals(HttpStatus.CONFLICT.value(), response.getStatus()),
-                () -> assertEquals("Ya existe una category con el nombre: " + categoryCreateDTO.getName(), errorResponse.msg())
+                () -> assertEquals("Ya existe una category con el nombre: " + categoryCreateDTO.getName(), errorResponse.error())
         );
 
         verify(service, times(1)).updateCategory(UUID.fromString("3930e05a-7ebf-4aa1-8aa8-5d7466fa9734"), categoryCreateDTO);
@@ -533,7 +534,7 @@ class CategoryControllerTest {
         ErrorResponse errorResponse = mapper.readValue(response.getContentAsString(StandardCharsets.UTF_8), ErrorResponse.class);
         assertAll(
                 () -> assertEquals(HttpStatus.NOT_FOUND.value(), response.getStatus()),
-                () -> assertEquals("Category con id 3930e05a-7ebf-4aa1-8aa8-5d7466fa9734 no encontrada", errorResponse.msg())
+                () -> assertEquals("Category con id 3930e05a-7ebf-4aa1-8aa8-5d7466fa9734 no encontrada", errorResponse.error())
         );
 
         verify(service, times(1)).updateCategory(UUID.fromString("3930e05a-7ebf-4aa1-8aa8-5d7466fa9734"), categoryCreateDTO);
@@ -563,15 +564,16 @@ class CategoryControllerTest {
         ErrorResponse errorResponse = mapper.readValue(response.getContentAsString(StandardCharsets.UTF_8), ErrorResponse.class);
         assertAll(
                 () -> assertEquals(HttpStatus.NOT_FOUND.value(), response.getStatus()),
-                () -> assertEquals("Category con id 3930e05a-7ebf-4aa1-8aa8-5d7466fa9734 no encontrada", errorResponse.msg())
+                () -> assertEquals("Category con id 3930e05a-7ebf-4aa1-8aa8-5d7466fa9734 no encontrada", errorResponse.error())
         );
 
         verify(service, times(1)).deleteById(UUID.fromString("3930e05a-7ebf-4aa1-8aa8-5d7466fa9734"));
     }
 
     @Test
-    void deleteCategoryBadRequest() throws Exception {
-        doThrow(new CategoryConflictException("No se puede eliminar la category porque tiene libros asociados")).when(service).deleteById(UUID.fromString("3930e05a-7ebf-4aa1-8aa8-5d7466fa9734"));
+    void deleteCategoryConflict() throws Exception {
+        doThrow(new CategoryConflictException("No se puede eliminar la category porque tiene libros asociados"))
+                .when(service).deleteById(UUID.fromString("3930e05a-7ebf-4aa1-8aa8-5d7466fa9734"));
 
         MockHttpServletResponse response = mockMvc.perform(delete(endPoint + "/3930e05a-7ebf-4aa1-8aa8-5d7466fa9734")
                         .contentType(MediaType.APPLICATION_JSON))
@@ -580,11 +582,9 @@ class CategoryControllerTest {
         ErrorResponse errorResponse = mapper.readValue(response.getContentAsString(StandardCharsets.UTF_8), ErrorResponse.class);
         assertAll(
                 () -> assertEquals(HttpStatus.CONFLICT.value(), response.getStatus()),
-                () -> assertEquals("No se puede eliminar la category porque tiene libros asociados", errorResponse.msg())
+                () -> assertEquals("No se puede eliminar la category porque tiene libros asociados", errorResponse.error())
         );
 
         verify(service, times(1)).deleteById(UUID.fromString("3930e05a-7ebf-4aa1-8aa8-5d7466fa9734"));
     }
-
-
 }

@@ -382,7 +382,7 @@ public class ClientControllerTestWithoutMockMvc {
         ));
 
         assertAll(
-                () -> assertEquals("El numero de pagina no debe ser menor a 0 y el tamaño de la pagina debe ser mayor que 0", res.getMessage())
+                () -> assertEquals("El numero de pagina no debe ser menor a 0 y el tamaño de la página debe ser mayor que 0", res.getMessage())
         );
     }
 
@@ -399,7 +399,7 @@ public class ClientControllerTestWithoutMockMvc {
         ));
 
         assertAll(
-                () -> assertEquals("El numero de pagina no debe ser menor a 0 y el tamaño de la pagina debe ser mayor que 0", res.getMessage())
+                () -> assertEquals("El numero de pagina no debe ser menor a 0 y el tamaño de la página debe ser mayor que 0", res.getMessage())
         );
     }
 

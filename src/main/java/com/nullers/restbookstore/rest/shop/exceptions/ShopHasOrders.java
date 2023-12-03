@@ -1,14 +1,14 @@
 package com.nullers.restbookstore.rest.shop.exceptions;
 
-import com.nullers.restbookstore.manager.error.exceptions.ResponseExceptionNotFound;
+import com.nullers.restbookstore.manager.error.exceptions.ResponseExceptionBadRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
 /**
  * Clase ShopHasOrders
  */
-@ResponseStatus(HttpStatus.NOT_FOUND)
-public class ShopHasOrders extends ResponseExceptionNotFound {
+@ResponseStatus(HttpStatus.BAD_REQUEST)
+public class ShopHasOrders extends ResponseExceptionBadRequest {
     /**
      * Constructor para crear una nueva ShopHasOrders con un mensaje específico.
      *
