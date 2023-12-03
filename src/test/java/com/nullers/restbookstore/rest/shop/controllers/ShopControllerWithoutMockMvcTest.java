@@ -111,8 +111,8 @@ class ShopControllerWithoutMockMvcTest {
     GetShopDto getShopDto = GetShopDto.builder()
             .id(shop.getId())
             .name(shop.getName())
-            .books_id(shop.getBooks().stream().map(Book::getId).collect(Collectors.toSet()))
-            .clients_id(shop.getClients().stream().map(Client::getId).collect(Collectors.toSet()))
+            .booksId(shop.getBooks().stream().map(Book::getId).collect(Collectors.toSet()))
+            .clientsId(shop.getClients().stream().map(Client::getId).collect(Collectors.toSet()))
             .location(shop.getLocation())
             .build();
 
@@ -136,8 +136,8 @@ class ShopControllerWithoutMockMvcTest {
                 () -> assertEquals(200, res.getStatusCodeValue()),
                 () -> assertEquals(shop.getId(), res.getBody().content().get(0).getId()),
                 () -> assertEquals(shop.getName(), res.getBody().content().get(0).getName()),
-                () -> assertEquals(shop.getBooks().stream().map(Book::getId).collect(Collectors.toSet()), res.getBody().content().get(0).getBooks_id()),
-                () -> assertEquals(shop.getClients().stream().map(Client::getId).collect(Collectors.toSet()), res.getBody().content().get(0).getClients_id()),
+                () -> assertEquals(shop.getBooks().stream().map(Book::getId).collect(Collectors.toSet()), res.getBody().content().get(0).getBooksId()),
+                () -> assertEquals(shop.getClients().stream().map(Client::getId).collect(Collectors.toSet()), res.getBody().content().get(0).getClientsId()),
                 () -> assertEquals(shop.getLocation(), res.getBody().content().get(0).getLocation())
         );
 
@@ -170,8 +170,8 @@ class ShopControllerWithoutMockMvcTest {
                 () -> assertEquals(200, res.getStatusCodeValue()),
                 () -> assertEquals(shop.getId(), res.getBody().content().get(0).getId()),
                 () -> assertEquals(shop.getName(), res.getBody().content().get(0).getName()),
-                () -> assertEquals(shop.getBooks().stream().map(Book::getId).collect(Collectors.toSet()), res.getBody().content().get(0).getBooks_id()),
-                () -> assertEquals(shop.getClients().stream().map(Client::getId).collect(Collectors.toSet()), res.getBody().content().get(0).getClients_id()),
+                () -> assertEquals(shop.getBooks().stream().map(Book::getId).collect(Collectors.toSet()), res.getBody().content().get(0).getBooksId()),
+                () -> assertEquals(shop.getClients().stream().map(Client::getId).collect(Collectors.toSet()), res.getBody().content().get(0).getClientsId()),
                 () -> assertEquals(shop.getLocation(), res.getBody().content().get(0).getLocation())
         );
 
@@ -187,8 +187,8 @@ class ShopControllerWithoutMockMvcTest {
         assertAll(
                 () -> assertEquals(shop.getId(), res.getBody().getId()),
                 () -> assertEquals(shop.getName(), res.getBody().getName()),
-                () -> assertEquals(shop.getBooks().stream().map(Book::getId).collect(Collectors.toSet()), res.getBody().getBooks_id()),
-                () -> assertEquals(shop.getClients().stream().map(Client::getId).collect(Collectors.toSet()), res.getBody().getClients_id()),
+                () -> assertEquals(shop.getBooks().stream().map(Book::getId).collect(Collectors.toSet()), res.getBody().getBooksId()),
+                () -> assertEquals(shop.getClients().stream().map(Client::getId).collect(Collectors.toSet()), res.getBody().getClientsId()),
                 () -> assertEquals(shop.getLocation(), res.getBody().getLocation()),
                 () -> assertEquals(200, res.getStatusCodeValue())
         );
@@ -217,8 +217,8 @@ class ShopControllerWithoutMockMvcTest {
                 GetShopDto.builder()
                         .id(shop.getId())
                         .name(shop.getName())
-                        .books_id(Set.of())
-                        .clients_id(Set.of())
+                        .booksId(Set.of())
+                        .clientsId(Set.of())
                         .location(shop.getLocation())
                         .build()
         );
@@ -232,8 +232,8 @@ class ShopControllerWithoutMockMvcTest {
         assertAll(
                 () -> assertEquals(shop.getId(), res.getBody().getId()),
                 () -> assertEquals(shop.getName(), res.getBody().getName()),
-                () -> assertTrue(res.getBody().getClients_id().isEmpty()),
-                () -> assertTrue(res.getBody().getBooks_id().isEmpty()),
+                () -> assertTrue(res.getBody().getClientsId().isEmpty()),
+                () -> assertTrue(res.getBody().getBooksId().isEmpty()),
                 () -> assertEquals(shop.getLocation(), res.getBody().getLocation()),
                 () -> assertEquals(201, res.getStatusCodeValue())
         );
@@ -250,8 +250,8 @@ class ShopControllerWithoutMockMvcTest {
         assertAll(
                 () -> assertEquals(shop.getId(), res.getBody().getId()),
                 () -> assertEquals(shop.getName(), res.getBody().getName()),
-                () -> assertEquals(shop.getBooks().stream().map(Book::getId).collect(Collectors.toSet()), res.getBody().getBooks_id()),
-                () -> assertEquals(shop.getClients().stream().map(Client::getId).collect(Collectors.toSet()), res.getBody().getClients_id()),
+                () -> assertEquals(shop.getBooks().stream().map(Book::getId).collect(Collectors.toSet()), res.getBody().getBooksId()),
+                () -> assertEquals(shop.getClients().stream().map(Client::getId).collect(Collectors.toSet()), res.getBody().getClientsId()),
                 () -> assertEquals(shop.getLocation(), res.getBody().getLocation()),
                 () -> assertEquals(200, res.getStatusCodeValue())
         );
@@ -305,8 +305,8 @@ class ShopControllerWithoutMockMvcTest {
         assertAll(
                 () -> assertEquals(shop.getId(), res.getBody().getId()),
                 () -> assertEquals(shop.getName(), res.getBody().getName()),
-                () -> assertEquals(shop.getBooks().stream().map(Book::getId).collect(Collectors.toSet()), res.getBody().getBooks_id()),
-                () -> assertEquals(shop.getClients().stream().map(Client::getId).collect(Collectors.toSet()), res.getBody().getClients_id()),
+                () -> assertEquals(shop.getBooks().stream().map(Book::getId).collect(Collectors.toSet()), res.getBody().getBooksId()),
+                () -> assertEquals(shop.getClients().stream().map(Client::getId).collect(Collectors.toSet()), res.getBody().getClientsId()),
                 () -> assertEquals(shop.getLocation(), res.getBody().getLocation()),
                 () -> assertEquals(200, res.getStatusCodeValue())
         );
@@ -349,8 +349,8 @@ class ShopControllerWithoutMockMvcTest {
         assertAll(
                 () -> assertEquals(shop.getId(), res.getBody().getId()),
                 () -> assertEquals(shop.getName(), res.getBody().getName()),
-                () -> assertEquals(shop.getBooks().stream().map(Book::getId).collect(Collectors.toSet()), res.getBody().getBooks_id()),
-                () -> assertEquals(shop.getClients().stream().map(Client::getId).collect(Collectors.toSet()), res.getBody().getClients_id()),
+                () -> assertEquals(shop.getBooks().stream().map(Book::getId).collect(Collectors.toSet()), res.getBody().getBooksId()),
+                () -> assertEquals(shop.getClients().stream().map(Client::getId).collect(Collectors.toSet()), res.getBody().getClientsId()),
                 () -> assertEquals(shop.getLocation(), res.getBody().getLocation()),
                 () -> assertEquals(200, res.getStatusCodeValue())
         );
@@ -393,8 +393,8 @@ class ShopControllerWithoutMockMvcTest {
         assertAll(
                 () -> assertEquals(shop.getId(), res.getBody().getId()),
                 () -> assertEquals(shop.getName(), res.getBody().getName()),
-                () -> assertEquals(shop.getBooks().stream().map(Book::getId).collect(Collectors.toSet()), res.getBody().getBooks_id()),
-                () -> assertEquals(shop.getClients().stream().map(Client::getId).collect(Collectors.toSet()), res.getBody().getClients_id()),
+                () -> assertEquals(shop.getBooks().stream().map(Book::getId).collect(Collectors.toSet()), res.getBody().getBooksId()),
+                () -> assertEquals(shop.getClients().stream().map(Client::getId).collect(Collectors.toSet()), res.getBody().getClientsId()),
                 () -> assertEquals(shop.getLocation(), res.getBody().getLocation()),
                 () -> assertEquals(200, res.getStatusCodeValue())
         );
@@ -437,8 +437,8 @@ class ShopControllerWithoutMockMvcTest {
         assertAll(
                 () -> assertEquals(shop.getId(), res.getBody().getId()),
                 () -> assertEquals(shop.getName(), res.getBody().getName()),
-                () -> assertEquals(shop.getBooks().stream().map(Book::getId).collect(Collectors.toSet()), res.getBody().getBooks_id()),
-                () -> assertEquals(shop.getClients().stream().map(Client::getId).collect(Collectors.toSet()), res.getBody().getClients_id()),
+                () -> assertEquals(shop.getBooks().stream().map(Book::getId).collect(Collectors.toSet()), res.getBody().getBooksId()),
+                () -> assertEquals(shop.getClients().stream().map(Client::getId).collect(Collectors.toSet()), res.getBody().getClientsId()),
                 () -> assertEquals(shop.getLocation(), res.getBody().getLocation()),
                 () -> assertEquals(200, res.getStatusCodeValue())
         );

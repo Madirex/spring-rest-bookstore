@@ -8,9 +8,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.bson.types.ObjectId;
 
-import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
@@ -35,5 +33,4 @@ public class UpdateShopDto {
     private Set<Long> books = Set.of();
     @Builder.Default()
     private Set<UUID> clients = Set.of();
-
 }

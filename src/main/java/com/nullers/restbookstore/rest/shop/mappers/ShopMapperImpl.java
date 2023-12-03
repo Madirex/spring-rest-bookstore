@@ -7,7 +7,6 @@ import com.nullers.restbookstore.rest.shop.dto.CreateShopDto;
 import com.nullers.restbookstore.rest.shop.dto.GetShopDto;
 import com.nullers.restbookstore.rest.shop.dto.UpdateShopDto;
 import com.nullers.restbookstore.rest.shop.model.Shop;
-import org.bson.types.ObjectId;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
@@ -18,12 +17,18 @@ import java.util.stream.Collectors;
 /**
  * Clase ShopMapperImpl
  *
- *  @author alexdor00
+ * @author alexdor00
  */
 
 @Component
 public class ShopMapperImpl implements ShopMapper {
 
+    /**
+     * Método para convertir un CreateShopDto a un objeto Shop
+     *
+     * @param dto CreateShopDto
+     * @return Shop
+     */
     public Shop toShop(CreateShopDto dto) {
         return Shop.builder()
                 .id(UUID.randomUUID())
@@ -34,6 +39,13 @@ public class ShopMapperImpl implements ShopMapper {
                 .build();
     }
 
+    /**
+     * Método para convertir un UpdateShopDto a un objeto Shop
+     *
+     * @param shop Shop
+     * @param dto  UpdateShopDto
+     * @return Shop
+     */
     public Shop toShop(Shop shop, UpdateShopDto dto) {
         shop.setName(dto.getName());
         shop.setLocation(dto.getLocation());
@@ -41,6 +53,12 @@ public class ShopMapperImpl implements ShopMapper {
         return shop;
     }
 
+    /**
+     * Método para convertir un objeto Shop a un GetShopDto
+     *
+     * @param shop Shop
+     * @return GetShopDto
+     */
     public GetShopDto toGetShopDto(Shop shop) {
         return GetShopDto.builder()
                 .id(shop.getId())
@@ -48,14 +66,20 @@ public class ShopMapperImpl implements ShopMapper {
                 .location(shop.getLocation())
                 .createdAt(shop.getCreatedAt())
                 .updatedAt(shop.getUpdatedAt())
-                .books_id(shop.getBooks().stream().map(Book::getId).collect(Collectors.toSet()))
-                .clients_id(shop.getClients().stream().map(Client::getId).collect(Collectors.toSet()))
+                .booksId(shop.getBooks().stream().map(Book::getId).collect(Collectors.toSet()))
+                .clientsId(shop.getClients().stream().map(Client::getId).collect(Collectors.toSet()))
                 .build();
     }
 
+    /**
+     * Método para convertir una lista de objetos Shop a una lista de GetShopDto
+     *
+     * @param shops Lista de objetos Shop
+     * @return Lista de GetShopDto
+     */
     public List<GetShopDto> toShopList(List<Shop> shops) {
         return shops.stream()
                 .map(this::toGetShopDto)
-                .collect(Collectors.toList());
+                .toList();
     }
 }

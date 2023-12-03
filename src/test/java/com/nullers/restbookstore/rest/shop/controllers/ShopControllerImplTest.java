@@ -126,8 +126,8 @@ class ShopControllerImplTest {
     GetShopDto getShopDto = GetShopDto.builder()
             .id(shop.getId())
             .name(shop.getName())
-            .books_id(shop.getBooks().stream().map(Book::getId).collect(Collectors.toSet()))
-            .clients_id(shop.getClients().stream().map(Client::getId).collect(Collectors.toSet()))
+            .booksId(shop.getBooks().stream().map(Book::getId).collect(Collectors.toSet()))
+            .clientsId(shop.getClients().stream().map(Client::getId).collect(Collectors.toSet()))
             .location(shop.getLocation())
             .build();
     String endpoint = "/api/shops";
@@ -296,8 +296,8 @@ class ShopControllerImplTest {
                 GetShopDto.builder()
                         .id(shop.getId())
                         .name(shop.getName())
-                        .books_id(shop.getBooks().stream().map(Book::getId).collect(Collectors.toSet()))
-                        .clients_id(shop.getClients().stream().map(Client::getId).collect(Collectors.toSet()))
+                        .booksId(shop.getBooks().stream().map(Book::getId).collect(Collectors.toSet()))
+                        .clientsId(shop.getClients().stream().map(Client::getId).collect(Collectors.toSet()))
                         .location(shop.getLocation())
                         .build()
         )));
@@ -317,8 +317,8 @@ class ShopControllerImplTest {
                 () -> assertEquals(1, pageResponse.content().size()),
                 () -> assertEquals(shop.getId(), pageResponse.content().get(0).getId()),
                 () -> assertEquals(shop.getName(), pageResponse.content().get(0).getName()),
-                () -> assertTrue(pageResponse.content().get(0).getBooks_id().contains(book.getId())),
-                () -> assertTrue(pageResponse.content().get(0).getClients_id().contains(clientTest.getId())),
+                () -> assertTrue(pageResponse.content().get(0).getBooksId().contains(book.getId())),
+                () -> assertTrue(pageResponse.content().get(0).getClientsId().contains(clientTest.getId())),
                 () -> assertEquals(shop.getLocation(), pageResponse.content().get(0).getLocation())
         );
 
@@ -353,8 +353,8 @@ class ShopControllerImplTest {
                 GetShopDto.builder()
                         .id(shop.getId())
                         .name(shop.getName())
-                        .books_id(shop.getBooks().stream().map(Book::getId).collect(Collectors.toSet()))
-                        .clients_id(shop.getClients().stream().map(Client::getId).collect(Collectors.toSet()))
+                        .booksId(shop.getBooks().stream().map(Book::getId).collect(Collectors.toSet()))
+                        .clientsId(shop.getClients().stream().map(Client::getId).collect(Collectors.toSet()))
                         .location(shop.getLocation())
                         .build()
         )));
@@ -375,8 +375,8 @@ class ShopControllerImplTest {
                 () -> assertEquals(1, pageResponse.content().size()),
                 () -> assertEquals(shop.getId(), pageResponse.content().get(0).getId()),
                 () -> assertEquals(shop.getName(), pageResponse.content().get(0).getName()),
-                () -> assertTrue(pageResponse.content().get(0).getBooks_id().contains(book.getId())),
-                () -> assertTrue(pageResponse.content().get(0).getClients_id().contains(clientTest.getId())),
+                () -> assertTrue(pageResponse.content().get(0).getBooksId().contains(book.getId())),
+                () -> assertTrue(pageResponse.content().get(0).getClientsId().contains(clientTest.getId())),
                 () -> assertEquals(shop.getLocation(), pageResponse.content().get(0).getLocation())
         );
 
@@ -442,8 +442,8 @@ class ShopControllerImplTest {
                 () -> assertEquals(200, response.getStatus()),
                 () -> assertEquals(shop.getId(), shopResponse.getId()),
                 () -> assertEquals(shop.getName(), shopResponse.getName()),
-                () -> assertEquals(getShopDto.getBooks_id(), shopResponse.getBooks_id()),
-                () -> assertEquals(getShopDto.getClients_id(), shopResponse.getClients_id()),
+                () -> assertEquals(getShopDto.getBooksId(), shopResponse.getBooksId()),
+                () -> assertEquals(getShopDto.getClientsId(), shopResponse.getClientsId()),
                 () -> assertEquals(shop.getLocation(), shopResponse.getLocation())
         );
 
@@ -487,8 +487,8 @@ class ShopControllerImplTest {
                 () -> assertEquals(201, response.getStatus()),
                 () -> assertEquals(shop.getId(), shopResponse.getId()),
                 () -> assertEquals(shop.getName(), shopResponse.getName()),
-                () -> assertEquals(getShopDto.getBooks_id(), shopResponse.getBooks_id()),
-                () -> assertEquals(getShopDto.getClients_id(), shopResponse.getClients_id()),
+                () -> assertEquals(getShopDto.getBooksId(), shopResponse.getBooksId()),
+                () -> assertEquals(getShopDto.getClientsId(), shopResponse.getClientsId()),
                 () -> assertEquals(shop.getLocation(), shopResponse.getLocation())
         );
 
@@ -632,8 +632,8 @@ class ShopControllerImplTest {
                 () -> assertEquals(200, response.getStatus()),
                 () -> assertEquals(shop.getId(), shopResponse.getId()),
                 () -> assertEquals(shop.getName(), shopResponse.getName()),
-                () -> assertEquals(getShopDto.getBooks_id(), shopResponse.getBooks_id()),
-                () -> assertEquals(getShopDto.getClients_id(), shopResponse.getClients_id()),
+                () -> assertEquals(getShopDto.getBooksId(), shopResponse.getBooksId()),
+                () -> assertEquals(getShopDto.getClientsId(), shopResponse.getClientsId()),
                 () -> assertEquals(shop.getLocation(), shopResponse.getLocation())
         );
 
@@ -851,8 +851,8 @@ class ShopControllerImplTest {
                 () -> assertEquals(200, response.getStatus()),
                 () -> assertEquals(shop.getId(), shopResponse.getId()),
                 () -> assertEquals(shop.getName(), shopResponse.getName()),
-                () -> assertEquals(getShopDto.getBooks_id(), shopResponse.getBooks_id()),
-                () -> assertEquals(getShopDto.getClients_id(), shopResponse.getClients_id()),
+                () -> assertEquals(getShopDto.getBooksId(), shopResponse.getBooksId()),
+                () -> assertEquals(getShopDto.getClientsId(), shopResponse.getClientsId()),
                 () -> assertEquals(shop.getLocation(), shopResponse.getLocation())
         );
 
@@ -915,8 +915,8 @@ class ShopControllerImplTest {
                 () -> assertEquals(200, response.getStatus()),
                 () -> assertEquals(shop.getId(), shopResponse.getId()),
                 () -> assertEquals(shop.getName(), shopResponse.getName()),
-                () -> assertEquals(getShopDto.getBooks_id(), shopResponse.getBooks_id()),
-                () -> assertEquals(getShopDto.getClients_id(), shopResponse.getClients_id()),
+                () -> assertEquals(getShopDto.getBooksId(), shopResponse.getBooksId()),
+                () -> assertEquals(getShopDto.getClientsId(), shopResponse.getClientsId()),
                 () -> assertEquals(shop.getLocation(), shopResponse.getLocation())
         );
 
@@ -979,8 +979,8 @@ class ShopControllerImplTest {
                 () -> assertEquals(200, response.getStatus()),
                 () -> assertEquals(shop.getId(), shopResponse.getId()),
                 () -> assertEquals(shop.getName(), shopResponse.getName()),
-                () -> assertEquals(getShopDto.getBooks_id(), shopResponse.getBooks_id()),
-                () -> assertEquals(getShopDto.getClients_id(), shopResponse.getClients_id()),
+                () -> assertEquals(getShopDto.getBooksId(), shopResponse.getBooksId()),
+                () -> assertEquals(getShopDto.getClientsId(), shopResponse.getClientsId()),
                 () -> assertEquals(shop.getLocation(), shopResponse.getLocation())
         );
 
@@ -1043,8 +1043,8 @@ class ShopControllerImplTest {
                 () -> assertEquals(200, response.getStatus()),
                 () -> assertEquals(shop.getId(), shopResponse.getId()),
                 () -> assertEquals(shop.getName(), shopResponse.getName()),
-                () -> assertEquals(getShopDto.getBooks_id(), shopResponse.getBooks_id()),
-                () -> assertEquals(getShopDto.getClients_id(), shopResponse.getClients_id()),
+                () -> assertEquals(getShopDto.getBooksId(), shopResponse.getBooksId()),
+                () -> assertEquals(getShopDto.getClientsId(), shopResponse.getClientsId()),
                 () -> assertEquals(shop.getLocation(), shopResponse.getLocation())
         );
 

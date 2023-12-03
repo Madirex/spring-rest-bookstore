@@ -10,6 +10,7 @@ import lombok.NoArgsConstructor;
  * PageableRequest
  */
 @Data
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
 public class PageableRequest {

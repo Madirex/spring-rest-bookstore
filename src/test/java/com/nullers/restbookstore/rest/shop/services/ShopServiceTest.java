@@ -199,8 +199,8 @@ public class ShopServiceTest {
                         .postalCode("28001")
                         .country("España")
                         .build())
-                .clients_id(Set.of())
-                .books_id(Set.of())
+                .clientsId(Set.of())
+                .booksId(Set.of())
                 .build();
     }
 
@@ -404,8 +404,8 @@ public class ShopServiceTest {
                         .postalCode("28001")
                         .country("España")
                         .build())
-                .clients_id(Set.of())
-                .books_id(Set.of(book.getId()))
+                .clientsId(Set.of())
+                .booksId(Set.of(book.getId()))
                 .build());
 
         var result = shopService.addBookToShop(UUID.fromString("123e4567-e89b-12d3-a456-426614174000"), 1L);
@@ -414,7 +414,7 @@ public class ShopServiceTest {
                 () -> assertEquals(shop.getId(), result.getId()),
                 () -> assertEquals(shop.getName(), result.getName()),
                 () -> assertEquals(shop.getLocation(), result.getLocation()),
-                () -> assertTrue(result.getBooks_id().contains(1L))
+                () -> assertTrue(result.getBooksId().contains(1L))
         );
 
         verify(shopRepository, times(1)).findById(any(UUID.class));
@@ -465,7 +465,7 @@ public class ShopServiceTest {
                 () -> assertEquals(shop.getId(), result.getId()),
                 () -> assertEquals(shop.getName(), result.getName()),
                 () -> assertEquals(shop.getLocation(), result.getLocation()),
-                () -> assertTrue(result.getBooks_id().isEmpty())
+                () -> assertTrue(result.getBooksId().isEmpty())
         );
 
         verify(shopRepository, times(1)).findById(any(UUID.class));
@@ -533,8 +533,8 @@ public class ShopServiceTest {
                                 .postalCode("28001")
                                 .country("España")
                                 .build())
-                        .clients_id(Set.of(clientTest.getId()))
-                        .books_id(Set.of())
+                        .clientsId(Set.of(clientTest.getId()))
+                        .booksId(Set.of())
                         .build()
         );
 
@@ -544,7 +544,7 @@ public class ShopServiceTest {
                 () -> assertEquals(shop.getId(), result.getId()),
                 () -> assertEquals(shop.getName(), result.getName()),
                 () -> assertEquals(shop.getLocation(), result.getLocation()),
-                () -> assertTrue(result.getClients_id().contains(clientTest.getId()))
+                () -> assertTrue(result.getClientsId().contains(clientTest.getId()))
         );
 
         verify(shopRepository, times(1)).findById(any(UUID.class));
@@ -594,7 +594,7 @@ public class ShopServiceTest {
                 () -> assertEquals(shop.getId(), result.getId()),
                 () -> assertEquals(shop.getName(), result.getName()),
                 () -> assertEquals(shop.getLocation(), result.getLocation()),
-                () -> assertTrue(result.getClients_id().isEmpty())
+                () -> assertTrue(result.getClientsId().isEmpty())
         );
 
         verify(shopRepository, times(1)).findById(any(UUID.class));

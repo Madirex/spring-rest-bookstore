@@ -1,15 +1,11 @@
 package com.nullers.restbookstore.rest.shop.controllers;
 
-import com.nullers.restbookstore.pagination.models.ErrorResponse;
 import com.nullers.restbookstore.pagination.models.PageResponse;
 import com.nullers.restbookstore.pagination.util.PaginationLinksUtils;
-import com.nullers.restbookstore.rest.book.exceptions.BookNotFoundException;
-import com.nullers.restbookstore.rest.client.exceptions.ClientNotFound;
 import com.nullers.restbookstore.rest.common.PageableRequest;
 import com.nullers.restbookstore.rest.shop.dto.CreateShopDto;
 import com.nullers.restbookstore.rest.shop.dto.GetShopDto;
 import com.nullers.restbookstore.rest.shop.dto.UpdateShopDto;
-import com.nullers.restbookstore.rest.shop.exceptions.ShopHasOrders;
 import com.nullers.restbookstore.rest.shop.exceptions.ShopNotFoundException;
 import com.nullers.restbookstore.rest.shop.services.ShopServiceImpl;
 import jakarta.servlet.http.HttpServletRequest;
@@ -106,7 +102,7 @@ public class ShopRestControllerImpl implements ShopRestController {
     /**
      * Actualiza una tienda existente con los datos proporcionados.
      *
-     * @param id      ID de la tienda a actualizar.
+     * @param id      Id de la tienda a actualizar.
      * @param shopDto DTO con los datos actualizados de la tienda.
      * @return ResponseEntity con los detalles de la tienda actualizada en formato DTO.
      * @throws ShopNotFoundException Si la tienda no se encuentra.
@@ -120,7 +116,7 @@ public class ShopRestControllerImpl implements ShopRestController {
     /**
      * Elimina una tienda específica por su ID.
      *
-     * @param id ID de la tienda a eliminar.
+     * @param id Id de la tienda a eliminar.
      * @return ResponseEntity sin contenido indicando que la tienda ha sido eliminada.
      * @throws ShopNotFoundException Si la tienda no se encuentra.
      */
@@ -132,51 +128,54 @@ public class ShopRestControllerImpl implements ShopRestController {
     }
 
 
+    /**
+     * Añade un libro a una tienda
+     *
+     * @param id     Identificador de la tienda
+     * @param bookId Identificador del libro
+     * @return ResponseEntity con la tienda actualizada en formato DTO.
+     */
     @PatchMapping("/{id}/books/{bookId}")
     public ResponseEntity<GetShopDto> addBookToShop(@Valid @PathVariable UUID id, @Valid @PathVariable Long bookId) {
         return ResponseEntity.ok(shopService.addBookToShop(id, bookId));
     }
 
+    /**
+     * Elimina un libro de una tienda
+     *
+     * @param id     Identificador de la tienda
+     * @param bookId Identificador del libro
+     * @return ResponseEntity con la tienda actualizada en formato DTO.
+     */
     @Override
     @DeleteMapping("/{id}/books/{bookId}")
-    public ResponseEntity<GetShopDto> removeBookFromShop(UUID id, Long bookId) {
+    public ResponseEntity<GetShopDto> removeBookFromShop(@Valid @PathVariable UUID id, @Valid @PathVariable Long bookId) {
         return ResponseEntity.ok(shopService.removeBookFromShop(id, bookId));
     }
 
+    /**
+     * Añade un cliente a una tienda
+     *
+     * @param id       Identificador de la tienda
+     * @param clientId Identificador del cliente
+     * @return ResponseEntity con la tienda actualizada en formato DTO.
+     */
     @Override
     @PatchMapping("/{id}/clients/{clientId}")
-    public ResponseEntity<GetShopDto> addClientToShop(UUID id, UUID clientId) {
+    public ResponseEntity<GetShopDto> addClientToShop(@Valid @PathVariable UUID id, @Valid @PathVariable UUID clientId) {
         return ResponseEntity.ok(shopService.addClientToShop(id, clientId));
     }
 
+    /**
+     * Elimina un cliente de una tienda
+     *
+     * @param id       Identificador de la tienda
+     * @param clientId Identificador del cliente
+     * @return ResponseEntity con la tienda actualizada en formato DTO.
+     */
     @Override
     @DeleteMapping("/{id}/clients/{clientId}")
-    public ResponseEntity<GetShopDto> removeClientFromShop(UUID id, UUID clientId) {
+    public ResponseEntity<GetShopDto> removeClientFromShop(@Valid @PathVariable UUID id, @Valid @PathVariable UUID clientId) {
         return ResponseEntity.ok(shopService.removeClientFromShop(id, clientId));
-    }
-
-
-    @ExceptionHandler(ClientNotFound.class)
-    @ResponseStatus(HttpStatus.NOT_FOUND)
-    public ResponseEntity<ErrorResponse> handleClientNotFound(ClientNotFound ex) {
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ErrorResponse(HttpStatus.NOT_FOUND.value(), ex.getMessage()));
-    }
-
-    @ExceptionHandler(ShopNotFoundException.class)
-    @ResponseStatus(HttpStatus.NOT_FOUND)
-    public ResponseEntity<ErrorResponse> handleShopNotFound(ShopNotFoundException ex) {
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ErrorResponse(HttpStatus.NOT_FOUND.value(), ex.getMessage()));
-    }
-
-    @ExceptionHandler(BookNotFoundException.class)
-    @ResponseStatus(HttpStatus.NOT_FOUND)
-    public ResponseEntity<ErrorResponse> handleBookNotFound(BookNotFoundException ex) {
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ErrorResponse(HttpStatus.NOT_FOUND.value(), ex.getMessage()));
-    }
-
-    @ExceptionHandler(ShopHasOrders.class)
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ResponseEntity<ErrorResponse> handleShopHasOrders(ShopHasOrders ex) {
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ErrorResponse(HttpStatus.BAD_REQUEST.value(), ex.getMessage()));
     }
 }

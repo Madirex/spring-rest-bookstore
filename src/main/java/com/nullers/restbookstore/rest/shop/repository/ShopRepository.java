@@ -13,9 +13,7 @@ import java.util.UUID;
  *
  * @author alexdor00
  */
-
 @Repository
 public interface ShopRepository extends JpaRepository<Shop, UUID>, JpaSpecificationExecutor<Shop> {
-
 
 }

@@ -10,7 +10,7 @@ import lombok.Getter;
 /**
  * Clase CreateShopDto
  *
- *  @author alexdor00
+ * @author alexdor00
  */
 @Getter
 @Builder

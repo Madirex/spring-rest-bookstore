@@ -21,15 +21,17 @@ public interface ShopRestController {
 
     /**
      * Obtiene una tienda específica por su identificador.
+     *
      * @param id Identificador de la tienda.
      * @return ResponseEntity con la tienda encontrada en formato DTO.
      * @throws ShopNotFoundException Si la tienda no se encuentra.
      */
     ResponseEntity<GetShopDto> getShopById(@Valid @PathVariable UUID id)
-            throws  ShopNotFoundException;
+            throws ShopNotFoundException;
 
     /**
      * Crea una nueva tienda basada en la información proporcionada.
+     *
      * @param shopDto DTO con la información para crear la tienda.
      * @return ResponseEntity con la tienda creada en formato DTO.
      */
@@ -37,28 +39,58 @@ public interface ShopRestController {
 
     /**
      * Actualiza una tienda existente con la información proporcionada.
-     * @param id Identificador de la tienda a actualizar.
+     *
+     * @param id      Identificador de la tienda a actualizar.
      * @param shopDto DTO con la información actualizada de la tienda.
      * @return ResponseEntity con la tienda actualizada en formato DTO.
      * @throws ShopNotFoundException Si la tienda no se encuentra.
      */
     ResponseEntity<GetShopDto> updateShop(@Valid @PathVariable UUID id, @Valid @RequestBody UpdateShopDto shopDto)
-            throws  ShopNotFoundException;
+            throws ShopNotFoundException;
 
     /**
      * Elimina una tienda específica por su identificador.
+     *
      * @param id Identificador de la tienda a eliminar.
      * @return ResponseEntity indicando el resultado de la operación.
      * @throws ShopNotFoundException Si la tienda no se encuentra.
      */
     ResponseEntity<String> deleteShop(@Valid @PathVariable UUID id);
 
+    /**
+     * Añade un libro a una tienda
+     *
+     * @param id     Identificador de la tienda
+     * @param bookId Identificador del libro
+     * @return ResponseEntity con la tienda actualizada en formato DTO.
+     */
     ResponseEntity<GetShopDto> addBookToShop(@PathVariable UUID id, @PathVariable Long bookId);
 
+    /**
+     * Elimina un libro de una tienda
+     *
+     * @param id     Identificador de la tienda
+     * @param bookId Identificador del libro
+     * @return ResponseEntity con la tienda actualizada en formato DTO.
+     */
     ResponseEntity<GetShopDto> removeBookFromShop(@PathVariable UUID id, @PathVariable Long bookId);
 
+    /**
+     * Añade un cliente a una tienda
+     *
+     * @param id       Identificador de la tienda
+     * @param clientId Identificador del cliente
+     * @return ResponseEntity con la tienda actualizada en formato DTO.
+     */
     ResponseEntity<GetShopDto> addClientToShop(@PathVariable UUID id, @PathVariable UUID clientId);
 
+    /**
+     * Elimina un cliente de una tienda
+     *
+     * @param id       Identificador de la tienda
+     * @param clientId Identificador del cliente
+     * @return ResponseEntity con la tienda actualizada en formato DTO.
+     */
     ResponseEntity<GetShopDto> removeClientFromShop(@PathVariable UUID id, @PathVariable UUID clientId);
 
 }

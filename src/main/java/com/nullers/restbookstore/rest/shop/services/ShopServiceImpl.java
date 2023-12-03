@@ -17,26 +17,27 @@ import com.nullers.restbookstore.rest.shop.mappers.ShopMapperImpl;
 import com.nullers.restbookstore.rest.shop.model.Shop;
 import com.nullers.restbookstore.rest.shop.repository.ShopRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
-import org.springframework.cache.annotation.CacheEvict;
 
 import java.util.*;
 import java.util.stream.Collectors;
 
 /**
  * Servicio que implementa las operaciones de negocio para la entidad Shop.
- * Utiliza ShopRepository para acceso a datos y ShopMapper para la conversión entre entidades y DTOs.
+ * Utiliza ShopRepository para acceso a datos y ShopMapper para la conversión entre entidades y DTO.
  *
  * @author alexdor00
  */
 @Service
 public class ShopServiceImpl implements ShopService {
 
+    public static final String SHOP_NOT_FOUND_WITH_ID_MSG = "Tienda no encontrada con ID: ";
     private final ShopRepository shopRepository;
     private final ShopMapperImpl shopMapper;
 
@@ -51,9 +52,9 @@ public class ShopServiceImpl implements ShopService {
      *
      * @param shopRepository   Repositorio para las operaciones de base de datos de Shop.
      * @param shopMapper       Mapper para convertir entre Shop y sus DTOs.
-     * @param bookRepository
-     * @param clientRepository
-     * @param orderRepository
+     * @param bookRepository   Repositorio para las operaciones de base de datos de Book.
+     * @param clientRepository Repositorio para las operaciones de base de datos de Client.
+     * @param orderRepository  Repositorio para las operaciones de base de datos de Order.
      */
     @Autowired
     public ShopServiceImpl(ShopRepository shopRepository, ShopMapperImpl shopMapper, BookRepository bookRepository, ClientRepository clientRepository, OrderRepository orderRepository) {
@@ -65,15 +66,27 @@ public class ShopServiceImpl implements ShopService {
     }
 
     /**
-     * Obtiene todas las tiendas y las convierte a DTOs.
+     * Obtiene todas las tiendas y las convierte a DTO.
      * Los resultados se almacenan en caché para mejorar el rendimiento.
-     * @return Lista de tiendas en forma de DTOs.
+     *
+     * @return Lista de tiendas en forma de DTO.
      */
     @Cacheable("shops")
     public Page<GetShopDto> getAllShops(Optional<String> name, Optional<String> locate, PageRequest pageable) {
-        Specification<Shop> nameType = (root, query, criteriaBuilder) -> name.map(m -> {try {return criteriaBuilder.equal(criteriaBuilder.upper(root.get("name")), m.toUpperCase());} catch (IllegalArgumentException e) {return criteriaBuilder.isTrue(criteriaBuilder.literal(false));}}).orElseGet(() -> criteriaBuilder.isTrue(criteriaBuilder.literal(true)));
-        Specification<Shop> locateType = (root, query, criteriaBuilder) -> locate.map(m -> {try {return criteriaBuilder.equal(criteriaBuilder.upper(root.get("location")), m.toUpperCase());} catch (IllegalArgumentException e) {return criteriaBuilder.isTrue(criteriaBuilder.literal(false));}}).orElseGet(() -> criteriaBuilder.isTrue(criteriaBuilder.literal(true)));
-        //TODO: VER COMO HACER QUE EL FILTRO DE LOCATION FUNCIONE
+        Specification<Shop> nameType = (root, query, criteriaBuilder) -> name.map(m -> {
+            try {
+                return criteriaBuilder.equal(criteriaBuilder.upper(root.get("name")), m.toUpperCase());
+            } catch (IllegalArgumentException e) {
+                return criteriaBuilder.isTrue(criteriaBuilder.literal(false));
+            }
+        }).orElseGet(() -> criteriaBuilder.isTrue(criteriaBuilder.literal(true)));
+        Specification<Shop> locateType = (root, query, criteriaBuilder) -> locate.map(m -> {
+            try {
+                return criteriaBuilder.equal(criteriaBuilder.upper(root.get("location")), m.toUpperCase());
+            } catch (IllegalArgumentException e) {
+                return criteriaBuilder.isTrue(criteriaBuilder.literal(false));
+            }
+        }).orElseGet(() -> criteriaBuilder.isTrue(criteriaBuilder.literal(true)));
         Specification<Shop> criterion = Specification.where(nameType)
                 .and(locateType);
         Page<Shop> shopPage = shopRepository.findAll(criterion, pageable);
@@ -86,19 +99,21 @@ public class ShopServiceImpl implements ShopService {
 
     /**
      * Obtiene una tienda por su UUID y la convierte a DTO.
+     *
      * @param id Identificador UUID de la tienda.
      * @return DTO de la tienda encontrada.
      * @throws ShopNotFoundException Si la tienda no se encuentra.
      */
     @Override
-    public GetShopDto getShopById(UUID id) throws  ShopNotFoundException {
+    public GetShopDto getShopById(UUID id) throws ShopNotFoundException {
         Shop shop = shopRepository.findById(id)
-                .orElseThrow(() -> new ShopNotFoundException("Tienda no encontrada con ID: " + id));
+                .orElseThrow(() -> new ShopNotFoundException(SHOP_NOT_FOUND_WITH_ID_MSG + id));
         return shopMapper.toGetShopDto(shop);
     }
 
     /**
      * Crea una nueva tienda a partir de un DTO y la guarda en la base de datos.
+     *
      * @param shopDto DTO con los datos para crear la tienda.
      * @return DTO de la tienda creada.
      */
@@ -111,15 +126,16 @@ public class ShopServiceImpl implements ShopService {
 
     /**
      * Actualiza una tienda existente con los datos proporcionados en el DTO.
-     * @param id Identificador UUID de la tienda a actualizar.
+     *
+     * @param id      Identificador UUID de la tienda a actualizar.
      * @param shopDto DTO con los datos actualizados.
      * @return DTO de la tienda actualizada.
      * @throws ShopNotFoundException Si la tienda no se encuentra.
      */
     @Override
-    public GetShopDto updateShop(UUID id, UpdateShopDto shopDto) throws  ShopNotFoundException {
+    public GetShopDto updateShop(UUID id, UpdateShopDto shopDto) throws ShopNotFoundException {
         Shop shop = shopRepository.findById(id)
-                .orElseThrow(() -> new ShopNotFoundException("Tienda no encontrada con ID: " + id));
+                .orElseThrow(() -> new ShopNotFoundException(SHOP_NOT_FOUND_WITH_ID_MSG + id));
         shop = shopMapper.toShop(shop, shopDto);
         shop = shopRepository.save(shop);
         return shopMapper.toGetShopDto(shop);
@@ -127,6 +143,7 @@ public class ShopServiceImpl implements ShopService {
 
     /**
      * Elimina una tienda de la base de datos por su UUID y evita la caché relacionada.
+     *
      * @param id Identificador UUID de la tienda a eliminar.
      * @throws ShopNotFoundException Si la tienda no se encuentra.
      */
@@ -134,7 +151,7 @@ public class ShopServiceImpl implements ShopService {
     @Override
     public void deleteShop(UUID id) {
         Shop shop = shopRepository.findById(id)
-                .orElseThrow(() -> new ShopNotFoundException("Tienda no encontrada con ID: " + id));
+                .orElseThrow(() -> new ShopNotFoundException(SHOP_NOT_FOUND_WITH_ID_MSG + id));
         Page<Order> order = orderRepository.findByShopId(id, PageRequest.of(0, 1));
         if (order.getTotalElements() > 0) {
             throw new ShopHasOrders("La tienda no se puede eliminar porque tiene pedidos asociados");
@@ -143,6 +160,13 @@ public class ShopServiceImpl implements ShopService {
         shopRepository.delete(shop);
     }
 
+    /**
+     * Añade un libro a la tienda
+     *
+     * @param id     Shop id
+     * @param bookId Book id
+     * @return GetShopDto
+     */
     @Override
     public GetShopDto addBookToShop(UUID id, Long bookId) {
         Book book = bookRepository.findById(bookId)
@@ -156,6 +180,13 @@ public class ShopServiceImpl implements ShopService {
         return shopMapper.toGetShopDto(shopRepository.save(shop));
     }
 
+    /**
+     * Elimina un libro de la tienda
+     *
+     * @param id     Shop id
+     * @param bookId Book id
+     * @return GetShopDto
+     */
     @Override
     public GetShopDto removeBookFromShop(UUID id, Long bookId) {
         Book book = bookRepository.findById(bookId)
@@ -171,6 +202,13 @@ public class ShopServiceImpl implements ShopService {
         return shopMapper.toGetShopDto(shopRepository.save(shop));
     }
 
+    /**
+     * Añade un cliente a la tienda
+     *
+     * @param id       Shop id
+     * @param clientId Client id
+     * @return GetShopDto
+     */
     @Override
     public GetShopDto addClientToShop(UUID id, UUID clientId) {
         Client client = clientRepository.findById(clientId)
@@ -184,6 +222,13 @@ public class ShopServiceImpl implements ShopService {
         return shopMapper.toGetShopDto(shopRepository.save(shop));
     }
 
+    /**
+     * Elimina un cliente de la tienda
+     *
+     * @param id       Shop id
+     * @param clientId Client id
+     * @return GetShopDto
+     */
     @Override
     public GetShopDto removeClientFromShop(UUID id, UUID clientId) {
         Client client = clientRepository.findById(clientId)
@@ -198,7 +243,5 @@ public class ShopServiceImpl implements ShopService {
         shop.setClients(clients);
         return shopMapper.toGetShopDto(shopRepository.save(shop));
     }
-
-
 
 }

@@ -1,5 +1,6 @@
 package com.nullers.restbookstore.manager.error;
 
+import com.mongodb.MongoTimeoutException;
 import com.nullers.restbookstore.pagination.exceptions.PageNotValidException;
 import com.nullers.restbookstore.pagination.models.ErrorResponse;
 import com.nullers.restbookstore.rest.category.exceptions.CategoriaNotFoundException;
@@ -8,7 +9,9 @@ import org.apache.tomcat.util.http.fileupload.impl.FileSizeLimitExceededExceptio
 import org.springframework.data.mapping.PropertyReferenceException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.http.converter.HttpMessageNotWritableException;
+import org.springframework.messaging.handler.annotation.support.MethodArgumentTypeMismatchException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.MissingPathVariableException;
@@ -59,6 +62,54 @@ public class GlobalExceptionHandler {
     }
 
     /**
+     * Método para manejar las excepciones de tipo MethodArgumentTypeMismatchException
+     *
+     * @param ex Excepción
+     * @return ResponseEntity con el código de estado
+     */
+    @ExceptionHandler(MethodArgumentTypeMismatchException.class)
+    public ResponseEntity<ErrorResponse> handleException(MethodArgumentTypeMismatchException ex) {
+        var errorResponse = new ErrorResponse(
+                HttpStatus.BAD_REQUEST.value(),
+                ex.getMessage()
+//                ,getCurrentHttpRequest().getRequestURI() //TODO: Agregar URI
+        );
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
+    }
+
+    /**
+     * Manejar excepciones HttpMessageNotReadableException
+     *
+     * @param ex Excepción
+     * @return ResponseEntity con el código de estado
+     */
+    @ExceptionHandler(HttpMessageNotReadableException.class)
+    public ResponseEntity<ErrorResponse> handleException(HttpMessageNotReadableException ex) {
+        var errorResponse = new ErrorResponse(
+                HttpStatus.BAD_REQUEST.value(),
+                "El formato de la consulta enviada es incorrecta."
+//                ,getCurrentHttpRequest().getRequestURI() //TODO: Agregar URI
+        );
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
+    }
+
+    /**
+     * Timeout Mongo (puede sucede cuando MongoDB está deshabilitado)
+     *
+     * @param ex Excepción
+     * @return ResponseEntity con el código de estado
+     */
+    @ExceptionHandler(MongoTimeoutException.class)
+    public ResponseEntity<ErrorResponse> handleException(MongoTimeoutException ex) {
+        var errorResponse = new ErrorResponse(
+                HttpStatus.REQUEST_TIMEOUT.value(),
+                ex.getMessage()
+//                ,getCurrentHttpRequest().getRequestURI() //TODO: Agregar URI
+        );
+        return ResponseEntity.status(HttpStatus.REQUEST_TIMEOUT).body(errorResponse);
+    }
+
+    /**
      * Método para manejar las excepciones de ResponseStatusException
      *
      * @param ex Excepción
@@ -83,9 +134,13 @@ public class GlobalExceptionHandler {
      */
     @ExceptionHandler(FileSizeLimitExceededException.class)
     @ResponseStatus(HttpStatus.PAYLOAD_TOO_LARGE)
-    public ResponseEntity<String> handleFileSizeLimitExceeded(FileSizeLimitExceededException ex) {
-        return ResponseEntity.status(HttpStatus.PAYLOAD_TOO_LARGE)
-                .body("El tamaño del archivo excede el límite permitido. Máximo permitido: " + ex.getPermittedSize());
+    public ResponseEntity<ErrorResponse> handleFileSizeLimitExceeded(FileSizeLimitExceededException ex) {
+        var errorResponse = new ErrorResponse(
+                HttpStatus.PAYLOAD_TOO_LARGE.value(),
+                "El tamaño del archivo excede el límite permitido. Máximo permitido: " + ex.getPermittedSize()
+//                ,getCurrentHttpRequest().getRequestURI() //TODO: Agregar URI
+        );
+        return ResponseEntity.status(HttpStatus.PAYLOAD_TOO_LARGE).body(errorResponse);
     }
 
     /**
@@ -96,9 +151,13 @@ public class GlobalExceptionHandler {
      */
     @ExceptionHandler(PropertyReferenceException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ResponseEntity<String> handlePropertyReferenceException(PropertyReferenceException ex) {
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                .body("Error al procesar la propiedad en la consulta: " + ex.getPropertyName());
+    public ResponseEntity<ErrorResponse> handlePropertyReferenceException(PropertyReferenceException ex) {
+        var errorResponse = new ErrorResponse(
+                HttpStatus.BAD_REQUEST.value(),
+                "Error al procesar la propiedad en la consulta: " + ex.getPropertyName()
+//                ,getCurrentHttpRequest().getRequestURI() //TODO: Agregar URI
+        );
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
     }
 
     /**
@@ -109,7 +168,7 @@ public class GlobalExceptionHandler {
      */
     @ExceptionHandler(PageNotValidException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ResponseEntity<String> handlePageNotValidException(PageNotValidException ex) {
+    public ResponseEntity<String> handlePageNotValidException(PageNotValidException ex) { //TODO: Mejorar
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                 .body(ex.getMessage());
     }
@@ -122,7 +181,7 @@ public class GlobalExceptionHandler {
      */
     @ExceptionHandler(HttpMessageNotWritableException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ResponseEntity<String> handleHttpMessageNotWritableException(HttpMessageNotWritableException ex) {
+    public ResponseEntity<String> handleHttpMessageNotWritableException(HttpMessageNotWritableException ex) { //TODO: Mejorar
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("");
     }
 
@@ -133,7 +192,7 @@ public class GlobalExceptionHandler {
      * @return Respuesta
      */
     @ExceptionHandler(MissingPathVariableException.class)
-    public ResponseEntity<String> handleMissingPathVariable(MissingPathVariableException ex) {
+    public ResponseEntity<String> handleMissingPathVariable(MissingPathVariableException ex) { //TODO: Mejorar
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                 .body("No has enviado todos los parámetros necesarios para la consulta en el Path");
     }
@@ -143,7 +202,7 @@ public class GlobalExceptionHandler {
      *
      * @return HttpServletRequest
      */
-    private HttpServletRequest getCurrentHttpRequest() {
+    private HttpServletRequest getCurrentHttpRequest() { //TODO: Mejorar
         ServletRequestAttributes requestAttributes = (ServletRequestAttributes)
                 RequestContextHolder.currentRequestAttributes();
         return requestAttributes.getRequest();
