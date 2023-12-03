@@ -1,5 +1,6 @@
 package com.nullers.restbookstore.rest.category.exceptions;
 
+import com.nullers.restbookstore.manager.error.exceptions.ResponseExceptionBadRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
@@ -9,7 +10,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
  * @author Madirex
  */
 @ResponseStatus(HttpStatus.BAD_REQUEST)
-public class CategoryInvalidID extends RuntimeException {
+public class CategoryInvalidID extends ResponseExceptionBadRequest {
     /**
      * Constructor CategoryInvalidID
      *

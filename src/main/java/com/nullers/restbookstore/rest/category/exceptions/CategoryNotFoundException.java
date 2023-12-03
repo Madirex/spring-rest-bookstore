@@ -1,5 +1,6 @@
 package com.nullers.restbookstore.rest.category.exceptions;
 
+import com.nullers.restbookstore.manager.error.exceptions.ResponseExceptionNotFound;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
@@ -9,7 +10,7 @@ import java.util.UUID;
  * Class CategoryNotFoundException
  */
 @ResponseStatus(HttpStatus.NOT_FOUND)
-public class CategoryNotFoundException extends RuntimeException {
+public class CategoryNotFoundException extends ResponseExceptionNotFound {
 
     /**
      * Constructor CategoryNotFoundException

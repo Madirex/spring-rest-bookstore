@@ -24,7 +24,6 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
-import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.multipart.MaxUploadSizeExceededException;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -83,11 +82,10 @@ public class GlobalExceptionHandler {
     /**
      * Manejar excepciones HttpMessageNotReadableException
      *
-     * @param ex Excepción
      * @return ResponseEntity con el código de estado
      */
     @ExceptionHandler(HttpMessageNotReadableException.class)
-    public ResponseEntity<ErrorResponse> handleException(HttpMessageNotReadableException ex) {
+    public ResponseEntity<ErrorResponse> handleException() {
         var errorResponse = new ErrorResponse(
                 HttpStatus.BAD_REQUEST.value(),
                 "El formato de la consulta enviada es incorrecta."
@@ -119,13 +117,13 @@ public class GlobalExceptionHandler {
      * @return ResponseEntity con el código de estado
      */
     @ExceptionHandler(ResponseExceptionBadRequest.class)
-    public ResponseEntity<ErrorResponse> handleException(ResponseExceptionBadRequest ex) {
-        var errorResponse = new ErrorResponse(
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ErrorResponse handleException(ResponseExceptionBadRequest ex) {
+        return new ErrorResponse(
                 HttpStatus.BAD_REQUEST.value(),
                 ex.getMessage()
                 , getCurrentHttpRequest().getRequestURI()
         );
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
     }
 
     /**
@@ -135,13 +133,13 @@ public class GlobalExceptionHandler {
      * @return ResponseEntity con el código de estado
      */
     @ExceptionHandler(ResponseExceptionConflict.class)
-    public ResponseEntity<ErrorResponse> handleException(ResponseExceptionConflict ex) {
-        var errorResponse = new ErrorResponse(
+    @ResponseStatus(HttpStatus.CONFLICT)
+    public ErrorResponse handleException(ResponseExceptionConflict ex) {
+        return new ErrorResponse(
                 HttpStatus.CONFLICT.value(),
                 ex.getMessage()
                 , getCurrentHttpRequest().getRequestURI()
         );
-        return ResponseEntity.status(HttpStatus.CONFLICT).body(errorResponse);
     }
 
     /**
@@ -151,27 +149,23 @@ public class GlobalExceptionHandler {
      * @return ResponseEntity con el código de estado
      */
     @ExceptionHandler(ResponseExceptionNotFound.class)
-    public ResponseEntity<ErrorResponse> handleException(ResponseExceptionNotFound ex) {
-        var errorResponse = new ErrorResponse(
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public ErrorResponse handleException(ResponseExceptionNotFound ex) {
+        return new ErrorResponse(
                 HttpStatus.NOT_FOUND.value(),
                 ex.getMessage()
                 , getCurrentHttpRequest().getRequestURI()
         );
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorResponse);
     }
 
 
     /**
      * Handle MaxUploadSizeExceededException
      *
-     * @param ex      exception
-     * @param request request
      * @return ResponseEntity<ErrorResponse> response
      */
     @ExceptionHandler(MaxUploadSizeExceededException.class)
-    public ResponseEntity<ErrorResponse> handleMaxSizeException(
-            MaxUploadSizeExceededException ex,
-            WebRequest request) {
+    public ResponseEntity<ErrorResponse> handleMaxSizeException() {
 
         String message = "El tamaño del archivo supera el límite permitido. (" + maxSize + ")";
         return new ResponseEntity<>(
@@ -235,42 +229,44 @@ public class GlobalExceptionHandler {
     /**
      * Handler de excepciones de paginación
      *
-     * @param ex Excepción
      * @return Respuesta
      */
     @ExceptionHandler(PageNotValidException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ResponseEntity<String> handlePageNotValidException(PageNotValidException ex) { //TODO: Mejorar
+    public ResponseEntity<ErrorResponse> handlePageNotValidException() {
+        var errorResponse = new ErrorResponse(HttpStatus.BAD_REQUEST.value(),
+                "Página no válida",
+                getCurrentHttpRequest().getRequestURI());
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                .body(ex.getMessage());
+                .body(errorResponse);
     }
 
     /**
-     * Manejador de excepciones de HttpMessageNotWritableException
+     * Handler de excepciones de HttpMessageNotWritableException
      *
-     * @param ex Excepción
      * @return Respuesta
      */
     @ExceptionHandler(HttpMessageNotWritableException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ResponseEntity<String> handleHttpMessageNotWritableException(HttpMessageNotWritableException ex) { //TODO: Mejorar
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("");
+    public ResponseEntity<ErrorResponse> handleHttpMessageNotWritableException() {
+        var errorResponse = new ErrorResponse(HttpStatus.BAD_REQUEST.value(),
+                "Error al escribir la respuesta",
+                getCurrentHttpRequest().getRequestURI());
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
     }
 
     /**
      * Handler de excepciones de MissingPathVariableException
      *
-     * @param ex Excepción
      * @return Respuesta
      */
     @ExceptionHandler(MissingPathVariableException.class)
-    public ResponseEntity<ErrorResponse> handleMissingPathVariable(MissingPathVariableException ex) {
+    public ResponseEntity<ErrorResponse> handleMissingPathVariable() {
         var errorResponse = new ErrorResponse(HttpStatus.BAD_REQUEST.value(),
                 "No has enviado todos los parámetros necesarios para la consulta en el Path",
                 getCurrentHttpRequest().getRequestURI());
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
     }
-
 
     /**
      * Handler de excepciones de IllegalArgumentException
