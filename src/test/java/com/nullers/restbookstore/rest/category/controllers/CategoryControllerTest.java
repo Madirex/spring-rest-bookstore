@@ -194,7 +194,7 @@ class CategoryControllerTest {
                         .param("activa", "true")
                         .param("page", "0")
                         .param("size", "10")
-                        .param("sortBy", "name")
+                        .param("orderBy", "name")
                         .param("order", "asc")
                         .accept(MediaType.APPLICATION_JSON))
                 .andReturn().getResponse();
@@ -268,7 +268,7 @@ class CategoryControllerTest {
         when(service.getAll(any(Optional.class), any(Optional.class), any(Pageable.class))).thenReturn(new PageImpl(categories));
 
         MockHttpServletResponse response = mockMvc.perform(get(endPoint)
-                        .param("sortBy", "name")
+                        .param("orderBy", "name")
                         .param("order", "desc")
                         .accept(MediaType.APPLICATION_JSON))
                 .andReturn().getResponse();
@@ -360,7 +360,7 @@ class CategoryControllerTest {
         when(service.getAll(any(Optional.class), any(Optional.class), any(Pageable.class))).thenThrow(new IllegalArgumentException("Error al procesar la propiedad en la consulta: pepe"));
 
         MockHttpServletResponse response = mockMvc.perform(get(endPoint)
-                        .param("sortBy", "pepe")
+                        .param("orderBy", "pepe")
                         .accept(MediaType.APPLICATION_JSON))
                 .andReturn().getResponse();
 

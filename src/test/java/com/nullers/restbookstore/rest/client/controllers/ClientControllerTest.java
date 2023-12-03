@@ -556,12 +556,12 @@ class ClientControllerTest {
     }
 
     @Test
-    void getAll_ShouldReturnErrorResponse_withInvalidSortByParam() throws Exception {
+    void getAll_ShouldReturnErrorResponse_withInvalidOrderByParam() throws Exception {
         when(clientService.findAll(any(Optional.class), any(Optional.class), any(Optional.class), any(Optional.class), any(Optional.class), any(PageRequest.class)))
                 .thenThrow(new IllegalArgumentException("No property 'pepe' found for type 'Client'"));
 
         MockHttpServletResponse response = mockMvc.perform(get(endpoint)
-                .param("sortBy", "pepe")
+                .param("orderBy", "pepe")
                 .param("order", "asc")
                 .accept(MediaType.APPLICATION_JSON)).andReturn().getResponse();
         ErrorResponse res = mapper.readValue(response.getContentAsString(StandardCharsets.UTF_8), ErrorResponse.class);

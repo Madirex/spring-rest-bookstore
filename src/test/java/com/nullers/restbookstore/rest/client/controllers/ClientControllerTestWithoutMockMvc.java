@@ -404,7 +404,7 @@ public class ClientControllerTestWithoutMockMvc {
     }
 
     @Test
-    void getAll_ShouldReturnErrorResponse_withInvalidSortByParam() {
+    void getAll_ShouldReturnErrorResponse_withInvalidOrderByParam() {
         when(clientService.findAll(any(Optional.class), any(Optional.class), any(Optional.class), any(Optional.class), any(Optional.class), any(PageRequest.class))).thenThrow(new IllegalArgumentException("No property 'id2' found for type 'Client'"));
 
         MockHttpServletRequest requestMock = new MockHttpServletRequest();
