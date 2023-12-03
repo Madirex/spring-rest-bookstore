@@ -34,7 +34,7 @@ public class Category {
     private LocalDateTime createdAt;
 
     @Temporal(TemporalType.TIMESTAMP)
-    @ColumnDefault(value = "CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP")
+    @ColumnDefault(value = "CURRENT_TIMESTAMP")
     private LocalDateTime updatedAt;
 
     /**
