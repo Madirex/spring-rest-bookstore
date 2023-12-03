@@ -67,13 +67,13 @@ public class PublisherServiceImpl implements PublisherService {
     @Override
     public Page<PublisherDTO> findAll(Optional<String> name, PageRequest pageable) {
 
-        Specification<Publisher> specNombrePublisher = (root, query, criteriaBuilder) ->
+        Specification<Publisher> specNamePublisher = (root, query, criteriaBuilder) ->
                 name.map(m -> criteriaBuilder.like(criteriaBuilder.lower(root.get("name")), "%" +
                                 m.toLowerCase() + "%"))
                         .orElseGet(() -> criteriaBuilder.isTrue(criteriaBuilder.literal(true)));
 
 
-        Page<Publisher> publisherPage = publisherRepository.findAll(specNombrePublisher, pageable);
+        Page<Publisher> publisherPage = publisherRepository.findAll(specNamePublisher, pageable);
         List<PublisherDTO> dtoList = publisherPage.getContent().stream()
                 .map(publisherMapper::toDto)
                 .toList();

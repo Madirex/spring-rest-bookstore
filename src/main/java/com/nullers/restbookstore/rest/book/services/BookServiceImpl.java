@@ -127,7 +127,7 @@ public class BookServiceImpl implements BookService {
 
         Specification<Book> specMaxPrice = (root, query, criteriaBuilder) -> maxPrice.map(p -> criteriaBuilder.lessThanOrEqualTo(root.get("price"), p)).orElseGet(() -> criteriaBuilder.isTrue(criteriaBuilder.literal(true)));
 
-        Specification<Book> specCategory = (root, query, criteriaBuilder) -> category.map(c -> criteriaBuilder.equal(criteriaBuilder.upper(root.get("category").get("nombre")), c.toUpperCase())).orElseGet(() -> criteriaBuilder.isTrue(criteriaBuilder.literal(true)));
+        Specification<Book> specCategory = (root, query, criteriaBuilder) -> category.map(c -> criteriaBuilder.equal(criteriaBuilder.upper(root.get("category").get("name")), c.toUpperCase())).orElseGet(() -> criteriaBuilder.isTrue(criteriaBuilder.literal(true)));
 
         Specification<Book> criterion = Specification.where(specType)
                 .and(specMaxPrice)
@@ -329,7 +329,7 @@ public class BookServiceImpl implements BookService {
      * @return categoría
      */
     public Category checkCategory(String category) {
-        var res = categoriasRepositoryJpa.findByNombre(category);
+        var res = categoriasRepositoryJpa.findByName(category);
         if (res.isEmpty() || !res.get().getIsActive()) {
             throw new CategoriaNotFoundException("La categoría no existe o no esta activa");
         }

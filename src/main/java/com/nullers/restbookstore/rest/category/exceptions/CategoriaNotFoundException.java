@@ -8,7 +8,7 @@ public class CategoriaNotFoundException extends CategoriaException{
                 super("Categoria con id " + id + " no encontrada");
             }
 
-            public CategoriaNotFoundException(String nombre) {
-                super("Categoria con nombre " + nombre + " no encontrada");
+            public CategoriaNotFoundException(String name) {
+                super("Categoria con nombre " + name + " no encontrada");
             }
 }

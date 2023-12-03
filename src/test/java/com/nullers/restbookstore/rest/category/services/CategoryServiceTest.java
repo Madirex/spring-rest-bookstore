@@ -167,10 +167,10 @@ public class CategoryServiceTest {
     }
 
     @Test
-    void getCategoriaByNombre(){
-        when(repository.findByNombre("categoria 1")).thenReturn(Optional.of(category1));
+    void getCategoriaByName(){
+        when(repository.findByName("categoria 1")).thenReturn(Optional.of(category1));
 
-        var categoria = service.getCategoriaByNombre("categoria 1");
+        var categoria = service.getCategoriaByName("categoria 1");
 
         assertAll(
                 () -> assertNotNull(categoria),
@@ -180,17 +180,17 @@ public class CategoryServiceTest {
     }
 
     @Test
-    void getCategoriaByNombreNotFound(){
-        when(repository.findByNombre("categoria 99")).thenReturn(Optional.empty());
+    void getCategoriaByNameNotFound(){
+        when(repository.findByName("categoria 99")).thenReturn(Optional.empty());
 
-        var res = assertThrows(CategoriaNotFoundException.class, () -> service.getCategoriaByNombre("categoria 99"));
+        var res = assertThrows(CategoriaNotFoundException.class, () -> service.getCategoriaByName("categoria 99"));
         assertEquals("Categoria con nombre categoria 99 no encontrada", res.getMessage());
     }
 
     @Test
     void createCategoria(){
         when(repository.save(any(Category.class))).thenReturn(category1);
-        when(repository.findByNombre("categoria 1")).thenReturn(Optional.empty());
+        when(repository.findByName("categoria 1")).thenReturn(Optional.empty());
 
         var categoria = service.createCategoria(CategoriaCreateMapper.toDto(category1));
 
@@ -203,7 +203,7 @@ public class CategoryServiceTest {
 
     @Test
     void createCategoriaConflict(){
-        when(repository.findByNombre("categoria 1")).thenReturn(Optional.of(category1));
+        when(repository.findByName("categoria 1")).thenReturn(Optional.of(category1));
 
 
         var res = assertThrows(CategoriaConflictException.class, () -> service.createCategoria(CategoriaCreateMapper.toDto(category1)));
@@ -214,7 +214,7 @@ public class CategoryServiceTest {
     void updateCategoria(){
         when(repository.save(any(Category.class))).thenReturn(category1);
         when(repository.findById(UUID.fromString("3930e05a-7ebf-4aa1-8aa8-5d7466fa9734"))).thenReturn(Optional.of(category1));
-        when(repository.findByNombre("categoria 1")).thenReturn(Optional.empty());
+        when(repository.findByName("categoria 1")).thenReturn(Optional.empty());
 
         var categoria = service.updateCategoria(UUID.fromString("3930e05a-7ebf-4aa1-8aa8-5d7466fa9734"), CategoriaCreateMapper.toDto(category1));
 
@@ -236,7 +236,7 @@ public class CategoryServiceTest {
     @Test
     void updateCategoriaConflict(){
         when(repository.findById(UUID.fromString("3930e05a-7ebf-4aa1-8aa8-5d7466fa9734"))).thenReturn(Optional.of(category1));
-        when(repository.findByNombre("categoria 1")).thenReturn(Optional.of(category2));
+        when(repository.findByName("categoria 1")).thenReturn(Optional.of(category2));
 
         var res = assertThrows(CategoriaConflictException.class, () -> service.updateCategoria(UUID.fromString("3930e05a-7ebf-4aa1-8aa8-5d7466fa9734"), CategoriaCreateMapper.toDto(category1)));
         assertEquals("Ya existe una categoria con el nombre: categoria 1", res.getMessage());

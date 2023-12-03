@@ -11,7 +11,7 @@ import java.util.UUID;
 
 public interface CategoriaServiceJpa {
 
-    Page<Category> getAll(Optional<String> nombre, Optional<Boolean> activa, Pageable pageable);
+    Page<Category> getAll(Optional<String> name, Optional<Boolean> isActive, Pageable pageable);
 
     Category getCategoriaById(UUID id);
 
@@ -19,7 +19,7 @@ public interface CategoriaServiceJpa {
 
     void deleteById(UUID categoria);
 
-    Category getCategoriaByNombre(String nombre);
+    Category getCategoriaByName(String name);
 
     Category createCategoria(CategoriaCreateDto categoriaCreateDto);
 

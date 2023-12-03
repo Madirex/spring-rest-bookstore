@@ -42,18 +42,18 @@ public class CategoriaControllerRest {
 
     @GetMapping
     public ResponseEntity<PageResponse<Category>> getCategorias(
-            @RequestParam(required = false) Optional<String> nombre,
-            @RequestParam(required = false) Optional<Boolean> activa,
+            @RequestParam(required = false) Optional<String> name,
+            @RequestParam(required = false) Optional<Boolean> isActive,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size,
-            @RequestParam(defaultValue = "nombre") String sortBy,
+            @RequestParam(defaultValue = "name") String sortBy,
             @RequestParam(defaultValue = "asc") String order,
             HttpServletRequest request
     ) {
         Sort sort = order.equalsIgnoreCase("asc") ? Sort.by(sortBy).ascending() : Sort.by(sortBy).descending();
         Pageable pageable = PageRequest.of(page, size, sort);
         UriComponentsBuilder uriBuilder = UriComponentsBuilder.fromHttpUrl(request.getRequestURL().toString());
-        Page<Category> result = service.getAll(nombre, activa, pageable);
+        Page<Category> result = service.getAll(name, isActive, pageable);
         return ResponseEntity.ok()
                 .header("link", paginationLinksUtils.createLinkHeader(result, uriBuilder))
                 .body(PageResponse.of(result, sortBy, order));

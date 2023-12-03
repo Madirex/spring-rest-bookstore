@@ -55,11 +55,11 @@ class CategoryRepositoryTest {
     }
 
     @Test
-    void getCategoriaByNombre(){
+    void getCategoriaByName(){
         var res = entityManager.merge(category1);
         entityManager.flush();
 
-        var categoria = categoriaRepositoryJpa.findByNombre(res.getName());
+        var categoria = categoriaRepositoryJpa.findByName(res.getName());
 
         assertAll(
                 () -> assertNotNull(categoria),

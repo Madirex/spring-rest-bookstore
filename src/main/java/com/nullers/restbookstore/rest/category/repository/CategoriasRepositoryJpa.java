@@ -13,5 +13,5 @@ public interface CategoriasRepositoryJpa extends JpaRepository<Category, UUID>, 
 
     public Optional<Category> findById(UUID id);
 
-    public Optional<Category> findByNombre(String nombre);
+    public Optional<Category> findByName(String name);
 }

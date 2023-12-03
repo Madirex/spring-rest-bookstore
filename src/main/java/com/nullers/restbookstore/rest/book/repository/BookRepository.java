@@ -21,5 +21,5 @@ public interface BookRepository extends JpaRepository<Book, Long>, JpaSpecificat
      * @param category nombre de la categoría
      * @return lista de libros
      */
-    List<Book> findByCategory_Nombre(String category);
+    List<Book> findByCategory_Name(String category);
 }
