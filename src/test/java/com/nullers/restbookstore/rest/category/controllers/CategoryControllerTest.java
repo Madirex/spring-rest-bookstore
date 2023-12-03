@@ -189,11 +189,11 @@ class CategoryControllerTest {
         when(service.getAll(any(Optional.class), any(Optional.class), any(Pageable.class))).thenReturn(new PageImpl(categorys));
 
         MockHttpServletResponse response = mockMvc.perform(get(endPoint)
-                        .param("nombre", "categoria 1")
+                        .param("nombre", "categoría 1")
                         .param("activa", "true")
                         .param("page", "0")
                         .param("size", "10")
-                        .param("sortBy", "nombre")
+                        .param("sortBy", "name")
                         .param("order", "asc")
                         .accept(MediaType.APPLICATION_JSON))
                 .andReturn().getResponse();
@@ -267,7 +267,7 @@ class CategoryControllerTest {
         when(service.getAll(any(Optional.class), any(Optional.class), any(Pageable.class))).thenReturn(new PageImpl(categorys));
 
         MockHttpServletResponse response = mockMvc.perform(get(endPoint)
-                        .param("sortBy", "nombre")
+                        .param("sortBy", "name")
                         .param("order", "desc")
                         .accept(MediaType.APPLICATION_JSON))
                 .andReturn().getResponse();
@@ -332,7 +332,7 @@ class CategoryControllerTest {
         when(service.getAll(any(Optional.class), any(Optional.class), any(Pageable.class))).thenReturn(new PageImpl(categorys));
 
         MockHttpServletResponse response = mockMvc.perform(get(endPoint)
-                        .param("nombre", "categoria 1")
+                        .param("nombre", "categoría 1")
                         .param("activa", "true")
                         .accept(MediaType.APPLICATION_JSON))
                 .andReturn().getResponse();
@@ -443,7 +443,7 @@ class CategoryControllerTest {
         assertAll(
                 () -> assertEquals(HttpStatus.BAD_REQUEST.value(), response.getStatus()),
                 () -> assertEquals(HttpStatus.BAD_REQUEST.value(), res.get("code")),
-                () -> assertEquals("El nombre no puede estar vacio", errors.get("nombre"))
+                () -> assertEquals("El nombre no puede estar vacio", errors.get("name"))
         );
 
         verify(service, times(0)).createCategoria(categoriaCreateDto);
