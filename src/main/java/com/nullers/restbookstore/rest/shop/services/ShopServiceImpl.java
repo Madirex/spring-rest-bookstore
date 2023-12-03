@@ -47,13 +47,14 @@ public class ShopServiceImpl implements ShopService {
     private final OrderRepository orderRepository;
 
     /**
-     * Constructor que inyecta el repositorio de tiendas y el mapper.
+     * Constructor que inyecta el repositorio de tiendas y el mapper, así como los repositorios de libros,
+     * clientes y pedidos.
      *
      * @param shopRepository   Repositorio para las operaciones de base de datos de Shop.
      * @param shopMapper       Mapper para convertir entre Shop y sus DTOs.
-     * @param bookRepository
-     * @param clientRepository
-     * @param orderRepository
+     * @param bookRepository   Repositorio para operaciones relacionadas con libros.
+     * @param clientRepository Repositorio para operaciones relacionadas con clientes.
+     * @param orderRepository  Repositorio para operaciones relacionadas con pedidos.
      */
     @Autowired
     public ShopServiceImpl(ShopRepository shopRepository, ShopMapperImpl shopMapper, BookRepository bookRepository, ClientRepository clientRepository, OrderRepository orderRepository) {
@@ -67,6 +68,10 @@ public class ShopServiceImpl implements ShopService {
     /**
      * Obtiene todas las tiendas y las convierte a DTOs.
      * Los resultados se almacenan en caché para mejorar el rendimiento.
+     *
+     * @param name     Filtro opcional por nombre de la tienda.
+     * @param locate   Filtro opcional por ubicación de la tienda.
+     * @param pageable Información de paginación.
      * @return Lista de tiendas en forma de DTOs.
      */
     @Cacheable("shops")
@@ -86,6 +91,7 @@ public class ShopServiceImpl implements ShopService {
 
     /**
      * Obtiene una tienda por su UUID y la convierte a DTO.
+     *
      * @param id Identificador UUID de la tienda.
      * @return DTO de la tienda encontrada.
      * @throws ShopNotFoundException Si la tienda no se encuentra.
@@ -99,6 +105,7 @@ public class ShopServiceImpl implements ShopService {
 
     /**
      * Crea una nueva tienda a partir de un DTO y la guarda en la base de datos.
+     *
      * @param shopDto DTO con los datos para crear la tienda.
      * @return DTO de la tienda creada.
      */
@@ -111,7 +118,8 @@ public class ShopServiceImpl implements ShopService {
 
     /**
      * Actualiza una tienda existente con los datos proporcionados en el DTO.
-     * @param id Identificador UUID de la tienda a actualizar.
+     *
+     * @param id      Identificador UUID de la tienda a actualizar.
      * @param shopDto DTO con los datos actualizados.
      * @return DTO de la tienda actualizada.
      * @throws ShopNotFoundException Si la tienda no se encuentra.
@@ -127,6 +135,7 @@ public class ShopServiceImpl implements ShopService {
 
     /**
      * Elimina una tienda de la base de datos por su UUID y evita la caché relacionada.
+     *
      * @param id Identificador UUID de la tienda a eliminar.
      * @throws ShopNotFoundException Si la tienda no se encuentra.
      */
@@ -143,6 +152,15 @@ public class ShopServiceImpl implements ShopService {
         shopRepository.delete(shop);
     }
 
+    /**
+     * Añade un libro a una tienda.
+     *
+     * @param id      Identificador UUID de la tienda.
+     * @param bookId  Identificador del libro a añadir.
+     * @return DTO de la tienda después de añadir el libro.
+     * @throws BookNotFoundException Si el libro no se encuentra.
+     * @throws ShopNotFoundException Si la tienda no se encuentra.
+     */
     @Override
     public GetShopDto addBookToShop(UUID id, Long bookId) {
         Book book = bookRepository.findById(bookId)
@@ -156,6 +174,15 @@ public class ShopServiceImpl implements ShopService {
         return shopMapper.toGetShopDto(shopRepository.save(shop));
     }
 
+    /**
+     * Quita un libro de una tienda.
+     *
+     * @param id      Identificador UUID de la tienda.
+     * @param bookId  Identificador del libro a quitar.
+     * @return DTO de la tienda después de quitar el libro.
+     * @throws BookNotFoundException Si el libro no se encuentra.
+     * @throws ShopNotFoundException Si la tienda no se encuentra.
+     */
     @Override
     public GetShopDto removeBookFromShop(UUID id, Long bookId) {
         Book book = bookRepository.findById(bookId)
@@ -171,6 +198,16 @@ public class ShopServiceImpl implements ShopService {
         return shopMapper.toGetShopDto(shopRepository.save(shop));
     }
 
+    /**
+     * Añade un cliente a una tienda.
+     *
+     * @param id         Identificador UUID de la tienda.
+     * @param clientId   Identificador UUID del cliente a añadir.
+     * @return DTO de la tienda después de añadir el cliente.
+     * @throws ClientNotFound Si el cliente no se encuentra.
+     * @throws ShopNotFoundException Si la tienda no se encuentra.
+     */
+
     @Override
     public GetShopDto addClientToShop(UUID id, UUID clientId) {
         Client client = clientRepository.findById(clientId)
@@ -184,6 +221,16 @@ public class ShopServiceImpl implements ShopService {
         return shopMapper.toGetShopDto(shopRepository.save(shop));
     }
 
+
+    /**
+     * Quita un cliente de una tienda.
+     *
+     * @param id         Identificador UUID de la tienda.
+     * @param clientId   Identificador UUID del cliente a quitar.
+     * @return DTO de la tienda después de quitar el cliente.
+     * @throws ClientNotFound Si el cliente no se encuentra.
+     * @throws ShopNotFoundException Si la tienda no se encuentra.
+     */
     @Override
     public GetShopDto removeClientFromShop(UUID id, UUID clientId) {
         Client client = clientRepository.findById(clientId)
