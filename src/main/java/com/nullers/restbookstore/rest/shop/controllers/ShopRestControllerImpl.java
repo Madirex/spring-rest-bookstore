@@ -26,10 +26,15 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.util.*;
-
 /**
  * Implementación del controlador REST para la gestión de tiendas (Shops).
  * Provee endpoints para operaciones CRUD sobre tiendas.
+ * También incluye operaciones para agregar y quitar libros y clientes de las tiendas.
+ *
+ * Todas las operaciones en este controlador están diseñadas para ser utilizadas a través de una API REST.
+ *
+ * Además, este controlador maneja las excepciones personalizadas como ShopNotFoundException, BookNotFoundException,
+ * ClientNotFound y ShopHasOrders, devolviendo respuestas HTTP adecuadas en caso de excepción.
  *
  * @author alexdor00
  */
@@ -56,7 +61,11 @@ public class ShopRestControllerImpl implements ShopRestController {
     /**
      * Obtiene todas las tiendas disponibles.
      *
-     * @return ResponseEntity con una lista de todas las tiendas en formato DTO.
+     * @param name          Opcional: Filtro por nombre de tienda.
+     * @param location      Opcional: Filtro por ubicación de tienda.
+     * @param pageableRequest Datos de paginación y ordenación.
+     * @param request       Objeto HttpServletRequest para construir los enlaces de paginación.
+     * @return ResponseEntity con una lista paginada de todas las tiendas en formato DTO.
      */
     @GetMapping
     public ResponseEntity<PageResponse<GetShopDto>> getAllShops(
@@ -81,7 +90,7 @@ public class ShopRestControllerImpl implements ShopRestController {
     /**
      * Obtiene una tienda específica por su ID.
      *
-     * @param id ID de la tienda en formato String.
+     * @param id ID de la tienda en formato UUID.
      * @return ResponseEntity con los detalles de la tienda en formato DTO.
      * @throws ShopNotFoundException Si la tienda no se encuentra.
      */
@@ -132,17 +141,40 @@ public class ShopRestControllerImpl implements ShopRestController {
         return ResponseEntity.noContent().build();
     }
 
+    /**
+     * Agrega un libro a una tienda específica.
+     *
+     * @param id     ID de la tienda en formato UUID.
+     * @param bookId ID del libro a añadir en formato Long.
+     * @return ResponseEntity con los detalles de la tienda después de agregar el libro en formato DTO.
+     */
 
     @PatchMapping("/{id}/books/{bookId}")
     public ResponseEntity<GetShopDto> addBookToShop(@Valid @PathVariable UUID id, @Valid @PathVariable Long bookId) {
         return ResponseEntity.ok(shopService.addBookToShop(id, bookId));
     }
 
+
+    /**
+     * Quita un libro de una tienda específica.
+     *
+     * @param id     ID de la tienda en formato UUID.
+     * @param bookId ID del libro a quitar en formato Long.
+     * @return ResponseEntity con los detalles de la tienda después de quitar el libro en formato DTO.
+     */
     @Override
     @DeleteMapping("/{id}/books/{bookId}")
     public ResponseEntity<GetShopDto> removeBookFromShop(UUID id, Long bookId) {
         return ResponseEntity.ok(shopService.removeBookFromShop(id, bookId));
     }
+
+    /**
+     * Agrega un cliente a una tienda específica.
+     *
+     * @param id       ID de la tienda en formato UUID.
+     * @param clientId ID del cliente a añadir en formato UUID.
+     * @return ResponseEntity con los detalles de la tienda después de agregar el cliente en formato DTO.
+     */
 
     @Override
     @PatchMapping("/{id}/clients/{clientId}")
@@ -150,12 +182,27 @@ public class ShopRestControllerImpl implements ShopRestController {
         return ResponseEntity.ok(shopService.addClientToShop(id, clientId));
     }
 
+
+
+    /**
+     * Quita un cliente de una tienda específica.
+     *
+     * @param id       ID de la tienda en formato UUID.
+     * @param clientId ID del cliente a quitar en formato UUID.
+     * @return ResponseEntity con los detalles de la tienda después de quitar el cliente en formato DTO.
+     */
     @Override
     @DeleteMapping("/{id}/clients/{clientId}")
     public ResponseEntity<GetShopDto> removeClientFromShop(UUID id, UUID clientId) {
         return ResponseEntity.ok(shopService.removeClientFromShop(id, clientId));
     }
 
+    /**
+     * Manejador de excepciones para ClientNotFound.
+     *
+     * @param ex Excepción ClientNotFound.
+     * @return ResponseEntity con una respuesta de error en formato ErrorResponse.
+     */
 
     @ExceptionHandler(ClientNotFound.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
@@ -163,18 +210,37 @@ public class ShopRestControllerImpl implements ShopRestController {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ErrorResponse(HttpStatus.NOT_FOUND.value(), ex.getMessage()));
     }
 
+    /**
+     * Manejador de excepciones para ShopNotFoundException.
+     *
+     * @param ex Excepción ShopNotFoundException.
+     * @return ResponseEntity con una respuesta de error en formato ErrorResponse.
+     */
     @ExceptionHandler(ShopNotFoundException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public ResponseEntity<ErrorResponse> handleShopNotFound(ShopNotFoundException ex) {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ErrorResponse(HttpStatus.NOT_FOUND.value(), ex.getMessage()));
     }
 
+
+    /**
+     * Manejador de excepciones para BookNotFoundException.
+     *
+     * @param ex Excepción BookNotFoundException.
+     * @return ResponseEntity con una respuesta de error en formato ErrorResponse.
+     */
     @ExceptionHandler(BookNotFoundException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public ResponseEntity<ErrorResponse> handleBookNotFound(BookNotFoundException ex) {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ErrorResponse(HttpStatus.NOT_FOUND.value(), ex.getMessage()));
     }
 
+    /**
+     * Manejador de excepciones para ShopHasOrders.
+     *
+     * @param ex Excepción ShopHasOrders.
+     * @return ResponseEntity con una respuesta de error en formato ErrorResponse.
+     */
     @ExceptionHandler(ShopHasOrders.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ResponseEntity<ErrorResponse> handleShopHasOrders(ShopHasOrders ex) {
