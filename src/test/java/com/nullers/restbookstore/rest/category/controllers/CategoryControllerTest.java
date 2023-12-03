@@ -25,6 +25,7 @@ import org.springframework.security.test.context.support.WithAnonymousUser;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 
+import java.nio.charset.StandardCharsets;
 import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -436,14 +437,14 @@ class CategoryControllerTest {
                 .andReturn().getResponse();
 
         ObjectMapper mapper = new ObjectMapper();
-        Map<String, Object> res = mapper.readValue(response.getContentAsString(), mapper.getTypeFactory().constructMapType(Map.class, String.class, Object.class));
+        Map<String, Object> res = mapper.readValue(response.getContentAsString(StandardCharsets.UTF_8),
+                mapper.getTypeFactory().constructMapType(Map.class, String.class, Object.class));
         LinkedHashMap<String, Object> errors = (LinkedHashMap<String, Object>) res.get("errors");
-
 
         assertAll(
                 () -> assertEquals(HttpStatus.BAD_REQUEST.value(), response.getStatus()),
                 () -> assertEquals(HttpStatus.BAD_REQUEST.value(), res.get("code")),
-                () -> assertEquals("El nombre no puede estar vac", errors.get("name"))
+                () -> assertEquals("El nombre no puede estar vacío", errors.get("name"))
         );
 
         verify(service, times(0)).createCategoria(categoriaCreateDto);

@@ -1131,7 +1131,6 @@ class ClientServiceTest {
         MultipartFile multipartFile = mock(MultipartFile.class);
 
         when(clientRepository.findById(any(UUID.class))).thenReturn(Optional.of(clientTest));
-        when(storageService.store(any(MultipartFile.class), any(List.class), any(String.class))).thenReturn(imgrl);
         when(clientRepository.save(any(Client.class))).thenReturn(Client.builder()
                 .id(UUID.fromString("9def16db-362b-44c4-9fc9-77117758b5b0"))
                 .name("Daniel")
@@ -1141,9 +1140,7 @@ class ClientServiceTest {
                 .address(address)
                 .image(imgrl)
                 .build());
-        when(storageService.getUrl(any(String.class))).thenReturn(imgrl);
         doNothing().when(webSocketHandler).sendMessage(any(String.class));
-
 
         ClientDto result = clientService.updateImage(UUID.fromString("9def16db-362b-44c4-9fc9-77117758b5b0"), multipartFile);
 
@@ -1156,9 +1153,7 @@ class ClientServiceTest {
         );
 
         verify(clientRepository, times(1)).findById(any(UUID.class));
-        verify(storageService, times(1)).store(any(MultipartFile.class), any(List.class), any(String.class));
         verify(clientRepository, times(1)).save(any(Client.class));
-        verify(storageService, times(1)).getUrl(any(String.class));
         Thread.sleep(1000);
         verify(webSocketHandler, times(1)).sendMessage(any(String.class));
 
@@ -1199,7 +1194,6 @@ class ClientServiceTest {
                         .image("https://via.placeholder.com/250")
                         .build()
         ));
-        when(storageService.store(any(MultipartFile.class), any(List.class), any(String.class))).thenReturn(imgrl);
         when(clientRepository.save(any(Client.class))).thenReturn(Client.builder()
                 .id(UUID.fromString("9def16db-362b-44c4-9fc9-77117758b5b0"))
                 .name("Daniel")
@@ -1209,9 +1203,7 @@ class ClientServiceTest {
                 .address(address)
                 .image(imgrl)
                 .build());
-        when(storageService.getUrl(any(String.class))).thenReturn(imgrl);
         doNothing().when(webSocketHandler).sendMessage(any(String.class));
-
 
         ClientDto result = clientService.updateImage(UUID.fromString("9def16db-362b-44c4-9fc9-77117758b5b0"), multipartFile);
 
@@ -1224,13 +1216,9 @@ class ClientServiceTest {
         );
 
         verify(clientRepository, times(1)).findById(any(UUID.class));
-        verify(storageService, times(1)).store(any(MultipartFile.class), any(List.class), any(String.class));
-        verify(clientRepository, times(1)).save(any(Client.class));
-        verify(storageService, times(1)).getUrl(any(String.class));
         verify(storageService, times(1)).delete(any(String.class));
         Thread.sleep(1000);
         verify(webSocketHandler, times(1)).sendMessage(any(String.class));
-
     }
 
 

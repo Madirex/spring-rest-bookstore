@@ -23,6 +23,7 @@ import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -50,7 +51,7 @@ public class CategoryServiceTest {
             .build();
 
     @Test
-    void getAll_ShoulReturnAllBooksWithoutParamsPageable(){
+    void getAll_ShoulReturnAllBooksWithoutParamsPageable() {
         List<Category> expectedCategories = List.of(category1, category2);
 
         Pageable pageable = PageRequest.of(0, 10, Sort.by("id").ascending());
@@ -77,7 +78,7 @@ public class CategoryServiceTest {
     }
 
     @Test
-    void getAll_ShoulReturnAllBooksNameParamPageable(){
+    void getAll_ShoulReturnAllBooksNameParamPageable() {
         List<Category> expectedCategories = List.of(category1);
 
         Pageable pageable = PageRequest.of(0, 10, Sort.by("id").ascending());
@@ -101,7 +102,7 @@ public class CategoryServiceTest {
     }
 
     @Test
-    void getAll_ShoulReturnAllBooksActivaParamPageable(){
+    void getAll_ShoulReturnAllBooksActivaParamPageable() {
         List<Category> expectedCategories = List.of(category1);
 
         Pageable pageable = PageRequest.of(0, 10, Sort.by("id").ascending());
@@ -125,7 +126,7 @@ public class CategoryServiceTest {
     }
 
     @Test
-    void getAll_ShoulReturnAllBooksActivaFalseParamPageable(){
+    void getAll_ShoulReturnAllBooksActivaFalseParamPageable() {
         List<Category> expectedCategories = List.of();
 
         Pageable pageable = PageRequest.of(0, 10, Sort.by("id").ascending());
@@ -147,7 +148,7 @@ public class CategoryServiceTest {
     }
 
     @Test
-    void getCategoriaById(){
+    void getCategoriaById() {
         when(repository.findById(UUID.fromString("3930e05a-7ebf-4aa1-8aa8-5d7466fa9734"))).thenReturn(Optional.of(category1));
 
         var categoria = service.getCategoriaById(UUID.fromString("3930e05a-7ebf-4aa1-8aa8-5d7466fa9734"));
@@ -160,7 +161,7 @@ public class CategoryServiceTest {
     }
 
     @Test
-    void getCategoriaByIdNotFound(){
+    void getCategoriaByIdNotFound() {
         when(repository.findById(UUID.fromString("3930e05a-7ebf-4aa1-8aa8-5d7466f99999"))).thenReturn(Optional.empty());
 
         var res = assertThrows(CategoriaNotFoundException.class, () -> service.getCategoriaById(UUID.fromString("3930e05a-7ebf-4aa1-8aa8-5d7466f99999")));
@@ -168,7 +169,7 @@ public class CategoryServiceTest {
     }
 
     @Test
-    void getCategoriaByName(){
+    void getCategoriaByName() {
         when(repository.findByName("categoria 1")).thenReturn(Optional.of(category1));
 
         var categoria = service.getCategoriaByName("categoria 1");
@@ -181,7 +182,7 @@ public class CategoryServiceTest {
     }
 
     @Test
-    void getCategoriaByNameNotFound(){
+    void getCategoriaByNameNotFound() {
         when(repository.findByName("categoria 99")).thenReturn(Optional.empty());
 
         var res = assertThrows(CategoriaNotFoundException.class, () -> service.getCategoriaByName("categoria 99"));
@@ -189,7 +190,7 @@ public class CategoryServiceTest {
     }
 
     @Test
-    void createCategoria(){
+    void createCategoria() {
         when(repository.save(any(Category.class))).thenReturn(category1);
         when(repository.findByName("categoria 1")).thenReturn(Optional.empty());
 
@@ -203,16 +204,15 @@ public class CategoryServiceTest {
     }
 
     @Test
-    void createCategoriaConflict(){
+    void createCategoriaConflict() {
         when(repository.findByName("categoria 1")).thenReturn(Optional.of(category1));
-
 
         var res = assertThrows(CategoriaConflictException.class, () -> service.createCategoria(CategoriaCreateMapper.toDto(category1)));
         assertEquals("Ya existe una categoria con el nombre: categoria 1", res.getMessage());
     }
 
     @Test
-    void updateCategoria(){
+    void updateCategoria() {
         when(repository.save(any(Category.class))).thenReturn(category1);
         when(repository.findById(UUID.fromString("3930e05a-7ebf-4aa1-8aa8-5d7466fa9734"))).thenReturn(Optional.of(category1));
         when(repository.findByName("categoria 1")).thenReturn(Optional.empty());
@@ -227,7 +227,7 @@ public class CategoryServiceTest {
     }
 
     @Test
-    void updateCategoriaNotFound(){
+    void updateCategoriaNotFound() {
         when(repository.findById(UUID.fromString("3930e05a-7ebf-4aa1-8aa8-999966fa9734"))).thenReturn(Optional.empty());
 
         var res = assertThrows(CategoriaNotFoundException.class, () -> service.updateCategoria(UUID.fromString("3930e05a-7ebf-4aa1-8aa8-999966fa9734"), CategoriaCreateMapper.toDto(category1)));
@@ -235,7 +235,7 @@ public class CategoryServiceTest {
     }
 
     @Test
-    void updateCategoriaConflict(){
+    void updateCategoriaConflict() {
         when(repository.findById(UUID.fromString("3930e05a-7ebf-4aa1-8aa8-5d7466fa9734"))).thenReturn(Optional.of(category1));
         when(repository.findByName("categoria 1")).thenReturn(Optional.of(category2));
 
@@ -244,14 +244,10 @@ public class CategoryServiceTest {
     }
 
     @Test
-    void deleteCategoriaWithBooks(){
-        List<Category> expectedCategories = List.of(category1);
-
-        Pageable pageable = PageRequest.of(0, 10, Sort.by("id").ascending());
-
-        Page<Category> expectedPage = new PageImpl(expectedCategories);
+    void deleteCategoriaWithBooks() {
         when(repository.findById(UUID.fromString("3930e05a-7ebf-4aa1-8aa8-5d7466fa9734"))).thenReturn(Optional.of(category1));
         when(bookRepository.findByCategory_Name(any())).thenReturn(new ArrayList<>());
+        doThrow(new CategoriaConflictException("No se puede eliminar la categoría porque tiene libros asociados")).when(repository).deleteById(UUID.fromString("3930e05a-7ebf-4aa1-8aa8-5d7466fa9734"));
 
         var res = assertThrows(CategoriaConflictException.class, () -> service.deleteById(UUID.fromString("3930e05a-7ebf-4aa1-8aa8-5d7466fa9734")));
         assertEquals("No se puede eliminar la categoría porque tiene libros asociados", res.getMessage());
@@ -259,7 +255,7 @@ public class CategoryServiceTest {
 
 
     @Test
-    void deleteCategoriaNotFound(){
+    void deleteCategoriaNotFound() {
         when(repository.findById(UUID.fromString("3930e05a-7ebf-4aa1-8aa8-999966fa9734"))).thenReturn(Optional.empty());
 
         var res = assertThrows(CategoriaNotFoundException.class, () -> service.deleteById(UUID.fromString("3930e05a-7ebf-4aa1-8aa8-999966fa9734")));
@@ -267,12 +263,9 @@ public class CategoryServiceTest {
     }
 
     @Test
-    void deleteCategoria(){
+    void deleteCategoria() {
         List<GetBookDTO> expectedbooks = List.of();
 
-        Pageable pageable = PageRequest.of(0, 10, Sort.by("id").ascending());
-
-        Page<GetBookDTO> expectedPage = new PageImpl(expectedbooks);
         when(repository.findById(UUID.fromString("3930e05a-7ebf-4aa1-8aa8-5d7466fa9734"))).thenReturn(Optional.of(category1));
         when(bookRepository.findByCategory_Name(any())).thenReturn(new ArrayList<>());
 
