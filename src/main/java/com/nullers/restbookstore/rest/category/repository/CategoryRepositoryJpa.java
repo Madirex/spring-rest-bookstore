@@ -20,5 +20,5 @@ public interface CategoryRepositoryJpa extends JpaRepository<Category, UUID>, Jp
      * @param name nombre de la categoría
      * @return categoría
      */
-    Optional<Category> findByName(String name);
+    Optional<Category> findByNameEqualsIgnoreCase(String name);
 }

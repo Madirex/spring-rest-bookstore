@@ -329,7 +329,7 @@ public class BookServiceImpl implements BookService {
      * @return categoría
      */
     public Category checkCategory(String category) {
-        var res = categoryRepositoryJpa.findByName(category);
+        var res = categoryRepositoryJpa.findByNameEqualsIgnoreCase(category);
         if (res.isEmpty() || Boolean.TRUE.equals(!res.get().getIsActive())) {
             throw new CategoryNotFoundException("La categoría no existe o no esta activa");
         }
