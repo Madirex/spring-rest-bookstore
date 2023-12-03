@@ -47,6 +47,15 @@ public class PublisherServiceImpl implements PublisherService {
     private final CreatePublisherMapper createPublisherMapper;
     private final StorageService storageService;
 
+    /**
+     * Constructor de PublisherServiceImpl
+     *
+     * @param publisherRepository   repositorio de publisher
+     * @param bookRepository        repositorio de book
+     * @param publisherMapper       mapper de publisher
+     * @param createPublisherMapper mapper de createPublisher
+     * @param storageService        servicio de storage
+     */
     @Autowired
     public PublisherServiceImpl(PublisherRepository publisherRepository, BookRepository bookRepository,
                                 PublisherMapper publisherMapper, CreatePublisherMapper createPublisherMapper,
@@ -61,6 +70,8 @@ public class PublisherServiceImpl implements PublisherService {
     /**
      * Encuentra todos los Publisher
      *
+     * @param name     nombre del publisher
+     * @param pageable paginación
      * @return List<PublisherDto> lista de publisher
      */
     @Cacheable
@@ -71,7 +82,6 @@ public class PublisherServiceImpl implements PublisherService {
                 name.map(m -> criteriaBuilder.like(criteriaBuilder.lower(root.get("name")), "%" +
                                 m.toLowerCase() + "%"))
                         .orElseGet(() -> criteriaBuilder.isTrue(criteriaBuilder.literal(true)));
-
 
         Page<Publisher> publisherPage = publisherRepository.findAll(specNamePublisher, pageable);
         List<PublisherDTO> dtoList = publisherPage.getContent().stream()
@@ -113,15 +123,15 @@ public class PublisherServiceImpl implements PublisherService {
     /**
      * Actualiza un Publisher dado su id
      *
-     * @param id        id del publisher a actualizar
-     * @param publisher publisher con datos actualizados
+     * @param id           id del publisher a actualizar
+     * @param publisherDTO publisher con datos actualizados
      * @return PublisherDto actualizado
      */
     @CachePut(key = "#result.id")
     @Override
-    public PublisherDTO update(Long id, CreatePublisherDto publisher) {
+    public PublisherDTO update(Long id, CreatePublisherDto publisherDTO) {
         PublisherDTO publisherUpdate = findById(id);
-        Publisher updatedPublisher = publisherMapper.toPublisherModification(publisher, publisherUpdate);
+        Publisher updatedPublisher = publisherMapper.toPublisherModification(publisherDTO, publisherUpdate);
         return publisherMapper.toDto(publisherRepository.save(updatedPublisher));
     }
 
@@ -135,7 +145,7 @@ public class PublisherServiceImpl implements PublisherService {
     @Override
     @CachePut(key = "#id")
     public PublisherDTO addBookPublisher(Long id, Long bookId) {
-        Book bookToAdd = bookRepository.getById(bookId);
+        Book bookToAdd = bookRepository.findById(bookId).orElseThrow(() -> new BookNotFoundException("El libro con id " + bookId + " no existe"));
         PublisherDTO publisherToUpdate = findById(id);
         publisherToUpdate.getBooks().add(bookToAdd);
         return publisherToUpdate;
@@ -176,19 +186,27 @@ public class PublisherServiceImpl implements PublisherService {
         }
     }
 
+    /**
+     * Actualiza un publisher dado un id
+     *
+     * @param id           id del editor
+     * @param publisherDTO editor
+     * @throws PublisherNotFound   si no existe el editor
+     * @throws PublisherIDNotValid si el ID del editor no es válido
+     */
     @Override
     @CachePut(key = "#result.id")
-    public PublisherDTO patchPublisher(Long id, PatchPublisherDto publisher) throws PublisherNotFound, PublisherIDNotValid {
+    public void patchPublisher(Long id, PatchPublisherDto publisherDTO) throws PublisherNotFound, PublisherIDNotValid {
         try {
             var opt = publisherRepository.findById(id);
             if (opt.isEmpty()) {
                 throw new PublisherNotFound("No se ha encontrado el Publisher con dicho id");
             }
-            BeanUtils.copyProperties(publisher, opt.get(), Util.getNullPropertyNames(publisher));
+            BeanUtils.copyProperties(publisherDTO, opt.get(), Util.getNullPropertyNames(publisherDTO));
             opt.get().setId(id);
             opt.get().setUpdatedAt(LocalDateTime.now());
             Publisher modified = publisherRepository.save(opt.get());
-            return publisherMapper.toDto(modified);
+            publisherMapper.toDto(modified);
         } catch (IllegalArgumentException e) {
             throw new PublisherIDNotValid("El ID no es válido");
         }

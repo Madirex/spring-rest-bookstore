@@ -6,6 +6,9 @@ import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
 
+/**
+ * Clase CreatePublisherMapper
+ */
 @Component
 public class CreatePublisherMapper {
 
@@ -45,6 +48,13 @@ public class CreatePublisherMapper {
                 .build();
     }
 
+    /**
+     * mapea un Publisher a DTO
+     *
+     * @param publisher publisher a mapear
+     * @param image     imagen a mapear
+     * @return CreatePublisherDto mapeado
+     */
     public CreatePublisherDto toDtoOnlyImage(Publisher publisher, String image) {
         return CreatePublisherDto.builder()
                 .name(publisher.getName())

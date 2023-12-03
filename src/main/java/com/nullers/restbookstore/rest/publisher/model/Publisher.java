@@ -20,7 +20,6 @@ import java.util.Set;
 @AllArgsConstructor
 @Getter
 @Setter
-@ToString
 @Builder
 @Entity
 public class Publisher {
@@ -32,7 +31,6 @@ public class Publisher {
 
     @NotBlank(message = "el nombre no puede estar vacío")
     private String name;
-
 
     @NotBlank(message = "la imagen no puede estar vacía")
     private String image;

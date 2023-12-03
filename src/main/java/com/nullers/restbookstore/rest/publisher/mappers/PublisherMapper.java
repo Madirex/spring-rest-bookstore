@@ -16,7 +16,10 @@ import java.time.LocalDateTime;
 @Component
 public class PublisherMapper {
 
-    public PublisherMapper() {
+    /**
+     * Clase PublisherMapper
+     */
+    private PublisherMapper() {
     }
 
     /**
@@ -53,6 +56,13 @@ public class PublisherMapper {
                 .build();
     }
 
+    /**
+     * mapea un Publisher a DTO
+     *
+     * @param publisher       publisher a mapear
+     * @param publisherUpdate publisher a mapear
+     * @return PublisherDto mapeado
+     */
     public Publisher toPublisherModification(CreatePublisherDto publisher, PublisherDTO publisherUpdate) {
         var updatedPublisher = new Publisher();
         updatedPublisher.setId(publisherUpdate.getId());
@@ -64,6 +74,12 @@ public class PublisherMapper {
         return updatedPublisher;
     }
 
+    /**
+     * mapea un Publisher a DTO
+     *
+     * @param publisher publisher a mapear
+     * @return PublisherDto mapeado
+     */
     public PublisherData toPublisherData(Publisher publisher) {
         return PublisherData.builder()
                 .id(publisher.getId())
