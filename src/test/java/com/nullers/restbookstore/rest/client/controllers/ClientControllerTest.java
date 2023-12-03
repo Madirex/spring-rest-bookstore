@@ -1227,7 +1227,8 @@ class ClientControllerTest {
 
     @Test
     void deleteClient_ShouldThrowClientInOrder() throws Exception {
-        doThrow(new ClientInOrderException(UUID.fromString("9def16db-362b-44c4-9fc9-77117758b5b9"))).when(clientService).deleteById(any(UUID.class));
+        doThrow(new ClientInOrderException(UUID.fromString("9def16db-362b-44c4-9fc9-77117758b5b9")))
+                .when(clientService).deleteById(any(UUID.class));
 
         MockHttpServletResponse response = mockMvc.perform(
                         delete(endpoint + "/9def16db-362b-44c4-9fc9-77117758b5b9"))
@@ -1236,7 +1237,7 @@ class ClientControllerTest {
         ErrorResponse res = mapper.readValue(response.getContentAsString(StandardCharsets.UTF_8), ErrorResponse.class);
 
         assertAll(
-                () -> assertEquals(HttpStatus.BAD_REQUEST.value(), response.getStatus()),
+                () -> assertEquals(HttpStatus.CONFLICT.value(), response.getStatus()),
                 () -> assertEquals("El cliente con id 9def16db-362b-44c4-9fc9-77117758b5b9 tiene pedidos asociados", res.error())
         );
 
@@ -1355,7 +1356,7 @@ class ClientControllerTest {
     }
 
     @Test
-    void updatePatchImage_ShouldReturnErrorReponse_withEmptyImage() throws Exception {
+    void updatePatchImage_ShouldReturnErrorResponse_withEmptyImage() throws Exception {
         MockMultipartFile file = new MockMultipartFile(
                 "file",
                 "file.txt",
@@ -1372,7 +1373,8 @@ class ClientControllerTest {
                         .contentType(MediaType.MULTIPART_FORM_DATA))
                 .andReturn().getResponse();
 
-        Map<String, Object> res = mapper.readValue(response.getContentAsString(StandardCharsets.UTF_8), mapper.getTypeFactory().constructMapType(Map.class, String.class, Object.class));
+        Map<String, Object> res = mapper.readValue(response.getContentAsString(StandardCharsets.UTF_8),
+                mapper.getTypeFactory().constructMapType(Map.class, String.class, Object.class));
 
         assertAll(
                 () -> assertEquals(HttpStatus.BAD_REQUEST.value(), response.getStatus()),
