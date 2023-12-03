@@ -144,6 +144,7 @@ public class UserServiceImpl implements UserService {
                         throw new UserNameOrEmailExists("El usuario ya existe");
                     });
         }
+
         userRequest.setPassword(passwordEncode.encode(userRequest.getPassword()));
         return userMapper.toUserResponse(userRepository.save(userMapper.toUser(userRequest, id)));
     }
