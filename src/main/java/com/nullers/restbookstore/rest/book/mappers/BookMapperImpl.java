@@ -28,6 +28,7 @@ public class BookMapperImpl implements BookMapper {
      * @param publisher Publisher a mapear
      * @return Book mapeado
      */
+
     public Book toBook(CreateBookDTO dto, Publisher publisher) {
         return Book.builder()
                 .name(dto.getName())
@@ -47,6 +48,7 @@ public class BookMapperImpl implements BookMapper {
      * @param dto GetBookDTO a mapear
      * @return Book mapeado
      */
+
     public Book toBook(GetBookDTO dto) {
         return Book.builder()
                 .id(dto.getId())
