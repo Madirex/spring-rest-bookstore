@@ -16,14 +16,14 @@ import static org.junit.jupiter.api.Assertions.*;
 class CategoryRepositoryTest {
 
     @Autowired
-    private CategoryRepositoryJpa categoriaRepositoryJpa;
+    private CategoryRepositoryJpa categoryRepositoryJpa;
 
     @Autowired
     private TestEntityManager entityManager;
 
     Category category1 = Category.builder()
             .id(UUID.fromString("3930e05a-7ebf-4aa1-8aa8-5d7466fa9734"))
-            .name("categoria 1")
+            .name("category 1")
             .isActive(true)
             .build();
 
@@ -32,11 +32,11 @@ class CategoryRepositoryTest {
         entityManager.merge(category1);
         entityManager.flush();
 
-        var categorias = categoriaRepositoryJpa.findAll();
+        var categorys = categoryRepositoryJpa.findAll();
 
         assertAll(
-                () -> assertNotNull(categorias),
-                () -> assertTrue(!categorias.isEmpty())
+                () -> assertNotNull(categorys),
+                () -> assertTrue(!categorys.isEmpty())
         );
     }
 
@@ -45,12 +45,12 @@ class CategoryRepositoryTest {
         var res = entityManager.merge(category1);
         entityManager.flush();
 
-        var categoria = categoriaRepositoryJpa.findById(res.getId());
+        var category = categoryRepositoryJpa.findById(res.getId());
 
         assertAll(
-                () -> assertNotNull(categoria),
-                () -> assertEquals(category1.getName(), categoria.get().getName()),
-                () -> assertEquals(category1.getIsActive(), categoria.get().getIsActive())
+                () -> assertNotNull(category),
+                () -> assertEquals(category1.getName(), category.get().getName()),
+                () -> assertEquals(category1.getIsActive(), category.get().getIsActive())
         );
     }
 
@@ -59,23 +59,23 @@ class CategoryRepositoryTest {
         var res = entityManager.merge(category1);
         entityManager.flush();
 
-        var categoria = categoriaRepositoryJpa.findByName(res.getName());
+        var category = categoryRepositoryJpa.findByName(res.getName());
 
         assertAll(
-                () -> assertNotNull(categoria),
-                () -> assertEquals(category1.getName(), categoria.get().getName()),
-                () -> assertEquals(category1.getIsActive(), categoria.get().getIsActive())
+                () -> assertNotNull(category),
+                () -> assertEquals(category1.getName(), category.get().getName()),
+                () -> assertEquals(category1.getIsActive(), category.get().getIsActive())
         );
     }
 
     @Test
     void createCategoria(){
-        var categoria = categoriaRepositoryJpa.save(category1);
+        var category = categoryRepositoryJpa.save(category1);
 
         assertAll(
-                () -> assertNotNull(categoria),
-                () -> assertEquals(category1.getName(), categoria.getName()),
-                () -> assertEquals(category1.getIsActive(), categoria.getIsActive())
+                () -> assertNotNull(category),
+                () -> assertEquals(category1.getName(), category.getName()),
+                () -> assertEquals(category1.getIsActive(), category.getIsActive())
         );
     }
 
@@ -84,12 +84,12 @@ class CategoryRepositoryTest {
         var res = entityManager.merge(category1);
         entityManager.flush();
 
-        var categoria = categoriaRepositoryJpa.save(res);
+        var category = categoryRepositoryJpa.save(res);
 
         assertAll(
-                () -> assertNotNull(categoria),
-                () -> assertEquals(category1.getName(), categoria.getName()),
-                () -> assertEquals(category1.getIsActive(), categoria.getIsActive())
+                () -> assertNotNull(category),
+                () -> assertEquals(category1.getName(), category.getName()),
+                () -> assertEquals(category1.getIsActive(), category.getIsActive())
         );
     }
 
@@ -99,9 +99,9 @@ class CategoryRepositoryTest {
         var res = entityManager.merge(category1);
         entityManager.flush();
 
-        categoriaRepositoryJpa.deleteById(res.getId());
+        categoryRepositoryJpa.deleteById(res.getId());
 
-        assertThrows(CategoryNotFoundException.class, () -> categoriaRepositoryJpa.findById(res.getId()).orElseThrow(() -> new CategoryNotFoundException(res.getId())));
+        assertThrows(CategoryNotFoundException.class, () -> categoryRepositoryJpa.findById(res.getId()).orElseThrow(() -> new CategoryNotFoundException(res.getId())));
     }
 
 }

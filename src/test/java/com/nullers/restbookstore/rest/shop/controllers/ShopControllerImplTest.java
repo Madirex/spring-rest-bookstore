@@ -308,7 +308,7 @@ class ShopControllerImplTest {
                         .accept("application/json")
         ).andReturn().getResponse();
 
-        PageResponse<GetShopDto> pageResponse = mapper.readValue(response.getContentAsString(), mapper.getTypeFactory().constructParametricType(PageResponse.class, GetShopDto.class));
+        PageResponse<GetShopDto> pageResponse = mapper.readValue(response.getContentAsString(StandardCharsets.UTF_8), mapper.getTypeFactory().constructParametricType(PageResponse.class, GetShopDto.class));
 
         assertAll(
                 () -> assertEquals(200, response.getStatus()),
@@ -335,7 +335,7 @@ class ShopControllerImplTest {
                         .accept("application/json")
         ).andReturn().getResponse();
 
-        PageResponse<GetShopDto> pageResponse = mapper.readValue(response.getContentAsString(), mapper.getTypeFactory().constructParametricType(PageResponse.class, GetShopDto.class));
+        PageResponse<GetShopDto> pageResponse = mapper.readValue(response.getContentAsString(StandardCharsets.UTF_8), mapper.getTypeFactory().constructParametricType(PageResponse.class, GetShopDto.class));
 
         assertAll(
                 () -> assertEquals(200, response.getStatus()),
@@ -436,7 +436,7 @@ class ShopControllerImplTest {
                         .accept("application/json")
         ).andReturn().getResponse();
 
-        GetShopDto shopResponse = mapper.readValue(response.getContentAsString(), GetShopDto.class);
+        GetShopDto shopResponse = mapper.readValue(response.getContentAsString(StandardCharsets.UTF_8), GetShopDto.class);
 
         assertAll(
                 () -> assertEquals(200, response.getStatus()),
@@ -460,7 +460,7 @@ class ShopControllerImplTest {
                         .accept("application/json")
         ).andReturn().getResponse();
 
-        ErrorResponse errorResponse = mapper.readValue(response.getContentAsString(), ErrorResponse.class);
+        ErrorResponse errorResponse = mapper.readValue(response.getContentAsString(StandardCharsets.UTF_8), ErrorResponse.class);
 
         assertAll(
                 () -> assertEquals(404, response.getStatus()),
@@ -481,7 +481,7 @@ class ShopControllerImplTest {
                         .content(mapper.writeValueAsString(shop))
         ).andReturn().getResponse();
 
-        GetShopDto shopResponse = mapper.readValue(response.getContentAsString(), GetShopDto.class);
+        GetShopDto shopResponse = mapper.readValue(response.getContentAsString(StandardCharsets.UTF_8), GetShopDto.class);
 
         assertAll(
                 () -> assertEquals(201, response.getStatus()),
@@ -626,7 +626,7 @@ class ShopControllerImplTest {
                         .content(mapper.writeValueAsString(updateShopDto))
         ).andReturn().getResponse();
 
-        GetShopDto shopResponse = mapper.readValue(response.getContentAsString(), GetShopDto.class);
+        GetShopDto shopResponse = mapper.readValue(response.getContentAsString(StandardCharsets.UTF_8), GetShopDto.class);
 
         assertAll(
                 () -> assertEquals(200, response.getStatus()),
@@ -770,7 +770,7 @@ class ShopControllerImplTest {
                         .content(mapper.writeValueAsString(updateShopDto))
         ).andReturn().getResponse();
 
-        ErrorResponse errorResponse = mapper.readValue(response.getContentAsString(), ErrorResponse.class);
+        ErrorResponse errorResponse = mapper.readValue(response.getContentAsString(StandardCharsets.UTF_8), ErrorResponse.class);
 
         assertAll(
                 () -> assertEquals(404, response.getStatus()),
@@ -805,7 +805,7 @@ class ShopControllerImplTest {
                         .accept("application/json")
         ).andReturn().getResponse();
 
-        ErrorResponse errorResponse = mapper.readValue(response.getContentAsString(), ErrorResponse.class);
+        ErrorResponse errorResponse = mapper.readValue(response.getContentAsString(StandardCharsets.UTF_8), ErrorResponse.class);
 
         assertAll(
                 () -> assertEquals(404, response.getStatus()),
@@ -825,7 +825,7 @@ class ShopControllerImplTest {
                         .accept("application/json")
         ).andReturn().getResponse();
 
-        ErrorResponse errorResponse = mapper.readValue(response.getContentAsString(), ErrorResponse.class);
+        ErrorResponse errorResponse = mapper.readValue(response.getContentAsString(StandardCharsets.UTF_8), ErrorResponse.class);
 
         assertAll(
                 () -> assertEquals(400, response.getStatus()),
@@ -845,7 +845,7 @@ class ShopControllerImplTest {
                         .accept("application/json")
         ).andReturn().getResponse();
 
-        GetShopDto shopResponse = mapper.readValue(response.getContentAsString(), GetShopDto.class);
+        GetShopDto shopResponse = mapper.readValue(response.getContentAsString(StandardCharsets.UTF_8), GetShopDto.class);
 
         assertAll(
                 () -> assertEquals(200, response.getStatus()),
@@ -869,7 +869,7 @@ class ShopControllerImplTest {
                         .accept("application/json")
         ).andReturn().getResponse();
 
-        ErrorResponse errorResponse = mapper.readValue(response.getContentAsString(), ErrorResponse.class);
+        ErrorResponse errorResponse = mapper.readValue(response.getContentAsString(StandardCharsets.UTF_8), ErrorResponse.class);
 
         assertAll(
                 () -> assertEquals(404, response.getStatus()),
@@ -889,7 +889,7 @@ class ShopControllerImplTest {
                         .accept("application/json")
         ).andReturn().getResponse();
 
-        ErrorResponse errorResponse = mapper.readValue(response.getContentAsString(), ErrorResponse.class);
+        ErrorResponse errorResponse = mapper.readValue(response.getContentAsString(StandardCharsets.UTF_8), ErrorResponse.class);
 
         assertAll(
                 () -> assertEquals(404, response.getStatus()),
@@ -909,7 +909,7 @@ class ShopControllerImplTest {
                         .accept("application/json")
         ).andReturn().getResponse();
 
-        GetShopDto shopResponse = mapper.readValue(response.getContentAsString(), GetShopDto.class);
+        GetShopDto shopResponse = mapper.readValue(response.getContentAsString(StandardCharsets.UTF_8), GetShopDto.class);
 
         assertAll(
                 () -> assertEquals(200, response.getStatus()),
@@ -933,7 +933,7 @@ class ShopControllerImplTest {
                         .accept("application/json")
         ).andReturn().getResponse();
 
-        ErrorResponse errorResponse = mapper.readValue(response.getContentAsString(), ErrorResponse.class);
+        ErrorResponse errorResponse = mapper.readValue(response.getContentAsString(StandardCharsets.UTF_8), ErrorResponse.class);
 
         assertAll(
                 () -> assertEquals(404, response.getStatus()),
@@ -953,7 +953,7 @@ class ShopControllerImplTest {
                         .accept("application/json")
         ).andReturn().getResponse();
 
-        ErrorResponse errorResponse = mapper.readValue(response.getContentAsString(), ErrorResponse.class);
+        ErrorResponse errorResponse = mapper.readValue(response.getContentAsString(StandardCharsets.UTF_8), ErrorResponse.class);
 
         assertAll(
                 () -> assertEquals(404, response.getStatus()),
@@ -973,7 +973,7 @@ class ShopControllerImplTest {
                         .accept("application/json")
         ).andReturn().getResponse();
 
-        GetShopDto shopResponse = mapper.readValue(response.getContentAsString(), GetShopDto.class);
+        GetShopDto shopResponse = mapper.readValue(response.getContentAsString(StandardCharsets.UTF_8), GetShopDto.class);
 
         assertAll(
                 () -> assertEquals(200, response.getStatus()),
@@ -997,7 +997,7 @@ class ShopControllerImplTest {
                         .accept("application/json")
         ).andReturn().getResponse();
 
-        ErrorResponse errorResponse = mapper.readValue(response.getContentAsString(), ErrorResponse.class);
+        ErrorResponse errorResponse = mapper.readValue(response.getContentAsString(StandardCharsets.UTF_8), ErrorResponse.class);
 
         assertAll(
                 () -> assertEquals(404, response.getStatus()),
@@ -1017,7 +1017,7 @@ class ShopControllerImplTest {
                         .accept("application/json")
         ).andReturn().getResponse();
 
-        ErrorResponse errorResponse = mapper.readValue(response.getContentAsString(), ErrorResponse.class);
+        ErrorResponse errorResponse = mapper.readValue(response.getContentAsString(StandardCharsets.UTF_8), ErrorResponse.class);
 
         assertAll(
                 () -> assertEquals(404, response.getStatus()),
@@ -1037,7 +1037,7 @@ class ShopControllerImplTest {
                         .accept("application/json")
         ).andReturn().getResponse();
 
-        GetShopDto shopResponse = mapper.readValue(response.getContentAsString(), GetShopDto.class);
+        GetShopDto shopResponse = mapper.readValue(response.getContentAsString(StandardCharsets.UTF_8), GetShopDto.class);
 
         assertAll(
                 () -> assertEquals(200, response.getStatus()),
@@ -1061,7 +1061,7 @@ class ShopControllerImplTest {
                         .accept("application/json")
         ).andReturn().getResponse();
 
-        ErrorResponse errorResponse = mapper.readValue(response.getContentAsString(), ErrorResponse.class);
+        ErrorResponse errorResponse = mapper.readValue(response.getContentAsString(StandardCharsets.UTF_8), ErrorResponse.class);
 
         assertAll(
                 () -> assertEquals(404, response.getStatus()),
@@ -1081,7 +1081,7 @@ class ShopControllerImplTest {
                         .accept("application/json")
         ).andReturn().getResponse();
 
-        ErrorResponse errorResponse = mapper.readValue(response.getContentAsString(), ErrorResponse.class);
+        ErrorResponse errorResponse = mapper.readValue(response.getContentAsString(StandardCharsets.UTF_8), ErrorResponse.class);
 
         assertAll(
                 () -> assertEquals(404, response.getStatus()),

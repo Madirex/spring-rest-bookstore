@@ -49,24 +49,24 @@ class CategoryControllerTest {
 
     Category category1 = Category.builder()
             .id(UUID.fromString("3930e05a-7ebf-4aa1-8aa8-5d7466fa9734"))
-            .name("categoria 1")
+            .name("category 1")
             .isActive(true)
             .build();
 
     Category category2 = Category.builder()
             .id(UUID.fromString("3930e05a-7ebf-4aa1-8aa8-5d7466fa9734"))
-            .name("categoria 2")
+            .name("category 2")
             .isActive(false)
             .build();
 
     Category category3 = Category.builder()
             .id(UUID.fromString("3930e05a-7ebf-4aa1-8aa8-5d7466fa9634"))
-            .name("categoria 3")
+            .name("category 3")
             .isActive(true)
             .build();
 
     CategoryCreateDTO categoryCreateDTO = CategoryCreateDTO.builder()
-            .name("categoria 1")
+            .name("category 1")
             .isActive(true)
             .build();
 
@@ -76,7 +76,7 @@ class CategoryControllerTest {
     @BeforeEach
     void setUp() {
         categoryCreateDTO = CategoryCreateDTO.builder()
-                .name("categoria 1")
+                .name("category 1")
                 .build();
     }
 
@@ -168,7 +168,7 @@ class CategoryControllerTest {
                 .andReturn().getResponse();
 
         ObjectMapper mapper = new ObjectMapper();
-        PageResponse<Category> pageResponse = mapper.readValue(response.getContentAsString(), mapper.getTypeFactory().constructParametricType(PageResponse.class, Category.class));
+        PageResponse<Category> pageResponse = mapper.readValue(response.getContentAsString(StandardCharsets.UTF_8), mapper.getTypeFactory().constructParametricType(PageResponse.class, Category.class));
 
         assertAll(
                 () -> assertEquals(HttpStatus.OK.value(), response.getStatus()),
@@ -200,7 +200,7 @@ class CategoryControllerTest {
                 .andReturn().getResponse();
 
         ObjectMapper mapper = new ObjectMapper();
-        PageResponse<Category> pageResponse = mapper.readValue(response.getContentAsString(), mapper.getTypeFactory().constructParametricType(PageResponse.class, Category.class));
+        PageResponse<Category> pageResponse = mapper.readValue(response.getContentAsString(StandardCharsets.UTF_8), mapper.getTypeFactory().constructParametricType(PageResponse.class, Category.class));
 
         assertAll(
                 () -> assertEquals(HttpStatus.OK.value(), response.getStatus()),
@@ -220,12 +220,12 @@ class CategoryControllerTest {
         when(service.getAll(any(Optional.class), any(Optional.class), any(Pageable.class))).thenReturn(new PageImpl(categorys));
 
         MockHttpServletResponse response = mockMvc.perform(get(endPoint)
-                        .param("nombre", "categoria 1")
+                        .param("nombre", "category 1")
                         .accept(MediaType.APPLICATION_JSON))
                 .andReturn().getResponse();
 
         ObjectMapper mapper = new ObjectMapper();
-        PageResponse<Category> pageResponse = mapper.readValue(response.getContentAsString(), mapper.getTypeFactory().constructParametricType(PageResponse.class, Category.class));
+        PageResponse<Category> pageResponse = mapper.readValue(response.getContentAsString(StandardCharsets.UTF_8), mapper.getTypeFactory().constructParametricType(PageResponse.class, Category.class));
 
         assertAll(
                 () -> assertEquals(HttpStatus.OK.value(), response.getStatus()),
@@ -245,12 +245,12 @@ class CategoryControllerTest {
         when(service.getAll(any(Optional.class), any(Optional.class), any(Pageable.class))).thenReturn(new PageImpl(categorys));
 
         MockHttpServletResponse response = mockMvc.perform(get(endPoint)
-                        .param("nombre", "categoria 2")
+                        .param("nombre", "category 2")
                         .accept(MediaType.APPLICATION_JSON))
                 .andReturn().getResponse();
 
         ObjectMapper mapper = new ObjectMapper();
-        PageResponse<Category> pageResponse = mapper.readValue(response.getContentAsString(), mapper.getTypeFactory().constructParametricType(PageResponse.class, Category.class));
+        PageResponse<Category> pageResponse = mapper.readValue(response.getContentAsString(StandardCharsets.UTF_8), mapper.getTypeFactory().constructParametricType(PageResponse.class, Category.class));
 
         assertAll(
                 () -> assertEquals(HttpStatus.OK.value(), response.getStatus()),
@@ -274,7 +274,7 @@ class CategoryControllerTest {
                 .andReturn().getResponse();
 
         ObjectMapper mapper = new ObjectMapper();
-        PageResponse<Category> pageResponse = mapper.readValue(response.getContentAsString(), mapper.getTypeFactory().constructParametricType(PageResponse.class, Category.class));
+        PageResponse<Category> pageResponse = mapper.readValue(response.getContentAsString(StandardCharsets.UTF_8), mapper.getTypeFactory().constructParametricType(PageResponse.class, Category.class));
 
         assertAll(
                 () -> assertEquals(HttpStatus.OK.value(), response.getStatus()),
@@ -298,7 +298,7 @@ class CategoryControllerTest {
                         .accept(MediaType.APPLICATION_JSON))
                 .andReturn().getResponse();
 
-        ErrorResponse errorResponse = mapper.readValue(response.getContentAsString(), ErrorResponse.class);
+        ErrorResponse errorResponse = mapper.readValue(response.getContentAsString(StandardCharsets.UTF_8), ErrorResponse.class);
 
         assertAll(
                 () -> assertEquals(HttpStatus.BAD_REQUEST.value(), response.getStatus()),
@@ -316,7 +316,7 @@ class CategoryControllerTest {
                         .accept(MediaType.APPLICATION_JSON))
                 .andReturn().getResponse();
 
-        ErrorResponse errorResponse = mapper.readValue(response.getContentAsString(), ErrorResponse.class);
+        ErrorResponse errorResponse = mapper.readValue(response.getContentAsString(StandardCharsets.UTF_8), ErrorResponse.class);
 
         assertAll(
                 () -> assertEquals(HttpStatus.BAD_REQUEST.value(), response.getStatus()),
@@ -339,7 +339,7 @@ class CategoryControllerTest {
                 .andReturn().getResponse();
 
         ObjectMapper mapper = new ObjectMapper();
-        PageResponse<Category> pageResponse = mapper.readValue(response.getContentAsString(), mapper.getTypeFactory().constructParametricType(PageResponse.class, Category.class));
+        PageResponse<Category> pageResponse = mapper.readValue(response.getContentAsString(StandardCharsets.UTF_8), mapper.getTypeFactory().constructParametricType(PageResponse.class, Category.class));
 
         assertAll(
                 () -> assertEquals(HttpStatus.OK.value(), response.getStatus()),
@@ -362,7 +362,7 @@ class CategoryControllerTest {
                         .accept(MediaType.APPLICATION_JSON))
                 .andReturn().getResponse();
 
-        ErrorResponse errorResponse = mapper.readValue(response.getContentAsString(), ErrorResponse.class);
+        ErrorResponse errorResponse = mapper.readValue(response.getContentAsString(StandardCharsets.UTF_8), ErrorResponse.class);
 
         assertAll(
                 () -> assertEquals(HttpStatus.BAD_REQUEST.value(), response.getStatus()),
@@ -380,7 +380,7 @@ class CategoryControllerTest {
         MockHttpServletResponse response = mockMvc.perform(get(endPoint + "/3930e05a-7ebf-4aa1-8aa8-5d7466fa9734").accept(MediaType.APPLICATION_JSON))
                 .andReturn().getResponse();
 
-        Category category = mapper.readValue(response.getContentAsString(), Category.class);
+        Category category = mapper.readValue(response.getContentAsString(StandardCharsets.UTF_8), Category.class);
 
         assertAll(
                 () -> assertEquals(HttpStatus.OK.value(), response.getStatus()),
@@ -398,7 +398,7 @@ class CategoryControllerTest {
         MockHttpServletResponse response = mockMvc.perform(get(endPoint + "/3930e05a-7ebf-4aa1-8aa8-5d7466fa9734").accept(MediaType.APPLICATION_JSON))
                 .andReturn().getResponse();
 
-        ErrorResponse errorResponse = mapper.readValue(response.getContentAsString(), ErrorResponse.class);
+        ErrorResponse errorResponse = mapper.readValue(response.getContentAsString(StandardCharsets.UTF_8), ErrorResponse.class);
         assertAll(
                 () -> assertEquals(HttpStatus.NOT_FOUND.value(), response.getStatus()),
                 () -> assertEquals("Categoria con id 3930e05a-7ebf-4aa1-8aa8-5d7466fa9734 no encontrada", errorResponse.msg())
@@ -416,7 +416,7 @@ class CategoryControllerTest {
                         .content(mapper.writeValueAsString(categoryCreateDTO)))
                 .andReturn().getResponse();
 
-        Category category = mapper.readValue(response.getContentAsString(), Category.class);
+        Category category = mapper.readValue(response.getContentAsString(StandardCharsets.UTF_8), Category.class);
 
         assertAll(
                 () -> assertEquals(HttpStatus.OK.value(), response.getStatus()),
@@ -452,17 +452,17 @@ class CategoryControllerTest {
 
     @Test
     void addCategoriaAlreadyExistSameName() throws Exception {
-        when(service.createCategory(categoryCreateDTO)).thenThrow(new CategoryConflictException("Ya existe una categoria con el nombre: " + categoryCreateDTO.getName()));
+        when(service.createCategory(categoryCreateDTO)).thenThrow(new CategoryConflictException("Ya existe una category con el nombre: " + categoryCreateDTO.getName()));
 
         MockHttpServletResponse response = mockMvc.perform(post(endPoint)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(mapper.writeValueAsString(categoryCreateDTO)))
                 .andReturn().getResponse();
 
-        ErrorResponse errorResponse = mapper.readValue(response.getContentAsString(), ErrorResponse.class);
+        ErrorResponse errorResponse = mapper.readValue(response.getContentAsString(StandardCharsets.UTF_8), ErrorResponse.class);
         assertAll(
                 () -> assertEquals(HttpStatus.CONFLICT.value(), response.getStatus()),
-                () -> assertEquals("Ya existe una categoria con el nombre: " + categoryCreateDTO.getName(), errorResponse.msg())
+                () -> assertEquals("Ya existe una category con el nombre: " + categoryCreateDTO.getName(), errorResponse.msg())
         );
 
         verify(service, times(1)).createCategory(categoryCreateDTO);
@@ -477,7 +477,7 @@ class CategoryControllerTest {
                         .content(mapper.writeValueAsString(categoryCreateDTO)))
                 .andReturn().getResponse();
 
-        Category category = mapper.readValue(response.getContentAsString(), Category.class);
+        Category category = mapper.readValue(response.getContentAsString(StandardCharsets.UTF_8), Category.class);
 
         assertAll(
                 () -> assertEquals(HttpStatus.OK.value(), response.getStatus()),
@@ -498,23 +498,23 @@ class CategoryControllerTest {
                 .andReturn().getResponse();
 
         ObjectMapper mapper = new ObjectMapper();
-        Map<String, Object> res = mapper.readValue(response.getContentAsString(), mapper.getTypeFactory().constructMapType(Map.class, String.class, Object.class));
+        Map<String, Object> res = mapper.readValue(response.getContentAsString(StandardCharsets.UTF_8), mapper.getTypeFactory().constructMapType(Map.class, String.class, Object.class));
         LinkedHashMap<String, Object> errors = (LinkedHashMap<String, Object>) res.get("errors");
     }
 
     @Test
     void updateCategoriaAlreadyExistSameName() throws Exception {
-        when(service.updateCategory(UUID.fromString("3930e05a-7ebf-4aa1-8aa8-5d7466fa9734"), categoryCreateDTO)).thenThrow(new CategoryConflictException("Ya existe una categoria con el nombre: " + categoryCreateDTO.getName()));
+        when(service.updateCategory(UUID.fromString("3930e05a-7ebf-4aa1-8aa8-5d7466fa9734"), categoryCreateDTO)).thenThrow(new CategoryConflictException("Ya existe una category con el nombre: " + categoryCreateDTO.getName()));
 
         MockHttpServletResponse response = mockMvc.perform(put(endPoint + "/3930e05a-7ebf-4aa1-8aa8-5d7466fa9734")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(mapper.writeValueAsString(categoryCreateDTO)))
                 .andReturn().getResponse();
 
-        ErrorResponse errorResponse = mapper.readValue(response.getContentAsString(), ErrorResponse.class);
+        ErrorResponse errorResponse = mapper.readValue(response.getContentAsString(StandardCharsets.UTF_8), ErrorResponse.class);
         assertAll(
                 () -> assertEquals(HttpStatus.CONFLICT.value(), response.getStatus()),
-                () -> assertEquals("Ya existe una categoria con el nombre: " + categoryCreateDTO.getName(), errorResponse.msg())
+                () -> assertEquals("Ya existe una category con el nombre: " + categoryCreateDTO.getName(), errorResponse.msg())
         );
 
         verify(service, times(1)).updateCategory(UUID.fromString("3930e05a-7ebf-4aa1-8aa8-5d7466fa9734"), categoryCreateDTO);
@@ -529,7 +529,7 @@ class CategoryControllerTest {
                         .content(mapper.writeValueAsString(categoryCreateDTO)))
                 .andReturn().getResponse();
 
-        ErrorResponse errorResponse = mapper.readValue(response.getContentAsString(), ErrorResponse.class);
+        ErrorResponse errorResponse = mapper.readValue(response.getContentAsString(StandardCharsets.UTF_8), ErrorResponse.class);
         assertAll(
                 () -> assertEquals(HttpStatus.NOT_FOUND.value(), response.getStatus()),
                 () -> assertEquals("Categoria con id 3930e05a-7ebf-4aa1-8aa8-5d7466fa9734 no encontrada", errorResponse.msg())
@@ -559,7 +559,7 @@ class CategoryControllerTest {
                         .contentType(MediaType.APPLICATION_JSON))
                 .andReturn().getResponse();
 
-        ErrorResponse errorResponse = mapper.readValue(response.getContentAsString(), ErrorResponse.class);
+        ErrorResponse errorResponse = mapper.readValue(response.getContentAsString(StandardCharsets.UTF_8), ErrorResponse.class);
         assertAll(
                 () -> assertEquals(HttpStatus.NOT_FOUND.value(), response.getStatus()),
                 () -> assertEquals("Categoria con id 3930e05a-7ebf-4aa1-8aa8-5d7466fa9734 no encontrada", errorResponse.msg())
@@ -570,16 +570,16 @@ class CategoryControllerTest {
 
     @Test
     void deleteCategoriaBadRequest() throws Exception {
-        doThrow(new CategoryConflictException("No se puede eliminar la categoria porque tiene libros asociados")).when(service).deleteById(UUID.fromString("3930e05a-7ebf-4aa1-8aa8-5d7466fa9734"));
+        doThrow(new CategoryConflictException("No se puede eliminar la category porque tiene libros asociados")).when(service).deleteById(UUID.fromString("3930e05a-7ebf-4aa1-8aa8-5d7466fa9734"));
 
         MockHttpServletResponse response = mockMvc.perform(delete(endPoint + "/3930e05a-7ebf-4aa1-8aa8-5d7466fa9734")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andReturn().getResponse();
 
-        ErrorResponse errorResponse = mapper.readValue(response.getContentAsString(), ErrorResponse.class);
+        ErrorResponse errorResponse = mapper.readValue(response.getContentAsString(StandardCharsets.UTF_8), ErrorResponse.class);
         assertAll(
                 () -> assertEquals(HttpStatus.CONFLICT.value(), response.getStatus()),
-                () -> assertEquals("No se puede eliminar la categoria porque tiene libros asociados", errorResponse.msg())
+                () -> assertEquals("No se puede eliminar la category porque tiene libros asociados", errorResponse.msg())
         );
 
         verify(service, times(1)).deleteById(UUID.fromString("3930e05a-7ebf-4aa1-8aa8-5d7466fa9734"));

@@ -169,7 +169,7 @@ public class ClientController {
         if (!file.isEmpty() && contentTypesAllowed.contains(file.getContentType())) {
             return ResponseEntity.ok(clientService.updateImage(id, file));
         } else {
-            throw new ClientBadRequest("El archivo no es una imagen o esta vacio");
+            throw new ClientBadRequest("El archivo no es una imagen o esta vacío");
         }
     }
 

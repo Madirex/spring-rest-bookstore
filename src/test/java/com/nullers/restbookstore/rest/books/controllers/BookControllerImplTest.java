@@ -28,6 +28,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
@@ -107,12 +108,12 @@ class BookControllerImplTest {
                 .andReturn().getResponse();
         assertAll(
                 () -> assertEquals(HttpStatus.OK.value(), response.getStatus()),
-                () -> assertTrue(response.getContentAsString().contains("\"name\":" + "\"" + book.getName() + "\"")),
-                () -> assertTrue(response.getContentAsString().contains("\"price\":" + book.getPrice())),
-                () -> assertTrue(response.getContentAsString().contains("\"image\":" + "\"" + book.getImage() + "\"")),
-                () -> assertTrue(response.getContentAsString().contains("\"name\":" + "\"" + book2.getName() + "\"")),
-                () -> assertTrue(response.getContentAsString().contains("\"price\":" + book2.getPrice())),
-                () -> assertTrue(response.getContentAsString().contains("\"image\":" + "\"" + book2.getImage() + "\""))
+                () -> assertTrue(response.getContentAsString(StandardCharsets.UTF_8).contains("\"name\":" + "\"" + book.getName() + "\"")),
+                () -> assertTrue(response.getContentAsString(StandardCharsets.UTF_8).contains("\"price\":" + book.getPrice())),
+                () -> assertTrue(response.getContentAsString(StandardCharsets.UTF_8).contains("\"image\":" + "\"" + book.getImage() + "\"")),
+                () -> assertTrue(response.getContentAsString(StandardCharsets.UTF_8).contains("\"name\":" + "\"" + book2.getName() + "\"")),
+                () -> assertTrue(response.getContentAsString(StandardCharsets.UTF_8).contains("\"price\":" + book2.getPrice())),
+                () -> assertTrue(response.getContentAsString(StandardCharsets.UTF_8).contains("\"image\":" + "\"" + book2.getImage() + "\""))
         );
     }
 
@@ -160,9 +161,9 @@ class BookControllerImplTest {
                 .getResponse();
         assertAll(
                 () -> assertEquals(HttpStatus.OK.value(), response.getStatus()),
-                () -> assertTrue(response.getContentAsString().contains("\"name\":" + "\"" + book.getName() + "\"")),
-                () -> assertTrue(response.getContentAsString().contains("\"price\":" + book.getPrice())),
-                () -> assertTrue(response.getContentAsString().contains("\"image\":" + "\"" + book.getImage() + "\""))
+                () -> assertTrue(response.getContentAsString(StandardCharsets.UTF_8).contains("\"name\":" + "\"" + book.getName() + "\"")),
+                () -> assertTrue(response.getContentAsString(StandardCharsets.UTF_8).contains("\"price\":" + book.getPrice())),
+                () -> assertTrue(response.getContentAsString(StandardCharsets.UTF_8).contains("\"image\":" + "\"" + book.getImage() + "\""))
         );
     }
 
@@ -422,7 +423,7 @@ class BookControllerImplTest {
                         })
         ).andReturn().getResponse();
 
-        var res = mapper.readValue(response.getContentAsString(), GetBookDTO.class);
+        var res = mapper.readValue(response.getContentAsString(StandardCharsets.UTF_8), GetBookDTO.class);
 
         assertAll(
                 () -> assertEquals(200, response.getStatus()),
@@ -453,7 +454,7 @@ class BookControllerImplTest {
         ).andReturn().getResponse();
 
         assertEquals(HttpStatus.BAD_REQUEST.value(), response.getStatus());
-        assertTrue(response.getContentAsString().contains("No se ha enviado una imagen para el Book"));
+        assertTrue(response.getContentAsString(StandardCharsets.UTF_8).contains("No se ha enviado una imagen para el Book"));
 
         verify(service, never()).updateImage(anyLong(), any(MultipartFile.class), anyBoolean());
     }

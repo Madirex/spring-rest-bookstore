@@ -9,9 +9,9 @@ import com.nullers.restbookstore.rest.client.dto.ClientUpdateDto;
 import com.nullers.restbookstore.rest.client.exceptions.ClientAlreadyExists;
 import com.nullers.restbookstore.rest.client.exceptions.ClientInOrderException;
 import com.nullers.restbookstore.rest.client.exceptions.ClientNotFound;
-import com.nullers.restbookstore.rest.common.Address;
 import com.nullers.restbookstore.rest.client.model.Client;
 import com.nullers.restbookstore.rest.client.services.ClientServiceImpl;
+import com.nullers.restbookstore.rest.common.Address;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -126,7 +126,7 @@ class ClientControllerTest {
                 .accept(MediaType.APPLICATION_JSON)).andReturn().getResponse();
 
         assertAll(
-                () -> assertEquals(HttpStatus.FORBIDDEN .value(), response.getStatus())
+                () -> assertEquals(HttpStatus.FORBIDDEN.value(), response.getStatus())
         );
     }
 
@@ -137,7 +137,7 @@ class ClientControllerTest {
                 .accept(MediaType.APPLICATION_JSON)).andReturn().getResponse();
 
         assertAll(
-                () -> assertEquals(HttpStatus.FORBIDDEN .value(), response.getStatus())
+                () -> assertEquals(HttpStatus.FORBIDDEN.value(), response.getStatus())
         );
     }
 
@@ -148,7 +148,7 @@ class ClientControllerTest {
                 .accept(MediaType.APPLICATION_JSON)).andReturn().getResponse();
 
         assertAll(
-                () -> assertEquals(HttpStatus.FORBIDDEN .value(), response.getStatus())
+                () -> assertEquals(HttpStatus.FORBIDDEN.value(), response.getStatus())
         );
     }
 
@@ -161,7 +161,7 @@ class ClientControllerTest {
                 .andReturn().getResponse();
 
         assertAll(
-                () -> assertEquals(HttpStatus.FORBIDDEN .value(), response.getStatus())
+                () -> assertEquals(HttpStatus.FORBIDDEN.value(), response.getStatus())
         );
     }
 
@@ -174,7 +174,7 @@ class ClientControllerTest {
                 .andReturn().getResponse();
 
         assertAll(
-                () -> assertEquals(HttpStatus.FORBIDDEN .value(), response.getStatus())
+                () -> assertEquals(HttpStatus.FORBIDDEN.value(), response.getStatus())
         );
     }
 
@@ -187,7 +187,7 @@ class ClientControllerTest {
                 .andReturn().getResponse();
 
         assertAll(
-                () -> assertEquals(HttpStatus.FORBIDDEN .value(), response.getStatus())
+                () -> assertEquals(HttpStatus.FORBIDDEN.value(), response.getStatus())
         );
     }
 
@@ -206,12 +206,10 @@ class ClientControllerTest {
                 .andReturn().getResponse();
 
 
-
         assertAll(
-                () -> assertEquals(HttpStatus.FORBIDDEN .value(), response.getStatus())
+                () -> assertEquals(HttpStatus.FORBIDDEN.value(), response.getStatus())
         );
     }
-
 
 
     @Test
@@ -223,7 +221,7 @@ class ClientControllerTest {
 
         MockHttpServletResponse response = mockMvc.perform(get(endpoint).accept(MediaType.APPLICATION_JSON)).andReturn().getResponse();
 
-        PageResponse<ClientDto> res = mapper.readValue(response.getContentAsString(), mapper.getTypeFactory().constructParametricType(PageResponse.class, ClientDto.class));
+        PageResponse<ClientDto> res = mapper.readValue(response.getContentAsString(StandardCharsets.UTF_8), mapper.getTypeFactory().constructParametricType(PageResponse.class, ClientDto.class));
 
         assertAll(
                 () -> assertEquals(HttpStatus.OK.value(), response.getStatus()),
@@ -253,7 +251,7 @@ class ClientControllerTest {
                 .param("address", "Calle Falsa 123")
                 .accept(MediaType.APPLICATION_JSON)).andReturn().getResponse();
 
-        PageResponse<ClientDto> res = mapper.readValue(response.getContentAsString(), mapper.getTypeFactory().constructParametricType(PageResponse.class, ClientDto.class));
+        PageResponse<ClientDto> res = mapper.readValue(response.getContentAsString(StandardCharsets.UTF_8), mapper.getTypeFactory().constructParametricType(PageResponse.class, ClientDto.class));
 
         assertAll(
                 () -> assertEquals(HttpStatus.OK.value(), response.getStatus()),
@@ -281,9 +279,9 @@ class ClientControllerTest {
                 .param("address", "Calle Falsa 123")
                 .accept(MediaType.APPLICATION_JSON)).andReturn().getResponse();
 
-        System.out.println(response.getContentAsString());
+        System.out.println(response.getContentAsString(StandardCharsets.UTF_8));
 
-        PageResponse<ClientDto> res = mapper.readValue(response.getContentAsString(), mapper.getTypeFactory().constructParametricType(PageResponse.class, ClientDto.class));
+        PageResponse<ClientDto> res = mapper.readValue(response.getContentAsString(StandardCharsets.UTF_8), mapper.getTypeFactory().constructParametricType(PageResponse.class, ClientDto.class));
 
         assertAll(
                 () -> assertEquals(HttpStatus.OK.value(), response.getStatus()),
@@ -307,7 +305,7 @@ class ClientControllerTest {
                 .param("name", "Daniel")
                 .accept(MediaType.APPLICATION_JSON)).andReturn().getResponse();
 
-        PageResponse<ClientDto> res = mapper.readValue(response.getContentAsString(), mapper.getTypeFactory().constructParametricType(PageResponse.class, ClientDto.class));
+        PageResponse<ClientDto> res = mapper.readValue(response.getContentAsString(StandardCharsets.UTF_8), mapper.getTypeFactory().constructParametricType(PageResponse.class, ClientDto.class));
 
         assertAll(
                 () -> assertEquals(HttpStatus.OK.value(), response.getStatus()),
@@ -331,7 +329,7 @@ class ClientControllerTest {
                 .param("surname", "García")
                 .accept(MediaType.APPLICATION_JSON)).andReturn().getResponse();
 
-        PageResponse<ClientDto> res = mapper.readValue(response.getContentAsString(), mapper.getTypeFactory().constructParametricType(PageResponse.class, ClientDto.class));
+        PageResponse<ClientDto> res = mapper.readValue(response.getContentAsString(StandardCharsets.UTF_8), mapper.getTypeFactory().constructParametricType(PageResponse.class, ClientDto.class));
 
         assertAll(
                 () -> assertEquals(HttpStatus.OK.value(), response.getStatus()),
@@ -356,7 +354,7 @@ class ClientControllerTest {
                 .param("email", "daniel@gmail.com")
                 .accept(MediaType.APPLICATION_JSON)).andReturn().getResponse();
 
-        PageResponse<ClientDto> res = mapper.readValue(response.getContentAsString(), mapper.getTypeFactory().constructParametricType(PageResponse.class, ClientDto.class));
+        PageResponse<ClientDto> res = mapper.readValue(response.getContentAsString(StandardCharsets.UTF_8), mapper.getTypeFactory().constructParametricType(PageResponse.class, ClientDto.class));
 
         assertAll(
                 () -> assertEquals(HttpStatus.OK.value(), response.getStatus()),
@@ -380,7 +378,7 @@ class ClientControllerTest {
                 .param("phone", "123456789")
                 .accept(MediaType.APPLICATION_JSON)).andReturn().getResponse();
 
-        PageResponse<ClientDto> res = mapper.readValue(response.getContentAsString(), mapper.getTypeFactory().constructParametricType(PageResponse.class, ClientDto.class));
+        PageResponse<ClientDto> res = mapper.readValue(response.getContentAsString(StandardCharsets.UTF_8), mapper.getTypeFactory().constructParametricType(PageResponse.class, ClientDto.class));
 
         assertAll(
                 () -> assertEquals(HttpStatus.OK.value(), response.getStatus()),
@@ -404,7 +402,7 @@ class ClientControllerTest {
                 .param("address", "Calle Falsa 123")
                 .accept(MediaType.APPLICATION_JSON)).andReturn().getResponse();
 
-        PageResponse<ClientDto> res = mapper.readValue(response.getContentAsString(), mapper.getTypeFactory().constructParametricType(PageResponse.class, ClientDto.class));
+        PageResponse<ClientDto> res = mapper.readValue(response.getContentAsString(StandardCharsets.UTF_8), mapper.getTypeFactory().constructParametricType(PageResponse.class, ClientDto.class));
 
         assertAll(
                 () -> assertEquals(HttpStatus.OK.value(), response.getStatus()),
@@ -428,7 +426,7 @@ class ClientControllerTest {
                 .param("page", "0")
                 .accept(MediaType.APPLICATION_JSON)).andReturn().getResponse();
 
-        PageResponse<ClientDto> res = mapper.readValue(response.getContentAsString(), mapper.getTypeFactory().constructParametricType(PageResponse.class, ClientDto.class));
+        PageResponse<ClientDto> res = mapper.readValue(response.getContentAsString(StandardCharsets.UTF_8), mapper.getTypeFactory().constructParametricType(PageResponse.class, ClientDto.class));
 
         assertAll(
                 () -> assertEquals(HttpStatus.OK.value(), response.getStatus()),
@@ -452,7 +450,7 @@ class ClientControllerTest {
                 .param("size", "1")
                 .accept(MediaType.APPLICATION_JSON)).andReturn().getResponse();
 
-        PageResponse<ClientDto> res = mapper.readValue(response.getContentAsString(), mapper.getTypeFactory().constructParametricType(PageResponse.class, ClientDto.class));
+        PageResponse<ClientDto> res = mapper.readValue(response.getContentAsString(StandardCharsets.UTF_8), mapper.getTypeFactory().constructParametricType(PageResponse.class, ClientDto.class));
 
         assertAll(
                 () -> assertEquals(HttpStatus.OK.value(), response.getStatus()),
@@ -477,7 +475,7 @@ class ClientControllerTest {
                 .param("order", "desc")
                 .accept(MediaType.APPLICATION_JSON)).andReturn().getResponse();
 
-        PageResponse<ClientDto> res = mapper.readValue(response.getContentAsString(), mapper.getTypeFactory().constructParametricType(PageResponse.class, ClientDto.class));
+        PageResponse<ClientDto> res = mapper.readValue(response.getContentAsString(StandardCharsets.UTF_8), mapper.getTypeFactory().constructParametricType(PageResponse.class, ClientDto.class));
 
         assertAll(
                 () -> assertEquals(HttpStatus.OK.value(), response.getStatus()),
@@ -510,7 +508,7 @@ class ClientControllerTest {
                 .param("order", "desc")
                 .accept(MediaType.APPLICATION_JSON)).andReturn().getResponse();
 
-        PageResponse<ClientDto> res = mapper.readValue(response.getContentAsString(), mapper.getTypeFactory().constructParametricType(PageResponse.class, ClientDto.class));
+        PageResponse<ClientDto> res = mapper.readValue(response.getContentAsString(StandardCharsets.UTF_8), mapper.getTypeFactory().constructParametricType(PageResponse.class, ClientDto.class));
 
         assertAll(
                 () -> assertEquals(HttpStatus.OK.value(), response.getStatus()),
@@ -531,7 +529,7 @@ class ClientControllerTest {
                 .param("page", "-1")
                 .accept(MediaType.APPLICATION_JSON)).andReturn().getResponse();
 
-        ErrorResponse res = mapper.readValue(response.getContentAsString(), ErrorResponse.class);
+        ErrorResponse res = mapper.readValue(response.getContentAsString(StandardCharsets.UTF_8), ErrorResponse.class);
 
         assertAll(
                 () -> assertEquals(HttpStatus.BAD_REQUEST.value(), res.status()),
@@ -547,7 +545,7 @@ class ClientControllerTest {
                 .param("size", "0")
                 .accept(MediaType.APPLICATION_JSON)).andReturn().getResponse();
 
-        ErrorResponse res = mapper.readValue(response.getContentAsString(), ErrorResponse.class);
+        ErrorResponse res = mapper.readValue(response.getContentAsString(StandardCharsets.UTF_8), ErrorResponse.class);
 
         assertAll(
                 () -> assertEquals(HttpStatus.BAD_REQUEST.value(), res.status()),
@@ -566,7 +564,7 @@ class ClientControllerTest {
                 .param("sortBy", "pepe")
                 .param("order", "asc")
                 .accept(MediaType.APPLICATION_JSON)).andReturn().getResponse();
-        ErrorResponse res = mapper.readValue(response.getContentAsString(), ErrorResponse.class);
+        ErrorResponse res = mapper.readValue(response.getContentAsString(StandardCharsets.UTF_8), ErrorResponse.class);
 
         assertAll(
                 () -> assertEquals(HttpStatus.BAD_REQUEST.value(), res.status()),
@@ -583,7 +581,7 @@ class ClientControllerTest {
         MockHttpServletResponse response = mockMvc.perform(get(endpoint + "/9def16db-362b-44c4-9fc9-77117758b5b0")
                 .accept(MediaType.APPLICATION_JSON)).andReturn().getResponse();
 
-        ClientDto res = mapper.readValue(response.getContentAsString(), ClientDto.class);
+        ClientDto res = mapper.readValue(response.getContentAsString(StandardCharsets.UTF_8), ClientDto.class);
 
         assertAll(
                 () -> assertEquals(HttpStatus.OK.value(), response.getStatus()),
@@ -607,7 +605,7 @@ class ClientControllerTest {
         MockHttpServletResponse response = mockMvc.perform(get(endpoint + "/9def16db-362b-44c4-9fc9-77117758b5b9")
                 .accept(MediaType.APPLICATION_JSON)).andReturn().getResponse();
 
-        ErrorResponse res = mapper.readValue(response.getContentAsString(), ErrorResponse.class);
+        ErrorResponse res = mapper.readValue(response.getContentAsString(StandardCharsets.UTF_8), ErrorResponse.class);
 
         assertAll(
                 () -> assertEquals(HttpStatus.NOT_FOUND.value(), response.getStatus()),
@@ -625,7 +623,7 @@ class ClientControllerTest {
         MockHttpServletResponse response = mockMvc.perform(get(endpoint + "/email/daniel@gmail.com")
                 .accept(MediaType.APPLICATION_JSON)).andReturn().getResponse();
 
-        ClientDto res = mapper.readValue(response.getContentAsString(), ClientDto.class);
+        ClientDto res = mapper.readValue(response.getContentAsString(StandardCharsets.UTF_8), ClientDto.class);
 
         assertAll(
                 () -> assertEquals(HttpStatus.OK.value(), response.getStatus()),
@@ -648,7 +646,7 @@ class ClientControllerTest {
         MockHttpServletResponse response = mockMvc.perform(get(endpoint + "/email/daniel13@gmail.com")
                 .accept(MediaType.APPLICATION_JSON)).andReturn().getResponse();
 
-        ErrorResponse res = mapper.readValue(response.getContentAsString(), ErrorResponse.class);
+        ErrorResponse res = mapper.readValue(response.getContentAsString(StandardCharsets.UTF_8), ErrorResponse.class);
 
 
         assertAll(
@@ -668,7 +666,7 @@ class ClientControllerTest {
                         .content(mapper.writeValueAsString(clientDtoTest)))
                 .andReturn().getResponse();
 
-        ClientDto res = mapper.readValue(response.getContentAsString(), ClientDto.class);
+        ClientDto res = mapper.readValue(response.getContentAsString(StandardCharsets.UTF_8), ClientDto.class);
 
         assertAll(
                 () -> assertEquals(HttpStatus.CREATED.value(), response.getStatus()),
@@ -693,7 +691,7 @@ class ClientControllerTest {
                         .content(mapper.writeValueAsString(clientDtoTest)))
                 .andReturn().getResponse();
 
-        ErrorResponse res = mapper.readValue(response.getContentAsString(), ErrorResponse.class);
+        ErrorResponse res = mapper.readValue(response.getContentAsString(StandardCharsets.UTF_8), ErrorResponse.class);
 
         assertAll(
                 () -> assertEquals(HttpStatus.NOT_FOUND.value(), response.getStatus()),
@@ -711,7 +709,7 @@ class ClientControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(mapper.writeValueAsString(clientDtoTest)))
                 .andReturn().getResponse();
-        ErrorResponse res = mapper.readValue(response.getContentAsString(), ErrorResponse.class);
+        ErrorResponse res = mapper.readValue(response.getContentAsString(StandardCharsets.UTF_8), ErrorResponse.class);
 
         assertAll(
                 () -> assertEquals(HttpStatus.CONFLICT.value(), response.getStatus()),
@@ -736,12 +734,12 @@ class ClientControllerTest {
                         .content(mapper.writeValueAsString(clientCreateDto)))
                 .andReturn().getResponse();
 
-        Map<String, Object> res = mapper.readValue(response.getContentAsString(), mapper.getTypeFactory().constructMapType(Map.class, String.class, Object.class));
+        Map<String, Object> res = mapper.readValue(response.getContentAsString(StandardCharsets.UTF_8), mapper.getTypeFactory().constructMapType(Map.class, String.class, Object.class));
         LinkedHashMap<String, Object> errors = (LinkedHashMap<String, Object>) res.get("errors");
 
         assertAll(
                 () -> assertEquals(HttpStatus.BAD_REQUEST.value(), response.getStatus()),
-                () -> assertEquals("El nombre no puede estar vacio", errors.get("name"))
+                () -> assertEquals("El nombre no puede estar vacío", errors.get("name"))
         );
     }
 
@@ -758,12 +756,12 @@ class ClientControllerTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(mapper.writeValueAsString(clientCreateDto))).andReturn().getResponse();
 
-        Map<String, Object> res = mapper.readValue(response.getContentAsString(), mapper.getTypeFactory().constructMapType(Map.class, String.class, Object.class));
+        Map<String, Object> res = mapper.readValue(response.getContentAsString(StandardCharsets.UTF_8), mapper.getTypeFactory().constructMapType(Map.class, String.class, Object.class));
         LinkedHashMap<String, Object> errors = (LinkedHashMap<String, Object>) res.get("errors");
 
         assertAll(
                 () -> assertEquals(HttpStatus.BAD_REQUEST.value(), response.getStatus()),
-                () -> assertEquals("El apellido no puede estar vacio", errors.get("surname"))
+                () -> assertEquals("El apellido no puede estar vacío", errors.get("surname"))
         );
     }
 
@@ -780,12 +778,12 @@ class ClientControllerTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(mapper.writeValueAsString(clientCreateDto))).andReturn().getResponse();
 
-        Map<String, Object> res = mapper.readValue(response.getContentAsString(), mapper.getTypeFactory().constructMapType(Map.class, String.class, Object.class));
+        Map<String, Object> res = mapper.readValue(response.getContentAsString(StandardCharsets.UTF_8), mapper.getTypeFactory().constructMapType(Map.class, String.class, Object.class));
         LinkedHashMap<String, Object> errors = (LinkedHashMap<String, Object>) res.get("errors");
 
         assertAll(
                 () -> assertEquals(HttpStatus.BAD_REQUEST.value(), response.getStatus()),
-                () -> assertEquals("El email no puede estar vacio", errors.get("email"))
+                () -> assertEquals("El email no puede estar vacío", errors.get("email"))
         );
     }
 
@@ -803,12 +801,12 @@ class ClientControllerTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(mapper.writeValueAsString(clientCreateDto))).andReturn().getResponse();
 
-        Map<String, Object> res = mapper.readValue(response.getContentAsString(), mapper.getTypeFactory().constructMapType(Map.class, String.class, Object.class));
+        Map<String, Object> res = mapper.readValue(response.getContentAsString(StandardCharsets.UTF_8), mapper.getTypeFactory().constructMapType(Map.class, String.class, Object.class));
         LinkedHashMap<String, Object> errors = (LinkedHashMap<String, Object>) res.get("errors");
 
         assertAll(
                 () -> assertEquals(HttpStatus.BAD_REQUEST.value(), response.getStatus()),
-                () -> assertEquals("El telefono no puede estar vacio", errors.get("phone"))
+                () -> assertEquals("El teléfono no puede estar vacío", errors.get("phone"))
         );
     }
 
@@ -825,12 +823,12 @@ class ClientControllerTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(mapper.writeValueAsString(clientCreateDto))).andReturn().getResponse();
 
-        Map<String, Object> res = mapper.readValue(response.getContentAsString(), mapper.getTypeFactory().constructMapType(Map.class, String.class, Object.class));
+        Map<String, Object> res = mapper.readValue(response.getContentAsString(StandardCharsets.UTF_8), mapper.getTypeFactory().constructMapType(Map.class, String.class, Object.class));
         LinkedHashMap<String, Object> errors = (LinkedHashMap<String, Object>) res.get("errors");
 
         assertAll(
                 () -> assertEquals(HttpStatus.BAD_REQUEST.value(), response.getStatus()),
-                () -> assertEquals("La direccion no puede estar vacia", errors.get("address"))
+                () -> assertEquals("La dirección no puede estar vacía", errors.get("address"))
         );
 
     }
@@ -849,7 +847,7 @@ class ClientControllerTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(mapper.writeValueAsString(clientCreateDto))).andReturn().getResponse();
 
-        Map<String, Object> res = mapper.readValue(response.getContentAsString(), mapper.getTypeFactory().constructMapType(Map.class, String.class, Object.class));
+        Map<String, Object> res = mapper.readValue(response.getContentAsString(StandardCharsets.UTF_8), mapper.getTypeFactory().constructMapType(Map.class, String.class, Object.class));
         LinkedHashMap<String, Object> errors = (LinkedHashMap<String, Object>) res.get("errors");
 
         assertAll(
@@ -872,12 +870,12 @@ class ClientControllerTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(mapper.writeValueAsString(clientCreateDto))).andReturn().getResponse();
 
-        Map<String, Object> res = mapper.readValue(response.getContentAsString(), mapper.getTypeFactory().constructMapType(Map.class, String.class, Object.class));
+        Map<String, Object> res = mapper.readValue(response.getContentAsString(StandardCharsets.UTF_8), mapper.getTypeFactory().constructMapType(Map.class, String.class, Object.class));
         LinkedHashMap<String, Object> errors = (LinkedHashMap<String, Object>) res.get("errors");
 
         assertAll(
                 () -> assertEquals(HttpStatus.BAD_REQUEST.value(), response.getStatus()),
-                () -> assertEquals("El telefono debe tener como maximo 11 caracteres y como minimo 3", errors.get("phone"))
+                () -> assertEquals("El teléfono debe tener como máximo 11 caracteres y como mínimo 3", errors.get("phone"))
         );
     }
 
@@ -895,12 +893,12 @@ class ClientControllerTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(mapper.writeValueAsString(clientCreateDto))).andReturn().getResponse();
 
-        Map<String, Object> res = mapper.readValue(response.getContentAsString(), mapper.getTypeFactory().constructMapType(Map.class, String.class, Object.class));
+        Map<String, Object> res = mapper.readValue(response.getContentAsString(StandardCharsets.UTF_8), mapper.getTypeFactory().constructMapType(Map.class, String.class, Object.class));
         LinkedHashMap<String, Object> errors = (LinkedHashMap<String, Object>) res.get("errors");
 
         assertAll(
                 () -> assertEquals(HttpStatus.BAD_REQUEST.value(), response.getStatus()),
-                () -> assertEquals("El telefono debe contener solo digitos", errors.get("phone"))
+                () -> assertEquals("El teléfono debe contener solo dígitos", errors.get("phone"))
         );
     }
 
@@ -918,16 +916,16 @@ class ClientControllerTest {
                         .content(mapper.writeValueAsString(clientCreateDto)))
                 .andReturn().getResponse();
 
-        Map<String, Object> res = mapper.readValue(response.getContentAsString(), mapper.getTypeFactory().constructMapType(Map.class, String.class, Object.class));
+        Map<String, Object> res = mapper.readValue(response.getContentAsString(StandardCharsets.UTF_8), mapper.getTypeFactory().constructMapType(Map.class, String.class, Object.class));
         LinkedHashMap<String, Object> errors = (LinkedHashMap<String, Object>) res.get("errors");
 
         assertAll(
                 () -> assertEquals(HttpStatus.BAD_REQUEST.value(), response.getStatus()),
-                () -> assertEquals("El nombre no puede estar vacio", errors.get("name")),
-                () -> assertEquals("El apellido no puede estar vacio", errors.get("surname")),
+                () -> assertEquals("El nombre no puede estar vacío", errors.get("name")),
+                () -> assertEquals("El apellido no puede estar vacío", errors.get("surname")),
                 () -> assertEquals("El email debe tener un formato valido", errors.get("email")),
-                () -> assertEquals("El telefono debe tener como maximo 11 caracteres y como minimo 3", errors.get("phone")),
-                () -> assertEquals("La direccion no puede estar vacia", errors.get("address"))
+                () -> assertEquals("El teléfono debe tener como máximo 11 caracteres y como mínimo 3", errors.get("phone")),
+                () -> assertEquals("La dirección no puede estar vacía", errors.get("address"))
         );
     }
 
@@ -946,12 +944,12 @@ class ClientControllerTest {
                         .content(mapper.writeValueAsString(clientCreateDto)))
                 .andReturn().getResponse();
 
-        Map<String, Object> res = mapper.readValue(response.getContentAsString(), mapper.getTypeFactory().constructMapType(Map.class, String.class, Object.class));
+        Map<String, Object> res = mapper.readValue(response.getContentAsString(StandardCharsets.UTF_8), mapper.getTypeFactory().constructMapType(Map.class, String.class, Object.class));
         LinkedHashMap<String, Object> errors = (LinkedHashMap<String, Object>) res.get("errors");
 
         assertAll(
                 () -> assertEquals(HttpStatus.BAD_REQUEST.value(), response.getStatus()),
-                () -> assertEquals("El telefono debe tener como maximo 11 caracteres y como minimo 3", errors.get("phone"))
+                () -> assertEquals("El teléfono debe tener como máximo 11 caracteres y como mínimo 3", errors.get("phone"))
         );
     }
 
@@ -964,7 +962,7 @@ class ClientControllerTest {
                         .content(mapper.writeValueAsString(clientDtoTest)))
                 .andReturn().getResponse();
 
-        ClientDto res = mapper.readValue(response.getContentAsString(), ClientDto.class);
+        ClientDto res = mapper.readValue(response.getContentAsString(StandardCharsets.UTF_8), ClientDto.class);
 
         assertAll(
                 () -> assertEquals(HttpStatus.OK.value(), response.getStatus()),
@@ -989,7 +987,7 @@ class ClientControllerTest {
                         .content(mapper.writeValueAsString(clientDtoTest)))
                 .andReturn().getResponse();
 
-        ErrorResponse res = mapper.readValue(response.getContentAsString(), ErrorResponse.class);
+        ErrorResponse res = mapper.readValue(response.getContentAsString(StandardCharsets.UTF_8), ErrorResponse.class);
 
         assertAll(
                 () -> assertEquals(HttpStatus.NOT_FOUND.value(), response.getStatus()),
@@ -1008,7 +1006,7 @@ class ClientControllerTest {
                         .content(mapper.writeValueAsString(clientDtoTest)))
                 .andReturn().getResponse();
 
-        ErrorResponse res = mapper.readValue(response.getContentAsString(), ErrorResponse.class);
+        ErrorResponse res = mapper.readValue(response.getContentAsString(StandardCharsets.UTF_8), ErrorResponse.class);
 
         assertAll(
                 () -> assertEquals(HttpStatus.CONFLICT.value(), response.getStatus()),
@@ -1032,7 +1030,7 @@ class ClientControllerTest {
                         .content(mapper.writeValueAsString(clientUpdateDto)))
                 .andReturn().getResponse();
 
-        Map<String, Object> res = mapper.readValue(response.getContentAsString(), mapper.getTypeFactory().constructMapType(Map.class, String.class, Object.class));
+        Map<String, Object> res = mapper.readValue(response.getContentAsString(StandardCharsets.UTF_8), mapper.getTypeFactory().constructMapType(Map.class, String.class, Object.class));
         LinkedHashMap<String, Object> errors = (LinkedHashMap<String, Object>) res.get("errors");
 
         assertAll(
@@ -1040,8 +1038,8 @@ class ClientControllerTest {
                 () -> assertEquals("El nombre debe tener entre 3 y 50 caracteres", errors.get("name")),
                 () -> assertEquals("El apellido debe tener entre 3 y 80 caracteres", errors.get("surname")),
                 () -> assertEquals("El email debe tener un formato valido", errors.get("email")),
-                () -> assertEquals("El telefono debe tener como maximo 11 caracteres y como minimo 3", errors.get("phone")),
-                () -> assertEquals("La direccion no puede estar vacia", errors.get("address"))
+                () -> assertEquals("El teléfono debe tener como máximo 11 caracteres y como mínimo 3", errors.get("phone")),
+                () -> assertEquals("La dirección no puede estar vacía", errors.get("address"))
         );
     }
 
@@ -1060,12 +1058,12 @@ class ClientControllerTest {
                         .content(mapper.writeValueAsString(clientUpdateDto)))
                 .andReturn().getResponse();
 
-        Map<String, Object> res = mapper.readValue(response.getContentAsString(), mapper.getTypeFactory().constructMapType(Map.class, String.class, Object.class));
+        Map<String, Object> res = mapper.readValue(response.getContentAsString(StandardCharsets.UTF_8), mapper.getTypeFactory().constructMapType(Map.class, String.class, Object.class));
         LinkedHashMap<String, Object> errors = (LinkedHashMap<String, Object>) res.get("errors");
 
         assertAll(
                 () -> assertEquals(HttpStatus.BAD_REQUEST.value(), response.getStatus()),
-                () -> assertEquals("El telefono debe tener como maximo 11 caracteres y como minimo 3", errors.get("phone"))
+                () -> assertEquals("El teléfono debe tener como máximo 11 caracteres y como mínimo 3", errors.get("phone"))
         );
     }
 
@@ -1084,12 +1082,12 @@ class ClientControllerTest {
                         .content(mapper.writeValueAsString(clientUpdateDto)))
                 .andReturn().getResponse();
 
-        Map<String, Object> res = mapper.readValue(response.getContentAsString(), mapper.getTypeFactory().constructMapType(Map.class, String.class, Object.class));
+        Map<String, Object> res = mapper.readValue(response.getContentAsString(StandardCharsets.UTF_8), mapper.getTypeFactory().constructMapType(Map.class, String.class, Object.class));
         LinkedHashMap<String, Object> errors = (LinkedHashMap<String, Object>) res.get("errors");
 
         assertAll(
                 () -> assertEquals(HttpStatus.BAD_REQUEST.value(), response.getStatus()),
-                () -> assertEquals("El telefono debe contener solo digitos", errors.get("phone"))
+                () -> assertEquals("El teléfono debe contener solo dígitos", errors.get("phone"))
         );
 
     }
@@ -1109,7 +1107,7 @@ class ClientControllerTest {
                         .content(mapper.writeValueAsString(clientUpdateDto)))
                 .andReturn().getResponse();
 
-        Map<String, Object> res = mapper.readValue(response.getContentAsString(), mapper.getTypeFactory().constructMapType(Map.class, String.class, Object.class));
+        Map<String, Object> res = mapper.readValue(response.getContentAsString(StandardCharsets.UTF_8), mapper.getTypeFactory().constructMapType(Map.class, String.class, Object.class));
         LinkedHashMap<String, Object> errors = (LinkedHashMap<String, Object>) res.get("errors");
 
         assertAll(
@@ -1133,12 +1131,12 @@ class ClientControllerTest {
                         .content(mapper.writeValueAsString(clientUpdateDto)))
                 .andReturn().getResponse();
 
-        Map<String, Object> res = mapper.readValue(response.getContentAsString(), mapper.getTypeFactory().constructMapType(Map.class, String.class, Object.class));
+        Map<String, Object> res = mapper.readValue(response.getContentAsString(StandardCharsets.UTF_8), mapper.getTypeFactory().constructMapType(Map.class, String.class, Object.class));
         LinkedHashMap<String, Object> errors = (LinkedHashMap<String, Object>) res.get("errors");
 
         assertAll(
                 () -> assertEquals(HttpStatus.BAD_REQUEST.value(), response.getStatus()),
-                () -> assertEquals("La direccion no puede estar vacia", errors.get("address"))
+                () -> assertEquals("La dirección no puede estar vacía", errors.get("address"))
         );
     }
 
@@ -1157,12 +1155,12 @@ class ClientControllerTest {
                         .content(mapper.writeValueAsString(clientUpdateDto)))
                 .andReturn().getResponse();
 
-        Map<String, Object> res = mapper.readValue(response.getContentAsString(), mapper.getTypeFactory().constructMapType(Map.class, String.class, Object.class));
+        Map<String, Object> res = mapper.readValue(response.getContentAsString(StandardCharsets.UTF_8), mapper.getTypeFactory().constructMapType(Map.class, String.class, Object.class));
         LinkedHashMap<String, Object> errors = (LinkedHashMap<String, Object>) res.get("errors");
 
         assertAll(
                 () -> assertEquals(HttpStatus.BAD_REQUEST.value(), response.getStatus()),
-                () -> assertEquals("El telefono debe tener como maximo 11 caracteres y como minimo 3", errors.get("phone"))
+                () -> assertEquals("El teléfono debe tener como máximo 11 caracteres y como mínimo 3", errors.get("phone"))
         );
 
     }
@@ -1179,7 +1177,7 @@ class ClientControllerTest {
 
         MockHttpServletResponse response = mockMvc.perform(put(endpoint + "/9def16db-362b-44c4-9fc9-77117758b5b0").contentType(MediaType.APPLICATION_JSON).content(mapper.writeValueAsString(clientUpdateDto))).andReturn().getResponse();
 
-        Map<String, Object> res = mapper.readValue(response.getContentAsString(), mapper.getTypeFactory().constructMapType(Map.class, String.class, Object.class));
+        Map<String, Object> res = mapper.readValue(response.getContentAsString(StandardCharsets.UTF_8), mapper.getTypeFactory().constructMapType(Map.class, String.class, Object.class));
         LinkedHashMap<String, Object> errors = (LinkedHashMap<String, Object>) res.get("errors");
 
         assertAll(
@@ -1200,7 +1198,7 @@ class ClientControllerTest {
 
         MockHttpServletResponse response = mockMvc.perform(put(endpoint + "/9def16db-362b-44c4-9fc9-77117758b5b0").contentType(MediaType.APPLICATION_JSON).content(mapper.writeValueAsString(clientUpdateDto))).andReturn().getResponse();
 
-        Map<String, Object> res = mapper.readValue(response.getContentAsString(), mapper.getTypeFactory().constructMapType(Map.class, String.class, Object.class));
+        Map<String, Object> res = mapper.readValue(response.getContentAsString(StandardCharsets.UTF_8), mapper.getTypeFactory().constructMapType(Map.class, String.class, Object.class));
         LinkedHashMap<String, Object> errors = (LinkedHashMap<String, Object>) res.get("errors");
 
         assertAll(
@@ -1228,14 +1226,14 @@ class ClientControllerTest {
     }
 
     @Test
-    void deleteClient_ShouldThrowClientInOrder() throws Exception{
+    void deleteClient_ShouldThrowClientInOrder() throws Exception {
         doThrow(new ClientInOrderException(UUID.fromString("9def16db-362b-44c4-9fc9-77117758b5b9"))).when(clientService).deleteById(any(UUID.class));
 
         MockHttpServletResponse response = mockMvc.perform(
                         delete(endpoint + "/9def16db-362b-44c4-9fc9-77117758b5b9"))
                 .andReturn().getResponse();
 
-        ErrorResponse res = mapper.readValue(response.getContentAsString(), ErrorResponse.class);
+        ErrorResponse res = mapper.readValue(response.getContentAsString(StandardCharsets.UTF_8), ErrorResponse.class);
 
         assertAll(
                 () -> assertEquals(HttpStatus.BAD_REQUEST.value(), response.getStatus()),
@@ -1253,7 +1251,7 @@ class ClientControllerTest {
                         delete(endpoint + "/9def16db-362b-44c4-9fc9-77117758b5b9"))
                 .andReturn().getResponse();
 
-        ErrorResponse res = mapper.readValue(response.getContentAsString(), ErrorResponse.class);
+        ErrorResponse res = mapper.readValue(response.getContentAsString(StandardCharsets.UTF_8), ErrorResponse.class);
 
         assertAll(
                 () -> assertEquals(HttpStatus.NOT_FOUND.value(), response.getStatus()),
@@ -1262,7 +1260,6 @@ class ClientControllerTest {
 
         verify(clientService, times(1)).deleteById(any(UUID.class));
     }
-
 
 
     @Test
@@ -1285,7 +1282,7 @@ class ClientControllerTest {
                         .contentType(MediaType.MULTIPART_FORM_DATA))
                 .andReturn().getResponse();
 
-        ClientDto res = mapper.readValue(response.getContentAsString(), ClientDto.class);
+        ClientDto res = mapper.readValue(response.getContentAsString(StandardCharsets.UTF_8), ClientDto.class);
 
         assertAll(
                 () -> assertEquals(clientDtoTest.getId(), res.getId()),
@@ -1320,7 +1317,7 @@ class ClientControllerTest {
                         .contentType(MediaType.MULTIPART_FORM_DATA))
                 .andReturn().getResponse();
 
-        ErrorResponse res = mapper.readValue(response.getContentAsString(), ErrorResponse.class);
+        ErrorResponse res = mapper.readValue(response.getContentAsString(StandardCharsets.UTF_8), ErrorResponse.class);
 
         assertAll(
                 () -> assertEquals(HttpStatus.NOT_FOUND.value(), response.getStatus()),
@@ -1348,11 +1345,11 @@ class ClientControllerTest {
                         .contentType(MediaType.MULTIPART_FORM_DATA))
                 .andReturn().getResponse();
 
-        Map<String, Object> res = mapper.readValue(response.getContentAsString(), mapper.getTypeFactory().constructMapType(Map.class, String.class, Object.class));
+        Map<String, Object> res = mapper.readValue(response.getContentAsString(StandardCharsets.UTF_8), mapper.getTypeFactory().constructMapType(Map.class, String.class, Object.class));
 
         assertAll(
                 () -> assertEquals(HttpStatus.BAD_REQUEST.value(), response.getStatus()),
-                () -> assertEquals("El archivo no es una imagen o esta vacio", res.get("msg"))
+                () -> assertEquals("El archivo no es una imagen o esta vacío", res.get("msg"))
         );
     }
 
@@ -1374,11 +1371,11 @@ class ClientControllerTest {
                         .contentType(MediaType.MULTIPART_FORM_DATA))
                 .andReturn().getResponse();
 
-        Map<String, Object> res = mapper.readValue(response.getContentAsString(), mapper.getTypeFactory().constructMapType(Map.class, String.class, Object.class));
+        Map<String, Object> res = mapper.readValue(response.getContentAsString(StandardCharsets.UTF_8), mapper.getTypeFactory().constructMapType(Map.class, String.class, Object.class));
 
         assertAll(
                 () -> assertEquals(HttpStatus.BAD_REQUEST.value(), response.getStatus()),
-                () -> assertEquals("El archivo no es una imagen o esta vacio", res.get("msg"))
+                () -> assertEquals("El archivo no es una imagen o esta vacío", res.get("msg"))
         );
     }
 

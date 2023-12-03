@@ -22,6 +22,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -109,7 +110,7 @@ public class UserControllerTest {
 
         assertAll(
                 () -> assertEquals(200, response.getStatus()),
-                () -> assertNotNull(response.getContentAsString())
+                () -> assertNotNull(response.getContentAsString(StandardCharsets.UTF_8))
         );
     }
 
@@ -157,7 +158,7 @@ public class UserControllerTest {
 
         assertAll(
                 () -> assertEquals(200, response.getStatus()),
-                () -> assertNotNull(response.getContentAsString())
+                () -> assertNotNull(response.getContentAsString(StandardCharsets.UTF_8))
         );
     }
 
@@ -174,13 +175,13 @@ public class UserControllerTest {
                                 .content(mapper.writeValueAsString(userRequest)))
                 .andReturn().getResponse();
 
-        var res = mapper.readValue(response.getContentAsString(), UserResponse.class);
+        var res = mapper.readValue(response.getContentAsString(StandardCharsets.UTF_8), UserResponse.class);
 
         // Assert
 
         assertAll(
                 () -> assertEquals(201, response.getStatus()),
-                () -> assertNotNull(response.getContentAsString()),
+                () -> assertNotNull(response.getContentAsString(StandardCharsets.UTF_8)),
                 () -> assertEquals(userResponse, res)
         );
     }
@@ -198,7 +199,7 @@ public class UserControllerTest {
                                 .content(mapper.writeValueAsString(userRequest)))
                 .andReturn().getResponse();
 
-        var res = mapper.readValue(response.getContentAsString(), UserResponse.class);
+        var res = mapper.readValue(response.getContentAsString(StandardCharsets.UTF_8), UserResponse.class);
 
         // Assert
         assertAll(
@@ -220,7 +221,7 @@ public class UserControllerTest {
 //                                .content(mapper.writeValueAsString(userRequest)))
 //                .andReturn().getResponse();
 //
-//        var res = mapper.readValue(response.getContentAsString(), UserResponse.class);
+//        var res = mapper.readValue(response.getContentAsString(StandardCharsets.UTF_8), UserResponse.class);
 //
 //        // Assert
 //        assertAll(

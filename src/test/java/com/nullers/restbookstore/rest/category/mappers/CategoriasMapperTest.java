@@ -12,11 +12,11 @@ public class CategoriasMapperTest {
 
     Category category2 = Category.builder()
             .id(UUID.fromString("3930e05a-7ebf-4aa1-8aa8-5d7466fa9734"))
-            .name("categoria 2")
+            .name("category 2")
             .build();
 
     CategoryCreateDTO categoryCreateDTO = CategoryCreateDTO.builder()
-            .name("categoria 1")
+            .name("category 1")
             .isActive(true)
             .build();
 

@@ -81,7 +81,7 @@ public class Book {
     private Boolean active;
 
     @ManyToOne
-    @JoinColumn(name = "categoria_id")
+    @JoinColumn(name = "category_id")
     @Schema(description = "Categoría")
     private Category category;
 
