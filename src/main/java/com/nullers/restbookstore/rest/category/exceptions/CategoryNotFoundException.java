@@ -27,6 +27,6 @@ public class CategoryNotFoundException extends ResponseExceptionNotFound {
      * @param name Nombre de la categoría
      */
     public CategoryNotFoundException(String name) {
-        super("Category con nombre " + name + " no encontrada");
+        super("Category con nombre " + name + " - no encontrada");
     }
 }
