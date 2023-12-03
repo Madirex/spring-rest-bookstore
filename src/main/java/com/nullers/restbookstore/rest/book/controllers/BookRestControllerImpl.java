@@ -196,6 +196,7 @@ public class BookRestControllerImpl implements BookRestController {
     @Parameter(name = "id", description = "Identificador del libro", example = "1", required = true)
     @ApiResponses(value = {
             @ApiResponse(responseCode = "204", description = "Libro borrado"),
+            @ApiResponse(responseCode = "400", description = "Identificador de libro no válido"),
             @ApiResponse(responseCode = "404", description = "Libro no encontrado"),
     })
     @DeleteMapping("/{id}")
