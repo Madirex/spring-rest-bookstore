@@ -32,17 +32,22 @@ services:
     volumes:
       - ./database/shop.js:/docker-entrypoint-initdb.d/shop.js:ro
 
-  adminer-postgres-db:
-    container_name: bookstore-db_adminer-postgres-db
-    image: adminer
+  tienda-api-rest:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: bookstore-api-rest
     restart: always
     env_file: .env
     ports:
-      - 8080:8080
-    depends_on:
-      - postgres-db
+      - ${API_PORT}:3000
+    volumes:
+      - book-images:/app/book-images
     networks:
       - bookstore-network
+
+volumes:
+  book-images:
 
 networks:
   bookstore-network:

@@ -1,0 +1,21 @@
+services:
+  tienda-api-rest:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: bookstore-api-rest
+    restart: always
+    env_file: .env
+    ports:
+      - ${API_PORT}:3000
+    volumes:
+      - book-images:/app/book-images
+    networks:
+      - bookstore-network
+
+volumes:
+  book-images:
+
+networks:
+  bookstore-network:
+    driver: bridge
