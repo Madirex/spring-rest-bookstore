@@ -3,7 +3,7 @@ package com.nullers.restbookstore.rest.orders.controllers;
 import com.nullers.restbookstore.pagination.util.PaginationLinksUtils;
 import com.nullers.restbookstore.rest.book.exceptions.BookNotFoundException;
 import com.nullers.restbookstore.rest.book.model.Book;
-import com.nullers.restbookstore.rest.category.model.Categoria;
+import com.nullers.restbookstore.rest.category.model.Category;
 import com.nullers.restbookstore.rest.client.exceptions.ClientNotFound;
 import com.nullers.restbookstore.rest.client.model.Client;
 import com.nullers.restbookstore.rest.common.Address;
@@ -15,14 +15,13 @@ import com.nullers.restbookstore.rest.orders.exceptions.OrderNotItemsExceptions;
 import com.nullers.restbookstore.rest.orders.exceptions.OrderNotStockException;
 import com.nullers.restbookstore.rest.orders.models.Order;
 import com.nullers.restbookstore.rest.orders.models.OrderLine;
-import com.nullers.restbookstore.rest.orders.services.OrderService;
 import com.nullers.restbookstore.rest.orders.services.OrderServiceImpl;
 import com.nullers.restbookstore.rest.publisher.model.Publisher;
 import com.nullers.restbookstore.rest.shop.exceptions.ShopNotFoundException;
 import com.nullers.restbookstore.rest.shop.model.Shop;
 import com.nullers.restbookstore.rest.user.exceptions.UserNotFound;
-import com.nullers.restbookstore.rest.user.models.Role;
 import com.nullers.restbookstore.rest.user.models.User;
+import com.nullers.restbookstore.rest.user.models.UserRole;
 import org.bson.types.ObjectId;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -30,7 +29,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.mock.web.MockHttpServletRequest;
@@ -57,7 +55,6 @@ class OrderControllerTestWithoutMockMvc {
     private PaginationLinksUtils paginationLinksUtils;
 
 
-
     OrderLine orderLine = OrderLine.builder()
             .bookId(1L)
             .quantity(1)
@@ -71,16 +68,15 @@ class OrderControllerTestWithoutMockMvc {
             .build();
 
 
-
     Publisher publisher = Publisher.builder()
             .id(1L)
             .name("name")
             .build();
 
-    Categoria categoria = Categoria.builder()
+    Category category = Category.builder()
             .id(UUID.fromString("a712c5f2-eb95-449a-9ec4-1aa55cdac9bc"))
-            .nombre("Cat")
-            .activa(true)
+            .name("Cat")
+            .isActive(true)
             .build();
 
     Book book = Book.builder()
@@ -92,7 +88,7 @@ class OrderControllerTestWithoutMockMvc {
             .price(1.0)
             .description("description")
             .active(true)
-            .category(categoria)
+            .category(category)
             .build();
 
     Address address = Address.builder()
@@ -101,7 +97,7 @@ class OrderControllerTestWithoutMockMvc {
             .country("USA")
             .province("Springfield")
             .number("123")
-            .PostalCode("12345")
+            .postalCode("12345")
             .build();
 
 
@@ -121,9 +117,9 @@ class OrderControllerTestWithoutMockMvc {
             .name("Daniel")
             .email("daniel@gmail.com")
             .password("123456789")
-            .surnames("García")
+            .surname("García")
             .isDeleted(false)
-            .roles(Set.of(Role.USER))
+            .userRoles(Set.of(UserRole.USER))
             .build();
 
     Shop shop = Shop.builder()
@@ -166,7 +162,7 @@ class OrderControllerTestWithoutMockMvc {
     }
 
     @Test
-    void getAllOrders_ShouldReturnOrders(){
+    void getAllOrders_ShouldReturnOrders() {
         when(orderService.getAllOrders(any(Pageable.class))).thenReturn(new PageImpl<>(List.of(order)));
 
         var res = orderController.getAllOrders(
@@ -186,14 +182,14 @@ class OrderControllerTestWithoutMockMvc {
                 () -> assertEquals(order.getOrderLines().size(), res.getBody().content().get(0).getOrderLines().size()),
                 () -> assertEquals(order.getCreatedAt(), res.getBody().content().get(0).getCreatedAt()),
                 () -> assertEquals(order.getUpdatedAt(), res.getBody().content().get(0).getUpdatedAt()),
-                () -> assertEquals(order.isDeleted(), res.getBody().content().get(0).isDeleted()),
+                () -> assertEquals(order.getIsDeleted(), res.getBody().content().get(0).getIsDeleted()),
                 () -> assertEquals(200, res.getStatusCodeValue())
         );
     }
 
 
     @Test
-    void getAllOrder_ShouldReturnEmptyPage(){
+    void getAllOrder_ShouldReturnEmptyPage() {
         when(orderService.getAllOrders(any(Pageable.class))).thenReturn(new PageImpl<>(List.of()));
 
         var res = orderController.getAllOrders(
@@ -213,7 +209,7 @@ class OrderControllerTestWithoutMockMvc {
 
 
     @Test
-    void getOrderById_ShouldReturnOrder(){
+    void getOrderById_ShouldReturnOrder() {
         when(orderService.getOrderById(any(ObjectId.class))).thenReturn(order);
 
         var res = orderController.getOrderById(order.getId());
@@ -229,7 +225,7 @@ class OrderControllerTestWithoutMockMvc {
                 () -> assertEquals(order.getOrderLines().size(), res.getBody().getOrderLines().size()),
                 () -> assertEquals(order.getCreatedAt(), res.getBody().getCreatedAt()),
                 () -> assertEquals(order.getUpdatedAt(), res.getBody().getUpdatedAt()),
-                () -> assertEquals(order.isDeleted(), res.getBody().isDeleted()),
+                () -> assertEquals(order.getIsDeleted(), res.getBody().getIsDeleted()),
                 () -> assertEquals(200, res.getStatusCodeValue())
         );
 
@@ -237,7 +233,7 @@ class OrderControllerTestWithoutMockMvc {
     }
 
     @Test
-    void getOrderById_ShouldReturnOrderNotFound(){
+    void getOrderById_ShouldReturnOrderNotFound() {
         when(orderService.getOrderById(any(ObjectId.class))).thenThrow(new OrderNotFoundException(order.getId()));
 
 
@@ -245,14 +241,14 @@ class OrderControllerTestWithoutMockMvc {
 
         assertAll(
                 () -> assertNotNull(res),
-                () -> assertEquals("El pedido con id "+order.get_id()+" no existe", res.getMessage())
+                () -> assertEquals("El pedido con id " + order.get_id() + " no existe", res.getMessage())
         );
 
         verify(orderService, times(1)).getOrderById(any(ObjectId.class));
     }
 
     @Test
-    void createOrder_ShouldReturnOrder(){
+    void createOrder_ShouldReturnOrder() {
         when(orderService.createOrder(any(OrderCreateDto.class))).thenReturn(order);
 
         var res = orderController.createOrder(orderCreateDto);
@@ -268,7 +264,7 @@ class OrderControllerTestWithoutMockMvc {
                 () -> assertEquals(order.getOrderLines().size(), res.getBody().getOrderLines().size()),
                 () -> assertEquals(order.getCreatedAt(), res.getBody().getCreatedAt()),
                 () -> assertEquals(order.getUpdatedAt(), res.getBody().getUpdatedAt()),
-                () -> assertEquals(order.isDeleted(), res.getBody().isDeleted()),
+                () -> assertEquals(order.getIsDeleted(), res.getBody().getIsDeleted()),
                 () -> assertEquals(201, res.getStatusCodeValue())
         );
 
@@ -276,7 +272,7 @@ class OrderControllerTestWithoutMockMvc {
     }
 
     @Test
-    void createOrder_ShouldReturnClientNotFoundExceptions(){
+    void createOrder_ShouldReturnClientNotFoundExceptions() {
         when(orderService.createOrder(any(OrderCreateDto.class))).thenThrow(new ClientNotFound("id", clientTest.getId()));
 
         var res = assertThrows(ClientNotFound.class, () -> orderController.createOrder(orderCreateDto));
@@ -290,7 +286,7 @@ class OrderControllerTestWithoutMockMvc {
     }
 
     @Test
-    void createOrder_ShouldReturnUserNotFoundExceptions(){
+    void createOrder_ShouldReturnUserNotFoundExceptions() {
         when(orderService.createOrder(any(OrderCreateDto.class))).thenThrow(new UserNotFound(userTest.getId()));
 
         var res = assertThrows(UserNotFound.class, () -> orderController.createOrder(orderCreateDto));
@@ -304,7 +300,7 @@ class OrderControllerTestWithoutMockMvc {
     }
 
     @Test
-    void createOrder_ShouldReturnShopNotFoundExceptions(){
+    void createOrder_ShouldReturnShopNotFoundExceptions() {
         when(orderService.createOrder(any(OrderCreateDto.class))).thenThrow(new ShopNotFoundException("La tienda con id " + shop.getId() + " no existe"));
 
         var res = assertThrows(ShopNotFoundException.class, () -> orderController.createOrder(orderCreateDto));
@@ -318,7 +314,7 @@ class OrderControllerTestWithoutMockMvc {
     }
 
     @Test
-    void createOrder_ShouldReturnOrderNotItemsException(){
+    void createOrder_ShouldReturnOrderNotItemsException() {
         when(orderService.createOrder(any(OrderCreateDto.class))).thenThrow(new OrderNotItemsExceptions(order.get_id()));
 
         var res = assertThrows(OrderNotItemsExceptions.class, () -> orderController.createOrder(orderCreateDto));
@@ -332,7 +328,7 @@ class OrderControllerTestWithoutMockMvc {
     }
 
     @Test
-    void createOrder_ShouldReturnOrderNotStockException(){
+    void createOrder_ShouldReturnOrderNotStockException() {
         when(orderService.createOrder(any(OrderCreateDto.class))).thenThrow(new OrderNotStockException(book.getId()));
 
         var res = assertThrows(OrderNotStockException.class, () -> orderController.createOrder(orderCreateDto));
@@ -346,7 +342,7 @@ class OrderControllerTestWithoutMockMvc {
     }
 
     @Test
-    void createOrder_ShouldOrderBadPriceException(){
+    void createOrder_ShouldOrderBadPriceException() {
         when(orderService.createOrder(any(OrderCreateDto.class))).thenThrow(new OrderBadPriceException(book.getId()));
 
         var res = assertThrows(OrderBadPriceException.class, () -> orderController.createOrder(orderCreateDto));
@@ -360,21 +356,21 @@ class OrderControllerTestWithoutMockMvc {
     }
 
     @Test
-    void createOrder_ShouldReturnBookNotFoundException(){
+    void createOrder_ShouldReturnBookNotFoundException() {
         when(orderService.createOrder(any(OrderCreateDto.class))).thenThrow(new BookNotFoundException("El libro con id " + book.getId() + " no existe"));
 
         var res = assertThrows(BookNotFoundException.class, () -> orderController.createOrder(orderCreateDto));
 
         assertAll(
                 () -> assertNotNull(res),
-                () -> assertEquals("Libro no encontrado - El libro con id "+book.getId()+" no existe", res.getMessage())
+                () -> assertEquals("Libro no encontrado - El libro con id " + book.getId() + " no existe", res.getMessage())
         );
 
         verify(orderService, times(1)).createOrder(any(OrderCreateDto.class));
     }
 
     @Test
-    void createOrder_ShouldReturnOrderGroupByOrderLinesByIdBook(){
+    void createOrder_ShouldReturnOrderGroupByOrderLinesByIdBook() {
         Order order = Order.builder()
                 .id(new ObjectId())
                 .userId(userTest.getId())
@@ -414,7 +410,7 @@ class OrderControllerTestWithoutMockMvc {
                 () -> assertEquals(order.getOrderLines().size(), res.getBody().getOrderLines().size()),
                 () -> assertEquals(order.getCreatedAt(), res.getBody().getCreatedAt()),
                 () -> assertEquals(order.getUpdatedAt(), res.getBody().getUpdatedAt()),
-                () -> assertEquals(order.isDeleted(), res.getBody().isDeleted()),
+                () -> assertEquals(order.getIsDeleted(), res.getBody().getIsDeleted()),
                 () -> assertEquals(201, res.getStatusCodeValue())
         );
 
@@ -423,7 +419,7 @@ class OrderControllerTestWithoutMockMvc {
 
 
     @Test
-    void updateOrder_ShouldReturnOrder(){
+    void updateOrder_ShouldReturnOrder() {
         when(orderService.updateOrder(any(ObjectId.class), any(OrderCreateDto.class))).thenReturn(order);
 
         var res = orderController.updateOrder(order.getId(), orderCreateDto);
@@ -439,7 +435,7 @@ class OrderControllerTestWithoutMockMvc {
                 () -> assertEquals(order.getOrderLines().size(), res.getBody().getOrderLines().size()),
                 () -> assertEquals(order.getCreatedAt(), res.getBody().getCreatedAt()),
                 () -> assertEquals(order.getUpdatedAt(), res.getBody().getUpdatedAt()),
-                () -> assertEquals(order.isDeleted(), res.getBody().isDeleted()),
+                () -> assertEquals(order.getIsDeleted(), res.getBody().getIsDeleted()),
                 () -> assertEquals(200, res.getStatusCodeValue())
         );
 
@@ -447,21 +443,21 @@ class OrderControllerTestWithoutMockMvc {
     }
 
     @Test
-    void updateOrder_ShouldReturnOrderNotFoundException(){
+    void updateOrder_ShouldReturnOrderNotFoundException() {
         when(orderService.updateOrder(any(ObjectId.class), any(OrderCreateDto.class))).thenThrow(new OrderNotFoundException(order.getId()));
 
         var res = assertThrows(OrderNotFoundException.class, () -> orderController.updateOrder(order.getId(), orderCreateDto));
 
         assertAll(
                 () -> assertNotNull(res),
-                () -> assertEquals("El pedido con id "+order.get_id()+" no existe", res.getMessage())
+                () -> assertEquals("El pedido con id " + order.get_id() + " no existe", res.getMessage())
         );
 
         verify(orderService, times(1)).updateOrder(any(ObjectId.class), any(OrderCreateDto.class));
     }
 
     @Test
-    void updateOrder_ShouldReturnClientNotFoundException(){
+    void updateOrder_ShouldReturnClientNotFoundException() {
         when(orderService.updateOrder(any(ObjectId.class), any(OrderCreateDto.class))).thenThrow(new ClientNotFound("id", clientTest.getId()));
 
         var res = assertThrows(ClientNotFound.class, () -> orderController.updateOrder(order.getId(), orderCreateDto));
@@ -475,7 +471,7 @@ class OrderControllerTestWithoutMockMvc {
     }
 
     @Test
-    void updateOrder_ShouldReturnUserNotFoundException(){
+    void updateOrder_ShouldReturnUserNotFoundException() {
         when(orderService.updateOrder(any(ObjectId.class), any(OrderCreateDto.class))).thenThrow(new UserNotFound(userTest.getId()));
 
         var res = assertThrows(UserNotFound.class, () -> orderController.updateOrder(order.getId(), orderCreateDto));
@@ -489,7 +485,7 @@ class OrderControllerTestWithoutMockMvc {
     }
 
     @Test
-    void updateOrder_ShouldReturnShopNotFoundException(){
+    void updateOrder_ShouldReturnShopNotFoundException() {
         when(orderService.updateOrder(any(ObjectId.class), any(OrderCreateDto.class))).thenThrow(new ShopNotFoundException("La tienda con id " + shop.getId() + " no existe"));
 
         var res = assertThrows(ShopNotFoundException.class, () -> orderController.updateOrder(order.getId(), orderCreateDto));
@@ -502,21 +498,21 @@ class OrderControllerTestWithoutMockMvc {
         verify(orderService, times(1)).updateOrder(any(ObjectId.class), any(OrderCreateDto.class));
     }
 
-    void updateOrder_ShouldReturnBookNotFoundException(){
+    void updateOrder_ShouldReturnBookNotFoundException() {
         when(orderService.updateOrder(any(ObjectId.class), any(OrderCreateDto.class))).thenThrow(new BookNotFoundException("El libro con id " + book.getId() + " no existe"));
 
         var res = assertThrows(BookNotFoundException.class, () -> orderController.updateOrder(order.getId(), orderCreateDto));
 
         assertAll(
                 () -> assertNotNull(res),
-                () -> assertEquals("El libro con id "+book.getId()+" no existe", res.getMessage())
+                () -> assertEquals("El libro con id " + book.getId() + " no existe", res.getMessage())
         );
 
         verify(orderService, times(1)).updateOrder(any(ObjectId.class), any(OrderCreateDto.class));
     }
 
     @Test
-    void updateOrder_ShouldReturnOrderNotItemsException(){
+    void updateOrder_ShouldReturnOrderNotItemsException() {
         when(orderService.updateOrder(any(ObjectId.class), any(OrderCreateDto.class))).thenThrow(new OrderNotItemsExceptions(order.get_id()));
 
         var res = assertThrows(OrderNotItemsExceptions.class, () -> orderController.updateOrder(order.getId(), orderCreateDto));
@@ -530,7 +526,7 @@ class OrderControllerTestWithoutMockMvc {
     }
 
     @Test
-    void updateOrder_ShouldReturnOrderNotStockException(){
+    void updateOrder_ShouldReturnOrderNotStockException() {
         when(orderService.updateOrder(any(ObjectId.class), any(OrderCreateDto.class))).thenThrow(new OrderNotStockException(book.getId()));
 
         var res = assertThrows(OrderNotStockException.class, () -> orderController.updateOrder(order.getId(), orderCreateDto));
@@ -544,7 +540,7 @@ class OrderControllerTestWithoutMockMvc {
     }
 
     @Test
-    void updateOrder_ShouldReturnOrderBadPriceException(){
+    void updateOrder_ShouldReturnOrderBadPriceException() {
         when(orderService.updateOrder(any(ObjectId.class), any(OrderCreateDto.class))).thenThrow(new OrderBadPriceException(book.getId()));
 
         var res = assertThrows(OrderBadPriceException.class, () -> orderController.updateOrder(order.getId(), orderCreateDto));
@@ -558,7 +554,7 @@ class OrderControllerTestWithoutMockMvc {
     }
 
     @Test
-    void updateOrder_ShouldReturnOrderGroupByOrderLinesByIdBook(){
+    void updateOrder_ShouldReturnOrderGroupByOrderLinesByIdBook() {
         Order order = Order.builder()
                 .id(new ObjectId())
                 .userId(userTest.getId())
@@ -598,7 +594,7 @@ class OrderControllerTestWithoutMockMvc {
                 () -> assertEquals(order.getOrderLines().size(), res.getBody().getOrderLines().size()),
                 () -> assertEquals(order.getCreatedAt(), res.getBody().getCreatedAt()),
                 () -> assertEquals(order.getUpdatedAt(), res.getBody().getUpdatedAt()),
-                () -> assertEquals(order.isDeleted(), res.getBody().isDeleted()),
+                () -> assertEquals(order.getIsDeleted(), res.getBody().getIsDeleted()),
                 () -> assertEquals(200, res.getStatusCodeValue())
         );
 
@@ -606,7 +602,7 @@ class OrderControllerTestWithoutMockMvc {
     }
 
     @Test
-    void deleteOrder_ShouldReturnOrder(){
+    void deleteOrder_ShouldReturnOrder() {
         doNothing().when(orderService).deleteOrder(any(ObjectId.class));
 
         var res = orderController.deleteOrder(order.getId());
@@ -620,35 +616,35 @@ class OrderControllerTestWithoutMockMvc {
     }
 
     @Test
-    void deleteOrder_ShouldReturnOrderNotFoundException(){
+    void deleteOrder_ShouldReturnOrderNotFoundException() {
         doThrow(new OrderNotFoundException(order.getId())).when(orderService).deleteOrder(any(ObjectId.class));
 
         var res = assertThrows(OrderNotFoundException.class, () -> orderController.deleteOrder(order.getId()));
 
         assertAll(
                 () -> assertNotNull(res),
-                () -> assertEquals("El pedido con id "+order.get_id()+" no existe", res.getMessage())
+                () -> assertEquals("El pedido con id " + order.get_id() + " no existe", res.getMessage())
         );
 
         verify(orderService, times(1)).deleteOrder(any(ObjectId.class));
     }
 
     @Test
-    void deleteOrder_ShouldReturnBookNotFoundException(){
+    void deleteOrder_ShouldReturnBookNotFoundException() {
         doThrow(new BookNotFoundException("El libro con id " + book.getId() + " no existe")).when(orderService).deleteOrder(any(ObjectId.class));
 
         var res = assertThrows(BookNotFoundException.class, () -> orderController.deleteOrder(order.getId()));
 
         assertAll(
                 () -> assertNotNull(res),
-                () -> assertEquals("Libro no encontrado - El libro con id "+book.getId()+" no existe", res.getMessage())
+                () -> assertEquals("Libro no encontrado - El libro con id " + book.getId() + " no existe", res.getMessage())
         );
 
         verify(orderService, times(1)).deleteOrder(any(ObjectId.class));
     }
 
     @Test
-    void deleteLogicOrder_ShouldReturnOrder(){
+    void deleteLogicOrder_ShouldReturnOrder() {
         Order order = Order.builder()
                 .id(new ObjectId())
                 .userId(userTest.getId())
@@ -677,7 +673,7 @@ class OrderControllerTestWithoutMockMvc {
                 () -> assertEquals(order.getOrderLines().size(), res.getBody().getOrderLines().size()),
                 () -> assertEquals(order.getCreatedAt(), res.getBody().getCreatedAt()),
                 () -> assertEquals(order.getUpdatedAt(), res.getBody().getUpdatedAt()),
-                () -> assertEquals(order.isDeleted(), res.getBody().isDeleted()),
+                () -> assertEquals(order.getIsDeleted(), res.getBody().getIsDeleted()),
                 () -> assertEquals(200, res.getStatusCodeValue())
         );
 
@@ -685,21 +681,21 @@ class OrderControllerTestWithoutMockMvc {
     }
 
     @Test
-    void deleteLogicOrder_ShouldReturnOrderNotFoundException(){
+    void deleteLogicOrder_ShouldReturnOrderNotFoundException() {
         when(orderService.deleteLogicOrder(any(ObjectId.class))).thenThrow(new OrderNotFoundException(order.getId()));
 
         var res = assertThrows(OrderNotFoundException.class, () -> orderController.deleteLogicOrder(order.getId()));
 
         assertAll(
                 () -> assertNotNull(res),
-                () -> assertEquals("El pedido con id "+order.get_id()+" no existe", res.getMessage())
+                () -> assertEquals("El pedido con id " + order.get_id() + " no existe", res.getMessage())
         );
 
         verify(orderService, times(1)).deleteLogicOrder(any(ObjectId.class));
     }
 
     @Test
-    void getOrdersByClientId_ShouldReturnOrder(){
+    void getOrdersByClientId_ShouldReturnOrder() {
         when(orderService.getOrdersByClientId(any(UUID.class), any(Pageable.class))).thenReturn(new PageImpl<>(List.of(order)));
 
         var res = orderController.getOrdersByClientId(clientTest.getId(), new PageableRequest(0, 10, "id", "asc"), requestMock);
@@ -717,7 +713,7 @@ class OrderControllerTestWithoutMockMvc {
                 () -> assertEquals(order.getOrderLines().size(), res.getBody().content().get(0).getOrderLines().size()),
                 () -> assertEquals(order.getCreatedAt(), res.getBody().content().get(0).getCreatedAt()),
                 () -> assertEquals(order.getUpdatedAt(), res.getBody().content().get(0).getUpdatedAt()),
-                () -> assertEquals(order.isDeleted(), res.getBody().content().get(0).isDeleted()),
+                () -> assertEquals(order.getIsDeleted(), res.getBody().content().get(0).getIsDeleted()),
                 () -> assertEquals(200, res.getStatusCodeValue())
         );
 
@@ -725,7 +721,7 @@ class OrderControllerTestWithoutMockMvc {
     }
 
     @Test
-    void getOrdersByClientId_ShouldReturnEmptyPage(){
+    void getOrdersByClientId_ShouldReturnEmptyPage() {
         when(orderService.getOrdersByClientId(any(UUID.class), any(Pageable.class))).thenReturn(new PageImpl<>(List.of()));
 
         var res = orderController.getOrdersByClientId(clientTest.getId(), new PageableRequest(0, 10, "id", "asc"), requestMock);
@@ -742,7 +738,7 @@ class OrderControllerTestWithoutMockMvc {
     }
 
     @Test
-    void getOrdersByClientId_ShouldReturnClientNotFoundException(){
+    void getOrdersByClientId_ShouldReturnClientNotFoundException() {
         when(orderService.getOrdersByClientId(any(UUID.class), any(Pageable.class))).thenThrow(new ClientNotFound("id", clientTest.getId()));
 
         var res = assertThrows(ClientNotFound.class, () -> orderController.getOrdersByClientId(clientTest.getId(), new PageableRequest(0, 10, "id", "asc"), requestMock));
@@ -756,7 +752,7 @@ class OrderControllerTestWithoutMockMvc {
     }
 
     @Test
-    void getOrdersByUserId_ShouldReturnOrder(){
+    void getOrdersByUserId_ShouldReturnOrder() {
         when(orderService.getOrdersByUserId(any(UUID.class), any(Pageable.class))).thenReturn(new PageImpl<>(List.of(order)));
 
         var res = orderController.getOrdersByUserId(userTest.getId(), new PageableRequest(0, 10, "id", "asc"), requestMock);
@@ -774,7 +770,7 @@ class OrderControllerTestWithoutMockMvc {
                 () -> assertEquals(order.getOrderLines().size(), res.getBody().content().get(0).getOrderLines().size()),
                 () -> assertEquals(order.getCreatedAt(), res.getBody().content().get(0).getCreatedAt()),
                 () -> assertEquals(order.getUpdatedAt(), res.getBody().content().get(0).getUpdatedAt()),
-                () -> assertEquals(order.isDeleted(), res.getBody().content().get(0).isDeleted()),
+                () -> assertEquals(order.getIsDeleted(), res.getBody().content().get(0).getIsDeleted()),
                 () -> assertEquals(200, res.getStatusCodeValue())
         );
 
@@ -782,7 +778,7 @@ class OrderControllerTestWithoutMockMvc {
     }
 
     @Test
-    void getOrdersByUserId_ShouldReturnEmptyPage(){
+    void getOrdersByUserId_ShouldReturnEmptyPage() {
         when(orderService.getOrdersByUserId(any(UUID.class), any(Pageable.class))).thenReturn(new PageImpl<>(List.of()));
 
         var res = orderController.getOrdersByUserId(userTest.getId(), new PageableRequest(0, 10, "id", "asc"), requestMock);
@@ -799,7 +795,7 @@ class OrderControllerTestWithoutMockMvc {
     }
 
     @Test
-    void getOrdersByUserId_ShouldReturnUserNotFoundException(){
+    void getOrdersByUserId_ShouldReturnUserNotFoundException() {
         when(orderService.getOrdersByUserId(any(UUID.class), any(Pageable.class))).thenThrow(new UserNotFound(userTest.getId()));
 
         var res = assertThrows(UserNotFound.class, () -> orderController.getOrdersByUserId(userTest.getId(), new PageableRequest(0, 10, "id", "asc"), requestMock));
@@ -813,7 +809,7 @@ class OrderControllerTestWithoutMockMvc {
     }
 
     @Test
-    void getOrdersByShopId_ShouldReturnOrder(){
+    void getOrdersByShopId_ShouldReturnOrder() {
         when(orderService.getOrdersByShopId(any(UUID.class), any(Pageable.class))).thenReturn(new PageImpl<>(List.of(order)));
 
         var res = orderController.getOrdersByShopId(shop.getId(), new PageableRequest(0, 10, "id", "asc"), requestMock);
@@ -831,7 +827,7 @@ class OrderControllerTestWithoutMockMvc {
                 () -> assertEquals(order.getOrderLines().size(), res.getBody().content().get(0).getOrderLines().size()),
                 () -> assertEquals(order.getCreatedAt(), res.getBody().content().get(0).getCreatedAt()),
                 () -> assertEquals(order.getUpdatedAt(), res.getBody().content().get(0).getUpdatedAt()),
-                () -> assertEquals(order.isDeleted(), res.getBody().content().get(0).isDeleted()),
+                () -> assertEquals(order.getIsDeleted(), res.getBody().content().get(0).getIsDeleted()),
                 () -> assertEquals(200, res.getStatusCodeValue())
         );
 
@@ -839,7 +835,7 @@ class OrderControllerTestWithoutMockMvc {
     }
 
     @Test
-    void getOrdersByShopId_ShouldReturnEmptyPage(){
+    void getOrdersByShopId_ShouldReturnEmptyPage() {
         when(orderService.getOrdersByShopId(any(UUID.class), any(Pageable.class))).thenReturn(new PageImpl<>(List.of()));
 
         var res = orderController.getOrdersByShopId(shop.getId(), new PageableRequest(0, 10, "id", "asc"), requestMock);
@@ -856,7 +852,7 @@ class OrderControllerTestWithoutMockMvc {
     }
 
     @Test
-    void getOrdersByShopId_ShouldReturnShopNotFoundException(){
+    void getOrdersByShopId_ShouldReturnShopNotFoundException() {
         when(orderService.getOrdersByShopId(any(UUID.class), any(Pageable.class))).thenThrow(new ShopNotFoundException("La tienda con id " + shop.getId() + " no existe"));
 
         var res = assertThrows(ShopNotFoundException.class, () -> orderController.getOrdersByShopId(shop.getId(), new PageableRequest(0, 10, "id", "asc"), requestMock));
@@ -868,8 +864,6 @@ class OrderControllerTestWithoutMockMvc {
 
         verify(orderService, times(1)).getOrdersByShopId(any(UUID.class), any(Pageable.class));
     }
-
-
 
 
 }

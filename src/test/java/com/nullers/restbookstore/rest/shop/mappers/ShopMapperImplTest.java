@@ -1,17 +1,16 @@
 package com.nullers.restbookstore.rest.shop.mappers;
 
-import com.nullers.restbookstore.rest.book.dto.UpdateBookDTO;
 import com.nullers.restbookstore.rest.common.Address;
 import com.nullers.restbookstore.rest.shop.dto.CreateShopDto;
 import com.nullers.restbookstore.rest.shop.dto.GetShopDto;
 import com.nullers.restbookstore.rest.shop.dto.UpdateShopDto;
 import com.nullers.restbookstore.rest.shop.model.Shop;
 import org.junit.jupiter.api.Test;
-import org.springframework.stereotype.Component;
 
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class ShopMapperImplTest {
 
@@ -26,7 +25,7 @@ public class ShopMapperImplTest {
                     .city("Madrid")
                     .street("Calle 1")
                     .number("1")
-                    .PostalCode("28001")
+                    .postalCode("28001")
                     .country("España")
                     .build())
             .build();
@@ -38,7 +37,7 @@ public class ShopMapperImplTest {
                     .city("Madrid")
                     .street("Calle 2")
                     .number("2")
-                    .PostalCode("28002")
+                    .postalCode("28002")
                     .country("España")
                     .build())
             .build();
@@ -50,13 +49,13 @@ public class ShopMapperImplTest {
                     .city("Madrid")
                     .street("Calle 1")
                     .number("1")
-                    .PostalCode("28001")
+                    .postalCode("28001")
                     .country("España")
                     .build())
             .build();
 
     @Test
-    void toShopTest(){
+    void toShopTest() {
 
         Shop shop = shopMapperImpl.toShop(createShopDto);
         assertAll(
@@ -67,7 +66,7 @@ public class ShopMapperImplTest {
     }
 
     @Test
-    void toShopTest2(){
+    void toShopTest2() {
 
         Shop shop = shopMapperImpl.toShop(this.shop, updateShopDto);
         assertAll(
@@ -78,7 +77,7 @@ public class ShopMapperImplTest {
     }
 
     @Test
-    void toGetShopDtoTest(){
+    void toGetShopDtoTest() {
 
         GetShopDto shopT = shopMapperImpl.toGetShopDto(shop);
         assertAll(
@@ -89,7 +88,7 @@ public class ShopMapperImplTest {
     }
 
     @Test
-    void toShopListTest(){
+    void toShopListTest() {
 
         List<GetShopDto> shopT = shopMapperImpl.toShopList(List.of(shop));
         assertAll(

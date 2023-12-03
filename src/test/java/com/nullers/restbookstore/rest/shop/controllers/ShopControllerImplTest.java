@@ -6,7 +6,7 @@ import com.nullers.restbookstore.pagination.models.ErrorResponse;
 import com.nullers.restbookstore.pagination.models.PageResponse;
 import com.nullers.restbookstore.rest.book.exceptions.BookNotFoundException;
 import com.nullers.restbookstore.rest.book.model.Book;
-import com.nullers.restbookstore.rest.category.model.Categoria;
+import com.nullers.restbookstore.rest.category.model.Category;
 import com.nullers.restbookstore.rest.client.exceptions.ClientNotFound;
 import com.nullers.restbookstore.rest.client.model.Client;
 import com.nullers.restbookstore.rest.common.Address;
@@ -32,16 +32,15 @@ import org.springframework.security.test.context.support.WithAnonymousUser;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.*;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-
-
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
+
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 
 /**
  * Clase ShopControllerImplTest
@@ -69,10 +68,10 @@ class ShopControllerImplTest {
             .name("name")
             .build();
 
-    Categoria categoria = Categoria.builder()
+    Category category = Category.builder()
             .id(UUID.fromString("a712c5f2-eb95-449a-9ec4-1aa55cdac9bc"))
-            .nombre("Cat")
-            .activa(true)
+            .name("Cat")
+            .isActive(true)
             .build();
 
     Book book = Book.builder()
@@ -84,7 +83,7 @@ class ShopControllerImplTest {
             .price(1.0)
             .description("description")
             .active(true)
-            .category(categoria)
+            .category(category)
             .build();
 
     Address address = Address.builder()
@@ -93,7 +92,7 @@ class ShopControllerImplTest {
             .country("USA")
             .province("Springfield")
             .number("123")
-            .PostalCode("12345")
+            .postalCode("12345")
             .build();
 
 
@@ -292,7 +291,7 @@ class ShopControllerImplTest {
     }
 
     @Test
-    void getAllShops_ShouldReturnShops() throws Exception{
+    void getAllShops_ShouldReturnShops() throws Exception {
         when(service.getAllShops(any(Optional.class), any(Optional.class), any(PageRequest.class))).thenReturn(new PageImpl<>(List.of(
                 GetShopDto.builder()
                         .id(shop.getId())
@@ -327,7 +326,7 @@ class ShopControllerImplTest {
     }
 
     @Test
-    void getAllShops_ShouldReturnEmptyList() throws Exception{
+    void getAllShops_ShouldReturnEmptyList() throws Exception {
         when(service.getAllShops(any(Optional.class), any(Optional.class), any(PageRequest.class))).thenReturn(new PageImpl<>(List.of()));
 
         MockHttpServletResponse response = mockMvc.perform(
@@ -349,7 +348,7 @@ class ShopControllerImplTest {
     }
 
     @Test
-    void getAllShops_ShouldReturnShopWithFiltererName() throws Exception{
+    void getAllShops_ShouldReturnShopWithFiltererName() throws Exception {
         when(service.getAllShops(any(Optional.class), any(Optional.class), any(PageRequest.class))).thenReturn(new PageImpl<>(List.of(
                 GetShopDto.builder()
                         .id(shop.getId())
@@ -385,7 +384,7 @@ class ShopControllerImplTest {
     }
 
     @Test
-    void getAllShops_ShouldReturnErrorWithInvalidPage() throws Exception{
+    void getAllShops_ShouldReturnErrorWithInvalidPage() throws Exception {
         MockHttpServletResponse response = mockMvc.perform(
                 get(endpoint)
                         .contentType("application/json")
@@ -393,7 +392,7 @@ class ShopControllerImplTest {
                         .param("page", "-1")
         ).andReturn().getResponse();
 
-        Map<String, Object> res = mapper.readValue(response.getContentAsString(StandardCharsets.UTF_8), mapper.getTypeFactory().constructMapType(Map.class, String.class, Object.class) );
+        Map<String, Object> res = mapper.readValue(response.getContentAsString(StandardCharsets.UTF_8), mapper.getTypeFactory().constructMapType(Map.class, String.class, Object.class));
         LinkedHashMap<String, Object> errors = (LinkedHashMap<String, Object>) res.get("errors");
 
 
@@ -428,7 +427,7 @@ class ShopControllerImplTest {
     }
 
     @Test
-    void getShopById_ShouldReturnShop() throws Exception{
+    void getShopById_ShouldReturnShop() throws Exception {
         when(service.getShopById(any(UUID.class))).thenReturn(getShopDto);
 
         MockHttpServletResponse response = mockMvc.perform(
@@ -452,7 +451,7 @@ class ShopControllerImplTest {
     }
 
     @Test
-    void getShopById_ShouldReturnShopNotFound() throws Exception{
+    void getShopById_ShouldReturnShopNotFound() throws Exception {
         when(service.getShopById(any(UUID.class))).thenThrow(new ShopNotFoundException("Tienda no encontrada con ID: " + shop.getId()));
 
         MockHttpServletResponse response = mockMvc.perform(
@@ -472,7 +471,7 @@ class ShopControllerImplTest {
     }
 
     @Test
-    void createShop_ShouldReturnShop() throws Exception{
+    void createShop_ShouldReturnShop() throws Exception {
         when(service.createShop(any(CreateShopDto.class))).thenReturn(getShopDto);
 
         MockHttpServletResponse response = mockMvc.perform(
@@ -523,7 +522,7 @@ class ShopControllerImplTest {
     }
 
     @Test
-    void createShop_ShouldReturnErrorWithInvalidLocation() throws Exception{
+    void createShop_ShouldReturnErrorWithInvalidLocation() throws Exception {
         CreateShopDto createShopDto = CreateShopDto.builder()
                 .name("name")
                 .location(null)
@@ -549,10 +548,10 @@ class ShopControllerImplTest {
     }
 
     @Test
-    void createShop_ShouldReturnErrorWithInvalidLocationErrorAll() throws Exception{
+    void createShop_ShouldReturnErrorWithInvalidLocationErrorAll() throws Exception {
         CreateShopDto createShopDto = CreateShopDto.builder()
                 .name("tienda 1")
-                .location(Address.builder() .build())
+                .location(Address.builder().build())
                 .build();
 
         MockHttpServletResponse response = mockMvc.perform(
@@ -574,7 +573,7 @@ class ShopControllerImplTest {
                 () -> assertEquals("La ciudad no puede estar vacía", errors.get("location.city")),
                 () -> assertEquals("La provincia no puede estar vacía", errors.get("location.province")),
                 () -> assertEquals("El país no puede estar vacío", errors.get("location.country")),
-                () -> assertEquals("El código postal no puede estar vacío", errors.get("location.PostalCode"))
+                () -> assertEquals("El código postal no puede estar vacío", errors.get("location.postalCode"))
         );
 
         verify(service, times(0)).createShop(any(CreateShopDto.class));
@@ -590,7 +589,7 @@ class ShopControllerImplTest {
                         .country("USA")
                         .province("Sp")
                         .number("23")
-                        .PostalCode("145")
+                        .postalCode("145")
                         .build())
                 .build();
 
@@ -609,7 +608,7 @@ class ShopControllerImplTest {
                 () -> assertEquals(4, errors.size()),
                 () -> assertEquals("La calle debe tener al menos 3 caracteres y máximo 200", errors.get("location.street")),
                 () -> assertEquals("La ciudad debe tener al menos 3 caracteres", errors.get("location.city")),
-                () -> assertEquals("El código postal debe tener 5 dígitos", errors.get("location.PostalCode")),
+                () -> assertEquals("El código postal debe tener 5 dígitos", errors.get("location.postalCode")),
                 () -> assertEquals("La provincia debe tener al menos 3 caracteres", errors.get("location.province"))
         );
 
@@ -617,7 +616,7 @@ class ShopControllerImplTest {
     }
 
     @Test
-    void updateShop_ShouldReturnShop() throws Exception{
+    void updateShop_ShouldReturnShop() throws Exception {
         when(service.updateShop(any(UUID.class), any(UpdateShopDto.class))).thenReturn(getShopDto);
 
         MockHttpServletResponse response = mockMvc.perform(
@@ -668,7 +667,7 @@ class ShopControllerImplTest {
     }
 
     @Test
-    void updateShop_ShouldReturnErrorWithInvalidLocation() throws Exception{
+    void updateShop_ShouldReturnErrorWithInvalidLocation() throws Exception {
         UpdateShopDto updateShopDto = UpdateShopDto.builder()
                 .name("name")
                 .location(null)
@@ -718,7 +717,7 @@ class ShopControllerImplTest {
                 () -> assertEquals("La ciudad no puede estar vacía", errors.get("location.city")),
                 () -> assertEquals("La provincia no puede estar vacía", errors.get("location.province")),
                 () -> assertEquals("El país no puede estar vacío", errors.get("location.country")),
-                () -> assertEquals("El código postal no puede estar vacío", errors.get("location.PostalCode"))
+                () -> assertEquals("El código postal no puede estar vacío", errors.get("location.postalCode"))
         );
 
         verify(service, times(0)).updateShop(any(UUID.class), any(UpdateShopDto.class));
@@ -734,7 +733,7 @@ class ShopControllerImplTest {
                         .country("USA")
                         .province("Sp")
                         .number("23")
-                        .PostalCode("145")
+                        .postalCode("145")
                         .build())
                 .build();
 
@@ -753,7 +752,7 @@ class ShopControllerImplTest {
                 () -> assertEquals(4, errors.size()),
                 () -> assertEquals("La calle debe tener al menos 3 caracteres y máximo 200", errors.get("location.street")),
                 () -> assertEquals("La ciudad debe tener al menos 3 caracteres", errors.get("location.city")),
-                () -> assertEquals("El código postal debe tener 5 dígitos", errors.get("location.PostalCode")),
+                () -> assertEquals("El código postal debe tener 5 dígitos", errors.get("location.postalCode")),
                 () -> assertEquals("La provincia debe tener al menos 3 caracteres", errors.get("location.province"))
         );
 
@@ -761,7 +760,7 @@ class ShopControllerImplTest {
     }
 
     @Test
-    void updateShop_ShouldReturnShopNotFound() throws Exception{
+    void updateShop_ShouldReturnShopNotFound() throws Exception {
         when(service.updateShop(any(UUID.class), any(UpdateShopDto.class))).thenThrow(new ShopNotFoundException("Tienda no encontrada con ID: " + shop.getId()));
 
         MockHttpServletResponse response = mockMvc.perform(
@@ -782,7 +781,7 @@ class ShopControllerImplTest {
     }
 
     @Test
-    void deleteShop_ShouldReturnCreated() throws Exception{
+    void deleteShop_ShouldReturnCreated() throws Exception {
         MockHttpServletResponse response = mockMvc.perform(
                 delete(endpoint + "/{id}", shop.getId())
                         .contentType("application/json")
@@ -797,7 +796,7 @@ class ShopControllerImplTest {
     }
 
     @Test
-    void deleteShop_ShouldReturnShopNotFound() throws Exception{
+    void deleteShop_ShouldReturnShopNotFound() throws Exception {
         doThrow(new BookNotFoundException("Tienda no encontrada con ID: " + shop.getId())).when(service).deleteShop(any(UUID.class));
 
         MockHttpServletResponse response = mockMvc.perform(
@@ -817,7 +816,7 @@ class ShopControllerImplTest {
     }
 
     @Test
-    void deleteShop_ShouldReturnShopHasOrders() throws Exception{
+    void deleteShop_ShouldReturnShopHasOrders() throws Exception {
         doThrow(new ShopHasOrders("La tienda no se puede eliminar porque tiene pedidos asociados")).when(service).deleteShop(any(UUID.class));
 
         MockHttpServletResponse response = mockMvc.perform(
@@ -837,7 +836,7 @@ class ShopControllerImplTest {
     }
 
     @Test
-    void addBookToShop_ShouldReturnGetShopDto() throws Exception{
+    void addBookToShop_ShouldReturnGetShopDto() throws Exception {
         when(service.addBookToShop(any(UUID.class), any(Long.class))).thenReturn(getShopDto);
 
         MockHttpServletResponse response = mockMvc.perform(
@@ -861,7 +860,7 @@ class ShopControllerImplTest {
     }
 
     @Test
-    void addBookToShop_ShouldReturnShopNotFound() throws Exception{
+    void addBookToShop_ShouldReturnShopNotFound() throws Exception {
         when(service.addBookToShop(any(UUID.class), any(Long.class))).thenThrow(new ShopNotFoundException("Tienda no encontrada con ID: " + shop.getId()));
 
         MockHttpServletResponse response = mockMvc.perform(
@@ -881,7 +880,7 @@ class ShopControllerImplTest {
     }
 
     @Test
-    void addBookToShop_ShouldReturnBookNotFound() throws Exception{
+    void addBookToShop_ShouldReturnBookNotFound() throws Exception {
         when(service.addBookToShop(any(UUID.class), any(Long.class))).thenThrow(new BookNotFoundException("Libro no encontrado con ID: " + book.getId()));
 
         MockHttpServletResponse response = mockMvc.perform(
@@ -901,7 +900,7 @@ class ShopControllerImplTest {
     }
 
     @Test
-    void removeBookFromShop_ShouldReturnGetShopDto() throws Exception{
+    void removeBookFromShop_ShouldReturnGetShopDto() throws Exception {
         when(service.removeBookFromShop(any(UUID.class), any(Long.class))).thenReturn(getShopDto);
 
         MockHttpServletResponse response = mockMvc.perform(
@@ -925,7 +924,7 @@ class ShopControllerImplTest {
     }
 
     @Test
-    void removeBookFromShop_ShouldReturnShopNotFound() throws Exception{
+    void removeBookFromShop_ShouldReturnShopNotFound() throws Exception {
         when(service.removeBookFromShop(any(UUID.class), any(Long.class))).thenThrow(new ShopNotFoundException("Tienda no encontrada con ID: " + shop.getId()));
 
         MockHttpServletResponse response = mockMvc.perform(
@@ -945,7 +944,7 @@ class ShopControllerImplTest {
     }
 
     @Test
-    void removeBookFromShop_ShouldReturnBookNotFound() throws Exception{
+    void removeBookFromShop_ShouldReturnBookNotFound() throws Exception {
         when(service.removeBookFromShop(any(UUID.class), any(Long.class))).thenThrow(new BookNotFoundException("Libro no encontrado con ID: " + book.getId()));
 
         MockHttpServletResponse response = mockMvc.perform(
@@ -965,7 +964,7 @@ class ShopControllerImplTest {
     }
 
     @Test
-    void addClientToShop_ShouldReturnGetShopDto() throws Exception{
+    void addClientToShop_ShouldReturnGetShopDto() throws Exception {
         when(service.addClientToShop(any(UUID.class), any(UUID.class))).thenReturn(getShopDto);
 
         MockHttpServletResponse response = mockMvc.perform(
@@ -989,7 +988,7 @@ class ShopControllerImplTest {
     }
 
     @Test
-    void addClientToShop_ShouldReturnShopNotFound() throws Exception{
+    void addClientToShop_ShouldReturnShopNotFound() throws Exception {
         when(service.addClientToShop(any(UUID.class), any(UUID.class))).thenThrow(new ShopNotFoundException("Tienda no encontrada con ID: " + shop.getId()));
 
         MockHttpServletResponse response = mockMvc.perform(
@@ -1009,7 +1008,7 @@ class ShopControllerImplTest {
     }
 
     @Test
-    void addClientToShop_ShouldReturnClientNotFound() throws Exception{
+    void addClientToShop_ShouldReturnClientNotFound() throws Exception {
         when(service.addClientToShop(any(UUID.class), any(UUID.class))).thenThrow(new ClientNotFound("id", clientTest.getId()));
 
         MockHttpServletResponse response = mockMvc.perform(
@@ -1029,7 +1028,7 @@ class ShopControllerImplTest {
     }
 
     @Test
-    void removeClientFromShop_ShouldReturnGetShopDto() throws Exception{
+    void removeClientFromShop_ShouldReturnGetShopDto() throws Exception {
         when(service.removeClientFromShop(any(UUID.class), any(UUID.class))).thenReturn(getShopDto);
 
         MockHttpServletResponse response = mockMvc.perform(
@@ -1053,7 +1052,7 @@ class ShopControllerImplTest {
     }
 
     @Test
-    void removeClientFromShop_ShouldReturnShopNotFound() throws Exception{
+    void removeClientFromShop_ShouldReturnShopNotFound() throws Exception {
         when(service.removeClientFromShop(any(UUID.class), any(UUID.class))).thenThrow(new ShopNotFoundException("Tienda no encontrada con ID: " + shop.getId()));
 
         MockHttpServletResponse response = mockMvc.perform(
@@ -1073,7 +1072,7 @@ class ShopControllerImplTest {
     }
 
     @Test
-    void removeClientFromShop_ShouldReturnClientNotFound() throws Exception{
+    void removeClientFromShop_ShouldReturnClientNotFound() throws Exception {
         when(service.removeClientFromShop(any(UUID.class), any(UUID.class))).thenThrow(new ClientNotFound("id", clientTest.getId()));
 
         MockHttpServletResponse response = mockMvc.perform(
@@ -1091,8 +1090,6 @@ class ShopControllerImplTest {
 
         verify(service, times(1)).removeClientFromShop(any(UUID.class), any(UUID.class));
     }
-
-
 
 
 }

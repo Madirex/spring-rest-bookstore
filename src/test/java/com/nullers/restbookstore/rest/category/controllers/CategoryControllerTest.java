@@ -21,6 +21,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockHttpServletResponse;
+import org.springframework.security.test.context.support.WithAnonymousUser;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.*;
@@ -33,6 +35,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 @AutoConfigureMockMvc
 @ExtendWith(MockitoExtension.class)
 @SpringBootTest(properties = "spring.config.name=application-test")
+@WithMockUser(username = "admin", password = "admin", roles = "ADMIN")
 class CategoryControllerTest {
 
     private final ObjectMapper mapper = new ObjectMapper();
@@ -81,11 +84,83 @@ class CategoryControllerTest {
         this.service = service;
     }
 
+    @Test
+    @WithAnonymousUser
+    void getAllCategorias_WithAnonymousUser() throws Exception {
+        MockHttpServletResponse response = mockMvc.perform(get(endPoint)
+                        .accept(MediaType.APPLICATION_JSON))
+                .andReturn().getResponse();
+
+        assertAll(
+                () -> assertEquals(HttpStatus.FORBIDDEN.value(), response.getStatus())
+        );
+
+        verify(service, times(0)).getAll(any(Optional.class), any(Optional.class), any(Pageable.class));
+    }
+
+    @Test
+    @WithAnonymousUser
+    void getCategoria_WithAnonymousUser() throws Exception {
+        MockHttpServletResponse response = mockMvc.perform(get(endPoint + "/3930e05a-7ebf-4aa1-8aa8-5d7466fa9734")
+                        .accept(MediaType.APPLICATION_JSON))
+                .andReturn().getResponse();
+
+        assertAll(
+                () -> assertEquals(HttpStatus.FORBIDDEN.value(), response.getStatus())
+        );
+
+        verify(service, times(0)).getCategoriaById(UUID.fromString("3930e05a-7ebf-4aa1-8aa8-5d7466fa9734"));
+    }
+
+    @Test
+    @WithAnonymousUser
+    void addCategoria_WithAnonymousUser() throws Exception {
+        MockHttpServletResponse response = mockMvc.perform(post(endPoint)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(mapper.writeValueAsString(categoriaCreateDto)))
+                .andReturn().getResponse();
+
+        assertAll(
+                () -> assertEquals(HttpStatus.FORBIDDEN.value(), response.getStatus())
+        );
+
+        verify(service, times(0)).createCategoria(categoriaCreateDto);
+    }
+
+    @Test
+    @WithAnonymousUser
+    void updateCategoria_WithAnonymousUser() throws Exception {
+        MockHttpServletResponse response = mockMvc.perform(put(endPoint + "/3930e05a-7ebf-4aa1-8aa8-5d7466fa9734")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(mapper.writeValueAsString(categoriaCreateDto)))
+                .andReturn().getResponse();
+
+        assertAll(
+                () -> assertEquals(HttpStatus.FORBIDDEN.value(), response.getStatus())
+        );
+
+        verify(service, times(0)).updateCategoria(UUID.fromString("3930e05a-7ebf-4aa1-8aa8-5d7466fa9734"), categoriaCreateDto);
+    }
+
+    @Test
+    @WithAnonymousUser
+    void deleteCategoria_WithAnonymousUser() throws Exception {
+        MockHttpServletResponse response = mockMvc.perform(delete(endPoint + "/3930e05a-7ebf-4aa1-8aa8-5d7466fa9734")
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andReturn().getResponse();
+
+        assertAll(
+                () -> assertEquals(HttpStatus.FORBIDDEN.value(), response.getStatus())
+        );
+
+        verify(service, times(0)).deleteById(UUID.fromString("3930e05a-7ebf-4aa1-8aa8-5d7466fa9734"));
+    }
+
 
     @Test
     void getAllCategorias_WithoutParams() throws Exception {
-        List<Category> categories = List.of(category1, category2);
-        when(service.getAll(any(Optional.class), any(Optional.class), any(Pageable.class))).thenReturn(new PageImpl(categories));
+        List<Category> categorys = List.of(category1, category2);
+        when(service.getAll(any(Optional.class), any(Optional.class), any(Pageable.class))).thenReturn(new PageImpl(categorys));
 
         MockHttpServletResponse response = mockMvc.perform(get(endPoint)
                         .accept(MediaType.APPLICATION_JSON))
@@ -110,8 +185,8 @@ class CategoryControllerTest {
 
     @Test
     void getAllCategorias_ShouldReturnCategorias_withAllParams() throws Exception {
-        List<Category> categories = List.of(category1);
-        when(service.getAll(any(Optional.class), any(Optional.class), any(Pageable.class))).thenReturn(new PageImpl(categories));
+        List<Category> categorys = List.of(category1);
+        when(service.getAll(any(Optional.class), any(Optional.class), any(Pageable.class))).thenReturn(new PageImpl(categorys));
 
         MockHttpServletResponse response = mockMvc.perform(get(endPoint)
                         .param("nombre", "categoria 1")
@@ -140,8 +215,8 @@ class CategoryControllerTest {
 
     @Test
     void getAllCategorias_ShouldReturnCategoria_withNameParam() throws Exception {
-        List<Category> categories = List.of(category1);
-        when(service.getAll(any(Optional.class), any(Optional.class), any(Pageable.class))).thenReturn(new PageImpl(categories));
+        List<Category> categorys = List.of(category1);
+        when(service.getAll(any(Optional.class), any(Optional.class), any(Pageable.class))).thenReturn(new PageImpl(categorys));
 
         MockHttpServletResponse response = mockMvc.perform(get(endPoint)
                         .param("nombre", "categoria 1")
@@ -165,8 +240,8 @@ class CategoryControllerTest {
 
     @Test
     void getAllCategorias_ShouldReturnEmpty_withNameButIsInactive() throws Exception {
-        List<Category> categories = List.of();
-        when(service.getAll(any(Optional.class), any(Optional.class), any(Pageable.class))).thenReturn(new PageImpl(categories));
+        List<Category> categorys = List.of();
+        when(service.getAll(any(Optional.class), any(Optional.class), any(Pageable.class))).thenReturn(new PageImpl(categorys));
 
         MockHttpServletResponse response = mockMvc.perform(get(endPoint)
                         .param("nombre", "categoria 2")
@@ -188,8 +263,8 @@ class CategoryControllerTest {
 
     @Test
     void getAllCategorias_ShouldReturnCategoria_withSorted() throws Exception {
-        List<Category> categories = List.of(category3, category1);
-        when(service.getAll(any(Optional.class), any(Optional.class), any(Pageable.class))).thenReturn(new PageImpl(categories));
+        List<Category> categorys = List.of(category3, category1);
+        when(service.getAll(any(Optional.class), any(Optional.class), any(Pageable.class))).thenReturn(new PageImpl(categorys));
 
         MockHttpServletResponse response = mockMvc.perform(get(endPoint)
                         .param("sortBy", "nombre")
@@ -253,8 +328,8 @@ class CategoryControllerTest {
 
     @Test
     void getAllCategorias_shouldReturnCategorias_withNameAndActive() throws Exception {
-        List<Category> categories = List.of(category1);
-        when(service.getAll(any(Optional.class), any(Optional.class), any(Pageable.class))).thenReturn(new PageImpl(categories));
+        List<Category> categorys = List.of(category1);
+        when(service.getAll(any(Optional.class), any(Optional.class), any(Pageable.class))).thenReturn(new PageImpl(categorys));
 
         MockHttpServletResponse response = mockMvc.perform(get(endPoint)
                         .param("nombre", "categoria 1")
@@ -352,7 +427,7 @@ class CategoryControllerTest {
     }
 
     @Test
-    void addCategoriaWithoutName() throws Exception {
+    void addCategoryWithoutName() throws Exception {
         categoriaCreateDto.setName(null);
 
         MockHttpServletResponse response = mockMvc.perform(post(endPoint)

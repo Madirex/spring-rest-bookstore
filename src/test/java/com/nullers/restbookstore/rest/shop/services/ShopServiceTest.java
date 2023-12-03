@@ -3,7 +3,7 @@ package com.nullers.restbookstore.rest.shop.services;
 import com.nullers.restbookstore.rest.book.exceptions.BookNotFoundException;
 import com.nullers.restbookstore.rest.book.model.Book;
 import com.nullers.restbookstore.rest.book.repository.BookRepository;
-import com.nullers.restbookstore.rest.category.model.Categoria;
+import com.nullers.restbookstore.rest.category.model.Category;
 import com.nullers.restbookstore.rest.client.exceptions.ClientNotFound;
 import com.nullers.restbookstore.rest.client.model.Client;
 import com.nullers.restbookstore.rest.client.repository.ClientRepository;
@@ -20,8 +20,8 @@ import com.nullers.restbookstore.rest.shop.exceptions.ShopNotFoundException;
 import com.nullers.restbookstore.rest.shop.mappers.ShopMapperImpl;
 import com.nullers.restbookstore.rest.shop.model.Shop;
 import com.nullers.restbookstore.rest.shop.repository.ShopRepository;
-import com.nullers.restbookstore.rest.user.models.Role;
 import com.nullers.restbookstore.rest.user.models.User;
+import com.nullers.restbookstore.rest.user.models.UserRole;
 import org.bson.types.ObjectId;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -32,7 +32,6 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.jpa.domain.Specification;
 
-import java.awt.print.Pageable;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
@@ -72,7 +71,7 @@ public class ShopServiceTest {
                     .city("Madrid")
                     .street("Calle 1")
                     .number("1")
-                    .PostalCode("28001")
+                    .postalCode("28001")
                     .country("España")
                     .build())
             .build();
@@ -84,7 +83,7 @@ public class ShopServiceTest {
                     .city("Madrid")
                     .street("Calle 2")
                     .number("2")
-                    .PostalCode("28002")
+                    .postalCode("28002")
                     .country("España")
                     .build())
             .build();
@@ -97,7 +96,7 @@ public class ShopServiceTest {
                     .city("Madrid")
                     .street("Calle 1")
                     .number("1")
-                    .PostalCode("28001")
+                    .postalCode("28001")
                     .country("España")
                     .build())
             .clients(Set.of())
@@ -119,16 +118,15 @@ public class ShopServiceTest {
             .build();
 
 
-
     Publisher publisher = Publisher.builder()
             .id(1L)
             .name("name")
             .build();
 
-    Categoria categoria = Categoria.builder()
+    Category category = Category.builder()
             .id(UUID.fromString("a712c5f2-eb95-449a-9ec4-1aa55cdac9bc"))
-            .nombre("Cat")
-            .activa(true)
+            .name("Cat")
+            .isActive(true)
             .build();
 
     Book book = Book.builder()
@@ -140,7 +138,7 @@ public class ShopServiceTest {
             .price(1.0)
             .description("description")
             .active(true)
-            .category(categoria)
+            .category(category)
             .build();
 
     Address address = Address.builder()
@@ -149,7 +147,7 @@ public class ShopServiceTest {
             .country("USA")
             .province("Springfield")
             .number("123")
-            .PostalCode("12345")
+            .postalCode("12345")
             .build();
 
 
@@ -169,9 +167,9 @@ public class ShopServiceTest {
             .name("Daniel")
             .email("daniel@gmail.com")
             .password("123456789")
-            .surnames("García")
+            .surname("García")
             .isDeleted(false)
-            .roles(Set.of(Role.USER))
+            .userRoles(Set.of(UserRole.USER))
             .build();
 
 
@@ -189,25 +187,25 @@ public class ShopServiceTest {
             .build();
 
 
-    ShopServiceTest(){
+    ShopServiceTest() {
         getShopDto = GetShopDto.builder()
-            .id(UUID.fromString("123e4567-e89b-12d3-a456-426614174000"))
-            .name("Tienda 1")
-            .location(Address.builder()
-                    .province("Madrid")
-                    .city("Madrid")
-                    .street("Calle 1")
-                    .number("1")
-                    .PostalCode("28001")
-                    .country("España")
-                    .build())
+                .id(UUID.fromString("123e4567-e89b-12d3-a456-426614174000"))
+                .name("Tienda 1")
+                .location(Address.builder()
+                        .province("Madrid")
+                        .city("Madrid")
+                        .street("Calle 1")
+                        .number("1")
+                        .postalCode("28001")
+                        .country("España")
+                        .build())
                 .clients_id(Set.of())
                 .books_id(Set.of())
-            .build();
+                .build();
     }
 
     @Test
-    void getAllShops_ShoouldReturnShops(){
+    void getAllShops_ShoouldReturnShops() {
         when(shopRepository.findAll(any(Specification.class), any(PageRequest.class))).thenReturn(new PageImpl<>(List.of(shop)));
         when(shopMapper.toGetShopDto(any(Shop.class))).thenReturn(getShopDto);
 
@@ -225,20 +223,20 @@ public class ShopServiceTest {
     }
 
     @Test
-    void getAllShops_ShouldReturnEmptyList(){
+    void getAllShops_ShouldReturnEmptyList() {
         when(shopRepository.findAll(any(Specification.class), any(PageRequest.class))).thenReturn(new PageImpl<>(List.of()));
 
         var result = shopService.getAllShops(Optional.empty(), Optional.empty(), PageRequest.of(0, 10));
 
         assertAll(
-                () -> assertEquals(0,result.getContent().size())
+                () -> assertEquals(0, result.getContent().size())
         );
 
         verify(shopRepository, times(1)).findAll(any(Specification.class), any(PageRequest.class));
     }
 
     @Test
-    void getAllShops_ShouldReturnShopsByName(){
+    void getAllShops_ShouldReturnShopsByName() {
         when(shopRepository.findAll(any(Specification.class), any(PageRequest.class))).thenReturn(new PageImpl<>(List.of(shop)));
         when(shopMapper.toGetShopDto(any(Shop.class))).thenReturn(getShopDto);
 
@@ -255,7 +253,7 @@ public class ShopServiceTest {
     }
 
     @Test
-    void getShopById_ShouldReturnShop()  {
+    void getShopById_ShouldReturnShop() {
         when(shopRepository.findById(any(UUID.class))).thenReturn(Optional.of(shop));
         when(shopMapper.toGetShopDto(any(Shop.class))).thenReturn(getShopDto);
 
@@ -272,7 +270,7 @@ public class ShopServiceTest {
     }
 
     @Test
-    void getShopById_ShouldShopNotFoundException()  {
+    void getShopById_ShouldShopNotFoundException() {
         when(shopRepository.findById(any(UUID.class))).thenReturn(Optional.empty());
 
         var res = assertThrows(ShopNotFoundException.class, () -> shopService.getShopById(UUID.fromString("123e4567-e89b-12d3-a456-426614174000")));
@@ -285,7 +283,7 @@ public class ShopServiceTest {
     }
 
     @Test
-    void createShop_ShouldReturnShop()  {
+    void createShop_ShouldReturnShop() {
         when(shopRepository.save(any(Shop.class))).thenReturn(shop);
         when(shopMapper.toGetShopDto(any(Shop.class))).thenReturn(getShopDto);
         when(shopMapper.toShop(any(CreateShopDto.class))).thenReturn(shop);
@@ -304,7 +302,7 @@ public class ShopServiceTest {
     }
 
     @Test
-    void updateShop_ShouldReturnShop()  {
+    void updateShop_ShouldReturnShop() {
         when(shopRepository.findById(any(UUID.class))).thenReturn(Optional.of(shop));
         when(shopRepository.save(any(Shop.class))).thenReturn(shop);
         when(shopMapper.toShop(any(Shop.class), any(UpdateShopDto.class))).thenReturn(shop);
@@ -325,7 +323,7 @@ public class ShopServiceTest {
     }
 
     @Test
-    void updateShop_ShouldShopNotFoundException()  {
+    void updateShop_ShouldShopNotFoundException() {
         when(shopRepository.findById(any(UUID.class))).thenReturn(Optional.empty());
 
         var res = assertThrows(ShopNotFoundException.class, () -> shopService.updateShop(UUID.fromString("123e4567-e89b-12d3-a456-426614174000"), updateShopDto));
@@ -338,7 +336,7 @@ public class ShopServiceTest {
     }
 
     @Test
-    void deleteShop_ShouldDeleteShop()  {
+    void deleteShop_ShouldDeleteShop() {
         when(shopRepository.findById(any(UUID.class))).thenReturn(Optional.of(shop));
         when(orderRepository.findByShopId(any(UUID.class), any(PageRequest.class))).thenReturn(new PageImpl<>(List.of()));
 
@@ -350,7 +348,7 @@ public class ShopServiceTest {
     }
 
     @Test
-    void deleteShop_ShouldShopNotFoundException()  {
+    void deleteShop_ShouldShopNotFoundException() {
         when(shopRepository.findById(any(UUID.class))).thenReturn(Optional.empty());
 
         var res = assertThrows(ShopNotFoundException.class, () -> shopService.deleteShop(UUID.fromString("123e4567-e89b-12d3-a456-426614174000")));
@@ -363,7 +361,7 @@ public class ShopServiceTest {
     }
 
     @Test
-    void deleteShop_ShouldReturnShopHasOrdersException(){
+    void deleteShop_ShouldReturnShopHasOrdersException() {
         when(shopRepository.findById(any(UUID.class))).thenReturn(Optional.of(shop));
         when(orderRepository.findByShopId(any(UUID.class), any(PageRequest.class))).thenReturn(new PageImpl<>(List.of(order)));
 
@@ -378,7 +376,7 @@ public class ShopServiceTest {
     }
 
     @Test
-    void addBookToShop_ShouldReturnShop(){
+    void addBookToShop_ShouldReturnShop() {
         when(shopRepository.findById(any(UUID.class))).thenReturn(Optional.of(shop));
         when(bookRepository.findById(any(Long.class))).thenReturn(Optional.of(book));
         when(shopRepository.save(any(Shop.class))).thenReturn(Shop.builder()
@@ -389,7 +387,7 @@ public class ShopServiceTest {
                         .city("Madrid")
                         .street("Calle 1")
                         .number("1")
-                        .PostalCode("28001")
+                        .postalCode("28001")
                         .country("España")
                         .build())
                 .clients(Set.of())
@@ -403,7 +401,7 @@ public class ShopServiceTest {
                         .city("Madrid")
                         .street("Calle 1")
                         .number("1")
-                        .PostalCode("28001")
+                        .postalCode("28001")
                         .country("España")
                         .build())
                 .clients_id(Set.of())
@@ -426,7 +424,7 @@ public class ShopServiceTest {
     }
 
     @Test
-    void addBookToShop_ShouldShopNotFoundException(){
+    void addBookToShop_ShouldShopNotFoundException() {
         when(shopRepository.findById(any(UUID.class))).thenReturn(Optional.empty());
         when(bookRepository.findById(any(Long.class))).thenReturn(Optional.of(book));
 
@@ -441,7 +439,7 @@ public class ShopServiceTest {
     }
 
     @Test
-    void addBookToShop_ShouldBookNotFoundException(){
+    void addBookToShop_ShouldBookNotFoundException() {
         when(bookRepository.findById(any(Long.class))).thenReturn(Optional.empty());
 
         var res = assertThrows(BookNotFoundException.class, () -> shopService.addBookToShop(UUID.fromString("123e4567-e89b-12d3-a456-426614174000"), 1L));
@@ -455,7 +453,7 @@ public class ShopServiceTest {
 
 
     @Test
-    void removeBookFromShop_ShouldReturnShop(){
+    void removeBookFromShop_ShouldReturnShop() {
         when(shopRepository.findById(any(UUID.class))).thenReturn(Optional.of(shop));
         when(bookRepository.findById(any(Long.class))).thenReturn(Optional.of(book));
         when(shopRepository.save(any(Shop.class))).thenReturn(shop);
@@ -477,7 +475,7 @@ public class ShopServiceTest {
     }
 
     @Test
-    void removeBookFromShop_ShouldShopNotFoundException(){
+    void removeBookFromShop_ShouldShopNotFoundException() {
         when(shopRepository.findById(any(UUID.class))).thenReturn(Optional.empty());
         when(bookRepository.findById(any(Long.class))).thenReturn(Optional.of(book));
         var res = assertThrows(ShopNotFoundException.class, () -> shopService.removeBookFromShop(UUID.fromString("123e4567-e89b-12d3-a456-426614174000"), 1L));
@@ -491,7 +489,7 @@ public class ShopServiceTest {
     }
 
     @Test
-    void removeBookFromShop_ShouldBookNotFoundException(){
+    void removeBookFromShop_ShouldBookNotFoundException() {
         when(bookRepository.findById(any(Long.class))).thenReturn(Optional.empty());
 
         var res = assertThrows(BookNotFoundException.class, () -> shopService.removeBookFromShop(UUID.fromString("123e4567-e89b-12d3-a456-426614174000"), 1L));
@@ -504,7 +502,7 @@ public class ShopServiceTest {
     }
 
     @Test
-    void addClientToShop_ShoulReturnGetShopDto(){
+    void addClientToShop_ShoulReturnGetShopDto() {
         when(shopRepository.findById(any(UUID.class))).thenReturn(Optional.of(shop));
         when(clientRepository.findById(any(UUID.class))).thenReturn(Optional.of(clientTest));
         when(shopRepository.save(any(Shop.class))).thenReturn(
@@ -516,7 +514,7 @@ public class ShopServiceTest {
                                 .city("Madrid")
                                 .street("Calle 1")
                                 .number("1")
-                                .PostalCode("28001")
+                                .postalCode("28001")
                                 .country("España")
                                 .build())
                         .clients(Set.of(clientTest))
@@ -532,7 +530,7 @@ public class ShopServiceTest {
                                 .city("Madrid")
                                 .street("Calle 1")
                                 .number("1")
-                                .PostalCode("28001")
+                                .postalCode("28001")
                                 .country("España")
                                 .build())
                         .clients_id(Set.of(clientTest.getId()))
@@ -556,7 +554,7 @@ public class ShopServiceTest {
     }
 
     @Test
-    void addClientToShop_ShouldShopNotFoundException(){
+    void addClientToShop_ShouldShopNotFoundException() {
         when(shopRepository.findById(any(UUID.class))).thenReturn(Optional.empty());
         when(clientRepository.findById(any(UUID.class))).thenReturn(Optional.of(clientTest));
 
@@ -571,7 +569,7 @@ public class ShopServiceTest {
     }
 
     @Test
-    void addClientToShop_ShouldClientNotFoundException(){
+    void addClientToShop_ShouldClientNotFoundException() {
         when(clientRepository.findById(any(UUID.class))).thenReturn(Optional.empty());
 
         var res = assertThrows(ClientNotFound.class, () -> shopService.addClientToShop(UUID.fromString("123e4567-e89b-12d3-a456-426614174000"), UUID.fromString("9def16db-362b-44c4-9fc9-77117758b5b0")));
@@ -584,7 +582,7 @@ public class ShopServiceTest {
     }
 
     @Test
-    void removeClientFromShop_ShouldReturnGetShopDto(){
+    void removeClientFromShop_ShouldReturnGetShopDto() {
         when(shopRepository.findById(any(UUID.class))).thenReturn(Optional.of(shop));
         when(clientRepository.findById(any(UUID.class))).thenReturn(Optional.of(clientTest));
         when(shopRepository.save(any(Shop.class))).thenReturn(shop);
@@ -606,7 +604,7 @@ public class ShopServiceTest {
     }
 
     @Test
-    void removeClientFromShop_ShouldShopNotFoundException(){
+    void removeClientFromShop_ShouldShopNotFoundException() {
         when(shopRepository.findById(any(UUID.class))).thenReturn(Optional.empty());
         when(clientRepository.findById(any(UUID.class))).thenReturn(Optional.of(clientTest));
 
@@ -621,7 +619,7 @@ public class ShopServiceTest {
     }
 
     @Test
-    void removeClientFromShop_ShouldClientNotFoundException(){
+    void removeClientFromShop_ShouldClientNotFoundException() {
         when(clientRepository.findById(any(UUID.class))).thenReturn(Optional.empty());
 
         var res = assertThrows(ClientNotFound.class, () -> shopService.removeClientFromShop(UUID.fromString("123e4567-e89b-12d3-a456-426614174000"), UUID.fromString("9def16db-362b-44c4-9fc9-77117758b5b0")));

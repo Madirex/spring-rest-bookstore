@@ -1,29 +1,28 @@
 package com.nullers.restbookstore.rest.client.services;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
+import com.nullers.restbookstore.config.websockets.WebSocketConfig;
+import com.nullers.restbookstore.config.websockets.WebSocketHandler;
+import com.nullers.restbookstore.notifications.models.Notification;
 import com.nullers.restbookstore.rest.book.mappers.BookMapperImpl;
 import com.nullers.restbookstore.rest.book.model.Book;
 import com.nullers.restbookstore.rest.book.services.BookServiceImpl;
-import com.nullers.restbookstore.rest.category.model.Categoria;
+import com.nullers.restbookstore.rest.category.model.Category;
 import com.nullers.restbookstore.rest.client.dto.ClientCreateDto;
 import com.nullers.restbookstore.rest.client.dto.ClientDto;
 import com.nullers.restbookstore.rest.client.dto.ClientUpdateDto;
 import com.nullers.restbookstore.rest.client.exceptions.ClientAlreadyExists;
 import com.nullers.restbookstore.rest.client.exceptions.ClientInOrderException;
 import com.nullers.restbookstore.rest.client.exceptions.ClientNotFound;
-import com.nullers.restbookstore.rest.common.Address;
 import com.nullers.restbookstore.rest.client.model.Client;
-import com.nullers.restbookstore.rest.client.repository.ClientRepository;
-import com.nullers.restbookstore.config.websockets.WebSocketConfig;
-import com.nullers.restbookstore.config.websockets.WebSocketHandler;
 import com.nullers.restbookstore.rest.client.notifications.mapper.ClientNotificationMapper;
-import com.nullers.restbookstore.notifications.models.Notification;
+import com.nullers.restbookstore.rest.client.repository.ClientRepository;
+import com.nullers.restbookstore.rest.common.Address;
 import com.nullers.restbookstore.rest.orders.models.Order;
 import com.nullers.restbookstore.rest.orders.models.OrderLine;
 import com.nullers.restbookstore.rest.orders.repositories.OrderRepository;
 import com.nullers.restbookstore.rest.publisher.model.Publisher;
-import com.nullers.restbookstore.rest.user.models.Role;
 import com.nullers.restbookstore.rest.user.models.User;
+import com.nullers.restbookstore.rest.user.models.UserRole;
 import com.nullers.restbookstore.storage.services.StorageService;
 import org.bson.types.ObjectId;
 import org.junit.jupiter.api.BeforeEach;
@@ -86,16 +85,15 @@ class ClientServiceTest {
             .build();
 
 
-
     Publisher publisher = Publisher.builder()
             .id(1L)
             .name("name")
             .build();
 
-    Categoria categoria = Categoria.builder()
+    Category category = Category.builder()
             .id(UUID.fromString("a712c5f2-eb95-449a-9ec4-1aa55cdac9bc"))
-            .nombre("Cat")
-            .activa(true)
+            .name("Cat")
+            .isActive(true)
             .build();
 
     Book book = Book.builder()
@@ -107,7 +105,7 @@ class ClientServiceTest {
             .price(1.0)
             .description("description")
             .active(true)
-            .category(categoria)
+            .category(category)
             .build();
 
     Address address = Address.builder()
@@ -136,9 +134,9 @@ class ClientServiceTest {
             .name("Daniel")
             .email("daniel@gmail.com")
             .password("123456789")
-            .surnames("García")
+            .surname("García")
             .isDeleted(false)
-            .roles(Set.of(Role.USER))
+            .userRoles(Set.of(UserRole.USER))
             .build();
 
     Order order = Order.builder()
@@ -152,8 +150,6 @@ class ClientServiceTest {
             .total(2.0)
             .totalBooks(2)
             .build();
-
-
 
 
     private final Client clientTest2 = Client.builder()
@@ -296,7 +292,7 @@ class ClientServiceTest {
         assertAll(
                 () -> assertNotNull(result),
                 () -> assertFalse(result.isEmpty()),
-                () -> assertEquals(2,result.getTotalElements()),
+                () -> assertEquals(2, result.getTotalElements()),
                 () -> assertEquals(clientTest.getName(), result.getContent().get(0).getName()),
                 () -> assertEquals(clientTest.getSurname(), result.getContent().get(0).getSurname()),
                 () -> assertEquals(clientTest.getEmail(), result.getContent().get(0).getEmail()),
@@ -332,7 +328,7 @@ class ClientServiceTest {
     }
 
     @Test
-    void findAll_shouldReturnAllClientsWithAllParams(){
+    void findAll_shouldReturnAllClientsWithAllParams() {
         List<Client> clientExpected = List.of(clientTest);
         Pageable pageable = PageRequest.of(0, 10, Sort.by("id").ascending());
         Page<Client> expectedPage = new PageImpl<>(clientExpected);
@@ -354,14 +350,14 @@ class ClientServiceTest {
     }
 
     @Test
-    void findAll_shouldReturnAllClientsWithNameAndSurName(){
+    void findAll_shouldReturnAllClientsWithNameAndSurName() {
         List<Client> clientExpected = List.of(clientTest);
         Pageable pageable = PageRequest.of(0, 10, Sort.by("id").ascending());
         Page<Client> expectedPage = new PageImpl<>(clientExpected);
 
         when(clientRepository.findAll(any(Specification.class), any(Pageable.class))).thenReturn(expectedPage);
 
-        Page<ClientDto> result = clientService.findAll(Optional.of("Dani"), Optional.of("García"), Optional.empty(), Optional.empty(),Optional.empty(), pageable);
+        Page<ClientDto> result = clientService.findAll(Optional.of("Dani"), Optional.of("García"), Optional.empty(), Optional.empty(), Optional.empty(), pageable);
 
         assertAll(
                 () -> assertNotNull(result),
@@ -376,14 +372,14 @@ class ClientServiceTest {
     }
 
     @Test
-    void findAll_shouldReturnAllClientsWithNameAndEmail(){
+    void findAll_shouldReturnAllClientsWithNameAndEmail() {
         List<Client> clientExpected = List.of(clientTest);
         Pageable pageable = PageRequest.of(0, 10, Sort.by("id").ascending());
         Page<Client> expectedPage = new PageImpl<>(clientExpected);
 
         when(clientRepository.findAll(any(Specification.class), any(Pageable.class))).thenReturn(expectedPage);
 
-        Page<ClientDto> result = clientService.findAll(Optional.of("Dani"), Optional.empty(), Optional.of("daniel@gmail.com"), Optional.empty(),Optional.empty(), pageable);
+        Page<ClientDto> result = clientService.findAll(Optional.of("Dani"), Optional.empty(), Optional.of("daniel@gmail.com"), Optional.empty(), Optional.empty(), pageable);
 
         assertAll(
                 () -> assertNotNull(result),
@@ -398,14 +394,14 @@ class ClientServiceTest {
     }
 
     @Test
-    void findAll_shouldReturnAllClientsWithNameAndPhone(){
+    void findAll_shouldReturnAllClientsWithNameAndPhone() {
         List<Client> clientExpected = List.of(clientTest);
         Pageable pageable = PageRequest.of(0, 10, Sort.by("id").ascending());
         Page<Client> expectedPage = new PageImpl<>(clientExpected);
 
         when(clientRepository.findAll(any(Specification.class), any(Pageable.class))).thenReturn(expectedPage);
 
-        Page<ClientDto> result = clientService.findAll(Optional.of("Dani"), Optional.empty(), Optional.empty(), Optional.of("12345"),Optional.empty(), pageable);
+        Page<ClientDto> result = clientService.findAll(Optional.of("Dani"), Optional.empty(), Optional.empty(), Optional.of("12345"), Optional.empty(), pageable);
 
         assertAll(
                 () -> assertNotNull(result),
@@ -420,7 +416,7 @@ class ClientServiceTest {
     }
 
     @Test
-    void findAll_shouldReturnAllClientsWithNameAndAddress(){
+    void findAll_shouldReturnAllClientsWithNameAndAddress() {
         List<Client> clientExpected = List.of(clientTest);
         Pageable pageable = PageRequest.of(0, 10, Sort.by("id").ascending());
         Page<Client> expectedPage = new PageImpl<>(clientExpected);
@@ -442,7 +438,7 @@ class ClientServiceTest {
     }
 
     @Test
-    void findAll_shouldReturnAllClientsWithSurNameAndEmail(){
+    void findAll_shouldReturnAllClientsWithSurNameAndEmail() {
         List<Client> clientExpected = List.of(clientTest);
         Pageable pageable = PageRequest.of(0, 10, Sort.by("id").ascending());
         Page<Client> expectedPage = new PageImpl<>(clientExpected);
@@ -464,7 +460,7 @@ class ClientServiceTest {
     }
 
     @Test
-    void findAll_shouldReturnAllClientsWithSurNameAndPhone(){
+    void findAll_shouldReturnAllClientsWithSurNameAndPhone() {
         List<Client> clientExpected = List.of(clientTest);
         Pageable pageable = PageRequest.of(0, 10, Sort.by("id").ascending());
         Page<Client> expectedPage = new PageImpl<>(clientExpected);
@@ -486,7 +482,7 @@ class ClientServiceTest {
     }
 
     @Test
-    void findAll_shouldReturnAllClientsWithSurNameAndAddress(){
+    void findAll_shouldReturnAllClientsWithSurNameAndAddress() {
         List<Client> clientExpected = List.of(clientTest);
         Pageable pageable = PageRequest.of(0, 10, Sort.by("id").ascending());
         Page<Client> expectedPage = new PageImpl<>(clientExpected);
@@ -508,7 +504,7 @@ class ClientServiceTest {
     }
 
     @Test
-    void findAll_shouldReturnAllClientsWithEmailAndName(){
+    void findAll_shouldReturnAllClientsWithEmailAndName() {
         List<Client> clientExpected = List.of(clientTest);
         Pageable pageable = PageRequest.of(0, 10, Sort.by("id").ascending());
         Page<Client> expectedPage = new PageImpl<>(clientExpected);
@@ -530,7 +526,7 @@ class ClientServiceTest {
     }
 
     @Test
-    void findAll_shouldReturnAllClientsWithEmailAndSurName(){
+    void findAll_shouldReturnAllClientsWithEmailAndSurName() {
         List<Client> clientExpected = List.of(clientTest);
         Pageable pageable = PageRequest.of(0, 10, Sort.by("id").ascending());
         Page<Client> expectedPage = new PageImpl<>(clientExpected);
@@ -552,7 +548,7 @@ class ClientServiceTest {
     }
 
     @Test
-    void findAll_shouldReturnAllClientsWithEmailAndPhone(){
+    void findAll_shouldReturnAllClientsWithEmailAndPhone() {
         List<Client> clientExpected = List.of(clientTest);
         Pageable pageable = PageRequest.of(0, 10, Sort.by("id").ascending());
         Page<Client> expectedPage = new PageImpl<>(clientExpected);
@@ -574,7 +570,7 @@ class ClientServiceTest {
     }
 
     @Test
-    void findAll_shouldReturnAllClientsWithEmailAndAddress(){
+    void findAll_shouldReturnAllClientsWithEmailAndAddress() {
         List<Client> clientExpected = List.of(clientTest);
         Pageable pageable = PageRequest.of(0, 10, Sort.by("id").ascending());
         Page<Client> expectedPage = new PageImpl<>(clientExpected);
@@ -596,7 +592,7 @@ class ClientServiceTest {
     }
 
     @Test
-    void findAll_shouldReturnAllClientsWithPhoneAndName(){
+    void findAll_shouldReturnAllClientsWithPhoneAndName() {
         List<Client> clientExpected = List.of(clientTest);
         Pageable pageable = PageRequest.of(0, 10, Sort.by("id").ascending());
         Page<Client> expectedPage = new PageImpl<>(clientExpected);
@@ -618,7 +614,7 @@ class ClientServiceTest {
     }
 
     @Test
-    void findAll_shouldReturnAllClientsWithPhoneAndSurName(){
+    void findAll_shouldReturnAllClientsWithPhoneAndSurName() {
         List<Client> clientExpected = List.of(clientTest);
         Pageable pageable = PageRequest.of(0, 10, Sort.by("id").ascending());
         Page<Client> expectedPage = new PageImpl<>(clientExpected);
@@ -640,7 +636,7 @@ class ClientServiceTest {
     }
 
     @Test
-    void findAll_shouldReturnAllClientsWithPhoneAndEmail(){
+    void findAll_shouldReturnAllClientsWithPhoneAndEmail() {
         List<Client> clientExpected = List.of(clientTest);
         Pageable pageable = PageRequest.of(0, 10, Sort.by("id").ascending());
         Page<Client> expectedPage = new PageImpl<>(clientExpected);
@@ -662,7 +658,7 @@ class ClientServiceTest {
     }
 
     @Test
-    void findAll_shouldReturnAllClientsWithPhoneAndAddress(){
+    void findAll_shouldReturnAllClientsWithPhoneAndAddress() {
         List<Client> clientExpected = List.of(clientTest);
         Pageable pageable = PageRequest.of(0, 10, Sort.by("id").ascending());
         Page<Client> expectedPage = new PageImpl<>(clientExpected);
@@ -684,7 +680,7 @@ class ClientServiceTest {
     }
 
     @Test
-    void findAll_shouldReturnAllClientsWithAddressAndName(){
+    void findAll_shouldReturnAllClientsWithAddressAndName() {
         List<Client> clientExpected = List.of(clientTest);
         Pageable pageable = PageRequest.of(0, 10, Sort.by("id").ascending());
         Page<Client> expectedPage = new PageImpl<>(clientExpected);
@@ -706,7 +702,7 @@ class ClientServiceTest {
     }
 
     @Test
-    void findAll_shouldReturnAllClientsWithAddressAndSurName(){
+    void findAll_shouldReturnAllClientsWithAddressAndSurName() {
         List<Client> clientExpected = List.of(clientTest);
         Pageable pageable = PageRequest.of(0, 10, Sort.by("id").ascending());
         Page<Client> expectedPage = new PageImpl<>(clientExpected);
@@ -728,7 +724,7 @@ class ClientServiceTest {
     }
 
     @Test
-    void findAll_shouldReturnAllClientsWithAddressAndEmail(){
+    void findAll_shouldReturnAllClientsWithAddressAndEmail() {
         List<Client> clientExpected = List.of(clientTest);
         Pageable pageable = PageRequest.of(0, 10, Sort.by("id").ascending());
         Page<Client> expectedPage = new PageImpl<>(clientExpected);
@@ -750,7 +746,7 @@ class ClientServiceTest {
     }
 
     @Test
-    void findAll_shouldReturnAllClientsWithAddressAndPhone(){
+    void findAll_shouldReturnAllClientsWithAddressAndPhone() {
         List<Client> clientExpected = List.of(clientTest);
         Pageable pageable = PageRequest.of(0, 10, Sort.by("id").ascending());
         Page<Client> expectedPage = new PageImpl<>(clientExpected);
@@ -772,7 +768,7 @@ class ClientServiceTest {
     }
 
     @Test
-    void findAll_shouldReturnAllClientsWithNameAndSurNameAndEmail(){
+    void findAll_shouldReturnAllClientsWithNameAndSurNameAndEmail() {
         List<Client> clientExpected = List.of(clientTest);
         Pageable pageable = PageRequest.of(0, 10, Sort.by("id").ascending());
         Page<Client> expectedPage = new PageImpl<>(clientExpected);
@@ -794,7 +790,7 @@ class ClientServiceTest {
     }
 
     @Test
-    void findAll_shouldReturnAllClientsWithNameAndSurNameAndPhone(){
+    void findAll_shouldReturnAllClientsWithNameAndSurNameAndPhone() {
         List<Client> clientExpected = List.of(clientTest);
         Pageable pageable = PageRequest.of(0, 10, Sort.by("id").ascending());
         Page<Client> expectedPage = new PageImpl<>(clientExpected);
@@ -816,7 +812,7 @@ class ClientServiceTest {
     }
 
     @Test
-    void findAll_shouldReturnAllClientsWithNameAndSurNameAndAddress(){
+    void findAll_shouldReturnAllClientsWithNameAndSurNameAndAddress() {
         List<Client> clientExpected = List.of(clientTest);
         Pageable pageable = PageRequest.of(0, 10, Sort.by("id").ascending());
         Page<Client> expectedPage = new PageImpl<>(clientExpected);
@@ -838,7 +834,7 @@ class ClientServiceTest {
     }
 
     @Test
-    void findAll_shouldReturnAllClientsWithNameAndEmailAndPhone(){
+    void findAll_shouldReturnAllClientsWithNameAndEmailAndPhone() {
         List<Client> clientExpected = List.of(clientTest);
         Pageable pageable = PageRequest.of(0, 10, Sort.by("id").ascending());
         Page<Client> expectedPage = new PageImpl<>(clientExpected);
@@ -860,7 +856,7 @@ class ClientServiceTest {
     }
 
     @Test
-    void findAll_shouldReturnAllClientsWithNameAndEmailAndAddress(){
+    void findAll_shouldReturnAllClientsWithNameAndEmailAndAddress() {
         List<Client> clientExpected = List.of(clientTest);
         Pageable pageable = PageRequest.of(0, 10, Sort.by("id").ascending());
         Page<Client> expectedPage = new PageImpl<>(clientExpected);
@@ -894,7 +890,7 @@ class ClientServiceTest {
         assertAll(
                 () -> assertNotNull(result),
                 () -> assertTrue(result.isEmpty()),
-                () -> assertEquals(0,result.getTotalElements())
+                () -> assertEquals(0, result.getTotalElements())
         );
 
         verify(clientRepository, times(1)).findAll(any(Specification.class), any(Pageable.class));
@@ -902,7 +898,7 @@ class ClientServiceTest {
 
 
     @Test
-    void findById(){
+    void findById() {
         when(clientRepository.findById(any(UUID.class))).thenReturn(Optional.of(clientTest));
 
         ClientDto result = clientService.findById(UUID.fromString("9def16db-362b-44c4-9fc9-77117758b5b0"));
@@ -918,7 +914,7 @@ class ClientServiceTest {
     }
 
     @Test
-    void findById_shouldThrowExceptionClientNotFound(){
+    void findById_shouldThrowExceptionClientNotFound() {
         when(clientRepository.findById(any(UUID.class))).thenReturn(Optional.empty());
 
         var res = assertThrows(ClientNotFound.class, () -> clientService.findById(UUID.fromString("9def16db-362b-44c4-9fc9-77117758b5b0")));
@@ -932,7 +928,7 @@ class ClientServiceTest {
     }
 
     @Test
-    void findByEmail(){
+    void findByEmail() {
         when(clientRepository.getClientByEmailEqualsIgnoreCase(any(String.class))).thenReturn(Optional.of(clientTest));
 
         Optional<ClientDto> result = clientService.findByEmail("dani@gmail.com");
@@ -1027,7 +1023,7 @@ class ClientServiceTest {
                 .phone("644331287")
                 .build();
 
-        var result = clientService.update(UUID.fromString("9def16db-362b-44c4-9fc9-77117758b5b0") ,client);
+        var result = clientService.update(UUID.fromString("9def16db-362b-44c4-9fc9-77117758b5b0"), client);
 
         assertAll(
                 () -> assertNotNull(result),
@@ -1100,7 +1096,7 @@ class ClientServiceTest {
 
         assertAll(
                 () -> assertNotNull(res),
-                () -> assertEquals("El cliente con id "+clientTest.getId()+" tiene pedidos asociados", res.getMessage())
+                () -> assertEquals("El cliente con id " + clientTest.getId() + " tiene pedidos asociados", res.getMessage())
         );
 
         verify(orderRepository, times(1)).findByClientId(any(UUID.class), any(Pageable.class));
@@ -1124,7 +1120,7 @@ class ClientServiceTest {
     }
 
     @Test
-    void deleteAll(){
+    void deleteAll() {
         clientService.deleteAll();
         verify(clientRepository, times(1)).deleteAll();
     }
@@ -1262,7 +1258,7 @@ class ClientServiceTest {
     }
 
     @Test
-    void update_ShouldReturnClientAlreadyExists(){
+    void update_ShouldReturnClientAlreadyExists() {
         when(clientRepository.getClientByEmailEqualsIgnoreCase(any(String.class))).thenReturn(Optional.of(clientTest));
 
         ClientUpdateDto client = ClientUpdateDto.builder()

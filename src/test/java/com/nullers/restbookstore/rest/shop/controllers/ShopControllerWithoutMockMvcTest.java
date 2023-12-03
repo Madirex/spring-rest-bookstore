@@ -3,7 +3,7 @@ package com.nullers.restbookstore.rest.shop.controllers;
 import com.nullers.restbookstore.pagination.util.PaginationLinksUtils;
 import com.nullers.restbookstore.rest.book.exceptions.BookNotFoundException;
 import com.nullers.restbookstore.rest.book.model.Book;
-import com.nullers.restbookstore.rest.category.model.Categoria;
+import com.nullers.restbookstore.rest.category.model.Category;
 import com.nullers.restbookstore.rest.client.exceptions.ClientNotFound;
 import com.nullers.restbookstore.rest.client.model.Client;
 import com.nullers.restbookstore.rest.common.Address;
@@ -15,16 +15,13 @@ import com.nullers.restbookstore.rest.shop.dto.UpdateShopDto;
 import com.nullers.restbookstore.rest.shop.exceptions.ShopNotFoundException;
 import com.nullers.restbookstore.rest.shop.model.Shop;
 import com.nullers.restbookstore.rest.shop.services.ShopServiceImpl;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.jpa.domain.Specification;
 import org.springframework.mock.web.MockHttpServletRequest;
 
 import java.time.LocalDateTime;
@@ -56,10 +53,10 @@ class ShopControllerWithoutMockMvcTest {
             .name("name")
             .build();
 
-    Categoria categoria = Categoria.builder()
+    Category category = Category.builder()
             .id(UUID.fromString("a712c5f2-eb95-449a-9ec4-1aa55cdac9bc"))
-            .nombre("Cat")
-            .activa(true)
+            .name("Cat")
+            .isActive(true)
             .build();
 
     Book book = Book.builder()
@@ -71,7 +68,7 @@ class ShopControllerWithoutMockMvcTest {
             .price(1.0)
             .description("description")
             .active(true)
-            .category(categoria)
+            .category(category)
             .build();
 
     Address address = Address.builder()
@@ -80,7 +77,7 @@ class ShopControllerWithoutMockMvcTest {
             .country("USA")
             .province("Springfield")
             .number("123")
-            .PostalCode("12345")
+            .postalCode("12345")
             .build();
 
 
@@ -129,7 +126,7 @@ class ShopControllerWithoutMockMvcTest {
 
 
     @Test
-    void getAllShops_ShouldReturnShops(){
+    void getAllShops_ShouldReturnShops() {
         when(shopService.getAllShops(any(Optional.class), any(Optional.class), any(PageRequest.class))).thenReturn(new PageImpl<>(List.of(getShopDto)));
 
         var res = shopRestController.getAllShops(Optional.empty(), Optional.empty(), new PageableRequest(0, 10, "id", "ASC"), requestMock);
@@ -149,7 +146,7 @@ class ShopControllerWithoutMockMvcTest {
     }
 
     @Test
-    void getAllShops_ShouldReturnEmptyList(){
+    void getAllShops_ShouldReturnEmptyList() {
         when(shopService.getAllShops(any(Optional.class), any(Optional.class), any(PageRequest.class))).thenReturn(new PageImpl<>(List.of()));
 
         var res = shopRestController.getAllShops(Optional.empty(), Optional.empty(), new PageableRequest(0, 10, "id", "ASC"), requestMock);
@@ -163,7 +160,7 @@ class ShopControllerWithoutMockMvcTest {
     }
 
     @Test
-    void getAllShops_ShouldReturnShopsFilteredByName(){
+    void getAllShops_ShouldReturnShopsFilteredByName() {
         when(shopService.getAllShops(any(Optional.class), any(Optional.class), any(PageRequest.class))).thenReturn(new PageImpl<>(List.of(getShopDto)));
 
         var res = shopRestController.getAllShops(Optional.of("name"), Optional.empty(), new PageableRequest(0, 10, "id", "ASC"), requestMock);
@@ -200,7 +197,7 @@ class ShopControllerWithoutMockMvcTest {
     }
 
     @Test
-    void getShopById_ShouldThrowShopNotFoundException()  {
+    void getShopById_ShouldThrowShopNotFoundException() {
         when(shopService.getShopById(any(UUID.class))).thenThrow(new ShopNotFoundException("Tienda no encontrada con ID: " + shop.getId()));
 
         var res = assertThrows(ShopNotFoundException.class, () -> shopRestController.getShopById(UUID.randomUUID()));
@@ -215,7 +212,7 @@ class ShopControllerWithoutMockMvcTest {
 
 
     @Test
-    void createShop_ShouldReturnShop(){
+    void createShop_ShouldReturnShop() {
         when(shopService.createShop(any(CreateShopDto.class))).thenReturn(
                 GetShopDto.builder()
                         .id(shop.getId())
@@ -318,7 +315,7 @@ class ShopControllerWithoutMockMvcTest {
     }
 
     @Test
-    void addBookToShop_ShouldReturnShopNotFoundException(){
+    void addBookToShop_ShouldReturnShopNotFoundException() {
         when(shopService.addBookToShop(any(UUID.class), any(Long.class))).thenThrow(new ShopNotFoundException("Tienda no encontrada con ID: " + shop.getId()));
 
         var res = assertThrows(ShopNotFoundException.class, () -> shopRestController.addBookToShop(UUID.randomUUID(), 1L));
@@ -331,7 +328,7 @@ class ShopControllerWithoutMockMvcTest {
     }
 
     @Test
-    void addBootToShoop_ShouldReturnBookNotFoundException(){
+    void addBootToShoop_ShouldReturnBookNotFoundException() {
         when(shopService.addBookToShop(any(UUID.class), any(Long.class))).thenThrow(new BookNotFoundException(book.getId().toString()));
 
         var res = assertThrows(BookNotFoundException.class, () -> shopRestController.addBookToShop(UUID.randomUUID(), 1L));
@@ -362,7 +359,7 @@ class ShopControllerWithoutMockMvcTest {
     }
 
     @Test
-    void removeBookFromShop_ShouldReturnShopNotFoundException(){
+    void removeBookFromShop_ShouldReturnShopNotFoundException() {
         when(shopService.removeBookFromShop(any(UUID.class), any(Long.class))).thenThrow(new ShopNotFoundException("Tienda no encontrada con ID: " + shop.getId()));
 
         var res = assertThrows(ShopNotFoundException.class, () -> shopRestController.removeBookFromShop(UUID.randomUUID(), 1L));
@@ -375,7 +372,7 @@ class ShopControllerWithoutMockMvcTest {
     }
 
     @Test
-    void removeBookFromShop_ShouldReturnBookNotFoundException(){
+    void removeBookFromShop_ShouldReturnBookNotFoundException() {
         when(shopService.removeBookFromShop(any(UUID.class), any(Long.class))).thenThrow(new BookNotFoundException(book.getId().toString()));
 
         var res = assertThrows(BookNotFoundException.class, () -> shopRestController.removeBookFromShop(UUID.randomUUID(), 1L));
@@ -406,7 +403,7 @@ class ShopControllerWithoutMockMvcTest {
     }
 
     @Test
-    void addClientToShop_ShouldReturnShopNotFoundException(){
+    void addClientToShop_ShouldReturnShopNotFoundException() {
         when(shopService.addClientToShop(any(UUID.class), any(UUID.class))).thenThrow(new ShopNotFoundException("Tienda no encontrada con ID: " + shop.getId()));
 
         var res = assertThrows(ShopNotFoundException.class, () -> shopRestController.addClientToShop(UUID.randomUUID(), UUID.randomUUID()));
@@ -419,7 +416,7 @@ class ShopControllerWithoutMockMvcTest {
     }
 
     @Test
-    void addClientToShop_ShouldReturnClientNotFoundException(){
+    void addClientToShop_ShouldReturnClientNotFoundException() {
         when(shopService.addClientToShop(any(UUID.class), any(UUID.class))).thenThrow(new ClientNotFound("id", clientTest.getId()));
 
         var res = assertThrows(ClientNotFound.class, () -> shopRestController.addClientToShop(UUID.randomUUID(), UUID.randomUUID()));
@@ -450,7 +447,7 @@ class ShopControllerWithoutMockMvcTest {
     }
 
     @Test
-    void removeClientFromShop_ShouldReturnShopNotFoundException(){
+    void removeClientFromShop_ShouldReturnShopNotFoundException() {
         when(shopService.removeClientFromShop(any(UUID.class), any(UUID.class))).thenThrow(new ShopNotFoundException("Tienda no encontrada con ID: " + shop.getId()));
 
         var res = assertThrows(ShopNotFoundException.class, () -> shopRestController.removeClientFromShop(UUID.randomUUID(), UUID.randomUUID()));
@@ -463,7 +460,7 @@ class ShopControllerWithoutMockMvcTest {
     }
 
     @Test
-    void removeClientFromShop_ShouldReturnClientNotFoundException(){
+    void removeClientFromShop_ShouldReturnClientNotFoundException() {
         when(shopService.removeClientFromShop(any(UUID.class), any(UUID.class))).thenThrow(new ClientNotFound("id", clientTest.getId()));
 
         var res = assertThrows(ClientNotFound.class, () -> shopRestController.removeClientFromShop(UUID.randomUUID(), UUID.randomUUID()));
@@ -474,8 +471,6 @@ class ShopControllerWithoutMockMvcTest {
 
         verify(shopService, times(1)).removeClientFromShop(any(UUID.class), any(UUID.class));
     }
-
-
 
 
 }
