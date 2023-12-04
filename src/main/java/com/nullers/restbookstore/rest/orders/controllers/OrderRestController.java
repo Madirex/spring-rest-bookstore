@@ -7,6 +7,13 @@ import com.nullers.restbookstore.rest.common.PageableUtil;
 import com.nullers.restbookstore.rest.orders.dto.OrderCreateDto;
 import com.nullers.restbookstore.rest.orders.models.Order;
 import com.nullers.restbookstore.rest.orders.services.OrderServiceImpl;
+import com.nullers.restbookstore.rest.shop.exceptions.ShopNotFoundException;
+import com.nullers.restbookstore.rest.user.exceptions.UserNotFound;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.Parameters;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import org.bson.types.ObjectId;
@@ -53,6 +60,11 @@ public class OrderRestController {
      * @param request         petición
      * @return ResponseEntity<PageResponse < Order>> con los pedidos
      */
+    @Operation(summary = "Obtiene todos los pedidos", description = "Obtiene una lista de pedidos")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Página de pedidos"),
+            @ApiResponse(responseCode = "400", description = "Petición de pedidos no válida")
+    })
     @GetMapping
     public ResponseEntity<PageResponse<Order>> getAllOrders(
             @Valid PageableRequest pageableRequest,
@@ -72,6 +84,14 @@ public class OrderRestController {
      * @param id id del pedido
      * @return ResponseEntity<Order> con el pedido
      */
+    @Operation(summary = "Obtiene un pedido dado un id", description = "Obtiene un pedido dado un id")
+    @Parameters({
+            @Parameter(name = "id", description = "id del pedido", example = "770e8400-e29b-41d4-a716-446655440000"),
+    })
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Pedido"),
+            @ApiResponse(responseCode = "404", description = "Pedido no encontrado")
+    })
     @GetMapping("/{id}")
     public ResponseEntity<Order> getOrderById(@PathVariable ObjectId id) {
         return ResponseEntity.ok(orderService.getOrderById(id));
@@ -83,6 +103,12 @@ public class OrderRestController {
      * @param order pedido a crear
      * @return ResponseEntity<Order> con el pedido
      */
+    @Operation(summary = "Crea un pedido", description = "Crea un pedido")
+    @io.swagger.v3.oas.annotations.parameters.RequestBody(description = "Pedido a crear", required = true)
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "201", description = "Pedido creado"),
+            @ApiResponse(responseCode = "400", description = "Pedido no válido")
+    })
     @PostMapping
     public ResponseEntity<Order> createOrder(@Valid @RequestBody OrderCreateDto order) {
         return ResponseEntity.status(HttpStatus.CREATED).body(orderService.createOrder(order));
@@ -95,6 +121,14 @@ public class OrderRestController {
      * @param order pedido a actualizar
      * @return ResponseEntity<Order> con el pedido
      */
+    @Operation(summary = "Actualiza un pedido", description = "Actualiza un pedido")
+    @Parameter(name = "id", description = "id del pedido a actualizar", example = "770e8400-e29b-41d4-a716-446655440000")
+    @io.swagger.v3.oas.annotations.parameters.RequestBody(description = "Pedido actualizado", required = true)
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Pedido actualizado"),
+            @ApiResponse(responseCode = "400", description = "Pedido no válido"),
+            @ApiResponse(responseCode = "404", description = "Pedido no encontrado")
+    })
     @PutMapping("/{id}")
     public ResponseEntity<Order> updateOrder(@PathVariable ObjectId id, @Valid @RequestBody OrderCreateDto order) {
         return ResponseEntity.ok(orderService.updateOrder(id, order));
@@ -106,6 +140,12 @@ public class OrderRestController {
      * @param id id del pedido
      * @return ResponseEntity<Void>
      */
+    @Operation(summary = "Eimina un pedido", description = "Elimina un pedido")
+    @Parameter(name = "id", description = "Id del pedido a eliminar", example = "660e8400-e29b-41d4-a716-446655440000", required = true)
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "204", description = "Pedido borrado"),
+            @ApiResponse(responseCode = "404", description = "Pedido no encontrado"),
+    })
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteOrder(@PathVariable ObjectId id) {
         orderService.deleteOrder(id);
@@ -118,6 +158,12 @@ public class OrderRestController {
      * @param id id del pedido
      * @return ResponseEntity<Order> con el pedido
      */
+    @Operation(summary = "Eimina un pedido de manera simulada", description = "Elimina un pedido de manera simulada")
+    @Parameter(name = "id", description = "Id del pedido a eliminar", example = "660e8400-e29b-41d4-a716-446655440000", required = true)
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "204", description = "Pedido borrado"),
+            @ApiResponse(responseCode = "404", description = "Pedido no encontrado"),
+    })
     @PutMapping("/delete/{id}")
     public ResponseEntity<Order> deleteLogicOrder(@PathVariable ObjectId id) {
         return ResponseEntity.ok(orderService.deleteLogicOrder(id));
@@ -131,6 +177,14 @@ public class OrderRestController {
      * @param request         petición
      * @return ResponseEntity<PageResponse < Order>> con los pedidos
      */
+    @Operation(summary = "Obtiene un pedido dado el id de un cliente", description = "Obtiene un pedido dado el id de un cliente")
+    @Parameters({
+            @Parameter(name = "id", description = "id del cliente", example = "770e8400-e29b-41d4-a716-446655440000"),
+    })
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Pedido"),
+            @ApiResponse(responseCode = "404", description = "Cliente no encontrado")
+    })
     @GetMapping("/client/{id}")
     public ResponseEntity<PageResponse<Order>> getOrdersByClientId(
             @PathVariable UUID id,
@@ -154,6 +208,14 @@ public class OrderRestController {
      * @param request         petición
      * @return ResponseEntity<PageResponse < Order>> con los pedidos
      */
+    @Operation(summary = "Obtiene un pedido dado el id de un usuario", description = "Obtiene un pedido dado el id de un usuario")
+    @Parameters({
+            @Parameter(name = "id", description = "id del usuario", example = "770e8400-e29b-41d4-a716-446655440000"),
+    })
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Pedido"),
+            @ApiResponse(responseCode = "404", description = "Usuario no encontrado")
+    })
     @GetMapping("/user/{id}")
     public ResponseEntity<PageResponse<Order>> getOrdersByUserId(
             @PathVariable UUID id,
@@ -181,6 +243,14 @@ public class OrderRestController {
      * @param request         petición
      * @return ResponseEntity<PageResponse < Order>> con los pedidos
      */
+    @Operation(summary = "Obtiene un pedido dado el id de una tienda", description = "Obtiene un pedido dado el id de una tienda")
+    @Parameters({
+            @Parameter(name = "id", description = "id de la tienda", example = "770e8400-e29b-41d4-a716-446655440000"),
+    })
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Pedido"),
+            @ApiResponse(responseCode = "404", description = "Tienda no encontrada")
+    })
     @GetMapping("/shop/{id}")
     public ResponseEntity<PageResponse<Order>> getOrdersByShopId(
             @PathVariable UUID id,

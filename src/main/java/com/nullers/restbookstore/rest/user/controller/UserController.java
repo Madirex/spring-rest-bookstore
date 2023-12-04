@@ -12,6 +12,11 @@ import com.nullers.restbookstore.rest.user.dto.UserRequest;
 import com.nullers.restbookstore.rest.user.dto.UserResponse;
 import com.nullers.restbookstore.rest.user.models.User;
 import com.nullers.restbookstore.rest.user.services.UserService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.Parameters;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
@@ -70,6 +75,16 @@ public class UserController {
      * @param pageableRequest Objeto PageableRequest con los parámetros de paginación
      * @return Lista de usuarios
      */
+    @Operation(summary = "Obtiene todos los usuarios", description = "Obtiene una lista de usuarios")
+    @Parameters({
+            @Parameter(name = "username", description = "Nombre de usuario", example = ""),
+            @Parameter(name = "email", description = "Email del usuario", example = ""),
+            @Parameter(name = "isDeleted", description = "Usuario borrado o no", example = "true"),
+    })
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Página de usuarios"),
+            @ApiResponse(responseCode = "400", description = "Petición de usuarios no válida")
+    })
     @GetMapping
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<PageResponse<UserResponse>> findAll(
@@ -94,6 +109,14 @@ public class UserController {
      * @param id Id del usuario
      * @return Usuario
      */
+    @Operation(summary = "Obtiene un usuario dado un id", description = "Obtiene un usuario dado un id")
+    @Parameters({
+            @Parameter(name = "id", description = "id del usuario", example = "660e8400-e29b-41d4-a716-446655440000"),
+    })
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Usuario"),
+            @ApiResponse(responseCode = "404", description = "Usuario no encontrado")
+    })
     @GetMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<UserInfoResponse> findById(@PathVariable UUID id) {
@@ -107,6 +130,12 @@ public class UserController {
      * @param userRequest Usuario a crear
      * @return Usuario creado
      */
+    @Operation(summary = "Crea un usuario", description = "Crea un usuario")
+    @io.swagger.v3.oas.annotations.parameters.RequestBody(description = "Usuario a crear", required = true)
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "201", description = "Usuario creado"),
+            @ApiResponse(responseCode = "400", description = "Usuario no válido")
+    })
     @PostMapping
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<UserResponse> createUser(@Valid @RequestBody UserRequest userRequest) {
@@ -121,6 +150,14 @@ public class UserController {
      * @param userRequest Usuario a actualizar
      * @return Usuario actualizado
      */
+    @Operation(summary = "Actualiza un usuario", description = "Actualiza un usuario")
+    @Parameter(name = "id", description = "id del usuario a actualizar", example = "660e8400-e29b-41d4-a716-446655440000")
+    @io.swagger.v3.oas.annotations.parameters.RequestBody(description = "Usuario actualizado", required = true)
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Usuario actualizado"),
+            @ApiResponse(responseCode = "400", description = "Usuario no válido"),
+            @ApiResponse(responseCode = "404", description = "Usuario no encontrado")
+    })
     @PutMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<UserResponse> updateUser(@PathVariable UUID id, @Valid @RequestBody UserRequest userRequest) {
@@ -134,6 +171,12 @@ public class UserController {
      * @param id Id del usuario
      * @return Respuesta vacía
      */
+    @Operation(summary = "Eimina un usuario", description = "Elimina un usuario")
+    @Parameter(name = "id", description = "Id del usuario a eliminar", example = "660e8400-e29b-41d4-a716-446655440000", required = true)
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "204", description = "Usuario borrado"),
+            @ApiResponse(responseCode = "404", description = "Usuario no encontrado"),
+    })
     @DeleteMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Void> deleteUser(@PathVariable UUID id) {
@@ -142,6 +185,7 @@ public class UserController {
         return ResponseEntity.noContent().build();
     }
 
+
     /**
      * Actualiza un usuario parcialmente
      *
@@ -149,7 +193,14 @@ public class UserController {
      * @param userRequest Usuario a actualizar parcialmente
      * @return Usuario actualizado parcialmente
      */
-
+    @Operation(summary = "Actualiza un usuario parcialmente", description = "Actualiza un usuario parcialmente")
+    @Parameter(name = "id", description = "id del usuario a actualizar", example = "660e8400-e29b-41d4-a716-446655440000")
+    @io.swagger.v3.oas.annotations.parameters.RequestBody(description = "Usuario actualizado", required = true)
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Usuario actualizado"),
+            @ApiResponse(responseCode = "400", description = "Usuario no válido"),
+            @ApiResponse(responseCode = "404", description = "Usuario no encontrado")
+    })
     @PatchMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<UserResponse> patchUser(@PathVariable UUID id, @RequestBody UserRequest userRequest) {

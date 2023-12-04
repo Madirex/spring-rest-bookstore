@@ -1,5 +1,6 @@
 package com.nullers.restbookstore.rest.user.models;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
@@ -33,33 +34,43 @@ import java.util.stream.Collectors;
 public class User implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
+    @Schema(name = "ID", example = "660e8400-e29b-41d4-a716-446655440000")
     private UUID id;
     @NotBlank(message = "El nombre no puede estar vacío")
     @Column(nullable = false)
+    @Schema(name = "Nombre", example = "Pedro")
     private String name;
     @NotBlank(message = "El apellido no puede estar vacío")
     @Column(nullable = false)
+    @Schema(name = "Apellido", example = "Gómez")
     private String surname;
     @NotBlank(message = "El nombre de usuario no puede estar vacío")
     @Column(nullable = false, unique = true)
+    @Schema(name = "Nombre de usuario", example = "usuario1")
     private String username;
     @Email(regexp = ".*@.*\\..*", message = "El email debe ser válido")
     @NotBlank(message = "El email no puede estar vacío")
+    @Schema(name = "Email", example = "ejemplo@gmail.com")
     private String email;
     @NotBlank(message = "La contraseña no puede estar vacía")
     @Size(min = 5, message = "La contraseña debe tener al menos 5 caracteres")
     @Column(nullable = false)
+    @Schema(name = "Contraseña", example = "ejemplo1234")
     private String password;
     @CreationTimestamp
     @Builder.Default
+    @Schema(name = "Fecha de creación", example = "2021-03-05T11:11:11")
     private LocalDateTime createdAt = LocalDateTime.now();
     @UpdateTimestamp
     @Builder.Default
+    @Schema(name = "Fecha de actualización", example = "2021-03-05T11:11:11")
     private LocalDateTime updatedAt = LocalDateTime.now();
     @Builder.Default
+    @Schema(name = "Usuario borrado", example = "true")
     private Boolean isDeleted = false;
     @ElementCollection(fetch = FetchType.EAGER)
     @Enumerated(EnumType.STRING)
+    @Schema(name = "Roles")
     private Set<Role> roles;
 
     /**
