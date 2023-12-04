@@ -144,7 +144,6 @@ public class UserServiceImpl implements UserService {
                         throw new UserNameOrEmailExists("El usuario ya existe");
                     });
         }
-
         userRequest.setPassword(passwordEncode.encode(userRequest.getPassword()));
         return userMapper.toUserResponse(userRepository.save(userMapper.toUser(userRequest, id)));
     }
@@ -161,6 +160,9 @@ public class UserServiceImpl implements UserService {
         Optional<User> user = userRepository.findById(id);
         if (user.isEmpty()) {
             throw new UserNotFound(USER_NOT_FOUND_MSG);
+        }
+        if (userRequest.getPassword() != null) {
+            userRequest.setPassword(passwordEncode.encode(userRequest.getPassword()));
         }
         return userMapper.toUserResponse(userRepository.save(userMapper.toUser(userRequest, id)));
     }

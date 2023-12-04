@@ -227,47 +227,6 @@ public class UserController {
     }
 
     /**
-     * Actualiza el usuario autenticado
-     *
-     * @param user        Usuario autenticado
-     * @param userRequest Usuario a actualizar
-     * @return Usuario actualizado
-     */
-    @Operation(summary = "Actualiza la información del perfil que ha iniciado sesión", description = "Actualiza la información del perfil que ha iniciado sesión")
-    @io.swagger.v3.oas.annotations.parameters.RequestBody(description = "Usuario a modificar", required = true)
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "201", description = "Usuario modificado"),
-            @ApiResponse(responseCode = "400", description = "Datos de actualización no válidos"),
-            @ApiResponse(responseCode = "403", description = "Usuario no autorizado")
-    })
-    @PutMapping("/me/profile")
-    @PreAuthorize("hasRole('USER')")
-    public ResponseEntity<UserResponse> updateMe(User user, @Valid @RequestBody UserRequest userRequest) {
-        log.info("updateMe: user: {}, userRequest: {}", user, userRequest);
-        return ResponseEntity.ok(usersService.update(user.getId(), userRequest));
-    }
-
-    /**
-     * Borra el usuario autenticado
-     *
-     * @param user Usuario autenticado
-     * @return Respuesta vacía
-     */
-    @Operation(summary = "Elimina el perfil que ha iniciado sesión", description = "Elimina el perfil que ha iniciado sesión")
-    @io.swagger.v3.oas.annotations.parameters.RequestBody(description = "Usuario a eliminar", required = true)
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "204", description = "Usuario eliminado"),
-            @ApiResponse(responseCode = "403", description = "Usuario no autorizado")
-    })
-    @DeleteMapping("/me/profile")
-    @PreAuthorize("hasRole('USER')")
-    public ResponseEntity<Void> deleteMe(User user) {
-        log.info("deleteMe: user: {}", user);
-        usersService.deleteById(user.getId());
-        return ResponseEntity.noContent().build();
-    }
-
-    /**
      * Obtiene los pedidos del usuario autenticado
      *
      * @param user            Usuario autenticado
