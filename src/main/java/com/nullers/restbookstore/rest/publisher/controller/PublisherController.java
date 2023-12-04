@@ -174,7 +174,7 @@ public class PublisherController {
     @Parameter(name = "id", description = "id de la editorial a actualizar", example = "1", required = true)
     @Parameter(name = "bookId", description = "id del libro a eliminar", example = "1", required = true)
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Libro eliminado"),
+            @ApiResponse(responseCode = "204", description = "Libro eliminado"),
             @ApiResponse(responseCode = "400", description = "Editorial no válida"),
             @ApiResponse(responseCode = "404", description = "Editorial no encontrada"),
     })

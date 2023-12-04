@@ -197,7 +197,7 @@ public class ClientController {
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable UUID id) {
         clientService.deleteById(id);
-        return ResponseEntity.status(HttpStatus.CREATED).build();
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
     /**

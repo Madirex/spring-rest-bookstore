@@ -193,7 +193,7 @@ public class ShopRestControllerImpl implements ShopRestController {
     @Parameter(name = "id", description = "Identificador de la tienda", required = true)
     @Parameter(name = "bookId", description = "Identificador del libro a eliminar", required = true)
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Libro eliminado de la tienda con éxito"),
+            @ApiResponse(responseCode = "204", description = "Libro eliminado de la tienda con éxito"),
             @ApiResponse(responseCode = "404", description = "Tienda o libro no encontrado")
     })
     @Override
@@ -235,14 +235,15 @@ public class ShopRestControllerImpl implements ShopRestController {
     @Parameter(name = "id", description = "Identificador de la tienda", required = true)
     @Parameter(name = "clientId", description = "Identificador del cliente a eliminar", required = true)
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Cliente eliminado de la tienda con éxito"),
+            @ApiResponse(responseCode = "204", description = "Cliente eliminado de la tienda con éxito"),
             @ApiResponse(responseCode = "404", description = "Tienda o cliente no encontrado")
     })
     @Override
     @DeleteMapping("/{id}/clients/{clientId}")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<GetShopDto> removeClientFromShop(@Valid @PathVariable UUID id, @Valid @PathVariable UUID clientId) {
-        return ResponseEntity.ok(shopService.removeClientFromShop(id, clientId));
+        shopService.removeClientFromShop(id, clientId);
+        return ResponseEntity.noContent().build();
     }
 }
 

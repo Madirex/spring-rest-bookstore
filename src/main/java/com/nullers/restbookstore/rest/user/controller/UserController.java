@@ -256,7 +256,7 @@ public class UserController {
     @Operation(summary = "Elimina el perfil que ha iniciado sesión", description = "Elimina el perfil que ha iniciado sesión")
     @io.swagger.v3.oas.annotations.parameters.RequestBody(description = "Usuario a eliminar", required = true)
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "201", description = "Usuario eliminado"),
+            @ApiResponse(responseCode = "204", description = "Usuario eliminado"),
             @ApiResponse(responseCode = "403", description = "Usuario no autorizado")
     })
     @DeleteMapping("/me/profile")
