@@ -9,7 +9,6 @@ import com.nullers.restbookstore.rest.publisher.dto.PublisherDTO;
 import com.nullers.restbookstore.rest.publisher.services.PublisherServiceImpl;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
-import io.swagger.v3.oas.annotations.Parameters;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.servlet.http.HttpServletRequest;
@@ -59,13 +58,11 @@ public class PublisherController {
      * @return ResponseEntity<List < PublisherDto>> con las editoriales
      */
     @Operation(summary = "Obtiene todas las editoriales", description = "Obtiene una lista de editoriales")
-    @Parameters({
-            @Parameter(name = "name", description = "nombre de la editorial", example = ""),
-            @Parameter(name = "page", description = "número de la pagina", example = "0"),
-            @Parameter(name = "size", description = "tamaño de la pagina", example = "10"),
-            @Parameter(name = "sortBy", description = "campo de ordenación", example = "id"),
-            @Parameter(name = "direction", description = "dirección de ordenación", example = "asc")
-    })
+    @Parameter(name = "name", description = "nombre de la editorial", example = "Madirex")
+    @Parameter(name = "page", description = "número de la pagina", example = "0")
+    @Parameter(name = "size", description = "tamaño de la pagina", example = "10")
+    @Parameter(name = "sortBy", description = "campo de ordenación", example = "id")
+    @Parameter(name = "direction", description = "dirección de ordenación", example = "asc")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "página de editoriales"),
             @ApiResponse(responseCode = "400", description = "petición de editoriales no válida")
@@ -92,9 +89,7 @@ public class PublisherController {
      * @return ResponseEntity<PublisherDto>
      */
     @Operation(summary = "Obtiene una editorial dado un id", description = "Obtiene una editorial dado un id")
-    @Parameters({
-            @Parameter(name = "id", description = "id de la editorial", example = "1"),
-    })
+    @Parameter(name = "id", description = "id de la editorial", example = "1")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Publisher"),
             @ApiResponse(responseCode = "404", description = "Publisher no encontrado")
@@ -149,10 +144,8 @@ public class PublisherController {
      * @return ResponseEntity<PublisherDto>
      */
     @Operation(summary = "Añade un libro a una editorial", description = "Añade un libro a una editorial")
-    @Parameters({
-            @Parameter(name = "id", description = "id de la editorial a actualizar", example = "1", required = true),
-            @Parameter(name = "bookId", description = "id del libro a añadir", example = "1", required = true)
-    })
+    @Parameter(name = "id", description = "id de la editorial a actualizar", example = "1", required = true)
+    @Parameter(name = "bookId", description = "id del libro a añadir", example = "1", required = true)
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Libro añadido"),
             @ApiResponse(responseCode = "400", description = "Editorial no válida"),
@@ -172,10 +165,8 @@ public class PublisherController {
      * @return ResponseEntity<PublisherDto>
      */
     @Operation(summary = "Elimina un libro de una editorial", description = "Elimina un libro de una editorial")
-    @Parameters({
-            @Parameter(name = "id", description = "id de la editorial a actualizar", example = "1", required = true),
-            @Parameter(name = "bookId", description = "id del libro a eliminar", example = "1", required = true)
-    })
+    @Parameter(name = "id", description = "id de la editorial a actualizar", example = "1", required = true)
+    @Parameter(name = "bookId", description = "id del libro a eliminar", example = "1", required = true)
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Libro eliminado"),
             @ApiResponse(responseCode = "400", description = "Editorial no válida"),
@@ -213,10 +204,8 @@ public class PublisherController {
      * @throws IOException Si no se ha podido subir la imagen
      */
     @Operation(summary = "Actualiza la imagen de una editorial", description = "Actualiza la imagen de una editorial")
-    @Parameters({
-            @Parameter(name = "id", description = "id de la editorial a actualizar", example = "1", required = true),
-            @Parameter(name = "file", description = "archivo de imagen", required = true)
-    })
+    @Parameter(name = "id", description = "id de la editorial a actualizar", example = "1", required = true)
+    @Parameter(name = "file", description = "archivo de imagen", required = true)
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Editorial Actualizada"),
             @ApiResponse(responseCode = "400", description = "Editorial no válida"),
