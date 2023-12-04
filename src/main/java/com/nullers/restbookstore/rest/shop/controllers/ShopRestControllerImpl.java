@@ -9,6 +9,10 @@ import com.nullers.restbookstore.rest.shop.dto.GetShopDto;
 import com.nullers.restbookstore.rest.shop.dto.UpdateShopDto;
 import com.nullers.restbookstore.rest.shop.exceptions.ShopNotFoundException;
 import com.nullers.restbookstore.rest.shop.services.ShopServiceImpl;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,11 +22,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
-
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.Parameter;
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.responses.ApiResponses;
 
 import java.util.Optional;
 import java.util.UUID;
@@ -161,8 +160,8 @@ public class ShopRestControllerImpl implements ShopRestController {
     /**
      * Añade un libro a una tienda específica.
      *
-     * @param id      ID de la tienda.
-     * @param bookId  ID del libro a añadir.
+     * @param id     Id de la tienda.
+     * @param bookId Id del libro a añadir.
      * @return ResponseEntity con los detalles de la tienda actualizada.
      */
     @Operation(summary = "Añade un libro a una tienda", description = "Añade un libro a una tienda específica por su ID.")
@@ -180,8 +179,8 @@ public class ShopRestControllerImpl implements ShopRestController {
     /**
      * Elimina un libro de una tienda específica.
      *
-     * @param id      ID de la tienda.
-     * @param bookId  ID del libro a eliminar.
+     * @param id     Id de la tienda.
+     * @param bookId Id del libro a eliminar.
      * @return ResponseEntity con los detalles de la tienda actualizada.
      */
     @Operation(summary = "Elimina un libro de una tienda", description = "Elimina un libro de una tienda específica por su ID.")
@@ -200,8 +199,8 @@ public class ShopRestControllerImpl implements ShopRestController {
     /**
      * Añade un cliente a una tienda específica.
      *
-     * @param id        ID de la tienda.
-     * @param clientId  ID del cliente a añadir.
+     * @param id       Id de la tienda.
+     * @param clientId Id del cliente a añadir.
      * @return ResponseEntity con los detalles de la tienda actualizada.
      */
     @Operation(summary = "Añade un cliente a una tienda", description = "Añade un cliente a una tienda específica por su ID.")
@@ -220,8 +219,8 @@ public class ShopRestControllerImpl implements ShopRestController {
     /**
      * Elimina un cliente de una tienda específica.
      *
-     * @param id        ID de la tienda.
-     * @param clientId  ID del cliente a eliminar.
+     * @param id       Id de la tienda.
+     * @param clientId Id del cliente a eliminar.
      * @return ResponseEntity con los detalles de la tienda actualizada.
      */
     @Operation(summary = "Elimina un cliente de una tienda", description = "Elimina un cliente de una tienda específica por su ID.")
@@ -235,31 +234,6 @@ public class ShopRestControllerImpl implements ShopRestController {
     @DeleteMapping("/{id}/clients/{clientId}")
     public ResponseEntity<GetShopDto> removeClientFromShop(@Valid @PathVariable UUID id, @Valid @PathVariable UUID clientId) {
         return ResponseEntity.ok(shopService.removeClientFromShop(id, clientId));
-    }
-
-
-    @ExceptionHandler(ClientNotFound.class)
-    @ResponseStatus(HttpStatus.NOT_FOUND)
-    public ResponseEntity<ErrorResponse> handleClientNotFound(ClientNotFound ex) {
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ErrorResponse(HttpStatus.NOT_FOUND.value(), ex.getMessage()));
-    }
-
-    @ExceptionHandler(ShopNotFoundException.class)
-    @ResponseStatus(HttpStatus.NOT_FOUND)
-    public ResponseEntity<ErrorResponse> handleShopNotFound(ShopNotFoundException ex) {
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ErrorResponse(HttpStatus.NOT_FOUND.value(), ex.getMessage()));
-    }
-
-    @ExceptionHandler(BookNotFoundException.class)
-    @ResponseStatus(HttpStatus.NOT_FOUND)
-    public ResponseEntity<ErrorResponse> handleBookNotFound(BookNotFoundException ex) {
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ErrorResponse(HttpStatus.NOT_FOUND.value(), ex.getMessage()));
-    }
-
-    @ExceptionHandler(ShopHasOrders.class)
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ResponseEntity<ErrorResponse> handleShopHasOrders(ShopHasOrders ex) {
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ErrorResponse(HttpStatus.BAD_REQUEST.value(), ex.getMessage()));
     }
 }
 

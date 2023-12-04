@@ -2,6 +2,11 @@ package com.nullers.restbookstore.rest.shop.dto;
 
 import com.nullers.restbookstore.rest.common.Address;
 import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.validation.constraints.NotNull;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 import java.util.Set;
@@ -34,9 +39,7 @@ public class GetShopDto {
     @Schema(description = "IDs de clientes asociados a la tienda")
     private Set<UUID> clientsId;
 
-
     @Schema(description = "Fecha de creación", example = "2021-08-01T00:00:00.000Z")
-    @Setter
     private LocalDateTime createdAt;
 
     @Schema(description = "Fecha actualizada", example = "2021-08-01T00:00:00.000Z")
