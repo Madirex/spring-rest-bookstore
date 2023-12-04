@@ -36,7 +36,8 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 @AutoConfigureMockMvc
 @ExtendWith(MockitoExtension.class)
 @SpringBootTest(properties = "spring.config.name=application-test")
-@WithMockUser(username = "admin", password = "admin", roles = "ADMIN")
+@WithMockUser(username = "admin", password = "admin", roles =  {"ADMIN", "USER"})
+
 class CategoryControllerTest {
 
     private final ObjectMapper mapper = new ObjectMapper();

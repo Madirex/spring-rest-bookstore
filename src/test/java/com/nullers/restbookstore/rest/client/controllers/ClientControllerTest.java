@@ -529,11 +529,12 @@ class ClientControllerTest {
                 .param("page", "-1")
                 .accept(MediaType.APPLICATION_JSON)).andReturn().getResponse();
 
-        ErrorResponse res = mapper.readValue(response.getContentAsString(StandardCharsets.UTF_8), ErrorResponse.class);
+        Map<String, Object> res = mapper.readValue(response.getContentAsString(StandardCharsets.UTF_8), mapper.getTypeFactory().constructMapType(Map.class, String.class, Object.class));
+        LinkedHashMap<String, Object> errors = (LinkedHashMap<String, Object>) res.get("errors");
 
         assertAll(
-                () -> assertEquals(HttpStatus.BAD_REQUEST.value(), res.status()),
-                () -> assertEquals("El numero de pagina no debe ser menor a 0 y el tamaño de la página debe ser mayor que 0", res.error())
+                () -> assertEquals(HttpStatus.BAD_REQUEST.value(), res.get("code")),
+                () -> assertEquals("La página no puede ser inferior a 0", errors.get("page"))
         );
 
         verify(clientService, times(0)).findAll(any(Optional.class), any(Optional.class), any(Optional.class), any(Optional.class), any(Optional.class), any(PageRequest.class));
@@ -545,11 +546,13 @@ class ClientControllerTest {
                 .param("size", "0")
                 .accept(MediaType.APPLICATION_JSON)).andReturn().getResponse();
 
-        ErrorResponse res = mapper.readValue(response.getContentAsString(StandardCharsets.UTF_8), ErrorResponse.class);
+
+        Map<String, Object> res = mapper.readValue(response.getContentAsString(StandardCharsets.UTF_8), mapper.getTypeFactory().constructMapType(Map.class, String.class, Object.class));
+        LinkedHashMap<String, Object> errors = (LinkedHashMap<String, Object>) res.get("errors");
 
         assertAll(
-                () -> assertEquals(HttpStatus.BAD_REQUEST.value(), res.status()),
-                () -> assertEquals("El numero de pagina no debe ser menor a 0 y el tamaño de la página debe ser mayor que 0", res.error())
+                () -> assertEquals(HttpStatus.BAD_REQUEST.value(), res.get("code")),
+                () -> assertEquals("El tamaño de la página no puede ser inferior a 1", errors.get("size"))
         );
 
         verify(clientService, times(0)).findAll(any(Optional.class), any(Optional.class), any(Optional.class), any(Optional.class), any(Optional.class), any(PageRequest.class));
@@ -1346,12 +1349,11 @@ class ClientControllerTest {
                         .contentType(MediaType.MULTIPART_FORM_DATA))
                 .andReturn().getResponse();
 
-        Map<String, Object> res = mapper.readValue(response.getContentAsString(StandardCharsets.UTF_8),
-                mapper.getTypeFactory().constructMapType(Map.class, String.class, Object.class));
+        ErrorResponse res = mapper.readValue(response.getContentAsString(StandardCharsets.UTF_8), ErrorResponse.class);
 
         assertAll(
                 () -> assertEquals(HttpStatus.BAD_REQUEST.value(), response.getStatus()),
-                () -> assertEquals("El archivo no es una imagen o esta vacío", res.get("msg"))
+                () -> assertEquals("El archivo no es una imagen o esta vacío", res.error())
         );
     }
 
@@ -1373,12 +1375,10 @@ class ClientControllerTest {
                         .contentType(MediaType.MULTIPART_FORM_DATA))
                 .andReturn().getResponse();
 
-        Map<String, Object> res = mapper.readValue(response.getContentAsString(StandardCharsets.UTF_8),
-                mapper.getTypeFactory().constructMapType(Map.class, String.class, Object.class));
-
+        ErrorResponse res = mapper.readValue(response.getContentAsString(StandardCharsets.UTF_8), ErrorResponse.class);
         assertAll(
                 () -> assertEquals(HttpStatus.BAD_REQUEST.value(), response.getStatus()),
-                () -> assertEquals("El archivo no es una imagen o esta vacío", res.get("msg"))
+                () -> assertEquals("El archivo no es una imagen o esta vacío", res.error())
         );
     }
 

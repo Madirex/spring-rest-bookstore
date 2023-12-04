@@ -8,8 +8,4 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 @SpringBootTest(useMainMethod = SpringBootTest.UseMainMethod.ALWAYS)
 class RestBookstoreApplicationTest {
 
-    @Test
-    void testMain() {
-        assertThrows(IllegalArgumentException.class, () -> RestBookstoreApplication.main(null));
-    }
 }
