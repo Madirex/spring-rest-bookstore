@@ -7,7 +7,6 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
  * Clase RestBookstoreApplication
  */
 @SpringBootApplication
-//@EnableCaching
 public class RestBookstoreApplication {
 
     /**

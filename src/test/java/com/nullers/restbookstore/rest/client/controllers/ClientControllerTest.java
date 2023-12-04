@@ -1218,7 +1218,7 @@ class ClientControllerTest {
 
 
         assertAll(
-                () -> assertEquals(HttpStatus.CREATED.value(), response.getStatus())
+                () -> assertEquals(HttpStatus.NO_CONTENT.value(), response.getStatus())
         );
 
         verify(clientService, times(1)).deleteById(any(UUID.class));

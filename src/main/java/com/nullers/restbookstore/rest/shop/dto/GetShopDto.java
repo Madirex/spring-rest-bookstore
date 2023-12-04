@@ -1,7 +1,12 @@
 package com.nullers.restbookstore.rest.shop.dto;
 
 import com.nullers.restbookstore.rest.common.Address;
-import lombok.*;
+import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.validation.constraints.NotNull;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 import java.util.Set;
@@ -18,18 +23,25 @@ import java.util.UUID;
 @AllArgsConstructor
 @NoArgsConstructor
 public class GetShopDto {
+
+    @Schema(description = "ID", example = "1")
     private UUID id;
 
+    @Schema(description = "Nombre", example = "Tienda Nullers")
     private String name;
 
+    @NotNull(message = "La ubicación no puede estar vacía")
     private Address location;
 
+    @Schema(description = "IDs de libros asociados a la tienda")
     private Set<Long> booksId;
 
+    @Schema(description = "IDs de clientes asociados a la tienda")
     private Set<UUID> clientsId;
 
-    @Setter
+    @Schema(description = "Fecha de creación", example = "2021-08-01T00:00:00.000Z")
     private LocalDateTime createdAt;
 
+    @Schema(description = "Fecha actualizada", example = "2021-08-01T00:00:00.000Z")
     private LocalDateTime updatedAt;
 }
