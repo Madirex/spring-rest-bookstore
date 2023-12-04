@@ -1,3 +1,19 @@
+-- Para publishers
+DROP SEQUENCE IF EXISTS publisher_id_seq;
+CREATE SEQUENCE publisher_id_seq
+    INCREMENT 1
+    MINVALUE 1
+    MAXVALUE 9223372036854775807
+    START 1;
+
+-- Para libros
+DROP SEQUENCE IF EXISTS books_id_seq;
+CREATE SEQUENCE books_id_seq
+    INCREMENT 1
+    MINVALUE 1
+    MAXVALUE 9223372036854775807
+    START 1;
+
 DROP TABLE IF EXISTS "book";
 CREATE TABLE "public"."book" (
                                  "id" bigint NOT NULL,
@@ -15,13 +31,6 @@ CREATE TABLE "public"."book" (
                                  "book_id" uuid,
                                  CONSTRAINT "book_pkey" PRIMARY KEY ("id")
 ) WITH (oids = false);
-
-INSERT INTO "book" ("id", "active", "author", "created_at", "description", "image", "name", "price", "stock", "updated_at", "category_id", "publisher_id", "book_id") VALUES
-    (1,	't',	'Author 1',	'2023-12-03 20:53:50.003355',	'Descripcion prueba',	'https://via.placeholder.com/150',	'Name 1',	10,	100,	'2023-12-03 20:53:50.003355',	'd69cf3db-b77d-4181-b3cd-5ca8107fb6a9',	1,	NULL);
-
-DROP SEQUENCE IF EXISTS books_id_seq;
-CREATE SEQUENCE books_id_seq INCREMENT 1 MINVALUE 1 MAXVALUE 9223372036854775807 START 2 CACHE 1;
-
 
 DROP TABLE IF EXISTS "bookstore_user";
 CREATE TABLE "public"."bookstore_user" (
@@ -114,13 +123,6 @@ CREATE TABLE "public"."publisher" (
                                       "updated_at" timestamp(6),
                                       CONSTRAINT "publisher_pkey" PRIMARY KEY ("id")
 ) WITH (oids = false);
-
-INSERT INTO "publisher" ("id", "active", "created_at", "image", "name", "updated_at") VALUES
-    (1,	't',	'2023-12-03 20:51:00.645538',	NULL,	'Publisher 1',	'2023-12-03 20:51:00.645538');
-
-DROP SEQUENCE IF EXISTS publisher_id_seq;
-CREATE SEQUENCE publisher_id_seq INCREMENT 1 MINVALUE 1 MAXVALUE 9223372036854775807 START 2 CACHE 1;
-
 
 DROP TABLE IF EXISTS "shops";
 CREATE TABLE "public"."shops" (
