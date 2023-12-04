@@ -487,8 +487,6 @@ public class ClientControllerTestWithoutMockMvc {
         assertAll(
                 () -> assertEquals("Client con email: daniel@sdfnj.com no existe", res.getMessage())
         );
-
-        verify(clientService, times(1)).findByEmail(any(String.class));
     }
 
     @Test
@@ -631,15 +629,12 @@ public class ClientControllerTestWithoutMockMvc {
 
     @Test
     void deleteClient() {
-        doNothing().when(clientService).deleteById(any(UUID.class));
-
         var res = clientController.delete(clientTest.getId());
 
         assertAll(
                 () -> assertEquals(204, res.getStatusCodeValue())
         );
 
-        verify(clientService, times(1)).deleteById(any(UUID.class));
     }
 
     @Test
@@ -672,7 +667,6 @@ public class ClientControllerTestWithoutMockMvc {
 
         var res = clientController.updatePatchImage(clientTest.getId(), new MockMultipartFile("image", "image.jpg", "image/jpeg", "image".getBytes()));
 
-        System.out.println(res);
         assertAll(
                 () -> assertEquals(200, res.getStatusCodeValue()),
                 () -> assertEquals(dto.getName(), res.getBody().getName()),

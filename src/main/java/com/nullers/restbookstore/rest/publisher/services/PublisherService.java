@@ -64,24 +64,6 @@ public interface PublisherService {
     void patchPublisher(Long id, PatchPublisherDto publisherDTO) throws PublisherNotFound, PublisherIDNotValid;
 
     /**
-     * Método que añade un libro a un editor
-     *
-     * @param id     id del editor
-     * @param bookId id del libro
-     * @return editor actualizado
-     */
-    PublisherDTO addBookPublisher(Long id, Long bookId);
-
-    /**
-     * Método que elimina un libro de un editor
-     *
-     * @param id     id del editor
-     * @param bookId id del libro
-     * @return editor actualizado
-     */
-    PublisherDTO removeBookPublisher(Long id, Long bookId);
-
-    /**
      * Método que elimina un editor por el ID
      *
      * @param id id del editor

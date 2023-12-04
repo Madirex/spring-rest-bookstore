@@ -308,7 +308,8 @@ class ShopControllerImplTest {
                         .accept("application/json")
         ).andReturn().getResponse();
 
-        PageResponse<GetShopDto> pageResponse = mapper.readValue(response.getContentAsString(StandardCharsets.UTF_8), mapper.getTypeFactory().constructParametricType(PageResponse.class, GetShopDto.class));
+        PageResponse<GetShopDto> pageResponse = mapper.readValue(response.getContentAsString(StandardCharsets.UTF_8),
+                mapper.getTypeFactory().constructParametricType(PageResponse.class, GetShopDto.class));
 
         assertAll(
                 () -> assertEquals(200, response.getStatus()),
