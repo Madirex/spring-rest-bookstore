@@ -636,7 +636,7 @@ public class ClientControllerTestWithoutMockMvc {
         var res = clientController.delete(clientTest.getId());
 
         assertAll(
-                () -> assertEquals(201, res.getStatusCodeValue())
+                () -> assertEquals(204, res.getStatusCodeValue())
         );
 
         verify(clientService, times(1)).deleteById(any(UUID.class));

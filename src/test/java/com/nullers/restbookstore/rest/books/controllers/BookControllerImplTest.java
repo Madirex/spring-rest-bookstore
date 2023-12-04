@@ -298,6 +298,7 @@ class BookControllerImplTest {
                 .author("autor")
                 .publisherId(1L)
                 .price(2.2)
+                .category("category")
                 .stock(2)
                 .image("imagen")
                 .description("descripción")
