@@ -2,6 +2,7 @@ package com.nullers.restbookstore.rest.orders.models;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.nullers.restbookstore.rest.client.model.Client;
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
@@ -32,32 +33,41 @@ public class Order {
     private ObjectId id = new ObjectId();
 
     @NotNull(message = "El id del usuario no puede ser nulo")
+    @Schema(name = "IDUsuario", example = "770e8400-e29b-41d4-a716-446655440000")
     private UUID userId;
 
     @NotNull(message = "El cliente no puede ser nulo")
+    @Schema(name = "IDCliente", example = "770e8400-e29b-41d4-a716-446655440000")
     private UUID clientId;
 
     @NotNull(message = "La tienda no puede ser nula")
+    @Schema(name = "IDTienda", example = "770e8400-e29b-41d4-a716-446655440000")
     private UUID shopId;
 
     @NotNull(message = "El pedido debe tener al menos una línea de pedido")
+    @Schema(name = "Línea de pedidos")
     private List<@Valid OrderLine> orderLines;
 
     @Builder.Default
+    @Schema(name = "Total", example = "100.0")
     private Double total = 0.0;
 
     @Builder.Default
+    @Schema(name = "Libros totales", example = "10")
     private Integer totalBooks = 0;
 
     @Builder.Default
     @CreationTimestamp
+    @Schema(name = "Fecha de creación", example = "2021-03-05T11:11:11")
     private LocalDateTime createdAt = LocalDateTime.now();
 
     @Builder.Default
     @UpdateTimestamp
+    @Schema(name = "Fecha de actualización", example = "2021-03-05T11:11:11")
     private LocalDateTime updatedAt = LocalDateTime.now();
 
     @Builder.Default
+    @Schema(name = "Usuario borrado", example = "true")
     private Boolean isDeleted = false;
 
     @JsonProperty("id")
