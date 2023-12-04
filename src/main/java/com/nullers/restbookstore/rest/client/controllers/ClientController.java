@@ -12,7 +12,6 @@ import com.nullers.restbookstore.rest.common.PageableRequest;
 import com.nullers.restbookstore.rest.common.PageableUtil;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
-import io.swagger.v3.oas.annotations.Parameters;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.servlet.http.HttpServletRequest;
@@ -79,17 +78,15 @@ public class ClientController {
      * @return ResponseEntity<PageResponse < ClientDto>> con los clientes
      */
     @Operation(summary = "Obtiene todos los clientes", description = "Obtiene una lista de clientes")
-    @Parameters({
-            @Parameter(name = "name", description = "Nombre del cliente", example = ""),
-            @Parameter(name = "surname", description = "Apellido del cliente", example = ""),
-            @Parameter(name = "email", description = "Email del cliente", example = ""),
-            @Parameter(name = "phone", description = "Teléfono del cliente", example = ""),
-            @Parameter(name = "adress", description = "Dirección del cliente", example = ""),
-            @Parameter(name = "page", description = "Número de la pagina", example = "0"),
-            @Parameter(name = "size", description = "Tamaño de la pagina", example = "10"),
-            @Parameter(name = "sortBy", description = "Campo de ordenación", example = "id"),
-            @Parameter(name = "order", description = "Dirección de ordenación", example = "asc")
-    })
+    @Parameter(name = "name", description = "Nombre del cliente", example = "Manolo")
+    @Parameter(name = "surname", description = "Apellido del cliente", example = "García")
+    @Parameter(name = "email", description = "Email del cliente", example = "manolo@gmail.com")
+    @Parameter(name = "phone", description = "Teléfono del cliente", example = "666666666")
+    @Parameter(name = "address", description = "Dirección del cliente", example = "Calle Falsa 123")
+    @Parameter(name = "page", description = "Número de la pagina", example = "0")
+    @Parameter(name = "size", description = "Tamaño de la pagina", example = "10")
+    @Parameter(name = "sortBy", description = "Campo de ordenación", example = "id")
+    @Parameter(name = "order", description = "Dirección de ordenación", example = "asc")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Página de clientes"),
             @ApiResponse(responseCode = "400", description = "Petición de clientes no válida")
@@ -121,9 +118,7 @@ public class ClientController {
      * @return ResponseEntity<ClientDto> con el cliente
      */
     @Operation(summary = "Obtiene un cliente dado un id", description = "Obtiene un cliente dado un id")
-    @Parameters({
-            @Parameter(name = "id", description = "id del cliente", example = "550e8400-e29b-41d4-a716-446655440000"),
-    })
+    @Parameter(name = "id", description = "id del cliente", example = "550e8400-e29b-41d4-a716-446655440000")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Cliente"),
             @ApiResponse(responseCode = "404", description = "Cliente no encontrado")
@@ -140,9 +135,7 @@ public class ClientController {
      * @return ResponseEntity<ClientDto> con el cliente
      */
     @Operation(summary = "Obtiene un cliente dado un email", description = "Obtiene un cliente dado un email")
-    @Parameters({
-            @Parameter(name = "email", description = "Email del cliente", example = "ejemplo@gmail.com"),
-    })
+    @Parameter(name = "email", description = "Email del cliente", example = "ejemplo@gmail.com")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Cliente"),
             @ApiResponse(responseCode = "404", description = "Cliente no encontrado")
@@ -195,7 +188,7 @@ public class ClientController {
      * @param id id del cliente
      * @return ResponseEntity<Void>
      */
-    @Operation(summary = "Eimina un cliente", description = "Elimina un cliente")
+    @Operation(summary = "Elimina un cliente", description = "Elimina un cliente")
     @Parameter(name = "id", description = "Id del cliente a eliminar", example = "550e8400-e29b-41d4-a716-446655440000", required = true)
     @ApiResponses(value = {
             @ApiResponse(responseCode = "204", description = "Cliente borrado"),
@@ -215,10 +208,8 @@ public class ClientController {
      * @return ResponseEntity<ClientDto> con el cliente
      */
     @Operation(summary = "Actualiza la imagen de un cliente", description = "Actualiza la imagen de un cliente")
-    @Parameters({
-            @Parameter(name = "id", description = "id del cliente a actualizar", example = "550e8400-e29b-41d4-a716-446655440000", required = true),
-            @Parameter(name = "file", description = "archivo de imagen", required = true)
-    })
+    @Parameter(name = "id", description = "id del cliente a actualizar", example = "550e8400-e29b-41d4-a716-446655440000", required = true)
+    @Parameter(name = "file", description = "archivo de imagen", required = true)
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Cliente actualizado"),
             @ApiResponse(responseCode = "400", description = "Cliente no válido"),
