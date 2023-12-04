@@ -19,7 +19,7 @@ public class PageableRequest {
     @Builder.Default()
     private Integer page = 0;
 
-    @Min(value = 1, message = "El tamaño de la pagina no puede ser inferior a 1")
+    @Min(value = 1, message = "El tamaño de la página no puede ser inferior a 1")
     @Builder.Default()
     private Integer size = 10;
 

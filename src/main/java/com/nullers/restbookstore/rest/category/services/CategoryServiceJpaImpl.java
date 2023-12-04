@@ -52,8 +52,8 @@ public class CategoryServiceJpaImpl implements CategoryServiceJpa {
     @Override
     @Cacheable
     public Page<Category> getAll(Optional<String> name, Optional<Boolean> isActive, Pageable pageable) {
-        Specification<Category> specName = ((root, query, criteriaBuilder) -> name.map(value -> criteriaBuilder.like(root.get("nombre"), "%" + value + "%")).orElseGet(() -> criteriaBuilder.isTrue(criteriaBuilder.literal(true))));
-        Specification<Category> specActive = ((root, query, criteriaBuilder) -> isActive.map(value -> criteriaBuilder.equal(root.get("activa"), value)).orElseGet(() -> criteriaBuilder.isTrue(criteriaBuilder.literal(true))));
+        Specification<Category> specName = ((root, query, criteriaBuilder) -> name.map(value -> criteriaBuilder.like(root.get("name"), "%" + value + "%")).orElseGet(() -> criteriaBuilder.isTrue(criteriaBuilder.literal(true))));
+        Specification<Category> specActive = ((root, query, criteriaBuilder) -> isActive.map(value -> criteriaBuilder.equal(root.get("isActive"), value)).orElseGet(() -> criteriaBuilder.isTrue(criteriaBuilder.literal(true))));
         Specification<Category> cr = Specification.where(specName).and(specActive);
         return repository.findAll(cr, pageable);
     }
@@ -79,7 +79,7 @@ public class CategoryServiceJpaImpl implements CategoryServiceJpa {
     @Override
     @Cacheable(key = "#name")
     public Category getCategoryByName(String name) {
-        return repository.findByName(name).orElseThrow(() -> new CategoryNotFoundException(name));
+        return repository.findByNameEqualsIgnoreCase(name).orElseThrow(() -> new CategoryNotFoundException(name));
     }
 
     /**
@@ -90,9 +90,10 @@ public class CategoryServiceJpaImpl implements CategoryServiceJpa {
      */
     @Cacheable(key = "#result.id")
     public Category createCategory(CategoryCreateDTO categoryCreateDTO) {
-        repository.findByName(categoryCreateDTO.getName()).ifPresent(category -> {
+        repository.findByNameEqualsIgnoreCase(categoryCreateDTO.getName()).ifPresent(category -> {
             throw new CategoryConflictException("Ya existe una categoría con el nombre: " + categoryCreateDTO.getName());
         });
+        categoryCreateDTO.setActive(true);
         return repository.save(CategoryCreateMapper.toEntity(categoryCreateDTO));
     }
 
@@ -107,7 +108,7 @@ public class CategoryServiceJpaImpl implements CategoryServiceJpa {
     @Cacheable(key = "#id")
     public Category updateCategory(UUID id, CategoryCreateDTO categoryCreateDTO) {
         Category category = repository.findById(id).orElseThrow(() -> new CategoryNotFoundException(id));
-        repository.findByName(categoryCreateDTO.getName()).ifPresent(category1 -> {
+        repository.findByNameEqualsIgnoreCase(categoryCreateDTO.getName()).ifPresent(category1 -> {
             if (!category1.getId().equals(id)) {
                 throw new CategoryConflictException("Ya existe una categoría con el nombre: " + categoryCreateDTO.getName());
             }

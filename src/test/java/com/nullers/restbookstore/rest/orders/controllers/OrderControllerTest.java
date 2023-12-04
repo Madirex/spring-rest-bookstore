@@ -21,8 +21,8 @@ import com.nullers.restbookstore.rest.publisher.model.Publisher;
 import com.nullers.restbookstore.rest.shop.exceptions.ShopNotFoundException;
 import com.nullers.restbookstore.rest.shop.model.Shop;
 import com.nullers.restbookstore.rest.user.exceptions.UserNotFound;
-import com.nullers.restbookstore.rest.user.models.User;
 import com.nullers.restbookstore.rest.user.models.Role;
+import com.nullers.restbookstore.rest.user.models.User;
 import org.bson.types.ObjectId;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -366,7 +366,7 @@ public class OrderControllerTest {
 
         assertAll(
                 () -> assertEquals(HttpStatus.BAD_REQUEST.value(), response.getStatus()),
-                () -> assertEquals("El tamaño de la pagina no puede ser inferior a 1", errors.get("size"))
+                () -> assertEquals("El tamaño de la página no puede ser inferior a 1", errors.get("size"))
         );
 
         verify(orderService, times(0)).getAllOrders(any(Pageable.class));
@@ -383,7 +383,7 @@ public class OrderControllerTest {
         assertAll(
                 () -> assertEquals(HttpStatus.BAD_REQUEST.value(), response.getStatus()),
                 () -> assertEquals("La página no puede ser inferior a 0", errors.get("page")),
-                () -> assertEquals("El tamaño de la pagina no puede ser inferior a 1", errors.get("size"))
+                () -> assertEquals("El tamaño de la página no puede ser inferior a 1", errors.get("size"))
         );
 
         verify(orderService, times(0)).getAllOrders(any(Pageable.class));
@@ -426,7 +426,7 @@ public class OrderControllerTest {
 
         assertAll(
                 () -> assertEquals(HttpStatus.NOT_FOUND.value(), response.getStatus()),
-                () -> assertEquals("El pedido con id " + order.getId() + " no existe", errorResponse.msg())
+                () -> assertEquals("El pedido con id " + order.getId() + " no existe", errorResponse.error())
         );
 
         verify(orderService, times(1)).getOrderById(any(ObjectId.class));
@@ -471,7 +471,7 @@ public class OrderControllerTest {
 
         assertAll(
                 () -> assertEquals(HttpStatus.NOT_FOUND.value(), response.getStatus()),
-                () -> assertEquals("El pedido con id " + order.getId() + " no existe", errorResponse.msg())
+                () -> assertEquals("El pedido con id " + order.getId() + " no existe", errorResponse.error())
         );
 
         verify(orderService, times(1)).createOrder(any(OrderCreateDto.class));
@@ -489,7 +489,7 @@ public class OrderControllerTest {
 
         assertAll(
                 () -> assertEquals(HttpStatus.NOT_FOUND.value(), response.getStatus()),
-                () -> assertEquals("Client con id: " + clientTest.getId() + " no existe", errorResponse.msg())
+                () -> assertEquals("Client con id: " + clientTest.getId() + " no existe", errorResponse.error())
         );
 
         verify(orderService, times(1)).createOrder(any(OrderCreateDto.class));
@@ -507,7 +507,7 @@ public class OrderControllerTest {
 
         assertAll(
                 () -> assertEquals(HttpStatus.NOT_FOUND.value(), response.getStatus()),
-                () -> assertEquals("Usuario con id" + userTest.getId().toString() + " no encontrado", errorResponse.msg())
+                () -> assertEquals("Usuario con id" + userTest.getId().toString() + " no encontrado", errorResponse.error())
         );
 
         verify(orderService, times(1)).createOrder(any(OrderCreateDto.class));
@@ -525,7 +525,7 @@ public class OrderControllerTest {
 
         assertAll(
                 () -> assertEquals(HttpStatus.NOT_FOUND.value(), response.getStatus()),
-                () -> assertEquals("Tienda no encontrada - " + "La tienda con id " + shop.getId().toString() + " no existe", errorResponse.msg())
+                () -> assertEquals("Tienda no encontrada - " + "La tienda con id " + shop.getId().toString() + " no existe", errorResponse.error())
         );
 
         verify(orderService, times(1)).createOrder(any(OrderCreateDto.class));
@@ -550,7 +550,7 @@ public class OrderControllerTest {
 
         assertAll(
                 () -> assertEquals(HttpStatus.BAD_REQUEST.value(), response.getStatus()),
-                () -> assertEquals("El pedido con id " + order.getId() + " no tiene items", errorResponse.msg())
+                () -> assertEquals("El pedido con id " + order.getId() + " no tiene items", errorResponse.error())
         );
 
         verify(orderService, times(1)).createOrder(any(OrderCreateDto.class));
@@ -569,7 +569,7 @@ public class OrderControllerTest {
 
         assertAll(
                 () -> assertEquals(HttpStatus.NOT_FOUND.value(), response.getStatus()),
-                () -> assertEquals("Libro no encontrado - " + "El libro con id " + book.getId() + " no existe", errorResponse.msg())
+                () -> assertEquals("Libro no encontrado - " + "El libro con id " + book.getId() + " no existe", errorResponse.error())
         );
 
         verify(orderService, times(1)).createOrder(any(OrderCreateDto.class));
@@ -586,8 +586,8 @@ public class OrderControllerTest {
         ErrorResponse errorResponse = mapper.readValue(response.getContentAsString(StandardCharsets.UTF_8), ErrorResponse.class);
 
         assertAll(
-                () -> assertEquals(HttpStatus.BAD_REQUEST.value(), response.getStatus()),
-                () -> assertEquals("El producto con id " + book.getId() + " no tiene stock", errorResponse.msg())
+                () -> assertEquals(HttpStatus.NOT_FOUND.value(), response.getStatus()),
+                () -> assertEquals("El producto con id " + book.getId() + " no tiene stock", errorResponse.error())
         );
     }
 
@@ -603,7 +603,7 @@ public class OrderControllerTest {
 
         assertAll(
                 () -> assertEquals(HttpStatus.BAD_REQUEST.value(), response.getStatus()),
-                () -> assertEquals("El precio del producto con id " + book.getId() + " no es correcto", errorResponse.msg())
+                () -> assertEquals("El precio del producto con id " + book.getId() + " no es correcto", errorResponse.error())
         );
     }
 
@@ -879,7 +879,7 @@ public class OrderControllerTest {
 
         assertAll(
                 () -> assertEquals(HttpStatus.NOT_FOUND.value(), response.getStatus()),
-                () -> assertEquals("El pedido con id " + order.getId() + " no existe", errorResponse.msg())
+                () -> assertEquals("El pedido con id " + order.getId() + " no existe", errorResponse.error())
         );
 
         verify(orderService, times(1)).updateOrder(any(ObjectId.class), any(OrderCreateDto.class));
@@ -897,7 +897,7 @@ public class OrderControllerTest {
 
         assertAll(
                 () -> assertEquals(HttpStatus.NOT_FOUND.value(), response.getStatus()),
-                () -> assertEquals("Client con id: " + clientTest.getId() + " no existe", errorResponse.msg())
+                () -> assertEquals("Client con id: " + clientTest.getId() + " no existe", errorResponse.error())
         );
 
         verify(orderService, times(1)).updateOrder(any(ObjectId.class), any(OrderCreateDto.class));
@@ -915,7 +915,7 @@ public class OrderControllerTest {
 
         assertAll(
                 () -> assertEquals(HttpStatus.NOT_FOUND.value(), response.getStatus()),
-                () -> assertEquals("Usuario con id" + userTest.getId().toString() + " no encontrado", errorResponse.msg())
+                () -> assertEquals("Usuario con id" + userTest.getId().toString() + " no encontrado", errorResponse.error())
         );
 
         verify(orderService, times(1)).updateOrder(any(ObjectId.class), any(OrderCreateDto.class));
@@ -933,7 +933,7 @@ public class OrderControllerTest {
 
         assertAll(
                 () -> assertEquals(HttpStatus.NOT_FOUND.value(), response.getStatus()),
-                () -> assertEquals("Tienda no encontrada - " + "La tienda con id " + shop.getId().toString() + " no existe", errorResponse.msg())
+                () -> assertEquals("Tienda no encontrada - " + "La tienda con id " + shop.getId().toString() + " no existe", errorResponse.error())
         );
 
         verify(orderService, times(1)).updateOrder(any(ObjectId.class), any(OrderCreateDto.class));
@@ -958,7 +958,7 @@ public class OrderControllerTest {
 
         assertAll(
                 () -> assertEquals(HttpStatus.BAD_REQUEST.value(), response.getStatus()),
-                () -> assertEquals("El pedido con id " + order.getId() + " no tiene items", errorResponse.msg())
+                () -> assertEquals("El pedido con id " + order.getId() + " no tiene items", errorResponse.error())
         );
 
         verify(orderService, times(1)).updateOrder(any(ObjectId.class), any(OrderCreateDto.class));
@@ -976,7 +976,7 @@ public class OrderControllerTest {
 
         assertAll(
                 () -> assertEquals(HttpStatus.NOT_FOUND.value(), response.getStatus()),
-                () -> assertEquals("Libro no encontrado - " + "El libro con id " + book.getId() + " no existe", errorResponse.msg())
+                () -> assertEquals("Libro no encontrado - " + "El libro con id " + book.getId() + " no existe", errorResponse.error())
         );
 
         verify(orderService, times(1)).updateOrder(any(ObjectId.class), any(OrderCreateDto.class));
@@ -993,8 +993,8 @@ public class OrderControllerTest {
         ErrorResponse errorResponse = mapper.readValue(response.getContentAsString(StandardCharsets.UTF_8), ErrorResponse.class);
 
         assertAll(
-                () -> assertEquals(HttpStatus.BAD_REQUEST.value(), response.getStatus()),
-                () -> assertEquals("El producto con id " + book.getId() + " no tiene stock", errorResponse.msg())
+                () -> assertEquals(HttpStatus.NOT_FOUND.value(), response.getStatus()),
+                () -> assertEquals("El producto con id " + book.getId() + " no tiene stock", errorResponse.error())
         );
 
         verify(orderService, times(1)).updateOrder(any(ObjectId.class), any(OrderCreateDto.class));
@@ -1012,7 +1012,7 @@ public class OrderControllerTest {
 
         assertAll(
                 () -> assertEquals(HttpStatus.BAD_REQUEST.value(), response.getStatus()),
-                () -> assertEquals("El precio del producto con id " + book.getId() + " no es correcto", errorResponse.msg())
+                () -> assertEquals("El precio del producto con id " + book.getId() + " no es correcto", errorResponse.error())
         );
 
         verify(orderService, times(1)).updateOrder(any(ObjectId.class), any(OrderCreateDto.class));
@@ -1274,7 +1274,7 @@ public class OrderControllerTest {
 
         assertAll(
                 () -> assertEquals(HttpStatus.NOT_FOUND.value(), response.getStatus()),
-                () -> assertEquals("El pedido con id " + order.getId() + " no existe", errorResponse.msg())
+                () -> assertEquals("El pedido con id " + order.getId() + " no existe", errorResponse.error())
         );
 
         verify(orderService, times(1)).deleteOrder(any(ObjectId.class));
@@ -1290,7 +1290,7 @@ public class OrderControllerTest {
 
         assertAll(
                 () -> assertEquals(HttpStatus.NOT_FOUND.value(), response.getStatus()),
-                () -> assertEquals("Libro no encontrado - " + "El libro con id " + book.getId() + " no existe", errorResponse.msg())
+                () -> assertEquals("Libro no encontrado - " + "El libro con id " + book.getId() + " no existe", errorResponse.error())
         );
 
         verify(orderService, times(1)).deleteOrder(any(ObjectId.class));
@@ -1335,7 +1335,7 @@ public class OrderControllerTest {
 
         assertAll(
                 () -> assertEquals(HttpStatus.NOT_FOUND.value(), response.getStatus()),
-                () -> assertEquals("El pedido con id " + order.getId() + " no existe", errorResponse.msg())
+                () -> assertEquals("El pedido con id " + order.getId() + " no existe", errorResponse.error())
         );
 
         verify(orderService, times(1)).getOrdersByUserId(any(UUID.class), any(Pageable.class));
@@ -1351,7 +1351,7 @@ public class OrderControllerTest {
 
         assertAll(
                 () -> assertEquals(HttpStatus.NOT_FOUND.value(), response.getStatus()),
-                () -> assertEquals("Usuario con id" + userTest.getId().toString() + " no encontrado", errorResponse.msg())
+                () -> assertEquals("Usuario con id" + userTest.getId().toString() + " no encontrado", errorResponse.error())
         );
 
         verify(orderService, times(1)).getOrdersByUserId(any(UUID.class), any(Pageable.class));
@@ -1414,7 +1414,7 @@ public class OrderControllerTest {
 
         assertAll(
                 () -> assertEquals(HttpStatus.NOT_FOUND.value(), response.getStatus()),
-                () -> assertEquals("El pedido con id " + order.getId() + " no existe", errorResponse.msg())
+                () -> assertEquals("El pedido con id " + order.getId() + " no existe", errorResponse.error())
         );
 
         verify(orderService, times(1)).getOrdersByClientId(any(UUID.class), any(Pageable.class));
@@ -1430,7 +1430,7 @@ public class OrderControllerTest {
 
         assertAll(
                 () -> assertEquals(HttpStatus.NOT_FOUND.value(), response.getStatus()),
-                () -> assertEquals("Client con id: " + clientTest.getId() + " no existe", errorResponse.msg())
+                () -> assertEquals("Client con id: " + clientTest.getId() + " no existe", errorResponse.error())
         );
 
         verify(orderService, times(1)).getOrdersByClientId(any(UUID.class), any(Pageable.class));
@@ -1494,7 +1494,7 @@ public class OrderControllerTest {
 
         assertAll(
                 () -> assertEquals(HttpStatus.NOT_FOUND.value(), response.getStatus()),
-                () -> assertEquals("El pedido con id " + order.getId() + " no existe", errorResponse.msg())
+                () -> assertEquals("El pedido con id " + order.getId() + " no existe", errorResponse.error())
         );
 
         verify(orderService, times(1)).getOrdersByShopId(any(UUID.class), any(Pageable.class));
@@ -1510,7 +1510,7 @@ public class OrderControllerTest {
 
         assertAll(
                 () -> assertEquals(HttpStatus.NOT_FOUND.value(), response.getStatus()),
-                () -> assertEquals("Tienda no encontrada - " + "La tienda con id " + shop.getId().toString() + " no existe", errorResponse.msg())
+                () -> assertEquals("Tienda no encontrada - " + "La tienda con id " + shop.getId().toString() + " no existe", errorResponse.error())
         );
 
         verify(orderService, times(1)).getOrdersByShopId(any(UUID.class), any(Pageable.class));
@@ -1585,7 +1585,7 @@ public class OrderControllerTest {
 
         assertAll(
                 () -> assertEquals(HttpStatus.NOT_FOUND.value(), response.getStatus()),
-                () -> assertEquals("El pedido con id " + order.getId() + " no existe", errorResponse.msg())
+                () -> assertEquals("El pedido con id " + order.getId() + " no existe", errorResponse.error())
         );
 
         verify(orderService, times(1)).deleteLogicOrder(any(ObjectId.class));

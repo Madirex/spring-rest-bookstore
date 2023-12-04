@@ -533,7 +533,7 @@ class ClientControllerTest {
 
         assertAll(
                 () -> assertEquals(HttpStatus.BAD_REQUEST.value(), res.status()),
-                () -> assertEquals("El numero de pagina no debe ser menor a 0 y el tamano de la pagina debe ser mayor que 0", res.msg())
+                () -> assertEquals("El numero de pagina no debe ser menor a 0 y el tamaño de la página debe ser mayor que 0", res.error())
         );
 
         verify(clientService, times(0)).findAll(any(Optional.class), any(Optional.class), any(Optional.class), any(Optional.class), any(Optional.class), any(PageRequest.class));
@@ -549,26 +549,26 @@ class ClientControllerTest {
 
         assertAll(
                 () -> assertEquals(HttpStatus.BAD_REQUEST.value(), res.status()),
-                () -> assertEquals("El numero de pagina no debe ser menor a 0 y el tamano de la pagina debe ser mayor que 0", res.msg())
+                () -> assertEquals("El numero de pagina no debe ser menor a 0 y el tamaño de la página debe ser mayor que 0", res.error())
         );
 
         verify(clientService, times(0)).findAll(any(Optional.class), any(Optional.class), any(Optional.class), any(Optional.class), any(Optional.class), any(PageRequest.class));
     }
 
     @Test
-    void getAll_ShouldReturnErrorResponse_withInvalidSortByParam() throws Exception {
+    void getAll_ShouldReturnErrorResponse_withInvalidOrderByParam() throws Exception {
         when(clientService.findAll(any(Optional.class), any(Optional.class), any(Optional.class), any(Optional.class), any(Optional.class), any(PageRequest.class)))
                 .thenThrow(new IllegalArgumentException("No property 'pepe' found for type 'Client'"));
 
         MockHttpServletResponse response = mockMvc.perform(get(endpoint)
-                .param("sortBy", "pepe")
+                .param("orderBy", "pepe")
                 .param("order", "asc")
                 .accept(MediaType.APPLICATION_JSON)).andReturn().getResponse();
         ErrorResponse res = mapper.readValue(response.getContentAsString(StandardCharsets.UTF_8), ErrorResponse.class);
 
         assertAll(
                 () -> assertEquals(HttpStatus.BAD_REQUEST.value(), res.status()),
-                () -> assertEquals("No property 'pepe' found for type 'Client'", res.msg())
+                () -> assertEquals("No property 'pepe' found for type 'Client'", res.error())
         );
 
         verify(clientService, times(1)).findAll(any(Optional.class), any(Optional.class), any(Optional.class), any(Optional.class), any(Optional.class), any(PageRequest.class));
@@ -609,7 +609,7 @@ class ClientControllerTest {
 
         assertAll(
                 () -> assertEquals(HttpStatus.NOT_FOUND.value(), response.getStatus()),
-                () -> assertEquals("Client con id: 9def16db-362b-44c4-9fc9-77117758b5b9 no existe", res.msg())
+                () -> assertEquals("Client con id: 9def16db-362b-44c4-9fc9-77117758b5b9 no existe", res.error())
         );
 
         verify(clientService, times(1)).findById(any(UUID.class));
@@ -651,7 +651,7 @@ class ClientControllerTest {
 
         assertAll(
                 () -> assertEquals(HttpStatus.NOT_FOUND.value(), response.getStatus()),
-                () -> assertEquals("Client con email: daniel13@gmail.com no existe", res.msg())
+                () -> assertEquals("Client con email: daniel13@gmail.com no existe", res.error())
         );
 
         verify(clientService, times(1)).findByEmail(any(String.class));
@@ -695,7 +695,7 @@ class ClientControllerTest {
 
         assertAll(
                 () -> assertEquals(HttpStatus.NOT_FOUND.value(), response.getStatus()),
-                () -> assertEquals("Client con id: 9def16db-362b-44c4-9fc9-77117758b5b9 no existe", res.msg())
+                () -> assertEquals("Client con id: 9def16db-362b-44c4-9fc9-77117758b5b9 no existe", res.error())
         );
 
         verify(clientService, times(1)).save(any(ClientCreateDto.class));
@@ -713,7 +713,7 @@ class ClientControllerTest {
 
         assertAll(
                 () -> assertEquals(HttpStatus.CONFLICT.value(), response.getStatus()),
-                () -> assertEquals("Client con email: daniel@gmail.com ya existe", res.msg())
+                () -> assertEquals("Client con email: daniel@gmail.com ya existe", res.error())
         );
 
         verify(clientService, times(1)).save(any(ClientCreateDto.class));
@@ -991,7 +991,7 @@ class ClientControllerTest {
 
         assertAll(
                 () -> assertEquals(HttpStatus.NOT_FOUND.value(), response.getStatus()),
-                () -> assertEquals("Client con id: 9def16db-362b-44c4-9fc9-77117758b5b9 no existe", res.msg())
+                () -> assertEquals("Client con id: 9def16db-362b-44c4-9fc9-77117758b5b9 no existe", res.error())
         );
 
         verify(clientService, times(1)).update(any(UUID.class), any(ClientUpdateDto.class));
@@ -1010,7 +1010,7 @@ class ClientControllerTest {
 
         assertAll(
                 () -> assertEquals(HttpStatus.CONFLICT.value(), response.getStatus()),
-                () -> assertEquals("Client con email: daniel@gmail.com ya existe", res.msg())
+                () -> assertEquals("Client con email: daniel@gmail.com ya existe", res.error())
         );
 
         verify(clientService, times(1)).update(any(UUID.class), any(ClientUpdateDto.class));
@@ -1227,7 +1227,8 @@ class ClientControllerTest {
 
     @Test
     void deleteClient_ShouldThrowClientInOrder() throws Exception {
-        doThrow(new ClientInOrderException(UUID.fromString("9def16db-362b-44c4-9fc9-77117758b5b9"))).when(clientService).deleteById(any(UUID.class));
+        doThrow(new ClientInOrderException(UUID.fromString("9def16db-362b-44c4-9fc9-77117758b5b9")))
+                .when(clientService).deleteById(any(UUID.class));
 
         MockHttpServletResponse response = mockMvc.perform(
                         delete(endpoint + "/9def16db-362b-44c4-9fc9-77117758b5b9"))
@@ -1236,8 +1237,8 @@ class ClientControllerTest {
         ErrorResponse res = mapper.readValue(response.getContentAsString(StandardCharsets.UTF_8), ErrorResponse.class);
 
         assertAll(
-                () -> assertEquals(HttpStatus.BAD_REQUEST.value(), response.getStatus()),
-                () -> assertEquals("El cliente con id 9def16db-362b-44c4-9fc9-77117758b5b9 tiene pedidos asociados", res.msg())
+                () -> assertEquals(HttpStatus.CONFLICT.value(), response.getStatus()),
+                () -> assertEquals("El cliente con id 9def16db-362b-44c4-9fc9-77117758b5b9 tiene pedidos asociados", res.error())
         );
 
         verify(clientService, times(1)).deleteById(any(UUID.class));
@@ -1255,7 +1256,7 @@ class ClientControllerTest {
 
         assertAll(
                 () -> assertEquals(HttpStatus.NOT_FOUND.value(), response.getStatus()),
-                () -> assertEquals("Client con id: 9def16db-362b-44c4-9fc9-77117758b5b9 no existe", res.msg())
+                () -> assertEquals("Client con id: 9def16db-362b-44c4-9fc9-77117758b5b9 no existe", res.error())
         );
 
         verify(clientService, times(1)).deleteById(any(UUID.class));
@@ -1321,7 +1322,7 @@ class ClientControllerTest {
 
         assertAll(
                 () -> assertEquals(HttpStatus.NOT_FOUND.value(), response.getStatus()),
-                () -> assertEquals("Client con id: 9def16db-362b-44c4-9fc9-77117758b5b9 no existe", res.msg())
+                () -> assertEquals("Client con id: 9def16db-362b-44c4-9fc9-77117758b5b9 no existe", res.error())
         );
 
         verify(clientService, times(1)).updateImage(any(UUID.class), any(MultipartFile.class));
@@ -1345,7 +1346,8 @@ class ClientControllerTest {
                         .contentType(MediaType.MULTIPART_FORM_DATA))
                 .andReturn().getResponse();
 
-        Map<String, Object> res = mapper.readValue(response.getContentAsString(StandardCharsets.UTF_8), mapper.getTypeFactory().constructMapType(Map.class, String.class, Object.class));
+        Map<String, Object> res = mapper.readValue(response.getContentAsString(StandardCharsets.UTF_8),
+                mapper.getTypeFactory().constructMapType(Map.class, String.class, Object.class));
 
         assertAll(
                 () -> assertEquals(HttpStatus.BAD_REQUEST.value(), response.getStatus()),
@@ -1354,7 +1356,7 @@ class ClientControllerTest {
     }
 
     @Test
-    void updatePatchImage_ShouldReturnErrorReponse_withEmptyImage() throws Exception {
+    void updatePatchImage_ShouldReturnErrorResponse_withEmptyImage() throws Exception {
         MockMultipartFile file = new MockMultipartFile(
                 "file",
                 "file.txt",
@@ -1371,7 +1373,8 @@ class ClientControllerTest {
                         .contentType(MediaType.MULTIPART_FORM_DATA))
                 .andReturn().getResponse();
 
-        Map<String, Object> res = mapper.readValue(response.getContentAsString(StandardCharsets.UTF_8), mapper.getTypeFactory().constructMapType(Map.class, String.class, Object.class));
+        Map<String, Object> res = mapper.readValue(response.getContentAsString(StandardCharsets.UTF_8),
+                mapper.getTypeFactory().constructMapType(Map.class, String.class, Object.class));
 
         assertAll(
                 () -> assertEquals(HttpStatus.BAD_REQUEST.value(), response.getStatus()),
@@ -1404,11 +1407,11 @@ class ClientControllerTest {
 
 
         ErrorResponse res = mapper.readValue(response.getContentAsString(StandardCharsets.UTF_8), ErrorResponse.class);
-        System.out.println(res.msg());
+        System.out.println(res.error());
 
         assertAll(
                 () -> assertEquals(HttpStatus.BAD_REQUEST.value(), response.getStatus()),
-                () -> assertEquals("El tamaño del archivo supera el límite permitido. (10MB)", res.msg())
+                () -> assertEquals("El tamaño del archivo supera el límite permitido. (10MB)", res.error())
         );
     }
 }

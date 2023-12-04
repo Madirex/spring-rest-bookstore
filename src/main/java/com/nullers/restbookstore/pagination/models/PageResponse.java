@@ -19,19 +19,19 @@ public record PageResponse<T>(
         boolean empty,
         boolean first,
         boolean last,
-        String sortBy,
+        String orderBy,
         String direction
 ) {
     /**
      * PageResponse
      *
      * @param page      Página
-     * @param sortBy    Ordenación
+     * @param orderBy    Ordenación
      * @param direction Dirección
      * @param <T>       Tipo de dato
      * @return PageResponse
      */
-    public static <T> PageResponse<T> of(Page<T> page, String sortBy, String direction) {
+    public static <T> PageResponse<T> of(Page<T> page, String orderBy, String direction) {
         return new PageResponse<>(
                 page.getContent(),
                 page.getTotalPages(),
@@ -42,7 +42,7 @@ public record PageResponse<T>(
                 page.isEmpty(),
                 page.isFirst(),
                 page.isLast(),
-                sortBy,
+                orderBy,
                 direction
         );
     }

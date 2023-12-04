@@ -4,6 +4,9 @@ import com.nullers.restbookstore.rest.auth.dto.JwtAuthResponse;
 import com.nullers.restbookstore.rest.auth.dto.UserSignInRequest;
 import com.nullers.restbookstore.rest.auth.dto.UserSignUpRequest;
 import com.nullers.restbookstore.rest.auth.services.authentication.AuthenticationService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,6 +47,12 @@ public class AuthenticationController {
      * @param request Usuario a registrar
      * @return Respuesta de autenticación
      */
+    @Operation(summary = "crea una cuenta", description = "crear cuenta")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Cuenta creada"),
+            @ApiResponse(responseCode = "400", description = "Error al crear cuenta"),
+            @ApiResponse(responseCode = "403", description = "Denegado"),
+    })
     @PostMapping("/signup")
     public ResponseEntity<JwtAuthResponse> singUp(@Valid @RequestBody UserSignUpRequest request) {
         log.info("Registrando usuario: {}", request);
@@ -56,6 +65,12 @@ public class AuthenticationController {
      * @param request Usuario a iniciar sesión
      * @return Respuesta de autenticación
      */
+    @Operation(summary = "inicia sesión", description = "iniciar sesión")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Inicio de sesión realizado"),
+            @ApiResponse(responseCode = "400", description = "Error al iniciar sesión"),
+            @ApiResponse(responseCode = "403", description = "Denegado"),
+    })
     @PostMapping("/signin")
     public ResponseEntity<JwtAuthResponse> signIn(@Valid @RequestBody UserSignInRequest request) {
         log.info("Iniciando sesión de usuario: {}", request);

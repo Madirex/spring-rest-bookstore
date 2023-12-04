@@ -420,7 +420,7 @@ class ShopControllerImplTest {
         assertAll(
                 () -> assertEquals(400, response.getStatus()),
                 () -> assertEquals(1, errors.size()),
-                () -> assertEquals("El tamaño de la pagina no puede ser inferior a 1", errors.get("size"))
+                () -> assertEquals("El tamaño de la página no puede ser inferior a 1", errors.get("size"))
         );
 
         verify(service, times(0)).getAllShops(any(Optional.class), any(Optional.class), any(PageRequest.class));
@@ -464,7 +464,7 @@ class ShopControllerImplTest {
 
         assertAll(
                 () -> assertEquals(404, response.getStatus()),
-                () -> assertEquals("Tienda no encontrada - " + "Tienda no encontrada con ID: " + shop.getId(), errorResponse.msg())
+                () -> assertEquals("Tienda no encontrada - " + "Tienda no encontrada con ID: " + shop.getId(), errorResponse.error())
         );
 
         verify(service, times(1)).getShopById(any(UUID.class));
@@ -774,7 +774,7 @@ class ShopControllerImplTest {
 
         assertAll(
                 () -> assertEquals(404, response.getStatus()),
-                () -> assertEquals("Tienda no encontrada - " + "Tienda no encontrada con ID: " + shop.getId(), errorResponse.msg())
+                () -> assertEquals("Tienda no encontrada - " + "Tienda no encontrada con ID: " + shop.getId(), errorResponse.error())
         );
 
         verify(service, times(1)).updateShop(any(UUID.class), any(UpdateShopDto.class));
@@ -809,7 +809,7 @@ class ShopControllerImplTest {
 
         assertAll(
                 () -> assertEquals(404, response.getStatus()),
-                () -> assertEquals("Libro no encontrado - Tienda no encontrada con ID: b5f29063-77d8-4d5d-98ea-def0cc9ebc5f", errorResponse.msg())
+                () -> assertEquals("Libro no encontrado - Tienda no encontrada con ID: b5f29063-77d8-4d5d-98ea-def0cc9ebc5f", errorResponse.error())
         );
 
         verify(service, times(1)).deleteShop(any(UUID.class));
@@ -829,7 +829,7 @@ class ShopControllerImplTest {
 
         assertAll(
                 () -> assertEquals(400, response.getStatus()),
-                () -> assertEquals("La tienda no se puede eliminar porque tiene pedidos asociados", errorResponse.msg())
+                () -> assertEquals("La tienda no se puede eliminar porque tiene pedidos asociados", errorResponse.error())
         );
 
         verify(service, times(1)).deleteShop(any(UUID.class));
@@ -873,7 +873,7 @@ class ShopControllerImplTest {
 
         assertAll(
                 () -> assertEquals(404, response.getStatus()),
-                () -> assertEquals("Tienda no encontrada - " + "Tienda no encontrada con ID: " + shop.getId(), errorResponse.msg())
+                () -> assertEquals("Tienda no encontrada - " + "Tienda no encontrada con ID: " + shop.getId(), errorResponse.error())
         );
 
         verify(service, times(1)).addBookToShop(any(UUID.class), any(Long.class));
@@ -893,7 +893,7 @@ class ShopControllerImplTest {
 
         assertAll(
                 () -> assertEquals(404, response.getStatus()),
-                () -> assertEquals("Libro no encontrado - " + "Libro no encontrado con ID: " + book.getId(), errorResponse.msg())
+                () -> assertEquals("Libro no encontrado - " + "Libro no encontrado con ID: " + book.getId(), errorResponse.error())
         );
 
         verify(service, times(1)).addBookToShop(any(UUID.class), any(Long.class));
@@ -937,7 +937,7 @@ class ShopControllerImplTest {
 
         assertAll(
                 () -> assertEquals(404, response.getStatus()),
-                () -> assertEquals("Tienda no encontrada - " + "Tienda no encontrada con ID: " + shop.getId(), errorResponse.msg())
+                () -> assertEquals("Tienda no encontrada - " + "Tienda no encontrada con ID: " + shop.getId(), errorResponse.error())
         );
 
         verify(service, times(1)).removeBookFromShop(any(UUID.class), any(Long.class));
@@ -957,7 +957,7 @@ class ShopControllerImplTest {
 
         assertAll(
                 () -> assertEquals(404, response.getStatus()),
-                () -> assertEquals("Libro no encontrado - " + "Libro no encontrado con ID: " + book.getId(), errorResponse.msg())
+                () -> assertEquals("Libro no encontrado - " + "Libro no encontrado con ID: " + book.getId(), errorResponse.error())
         );
 
         verify(service, times(1)).removeBookFromShop(any(UUID.class), any(Long.class));
@@ -1001,7 +1001,7 @@ class ShopControllerImplTest {
 
         assertAll(
                 () -> assertEquals(404, response.getStatus()),
-                () -> assertEquals("Tienda no encontrada - " + "Tienda no encontrada con ID: " + shop.getId(), errorResponse.msg())
+                () -> assertEquals("Tienda no encontrada - " + "Tienda no encontrada con ID: " + shop.getId(), errorResponse.error())
         );
 
         verify(service, times(1)).addClientToShop(any(UUID.class), any(UUID.class));
@@ -1021,7 +1021,7 @@ class ShopControllerImplTest {
 
         assertAll(
                 () -> assertEquals(404, response.getStatus()),
-                () -> assertEquals("Client con id: " + clientTest.getId() + " no existe", errorResponse.msg())
+                () -> assertEquals("Client con id: " + clientTest.getId() + " no existe", errorResponse.error())
         );
 
         verify(service, times(1)).addClientToShop(any(UUID.class), any(UUID.class));
@@ -1065,7 +1065,7 @@ class ShopControllerImplTest {
 
         assertAll(
                 () -> assertEquals(404, response.getStatus()),
-                () -> assertEquals("Tienda no encontrada - " + shop.getId(), errorResponse.msg())
+                () -> assertEquals("Tienda no encontrada - " + shop.getId(), errorResponse.error())
         );
 
         verify(service, times(1)).removeClientFromShop(any(UUID.class), any(UUID.class));
@@ -1085,7 +1085,7 @@ class ShopControllerImplTest {
 
         assertAll(
                 () -> assertEquals(404, response.getStatus()),
-                () -> assertEquals("Client con id: " + clientTest.getId() + " no existe", errorResponse.msg())
+                () -> assertEquals("Client con id: " + clientTest.getId() + " no existe", errorResponse.error())
         );
 
         verify(service, times(1)).removeClientFromShop(any(UUID.class), any(UUID.class));

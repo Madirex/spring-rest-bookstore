@@ -1,6 +1,7 @@
 package com.nullers.restbookstore.rest.auth.services.users;
 
 import com.nullers.restbookstore.rest.auth.repositories.AuthUsersRepository;
+import com.nullers.restbookstore.rest.user.exceptions.UserNotFound;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
@@ -37,6 +38,6 @@ public class AuthUsersServiceImp implements AuthUsersService {
     @Override
     public UserDetails loadUserByUsername(String username) {
         return authUsersRepository.findByUsernameIgnoreCase(username)
-                .orElseThrow(() -> new RuntimeException("Usuario con username " + username + " no encontrado"));
+                .orElseThrow(() -> new UserNotFound("Usuario con username " + username + " no encontrado"));
     }
 }

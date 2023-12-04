@@ -1,19 +1,17 @@
 package com.nullers.restbookstore.rest.publisher.controller;
 
-import com.nullers.restbookstore.pagination.exceptions.PageNotValidException;
-import com.nullers.restbookstore.pagination.models.ErrorResponse;
 import com.nullers.restbookstore.pagination.models.PageResponse;
 import com.nullers.restbookstore.pagination.util.PaginationLinksUtils;
+import com.nullers.restbookstore.rest.common.PageableRequest;
+import com.nullers.restbookstore.rest.common.PageableUtil;
 import com.nullers.restbookstore.rest.publisher.dto.CreatePublisherDto;
 import com.nullers.restbookstore.rest.publisher.dto.PublisherDTO;
-import com.nullers.restbookstore.rest.publisher.exceptions.PublisherNotFound;
 import com.nullers.restbookstore.rest.publisher.services.PublisherServiceImpl;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -51,33 +49,23 @@ public class PublisherController {
     /**
      * Método para obtener todas las editoriales
      *
-     * @param name      nombre por el que filtrar
-     * @param page      página
-     * @param size      tamaño de la página
-     * @param sortBy    campo por el que ordenar
-     * @param direction dirección de la ordenación
+     * @param name            nombre por el que filtrar
+     * @param pageableRequest paginación
      * @return ResponseEntity<List < PublisherDto>> con las editoriales
      */
     @GetMapping
     public ResponseEntity<PageResponse<PublisherDTO>> getAll(
             @Valid @RequestParam(required = false) Optional<String> name,
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size,
-            @RequestParam(defaultValue = "id") String sortBy,
-            @RequestParam(defaultValue = "asc") String direction,
+            @Valid PageableRequest pageableRequest,
             HttpServletRequest request
     ) {
-        if (page < 0 || size < 1) {
-            throw new PageNotValidException("La página no debe ser menor que 0 y su tamaño menor que 1.");
-        }
-        Sort sort = direction.equalsIgnoreCase(
-                Sort.Direction.ASC.name()) ? Sort.by(sortBy).ascending() : Sort.by(sortBy).descending();
         UriComponentsBuilder uriBuilder = UriComponentsBuilder.fromHttpUrl(request.getRequestURL().toString());
-        Page<PublisherDTO> pageRes = publisherService.findAll(name, PageRequest.of(page, size, sort));
+        Page<PublisherDTO> pageRes = publisherService.findAll(name, PageRequest.of(pageableRequest.getPage(),
+                pageableRequest.getSize(), PageableUtil.getSort(pageableRequest)));
 
         return ResponseEntity.ok()
                 .header("link", paginationLinksUtils.createLinkHeader(pageRes, uriBuilder))
-                .body(PageResponse.of(pageRes, sortBy, direction));
+                .body(PageResponse.of(pageRes, pageableRequest.getOrderBy(), pageableRequest.getOrder()));
     }
 
     /**
@@ -149,18 +137,6 @@ public class PublisherController {
     public ResponseEntity<Void> delete(@PathVariable Long id) {
         publisherService.deleteById(id);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
-    }
-
-    /**
-     * Manejador de excepción PublisherNotFound
-     *
-     * @param exception excepción
-     * @return ErrorResponse mensaje de error
-     */
-    @ExceptionHandler(PublisherNotFound.class)
-    @ResponseStatus(HttpStatus.NOT_FOUND)
-    public ErrorResponse handlePublisherNotFound(PublisherNotFound exception) {
-        return new ErrorResponse(HttpStatus.NOT_FOUND.value(), exception.getMessage());
     }
 
     /**

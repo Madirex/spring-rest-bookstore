@@ -234,7 +234,7 @@ class BookServiceImplTest {
         when(publisherService.findById(1L)).thenReturn(any());
         when(publisherMapper.toPublisher(publisherDTO)).thenReturn(publisher);
         when(bookRepository.save(inserted)).thenReturn(inserted);
-        when(categoryRepositoryJpa.findByName(any()))
+        when(categoryRepositoryJpa.findByNameEqualsIgnoreCase(any()))
                 .thenReturn(Optional.of(category));
         when(bookMapperImpl.toBook(insert, publisher, category)).thenReturn(inserted);
         when(publisherMapper.toPublisherData(any())).thenReturn(publisherData);
@@ -265,7 +265,7 @@ class BookServiceImplTest {
         var publisherDTO = PublisherDTO.builder().id(1L).build();
         when(publisherService.findById(1L)).thenReturn(any());
         when(publisherMapper.toPublisher(publisherDTO)).thenReturn(publisher);
-        when(categoryRepositoryJpa.findByName(any())).thenReturn(Optional.empty());
+        when(categoryRepositoryJpa.findByNameEqualsIgnoreCase(any())).thenReturn(Optional.empty());
         assertThrows(CategoryNotFoundException.class, () -> bookService.postBook(insert));
     }
 
@@ -296,7 +296,7 @@ class BookServiceImplTest {
         when(publisherService.findById(1L)).thenReturn(any());
         when(publisherMapper.toPublisher(publisherDTO)).thenReturn(publisher);
         when(bookRepository.save(inserted)).thenReturn(inserted);
-        when(categoryRepositoryJpa.findByName(any()))
+        when(categoryRepositoryJpa.findByNameEqualsIgnoreCase(any()))
                 .thenReturn(Optional.of(category));
         when(bookRepository.findById(inserted.getId())).thenReturn(Optional.of(inserted));
         when(bookMapperImpl.toBook(inserted, update, publisher, category)).thenReturn(inserted);

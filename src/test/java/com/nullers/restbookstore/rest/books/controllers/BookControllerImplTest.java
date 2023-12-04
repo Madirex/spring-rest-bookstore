@@ -311,6 +311,7 @@ class BookControllerImplTest {
                 .price(2.2)
                 .stock(2)
                 .image("imagen")
+                .category("category")
                 .description("descripción")
                 .createdAt(book.getCreatedAt())
                 .updatedAt(book.getUpdatedAt())

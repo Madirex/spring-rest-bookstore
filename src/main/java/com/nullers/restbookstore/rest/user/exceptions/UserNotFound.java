@@ -1,5 +1,6 @@
 package com.nullers.restbookstore.rest.user.exceptions;
 
+import com.nullers.restbookstore.manager.error.exceptions.ResponseExceptionNotFound;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
@@ -11,7 +12,7 @@ import java.util.UUID;
  * @Author Binwei Wang
  */
 @ResponseStatus(HttpStatus.NOT_FOUND)
-public class UserNotFound extends UserException {
+public class UserNotFound extends ResponseExceptionNotFound {
     /**
      * Constructor
      *

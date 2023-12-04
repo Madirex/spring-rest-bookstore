@@ -3,6 +3,7 @@ package com.nullers.restbookstore.rest.user.controller;
 import com.nullers.restbookstore.pagination.models.PageResponse;
 import com.nullers.restbookstore.pagination.util.PaginationLinksUtils;
 import com.nullers.restbookstore.rest.common.PageableRequest;
+import com.nullers.restbookstore.rest.common.PageableUtil;
 import com.nullers.restbookstore.rest.orders.dto.OrderCreateDto;
 import com.nullers.restbookstore.rest.orders.models.Order;
 import com.nullers.restbookstore.rest.orders.services.OrderService;
@@ -19,7 +20,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -79,17 +79,13 @@ public class UserController {
             @Valid PageableRequest pageableRequest,
             HttpServletRequest request
     ) {
-        String orderBy = pageableRequest.getOrderBy();
-        String order = pageableRequest.getOrder();
-        Integer page = pageableRequest.getPage();
-        Integer size = pageableRequest.getSize();
-        Sort sort = order.equalsIgnoreCase(Sort.Direction.ASC.name()) ? Sort.by(orderBy).ascending() : Sort.by(orderBy).descending();
         UriComponentsBuilder uriBuilder = UriComponentsBuilder.fromHttpUrl(request.getRequestURL().toString());
-        Page<UserResponse> pageResult = usersService.findAll(username, email, isDeleted, PageRequest.of(page, size, sort));
+        Page<UserResponse> pageResult = usersService.findAll(username, email, isDeleted, PageRequest.of(
+                pageableRequest.getPage(), pageableRequest.getSize(),
+                PageableUtil.getSort(pageableRequest)));
         return ResponseEntity.ok()
                 .header("link", paginationLinksUtils.createLinkHeader(pageResult, uriBuilder))
-                .body(PageResponse.of(pageResult, orderBy, order));
-
+                .body(PageResponse.of(pageResult, pageableRequest.getOrderBy(), pageableRequest.getOrder()));
     }
 
     /**
@@ -206,26 +202,21 @@ public class UserController {
     /**
      * Obtiene los pedidos del usuario autenticado
      *
-     * @param user   Usuario autenticado
-     * @param page   Página
-     * @param size   Tamaño de la página
-     * @param sortBy Campo por el que ordenar
-     * @param order  Dirección de la ordenación
+     * @param user            Usuario autenticado
+     * @param pageableRequest Objeto PageableRequest con los parámetros de paginación
      * @return Pedidos del usuario autenticado
      */
 
     @GetMapping("/me/orders")
     @PreAuthorize("hasRole('USER')")
-    public ResponseEntity<PageResponse<Order>> getOrdersByUsuario(
+    public ResponseEntity<PageResponse<Order>> getOrdersByUser(
             @AuthenticationPrincipal User user,
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size,
-            @RequestParam(defaultValue = "id") String sortBy,
-            @RequestParam(defaultValue = "asc") String order
+            @Valid PageableRequest pageableRequest
     ) {
-        Sort sort = order.equalsIgnoreCase(Sort.Direction.ASC.name()) ? Sort.by(sortBy).ascending() : Sort.by(sortBy).descending();
-        Pageable pageable = PageRequest.of(page, size, sort);
-        return ResponseEntity.ok(PageResponse.of(orderService.getOrdersByClientId(user.getId(), pageable), sortBy, order));
+        Pageable pageable = PageRequest.of(pageableRequest.getPage(), pageableRequest.getSize(),
+                PageableUtil.getSort(pageableRequest));
+        return ResponseEntity.ok(PageResponse.of(orderService.getOrdersByClientId(user.getId(), pageable),
+                pageableRequest.getOrderBy(), pageableRequest.getOrder()));
     }
 
     /**

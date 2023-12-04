@@ -102,7 +102,7 @@ public class CategoryServiceTest {
     }
 
     @Test
-    void getAll_ShoulReturnAllBooksActivaParamPageable() {
+    void getAll_ShoulReturnAllBooksIsActiveParamPageable() {
         List<Category> expectedCategories = List.of(category1);
 
         Pageable pageable = PageRequest.of(0, 10, Sort.by("id").ascending());
@@ -126,7 +126,7 @@ public class CategoryServiceTest {
     }
 
     @Test
-    void getAll_ShoulReturnAllBooksActivaFalseParamPageable() {
+    void getAll_ShoulReturnAllBooksIsActiveFalseParamPageable() {
         List<Category> expectedCategories = List.of();
 
         Pageable pageable = PageRequest.of(0, 10, Sort.by("id").ascending());
@@ -170,7 +170,7 @@ public class CategoryServiceTest {
 
     @Test
     void getCategoryByName() {
-        when(repository.findByName("category 1")).thenReturn(Optional.of(category1));
+        when(repository.findByNameEqualsIgnoreCase("category 1")).thenReturn(Optional.of(category1));
 
         var category = service.getCategoryByName("category 1");
 
@@ -183,16 +183,16 @@ public class CategoryServiceTest {
 
     @Test
     void getCategoryByNameNotFound() {
-        when(repository.findByName("category 99")).thenReturn(Optional.empty());
+        when(repository.findByNameEqualsIgnoreCase("category 99")).thenReturn(Optional.empty());
 
         var res = assertThrows(CategoryNotFoundException.class, () -> service.getCategoryByName("category 99"));
-        assertEquals("Category con nombre category 99 no encontrada", res.getMessage());
+        assertEquals("Category con nombre category 99 - no encontrada", res.getMessage());
     }
 
     @Test
     void createCategory() {
         when(repository.save(any(Category.class))).thenReturn(category1);
-        when(repository.findByName("category 1")).thenReturn(Optional.empty());
+        when(repository.findByNameEqualsIgnoreCase("category 1")).thenReturn(Optional.empty());
 
         var category = service.createCategory(CategoryCreateMapper.toDto(category1));
 
@@ -205,7 +205,7 @@ public class CategoryServiceTest {
 
     @Test
     void createCategoryConflict() {
-        when(repository.findByName("category 1")).thenReturn(Optional.of(category1));
+        when(repository.findByNameEqualsIgnoreCase("category 1")).thenReturn(Optional.of(category1));
 
         var res = assertThrows(CategoryConflictException.class, () -> service.createCategory(CategoryCreateMapper.toDto(category1)));
         assertEquals("Ya existe una categoría con el nombre: category 1", res.getMessage());
@@ -215,7 +215,7 @@ public class CategoryServiceTest {
     void updateCategory() {
         when(repository.save(any(Category.class))).thenReturn(category1);
         when(repository.findById(UUID.fromString("3930e05a-7ebf-4aa1-8aa8-5d7466fa9734"))).thenReturn(Optional.of(category1));
-        when(repository.findByName("category 1")).thenReturn(Optional.empty());
+        when(repository.findByNameEqualsIgnoreCase("category 1")).thenReturn(Optional.empty());
 
         var category = service.updateCategory(UUID.fromString("3930e05a-7ebf-4aa1-8aa8-5d7466fa9734"), CategoryCreateMapper.toDto(category1));
 
@@ -237,7 +237,7 @@ public class CategoryServiceTest {
     @Test
     void updateCategoryConflict() {
         when(repository.findById(UUID.fromString("3930e05a-7ebf-4aa1-8aa8-5d7466fa9734"))).thenReturn(Optional.of(category1));
-        when(repository.findByName("category 1")).thenReturn(Optional.of(category2));
+        when(repository.findByNameEqualsIgnoreCase("category 1")).thenReturn(Optional.of(category2));
 
         var res = assertThrows(CategoryConflictException.class, () -> service.updateCategory(UUID.fromString("3930e05a-7ebf-4aa1-8aa8-5d7466fa9734"), CategoryCreateMapper.toDto(category1)));
         assertEquals("Ya existe una categoría con el nombre: category 1", res.getMessage());

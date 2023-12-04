@@ -1,5 +1,6 @@
 package com.nullers.restbookstore.rest.shop.exceptions;
 
+import com.nullers.restbookstore.manager.error.exceptions.ResponseExceptionNotFound;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
@@ -12,7 +13,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
  * @author alexdor00
  */
 @ResponseStatus(HttpStatus.NOT_FOUND)
-public class ShopNotFoundException extends ShopException {
+public class ShopNotFoundException extends ResponseExceptionNotFound {
 
     /**
      * Constructor para crear una nueva ShopNotFoundException con un mensaje específico.
