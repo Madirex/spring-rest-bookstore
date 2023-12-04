@@ -39,7 +39,7 @@ public class Category {
     private LocalDateTime createdAt;
 
     @Temporal(TemporalType.TIMESTAMP)
-    @ColumnDefault(value = "CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP")
+    @ColumnDefault(value = "CURRENT_TIMESTAMP")
     @Schema(description = "Fecha de actualización", example = "2021-10-10T10:10:10")
     private LocalDateTime updatedAt;
 
