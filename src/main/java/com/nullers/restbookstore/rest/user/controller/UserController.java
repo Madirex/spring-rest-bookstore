@@ -14,7 +14,6 @@ import com.nullers.restbookstore.rest.user.models.User;
 import com.nullers.restbookstore.rest.user.services.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
-import io.swagger.v3.oas.annotations.Parameters;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.servlet.http.HttpServletRequest;
@@ -76,11 +75,13 @@ public class UserController {
      * @return Lista de usuarios
      */
     @Operation(summary = "Obtiene todos los usuarios", description = "Obtiene una lista de usuarios")
-    @Parameters({
-            @Parameter(name = "username", description = "Nombre de usuario", example = ""),
-            @Parameter(name = "email", description = "Email del usuario", example = ""),
-            @Parameter(name = "isDeleted", description = "Usuario borrado o no", example = "true"),
-    })
+    @Parameter(name = "username", description = "Nombre de usuario", example = "usuario1")
+    @Parameter(name = "email", description = "Email del usuario", example = "contact@usermail@.com")
+    @Parameter(name = "isDeleted", description = "Usuario borrado o no", example = "true")
+    @Parameter(name = "page", description = "Número de página", example = "0")
+    @Parameter(name = "size", description = "Tamaño de la página", example = "10")
+    @Parameter(name = "orderBy", description = "Campo de ordenación", example = "id")
+    @Parameter(name = "order", description = "Dirección de ordenación", example = "asc")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Página de usuarios"),
             @ApiResponse(responseCode = "400", description = "Petición de usuarios no válida")
@@ -110,9 +111,7 @@ public class UserController {
      * @return Usuario
      */
     @Operation(summary = "Obtiene un usuario dado un id", description = "Obtiene un usuario dado un id")
-    @Parameters({
-            @Parameter(name = "id", description = "id del usuario", example = "660e8400-e29b-41d4-a716-446655440000"),
-    })
+    @Parameter(name = "id", description = "id del usuario", example = "660e8400-e29b-41d4-a716-446655440000")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Usuario"),
             @ApiResponse(responseCode = "404", description = "Usuario no encontrado")
@@ -171,7 +170,7 @@ public class UserController {
      * @param id Id del usuario
      * @return Respuesta vacía
      */
-    @Operation(summary = "Eimina un usuario", description = "Elimina un usuario")
+    @Operation(summary = "Elimina un usuario", description = "Elimina un usuario")
     @Parameter(name = "id", description = "Id del usuario a eliminar", example = "660e8400-e29b-41d4-a716-446655440000", required = true)
     @ApiResponses(value = {
             @ApiResponse(responseCode = "204", description = "Usuario borrado"),
@@ -208,13 +207,18 @@ public class UserController {
         return ResponseEntity.ok(usersService.update(id, userRequest));
     }
 
-
     /**
      * Obtiene el usuario autenticado
      *
      * @param user Usuario autenticado
      * @return Usuario autenticado
      */
+    @Operation(summary = "Consulta la información del perfil que ha iniciado sesión", description = "Consulta la información del perfil que ha iniciado sesión")
+    @io.swagger.v3.oas.annotations.parameters.RequestBody(description = "Usuario a consultar", required = true)
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "201", description = "Usuario consultado"),
+            @ApiResponse(responseCode = "403", description = "Usuario no autorizado")
+    })
     @GetMapping("/me/profile")
     @PreAuthorize("hasRole('USER')")
     public ResponseEntity<UserInfoResponse> me(@AuthenticationPrincipal User user) {
@@ -229,6 +233,13 @@ public class UserController {
      * @param userRequest Usuario a actualizar
      * @return Usuario actualizado
      */
+    @Operation(summary = "Actualiza la información del perfil que ha iniciado sesión", description = "Actualiza la información del perfil que ha iniciado sesión")
+    @io.swagger.v3.oas.annotations.parameters.RequestBody(description = "Usuario a modificar", required = true)
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "201", description = "Usuario modificado"),
+            @ApiResponse(responseCode = "400", description = "Datos de actualización no válidos"),
+            @ApiResponse(responseCode = "403", description = "Usuario no autorizado")
+    })
     @PutMapping("/me/profile")
     @PreAuthorize("hasRole('USER')")
     public ResponseEntity<UserResponse> updateMe(User user, @Valid @RequestBody UserRequest userRequest) {
@@ -242,6 +253,12 @@ public class UserController {
      * @param user Usuario autenticado
      * @return Respuesta vacía
      */
+    @Operation(summary = "Elimina el perfil que ha iniciado sesión", description = "Elimina el perfil que ha iniciado sesión")
+    @io.swagger.v3.oas.annotations.parameters.RequestBody(description = "Usuario a eliminar", required = true)
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "201", description = "Usuario eliminado"),
+            @ApiResponse(responseCode = "403", description = "Usuario no autorizado")
+    })
     @DeleteMapping("/me/profile")
     @PreAuthorize("hasRole('USER')")
     public ResponseEntity<Void> deleteMe(User user) {
@@ -257,7 +274,17 @@ public class UserController {
      * @param pageableRequest Objeto PageableRequest con los parámetros de paginación
      * @return Pedidos del usuario autenticado
      */
-
+    @Operation(summary = "Obtiene los pedidos del perfil que ha iniciado sesión", description = "Obtiene los pedidos del perfil que ha iniciado sesión")
+    @io.swagger.v3.oas.annotations.parameters.RequestBody(description = "Usuario a consultar pedidos", required = true)
+    @Parameter(name = "page", description = "Número de página", example = "0")
+    @Parameter(name = "size", description = "Tamaño de la página", example = "10")
+    @Parameter(name = "orderBy", description = "Campo de ordenación", example = "id")
+    @Parameter(name = "order", description = "Dirección de ordenación", example = "asc")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "201", description = "Usuario consultado"),
+            @ApiResponse(responseCode = "400", description = "Datos de consulta no válidos"),
+            @ApiResponse(responseCode = "403", description = "Usuario no autorizado")
+    })
     @GetMapping("/me/orders")
     @PreAuthorize("hasRole('USER')")
     public ResponseEntity<PageResponse<Order>> getOrdersByUser(
@@ -277,6 +304,13 @@ public class UserController {
      * @param orderId Id del pedido
      * @return Pedido del usuario autenticado
      */
+    @Operation(summary = "Obtiene un pedido del usuario autenticado dado su ID", description = "Obtiene un pedido del usuario autenticado dado su ID")
+    @Parameter(name = "id", description = "ID del pedido", example = "660e8400-e29b-41d4-a716-446655440000")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "201", description = "Pedido de usuario consultado"),
+            @ApiResponse(responseCode = "400", description = "ID de pedido no válido"),
+            @ApiResponse(responseCode = "403", description = "Usuario no autorizado")
+    })
     @GetMapping("/me/orders/{id}")
     @PreAuthorize("hasRole('USER')")
     public ResponseEntity<Order> getOrder(
@@ -297,6 +331,13 @@ public class UserController {
      * @param order Pedido a crear
      * @return Pedido creado para el usuario autenticado
      */
+    @Operation(summary = "Crea un pedido dado el usuario que ha iniciado sesión", description = "Crea un pedido dado el usuario que ha iniciado sesión")
+    @io.swagger.v3.oas.annotations.parameters.RequestBody(description = "Pedido a crear", required = true)
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "201", description = "Pedido de usuario consultado"),
+            @ApiResponse(responseCode = "400", description = "ID de pedido no válido"),
+            @ApiResponse(responseCode = "403", description = "Usuario no autorizado")
+    })
     @PostMapping("/me/orders")
     @PreAuthorize("hasRole('USER')")
     public ResponseEntity<Order> createOrder(@AuthenticationPrincipal User user, @Valid @RequestBody OrderCreateDto order) {
@@ -312,6 +353,14 @@ public class UserController {
      * @param order   Pedido a actualizar
      * @return Pedido actualizado
      */
+    @Operation(summary = "Actualiza un pedido dado el usuario que ha iniciado sesión", description = "Actualiza un pedido dado el usuario que ha iniciado sesión")
+    @Parameter(name = "id", description = "ID del pedido", example = "660e8400-e29b-41d4-a716-446655440000")
+    @io.swagger.v3.oas.annotations.parameters.RequestBody(description = "Pedido a actualizar", required = true)
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "201", description = "Pedido de usuario actualizado"),
+            @ApiResponse(responseCode = "400", description = "ID de pedido no válido"),
+            @ApiResponse(responseCode = "403", description = "Usuario no autorizado")
+    })
     @PutMapping("/me/orders/{id}")
     @PreAuthorize("hasRole('USER')")
     public ResponseEntity<Order> updateOrder(
@@ -329,6 +378,13 @@ public class UserController {
      * @param orderId Id del pedido
      * @return Respuesta vacía
      */
+    @Operation(summary = "Elimina un pedido dado el usuario que ha iniciado sesión", description = "Elimina un pedido dado el usuario que ha iniciado sesión")
+    @Parameter(name = "id", description = "ID del pedido", example = "660e8400-e29b-41d4-a716-446655440000")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "204", description = "Pedido de usuario eliminado"),
+            @ApiResponse(responseCode = "400", description = "ID de pedido no válido"),
+            @ApiResponse(responseCode = "403", description = "Usuario no autorizado")
+    })
     @DeleteMapping("/me/orders/{id}")
     @PreAuthorize("hasRole('USER')")
     public ResponseEntity<Void> deleteOrder(
