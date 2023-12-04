@@ -23,6 +23,11 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+
 import java.util.Optional;
 import java.util.UUID;
 
@@ -57,11 +62,16 @@ public class ShopRestControllerImpl implements ShopRestController {
      *
      * @return ResponseEntity con una lista de todas las tiendas en formato DTO.
      */
+    @Operation(summary = "Obtiene todas las tiendas", description = "Obtiene una lista de todas las tiendas disponibles.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Lista de tiendas obtenida con éxito"),
+            @ApiResponse(responseCode = "400", description = "Solicitud incorrecta")
+    })
     @GetMapping
     public ResponseEntity<PageResponse<GetShopDto>> getAllShops(
-            @Valid @RequestParam(required = false) Optional<String> name,
-            @RequestParam(required = false) Optional<String> location,
-            @Valid PageableRequest pageableRequest,
+            @Parameter(description = "Nombre de la tienda para filtrar") @Valid @RequestParam(required = false) Optional<String> name,
+            @Parameter(description = "Ubicación de la tienda para filtrar") @RequestParam(required = false) Optional<String> location,
+            @Parameter(description = "Parámetros de paginación") @Valid PageableRequest pageableRequest,
             HttpServletRequest request
     ) {
         int page = pageableRequest.getPage();
@@ -84,6 +94,12 @@ public class ShopRestControllerImpl implements ShopRestController {
      * @return ResponseEntity con los detalles de la tienda en formato DTO.
      * @throws ShopNotFoundException Si la tienda no se encuentra.
      */
+    @Operation(summary = "Obtiene una tienda por su ID", description = "Obtiene los detalles de una tienda específica por su ID.")
+    @Parameter(name = "id", description = "Identificador de la tienda", required = true)
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Detalles de la tienda obtenidos con éxito"),
+            @ApiResponse(responseCode = "404", description = "Tienda no encontrada")
+    })
     @GetMapping("/{id}")
     @Override
     public ResponseEntity<GetShopDto> getShopById(@Valid @PathVariable UUID id) throws ShopNotFoundException {
@@ -96,6 +112,12 @@ public class ShopRestControllerImpl implements ShopRestController {
      * @param shopDto DTO con la información de la tienda a crear.
      * @return ResponseEntity con los detalles de la tienda creada en formato DTO.
      */
+    @Operation(summary = "Crea una nueva tienda", description = "Crea una tienda con la información proporcionada.")
+    @io.swagger.v3.oas.annotations.parameters.RequestBody(description = "Datos de la nueva tienda")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "201", description = "Tienda creada con éxito"),
+            @ApiResponse(responseCode = "400", description = "Datos de la tienda no válidos")
+    })
     @PostMapping
     @Override
     public ResponseEntity<GetShopDto> createShop(@Valid @RequestBody CreateShopDto shopDto) {
@@ -111,6 +133,14 @@ public class ShopRestControllerImpl implements ShopRestController {
      * @return ResponseEntity con los detalles de la tienda actualizada en formato DTO.
      * @throws ShopNotFoundException Si la tienda no se encuentra.
      */
+    @Operation(summary = "Actualiza una tienda existente", description = "Actualiza una tienda con los datos proporcionados.")
+    @Parameter(name = "id", description = "Identificador de la tienda a actualizar", required = true)
+    @io.swagger.v3.oas.annotations.parameters.RequestBody(description = "Datos actualizados de la tienda")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Tienda actualizada con éxito"),
+            @ApiResponse(responseCode = "404", description = "Tienda no encontrada"),
+            @ApiResponse(responseCode = "400", description = "Datos de la tienda no válidos")
+    })
     @PutMapping("/{id}")
     @Override
     public ResponseEntity<GetShopDto> updateShop(@Valid @PathVariable UUID id, @Valid @RequestBody UpdateShopDto shopDto) {
@@ -124,6 +154,12 @@ public class ShopRestControllerImpl implements ShopRestController {
      * @return ResponseEntity sin contenido indicando que la tienda ha sido eliminada.
      * @throws ShopNotFoundException Si la tienda no se encuentra.
      */
+    @Operation(summary = "Elimina una tienda por su ID", description = "Elimina una tienda específica por su ID.")
+    @Parameter(name = "id", description = "Identificador de la tienda a eliminar", required = true)
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "204", description = "Tienda eliminada con éxito"),
+            @ApiResponse(responseCode = "404", description = "Tienda no encontrada")
+    })
     @DeleteMapping("/{id}")
     @Override
     public ResponseEntity<String> deleteShop(@PathVariable UUID id) {
@@ -131,52 +167,121 @@ public class ShopRestControllerImpl implements ShopRestController {
         return ResponseEntity.noContent().build();
     }
 
+    // ...Continuation of ShopRestControllerImpl class
 
+    /**
+     * Añade un libro a una tienda específica.
+     *
+     * @param id      ID de la tienda.
+     * @param bookId  ID del libro a añadir.
+     * @return ResponseEntity con los detalles de la tienda actualizada.
+     */
+    @Operation(summary = "Añade un libro a una tienda", description = "Añade un libro a una tienda específica por su ID.")
+    @Parameter(name = "id", description = "Identificador de la tienda", required = true)
+    @Parameter(name = "bookId", description = "Identificador del libro a añadir", required = true)
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Libro añadido a la tienda con éxito"),
+            @ApiResponse(responseCode = "404", description = "Tienda o libro no encontrado")
+    })
     @PatchMapping("/{id}/books/{bookId}")
     public ResponseEntity<GetShopDto> addBookToShop(@Valid @PathVariable UUID id, @Valid @PathVariable Long bookId) {
         return ResponseEntity.ok(shopService.addBookToShop(id, bookId));
     }
 
-    @Override
+    /**
+     * Elimina un libro de una tienda específica.
+     *
+     * @param id      ID de la tienda.
+     * @param bookId  ID del libro a eliminar.
+     * @return ResponseEntity con los detalles de la tienda actualizada.
+     */
+    @Operation(summary = "Elimina un libro de una tienda", description = "Elimina un libro de una tienda específica por su ID.")
+    @Parameter(name = "id", description = "Identificador de la tienda", required = true)
+    @Parameter(name = "bookId", description = "Identificador del libro a eliminar", required = true)
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Libro eliminado de la tienda con éxito"),
+            @ApiResponse(responseCode = "404", description = "Tienda o libro no encontrado")
+    })
     @DeleteMapping("/{id}/books/{bookId}")
+    @Override
     public ResponseEntity<GetShopDto> removeBookFromShop(UUID id, Long bookId) {
         return ResponseEntity.ok(shopService.removeBookFromShop(id, bookId));
     }
 
-    @Override
+    /**
+     * Añade un cliente a una tienda específica.
+     *
+     * @param id        ID de la tienda.
+     * @param clientId  ID del cliente a añadir.
+     * @return ResponseEntity con los detalles de la tienda actualizada.
+     */
+    @Operation(summary = "Añade un cliente a una tienda", description = "Añade un cliente a una tienda específica por su ID.")
+    @Parameter(name = "id", description = "Identificador de la tienda", required = true)
+    @Parameter(name = "clientId", description = "Identificador del cliente a añadir", required = true)
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Cliente añadido a la tienda con éxito"),
+            @ApiResponse(responseCode = "404", description = "Tienda o cliente no encontrado")
+    })
     @PatchMapping("/{id}/clients/{clientId}")
+    @Override
     public ResponseEntity<GetShopDto> addClientToShop(UUID id, UUID clientId) {
         return ResponseEntity.ok(shopService.addClientToShop(id, clientId));
     }
 
-    @Override
+    /**
+     * Elimina un cliente de una tienda específica.
+     *
+     * @param id        ID de la tienda.
+     * @param clientId  ID del cliente a eliminar.
+     * @return ResponseEntity con los detalles de la tienda actualizada.
+     */
+    @Operation(summary = "Elimina un cliente de una tienda", description = "Elimina un cliente de una tienda específica por su ID.")
+    @Parameter(name = "id", description = "Identificador de la tienda", required = true)
+    @Parameter(name = "clientId", description = "Identificador del cliente a eliminar", required = true)
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Cliente eliminado de la tienda con éxito"),
+            @ApiResponse(responseCode = "404", description = "Tienda o cliente no encontrado")
+    })
     @DeleteMapping("/{id}/clients/{clientId}")
+    @Override
     public ResponseEntity<GetShopDto> removeClientFromShop(UUID id, UUID clientId) {
         return ResponseEntity.ok(shopService.removeClientFromShop(id, clientId));
     }
 
+  
 
     @ExceptionHandler(ClientNotFound.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
+    @Operation(summary = "Manejo de Cliente no encontrado", description = "Manejo de excepciones para cliente no encontrado")
+    @ApiResponse(responseCode = "404", description = "Cliente no encontrado")
     public ResponseEntity<ErrorResponse> handleClientNotFound(ClientNotFound ex) {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ErrorResponse(HttpStatus.NOT_FOUND.value(), ex.getMessage()));
     }
 
     @ExceptionHandler(ShopNotFoundException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
+    @Operation(summary = "Manejo de Tienda no encontrada", description = "Manejo de excepciones para tienda no encontrada")
+    @ApiResponse(responseCode = "404", description = "Tienda no encontrada")
     public ResponseEntity<ErrorResponse> handleShopNotFound(ShopNotFoundException ex) {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ErrorResponse(HttpStatus.NOT_FOUND.value(), ex.getMessage()));
     }
 
     @ExceptionHandler(BookNotFoundException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
+    @Operation(summary = "Manejo de Libro no encontrado", description = "Manejo de excepciones para libro no encontrado")
+    @ApiResponse(responseCode = "404", description = "Libro no encontrado")
     public ResponseEntity<ErrorResponse> handleBookNotFound(BookNotFoundException ex) {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ErrorResponse(HttpStatus.NOT_FOUND.value(), ex.getMessage()));
     }
 
     @ExceptionHandler(ShopHasOrders.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @Operation(summary = "Manejo de Tienda con pedidos", description = "Manejo de excepciones para tiendas que aún tienen pedidos")
+    @ApiResponse(responseCode = "400", description = "Tienda tiene pedidos pendientes")
     public ResponseEntity<ErrorResponse> handleShopHasOrders(ShopHasOrders ex) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ErrorResponse(HttpStatus.BAD_REQUEST.value(), ex.getMessage()));
     }
 }
+
+
+
