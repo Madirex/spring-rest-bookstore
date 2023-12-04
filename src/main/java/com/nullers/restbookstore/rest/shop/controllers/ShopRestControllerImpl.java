@@ -62,7 +62,8 @@ public class ShopRestControllerImpl implements ShopRestController {
             @ApiResponse(responseCode = "200", description = "Lista de tiendas obtenida con éxito"),
             @ApiResponse(responseCode = "400", description = "Solicitud incorrecta")
     })
-    @GetMapping
+    @GetMapping()
+    @PreAuthorize("hasRole('USER')")
     public ResponseEntity<PageResponse<GetShopDto>> getAllShops(
             @Parameter(description = "Nombre de la tienda para filtrar") @Valid @RequestParam(required = false) Optional<String> name,
             @Parameter(description = "Ubicación de la tienda para filtrar") @RequestParam(required = false) Optional<String> location,
@@ -92,6 +93,7 @@ public class ShopRestControllerImpl implements ShopRestController {
     })
     @GetMapping("/{id}")
     @Override
+    @PreAuthorize("hasRole('USER')")
     public ResponseEntity<GetShopDto> getShopById(@Valid @PathVariable UUID id) throws ShopNotFoundException {
         return ResponseEntity.ok(shopService.getShopById(id));
     }
@@ -110,6 +112,7 @@ public class ShopRestControllerImpl implements ShopRestController {
     })
     @PostMapping
     @Override
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<GetShopDto> createShop(@Valid @RequestBody CreateShopDto shopDto) {
         GetShopDto newShop = shopService.createShop(shopDto);
         return ResponseEntity.status(HttpStatus.CREATED).body(newShop);
@@ -133,6 +136,7 @@ public class ShopRestControllerImpl implements ShopRestController {
     })
     @PutMapping("/{id}")
     @Override
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<GetShopDto> updateShop(@Valid @PathVariable UUID id, @Valid @RequestBody UpdateShopDto shopDto) {
         return ResponseEntity.ok(shopService.updateShop(id, shopDto));
     }
@@ -152,6 +156,7 @@ public class ShopRestControllerImpl implements ShopRestController {
     })
     @DeleteMapping("/{id}")
     @Override
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<String> deleteShop(@PathVariable UUID id) {
         shopService.deleteShop(id);
         return ResponseEntity.noContent().build();
@@ -172,6 +177,7 @@ public class ShopRestControllerImpl implements ShopRestController {
             @ApiResponse(responseCode = "404", description = "Tienda o libro no encontrado")
     })
     @PatchMapping("/{id}/books/{bookId}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<GetShopDto> addBookToShop(@Valid @PathVariable UUID id, @Valid @PathVariable Long bookId) {
         return ResponseEntity.ok(shopService.addBookToShop(id, bookId));
     }
@@ -192,6 +198,7 @@ public class ShopRestControllerImpl implements ShopRestController {
     })
     @Override
     @DeleteMapping("/{id}/books/{bookId}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<GetShopDto> removeBookFromShop(@Valid @PathVariable UUID id, @Valid @PathVariable Long bookId) {
         return ResponseEntity.ok(shopService.removeBookFromShop(id, bookId));
     }
@@ -212,6 +219,7 @@ public class ShopRestControllerImpl implements ShopRestController {
     })
     @Override
     @PatchMapping("/{id}/clients/{clientId}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<GetShopDto> addClientToShop(@Valid @PathVariable UUID id, @Valid @PathVariable UUID clientId) {
         return ResponseEntity.ok(shopService.addClientToShop(id, clientId));
     }
@@ -232,6 +240,7 @@ public class ShopRestControllerImpl implements ShopRestController {
     })
     @Override
     @DeleteMapping("/{id}/clients/{clientId}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<GetShopDto> removeClientFromShop(@Valid @PathVariable UUID id, @Valid @PathVariable UUID clientId) {
         return ResponseEntity.ok(shopService.removeClientFromShop(id, clientId));
     }
