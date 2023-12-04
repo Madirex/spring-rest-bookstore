@@ -56,6 +56,31 @@ CREATE TABLE "public"."categories" (
 INSERT INTO "categories" ("id", "created_at", "is_active", "name", "updated_at") VALUES
     ('d69cf3db-b77d-4181-b3cd-5ca8107fb6a9',	'2023-12-03 20:52:22.186766',	't',	'Cat 1',	'2023-12-03 20:52:22.186766');
 
+-- Agregar Publisher Madirex
+INSERT INTO "publisher" ("id", "active", "created_at", "image", "name", "updated_at")
+VALUES (2, 't', CURRENT_TIMESTAMP, 'https://i.imgur.com/dOBv7kY.png', 'Madirex', CURRENT_TIMESTAMP);
+
+-- Agregar Libro 1
+INSERT INTO "book" ("id", "active", "author", "created_at", "description", "image", "name", "price", "stock", "updated_at", "category_id", "publisher_id", "book_id")
+VALUES
+    (2, 't', 'Madirex', CURRENT_TIMESTAMP, 'Unos agentes de investigación reciben la orden de ir a investigar el caso de desaparición de una familia en una mansión abandonada a lo lejos de la ciudad. En el proceso de exploración, los agentes se verán involucrados en diferentes situaciones paranormales. Los protagonistas se darán cuenta de que no están solos en la mansión, en ese momento las cosas se empezarán a complicar. ¿Lograrán los agentes resolver el caso?', 'https://via.placeholder.com/150', 'La Mansión de las Pesadillas', 11.43, 100, CURRENT_TIMESTAMP, 'd69cf3db-b77d-4181-b3cd-5ca8107fb6a9', 2, NULL);
+
+-- Agregar Libro 2
+INSERT INTO "book" ("id", "active", "author", "created_at", "description", "image", "name", "price", "stock", "updated_at", "category_id", "publisher_id", "book_id")
+VALUES
+    (3, 't', 'Madirex', CURRENT_TIMESTAMP, 'Abre la mente, piensa diferente aborda temas que muy poca gente suele pararse a reflexionar. Temas tan delicados como las religiones, la política, las relaciones sociales o incluso la propia muerte. Muchas personas piensan que creen saber cómo funciona la vida, pero ¿esto realmente es así? Vivimos en un mundo extraordinario con cambios exponenciales e inciertos. El desarrollo tecnológico es cada vez mayor y no sabemos qué nos puede llegar a deparar el futuro. ¿Estás preparado para los cambios que vienen?', 'https://via.placeholder.com/150', 'Abre la mente, piensa diferente', 10.40, 100, CURRENT_TIMESTAMP, 'd69cf3db-b77d-4181-b3cd-5ca8107fb6a9', 2, NULL);
+
+-- Agregar Libro 3
+INSERT INTO "book" ("id", "active", "author", "created_at", "description", "image", "name", "price", "stock", "updated_at", "category_id", "publisher_id", "book_id")
+VALUES
+    (4, 't', 'Madirex & DiverInk', CURRENT_TIMESTAMP, 'Manuel es un detective que vive junto a su hijo Toni en el pueblo Risirú. En el pasado, ambos sufrieron la pérdida de un ser querido. La mujer de Manuel había sido asesinada. Pasado un tiempo y con ayuda de profesionales, consiguieron superar el trauma que les había dejado ese asesino. Risirú tenía un pasado muy oscuro, lleno de delincuencia. Manuel consiguió erradicar por completo la mala fama que tenía ese pueblo. Años después... Volvió a morir alguien. Manuel y Toni se preguntaron: ¿El asesino sigue aquí?', 'https://via.placeholder.com/150', '¿El asesino sigue aquí?', 15.18, 100, CURRENT_TIMESTAMP, 'd69cf3db-b77d-4181-b3cd-5ca8107fb6a9', 2, NULL);
+
+-- Agregar Libro 4
+INSERT INTO "book" ("id", "active", "author", "created_at", "description", "image", "name", "price", "stock", "updated_at", "category_id", "publisher_id", "book_id")
+VALUES
+    (5, 't', 'Madirex', CURRENT_TIMESTAMP, 'Este libro no te promete riquezas instantáneas ni cambios mágicos en tu vida económica. Desde mi perspectiva como autor, comparto la filosofía que considero clave para construir una fortuna. Prepárate para un viaje que no transformará tu situación financiera de la noche a la mañana, sino que te guiará por el camino del esfuerzo y la constancia hacia una salud financiera óptima. Te desafiaré a cuestionar paradigmas mentales sobre el manejo del dinero en la sociedad. Explorarás el pasado y el futuro del dinero y las nuevas oportunidades que se vienen gracias a la inteligencia artificial. Prepárate para un viaje transformador hacia la prosperidad financiera.', 'https://via.placeholder.com/150', 'Cóctel de la fortuna', 12, 100, CURRENT_TIMESTAMP, 'd69cf3db-b77d-4181-b3cd-5ca8107fb6a9', 2, NULL);
+
+
 DROP TABLE IF EXISTS "clients";
 CREATE TABLE "public"."clients" (
                                     "id" uuid NOT NULL,
