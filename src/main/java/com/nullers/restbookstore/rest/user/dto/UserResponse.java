@@ -1,5 +1,6 @@
 package com.nullers.restbookstore.rest.user.dto;
 
+import com.nullers.restbookstore.rest.user.models.Role;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
