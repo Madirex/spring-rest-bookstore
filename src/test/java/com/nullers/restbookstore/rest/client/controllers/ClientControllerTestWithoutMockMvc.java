@@ -20,6 +20,7 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockMultipartFile;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
@@ -32,8 +33,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-@SpringBootTest(properties = "spring.config.name=application-test")
-public class ClientControllerTestWithoutMockMvc {
+class ClientControllerTestWithoutMockMvc {
 
 
     @Mock
@@ -102,7 +102,7 @@ public class ClientControllerTestWithoutMockMvc {
         when(clientService.findAll(any(Optional.class), any(Optional.class), any(Optional.class), any(Optional.class), any(Optional.class), any(PageRequest.class))).thenReturn(new PageImpl(List.of(clientTest, clientTest2)));
 
         MockHttpServletRequest requestMock = new MockHttpServletRequest();
-        requestMock.setRequestURI("/clients");
+        requestMock.setRequestURI("/api/clients");
         requestMock.setServerPort(8080);
 
 
@@ -382,7 +382,7 @@ public class ClientControllerTestWithoutMockMvc {
         ));
 
         assertAll(
-                () -> assertEquals("El numero de pagina no debe ser menor a 0 y el tamaño de la página debe ser mayor que 0", res.getMessage())
+                () -> assertEquals("Page index must not be less than zero", res.getMessage())
         );
     }
 
@@ -392,6 +392,7 @@ public class ClientControllerTestWithoutMockMvc {
         requestMock.setRequestURI("/clients");
         requestMock.setServerPort(8080);
 
+
         var res = assertThrows(IllegalArgumentException.class, () -> clientController.getAll(
                 Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty(),
                 new PageableRequest(0, 0, "id", "asc"),
@@ -399,7 +400,7 @@ public class ClientControllerTestWithoutMockMvc {
         ));
 
         assertAll(
-                () -> assertEquals("El numero de pagina no debe ser menor a 0 y el tamaño de la página debe ser mayor que 0", res.getMessage())
+                () -> assertEquals("Page size must not be less than one", res.getMessage())
         );
     }
 

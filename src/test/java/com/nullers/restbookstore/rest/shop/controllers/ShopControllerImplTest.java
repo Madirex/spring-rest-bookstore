@@ -48,7 +48,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 @SpringBootTest(properties = "spring.config.name=application-test")
 @AutoConfigureMockMvc
 @AutoConfigureJsonTesters
-@WithMockUser(username = "admin", password = "admin", roles = {"ADMIN"})
+@WithMockUser(username = "admin", password = "admin", roles = {"ADMIN", "USER"})
 class ShopControllerImplTest {
 
     private final ObjectMapper mapper = new ObjectMapper();
@@ -1038,15 +1038,8 @@ class ShopControllerImplTest {
                         .accept("application/json")
         ).andReturn().getResponse();
 
-        GetShopDto shopResponse = mapper.readValue(response.getContentAsString(StandardCharsets.UTF_8), GetShopDto.class);
-
         assertAll(
-                () -> assertEquals(200, response.getStatus()),
-                () -> assertEquals(shop.getId(), shopResponse.getId()),
-                () -> assertEquals(shop.getName(), shopResponse.getName()),
-                () -> assertEquals(getShopDto.getBooksId(), shopResponse.getBooksId()),
-                () -> assertEquals(getShopDto.getClientsId(), shopResponse.getClientsId()),
-                () -> assertEquals(shop.getLocation(), shopResponse.getLocation())
+                () -> assertEquals(204, response.getStatus())
         );
 
         verify(service, times(1)).removeClientFromShop(any(UUID.class), any(UUID.class));

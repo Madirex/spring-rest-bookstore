@@ -435,12 +435,7 @@ class ShopControllerWithoutMockMvcTest {
         var res = shopRestController.removeClientFromShop(UUID.randomUUID(), UUID.randomUUID());
 
         assertAll(
-                () -> assertEquals(shop.getId(), res.getBody().getId()),
-                () -> assertEquals(shop.getName(), res.getBody().getName()),
-                () -> assertEquals(shop.getBooks().stream().map(Book::getId).collect(Collectors.toSet()), res.getBody().getBooksId()),
-                () -> assertEquals(shop.getClients().stream().map(Client::getId).collect(Collectors.toSet()), res.getBody().getClientsId()),
-                () -> assertEquals(shop.getLocation(), res.getBody().getLocation()),
-                () -> assertEquals(200, res.getStatusCodeValue())
+                () -> assertEquals(204, res.getStatusCodeValue())
         );
 
         verify(shopService, times(1)).removeClientFromShop(any(UUID.class), any(UUID.class));
