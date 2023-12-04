@@ -7,11 +7,8 @@ import com.nullers.restbookstore.rest.common.PageableUtil;
 import com.nullers.restbookstore.rest.orders.dto.OrderCreateDto;
 import com.nullers.restbookstore.rest.orders.models.Order;
 import com.nullers.restbookstore.rest.orders.services.OrderServiceImpl;
-import com.nullers.restbookstore.rest.shop.exceptions.ShopNotFoundException;
-import com.nullers.restbookstore.rest.user.exceptions.UserNotFound;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
-import io.swagger.v3.oas.annotations.Parameters;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.servlet.http.HttpServletRequest;
@@ -85,9 +82,7 @@ public class OrderRestController {
      * @return ResponseEntity<Order> con el pedido
      */
     @Operation(summary = "Obtiene un pedido dado un id", description = "Obtiene un pedido dado un id")
-    @Parameters({
-            @Parameter(name = "id", description = "id del pedido", example = "770e8400-e29b-41d4-a716-446655440000"),
-    })
+    @Parameter(name = "id", description = "id del pedido", example = "770e8400-e29b-41d4-a716-446655440000")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Pedido"),
             @ApiResponse(responseCode = "404", description = "Pedido no encontrado")
@@ -140,7 +135,7 @@ public class OrderRestController {
      * @param id id del pedido
      * @return ResponseEntity<Void>
      */
-    @Operation(summary = "Eimina un pedido", description = "Elimina un pedido")
+    @Operation(summary = "Elimina un pedido", description = "Elimina un pedido")
     @Parameter(name = "id", description = "Id del pedido a eliminar", example = "660e8400-e29b-41d4-a716-446655440000", required = true)
     @ApiResponses(value = {
             @ApiResponse(responseCode = "204", description = "Pedido borrado"),
@@ -158,7 +153,7 @@ public class OrderRestController {
      * @param id id del pedido
      * @return ResponseEntity<Order> con el pedido
      */
-    @Operation(summary = "Eimina un pedido de manera simulada", description = "Elimina un pedido de manera simulada")
+    @Operation(summary = "Elimina un pedido de manera simulada", description = "Elimina un pedido de manera simulada")
     @Parameter(name = "id", description = "Id del pedido a eliminar", example = "660e8400-e29b-41d4-a716-446655440000", required = true)
     @ApiResponses(value = {
             @ApiResponse(responseCode = "204", description = "Pedido borrado"),
@@ -178,9 +173,7 @@ public class OrderRestController {
      * @return ResponseEntity<PageResponse < Order>> con los pedidos
      */
     @Operation(summary = "Obtiene un pedido dado el id de un cliente", description = "Obtiene un pedido dado el id de un cliente")
-    @Parameters({
-            @Parameter(name = "id", description = "id del cliente", example = "770e8400-e29b-41d4-a716-446655440000"),
-    })
+    @Parameter(name = "id", description = "id del cliente", example = "770e8400-e29b-41d4-a716-446655440000")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Pedido"),
             @ApiResponse(responseCode = "404", description = "Cliente no encontrado")
@@ -209,9 +202,7 @@ public class OrderRestController {
      * @return ResponseEntity<PageResponse < Order>> con los pedidos
      */
     @Operation(summary = "Obtiene un pedido dado el id de un usuario", description = "Obtiene un pedido dado el id de un usuario")
-    @Parameters({
-            @Parameter(name = "id", description = "id del usuario", example = "770e8400-e29b-41d4-a716-446655440000"),
-    })
+    @Parameter(name = "id", description = "id del usuario", example = "770e8400-e29b-41d4-a716-446655440000")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Pedido"),
             @ApiResponse(responseCode = "404", description = "Usuario no encontrado")
@@ -244,9 +235,7 @@ public class OrderRestController {
      * @return ResponseEntity<PageResponse < Order>> con los pedidos
      */
     @Operation(summary = "Obtiene un pedido dado el id de una tienda", description = "Obtiene un pedido dado el id de una tienda")
-    @Parameters({
-            @Parameter(name = "id", description = "id de la tienda", example = "770e8400-e29b-41d4-a716-446655440000"),
-    })
+    @Parameter(name = "id", description = "id de la tienda", example = "770e8400-e29b-41d4-a716-446655440000")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Pedido"),
             @ApiResponse(responseCode = "404", description = "Tienda no encontrada")
