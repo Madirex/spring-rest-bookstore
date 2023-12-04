@@ -19,6 +19,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
@@ -67,7 +68,8 @@ public class PublisherController {
             @ApiResponse(responseCode = "200", description = "página de editoriales"),
             @ApiResponse(responseCode = "400", description = "petición de editoriales no válida")
     })
-    @GetMapping
+    @GetMapping()
+    @PreAuthorize("hasAnyRole('USER','ADMIN')")
     public ResponseEntity<PageResponse<PublisherDTO>> getAll(
             @Valid @RequestParam(required = false) Optional<String> name,
             @Valid PageableRequest pageableRequest,
@@ -95,6 +97,7 @@ public class PublisherController {
             @ApiResponse(responseCode = "404", description = "Publisher no encontrado")
     })
     @GetMapping("/{id}")
+    @PreAuthorize("hasAnyRole('USER','ADMIN')")
     public ResponseEntity<PublisherDTO> getById(@PathVariable Long id) {
         return ResponseEntity.ok(publisherService.findById(id));
     }
@@ -111,7 +114,8 @@ public class PublisherController {
             @ApiResponse(responseCode = "201", description = "Editorial creada"),
             @ApiResponse(responseCode = "400", description = "Editorial no válida")
     })
-    @PostMapping
+    @PostMapping()
+    @PreAuthorize("hasAnyRole('ADMIN')")
     public ResponseEntity<PublisherDTO> create(@Valid @RequestBody CreatePublisherDto publisherDto) {
         return ResponseEntity.ok(publisherService.save(publisherDto));
     }
@@ -132,6 +136,7 @@ public class PublisherController {
             @ApiResponse(responseCode = "404", description = "editorial no encontrada")
     })
     @PutMapping("/{id}")
+    @PreAuthorize("hasAnyRole('ADMIN')")
     public ResponseEntity<PublisherDTO> update(@PathVariable Long id, @Valid @RequestBody CreatePublisherDto publisherDto) {
         return ResponseEntity.ok(publisherService.update(id, publisherDto));
     }
@@ -152,6 +157,7 @@ public class PublisherController {
             @ApiResponse(responseCode = "404", description = "Editorial no encontrada"),
     })
     @PatchMapping("/books/{id}")
+    @PreAuthorize("hasAnyRole('ADMIN')")
     public ResponseEntity<PublisherDTO> updatePatchBook(@PathVariable Long id, @RequestParam Long bookId) {
         PublisherDTO publisherDto = publisherService.addBookPublisher(id, bookId);
         return ResponseEntity.ok(publisherDto);
@@ -173,6 +179,7 @@ public class PublisherController {
             @ApiResponse(responseCode = "404", description = "Editorial no encontrada"),
     })
     @PatchMapping("/books/remove/{id}")
+    @PreAuthorize("hasAnyRole('ADMIN')")
     public ResponseEntity<PublisherDTO> updatePatchBookDelete(@PathVariable Long id, @RequestParam Long bookId) {
         return ResponseEntity.ok(publisherService.removeBookPublisher(id, bookId));
     }
@@ -190,6 +197,7 @@ public class PublisherController {
             @ApiResponse(responseCode = "404", description = "Editorial no encontrada"),
     })
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasAnyRole('ADMIN')")
     public ResponseEntity<Void> delete(@PathVariable Long id) {
         publisherService.deleteById(id);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
@@ -212,6 +220,7 @@ public class PublisherController {
             @ApiResponse(responseCode = "404", description = "Editorial no encontrada"),
     })
     @PatchMapping(value = "/image/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PreAuthorize("hasAnyRole('ADMIN')")
     public ResponseEntity<PublisherDTO> newPublisherImg(
             @PathVariable Long id,
             @RequestPart("file") MultipartFile file) throws IOException {
