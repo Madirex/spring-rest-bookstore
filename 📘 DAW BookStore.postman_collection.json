@@ -1,0 +1,4779 @@
+{
+	"info": {
+		"_postman_id": "ad0541c4-1ef5-4be5-8787-f638676bef88",
+		"name": "📘 DAW BookStore",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "11601885"
+	},
+	"item": [
+		{
+			"name": "Auth",
+			"item": [
+				{
+					"name": "🔴 Casos incorrectos",
+					"item": [
+						{
+							"name": "SignIn Empty Data",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "https://localhost:8080/api/auth/signin",
+									"protocol": "https",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"api",
+										"auth",
+										"signin"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "SignIn - User Not Found",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"username\": \"User\",\r\n    \"password\": \"123\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "https://localhost:8080/api/auth/signin",
+									"protocol": "https",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"api",
+										"auth",
+										"signin"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "SignUp - User Already Exists",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"username\": \"user\",\r\n    \"surname\": \"García\",\r\n    \"name\": \"Manolo\",\r\n    \"email\": \"manolillogarsia52@madirex.com\",\r\n    \"password\": \"manolo54\",\r\n    \"passwordRepeat\": \"manolo54\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "https://localhost:8080/api/auth/signup",
+									"protocol": "https",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"api",
+										"auth",
+										"signup"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "SignUp - Email Already Exists Copy",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"username\": \"fg345ghghrth\",\r\n    \"surname\": \"García\",\r\n    \"name\": \"Manolo\",\r\n    \"email\": \"contact@madirex.com\",\r\n    \"password\": \"manolo54\",\r\n    \"passwordRepeat\": \"manolo54\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "https://localhost:8080/api/auth/signup",
+									"protocol": "https",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"api",
+										"auth",
+										"signup"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "SignUp - Invalid Email",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"username\": -45764574574574,\r\n    \"surname\": -45764574574574,\r\n    \"name\": -45764574574574,\r\n    \"email\": -45764574574574,\r\n    \"password\": -45764574574574,\r\n    \"passwordRepeat\": -45764574574574\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "https://localhost:8080/api/auth/signup",
+									"protocol": "https",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"api",
+										"auth",
+										"signup"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "SignUp - Empty",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "https://localhost:8080/api/auth/signup",
+									"protocol": "https",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"api",
+										"auth",
+										"signup"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "SignIn User",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"username\": \"UsEr\",\r\n    \"password\": \"Nullers123\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://localhost:8080/api/auth/signin",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"auth",
+								"signin"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "SignIn Admin",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"username\": \"Admin\",\r\n    \"password\": \"Nullers123\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://localhost:8080/api/auth/signin",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"auth",
+								"signin"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "SignUp",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"username\": \"Manolo54\",\r\n    \"surname\": \"García\",\r\n    \"name\": \"Manolo\",\r\n    \"email\": \"manolillogarsia52@madirex.com\",\r\n    \"password\": \"manolo54\",\r\n    \"passwordRepeat\": \"manolo54\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://localhost:8080/api/auth/signup",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"auth",
+								"signup"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "User",
+			"item": [
+				{
+					"name": "🔴 Casos incorrectos",
+					"item": [
+						{
+							"name": "GetAll page -1",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"method": "GET",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "https://localhost:8080/api/users?isDeleted=false&page=-1&size=5&direction=asc&orderBy=username",
+									"protocol": "https",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"api",
+										"users"
+									],
+									"query": [
+										{
+											"key": "username",
+											"value": "Madirex",
+											"disabled": true
+										},
+										{
+											"key": "email",
+											"value": "angel@madirex.com",
+											"disabled": true
+										},
+										{
+											"key": "isDeleted",
+											"value": "false"
+										},
+										{
+											"key": "page",
+											"value": "-1"
+										},
+										{
+											"key": "size",
+											"value": "5"
+										},
+										{
+											"key": "direction",
+											"value": "asc"
+										},
+										{
+											"key": "orderBy",
+											"value": "username"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "GetAll size 0",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"method": "GET",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "https://localhost:8080/api/users?isDeleted=false&page=0&size=0&direction=asc&orderBy=username",
+									"protocol": "https",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"api",
+										"users"
+									],
+									"query": [
+										{
+											"key": "username",
+											"value": "Madirex",
+											"disabled": true
+										},
+										{
+											"key": "email",
+											"value": "angel@madirex.com",
+											"disabled": true
+										},
+										{
+											"key": "isDeleted",
+											"value": "false"
+										},
+										{
+											"key": "page",
+											"value": "0"
+										},
+										{
+											"key": "size",
+											"value": "0"
+										},
+										{
+											"key": "direction",
+											"value": "asc"
+										},
+										{
+											"key": "orderBy",
+											"value": "username"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "User FindById INVALID ID",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"method": "GET",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "https://localhost:8080/api/users/6",
+									"protocol": "https",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"api",
+										"users",
+										"6"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "ME ORDERS BY ID - Invalid Id",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"method": "GET",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "https://localhost:8080/api/users/me/orders/sad",
+									"protocol": "https",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"api",
+										"users",
+										"me",
+										"orders",
+										"sad"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "ME create ORDER - Bad Price",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"orderLines\":[\r\n        {\r\n            \"bookId\": 1,\r\n            \"price\": 2234.0\r\n        }\r\n    ],\r\n    \"clientId\": \"30874e14-e195-4757-9174-7ed25dbf35e1\",\r\n    \"shopId\": \"9c494cf1-dcd6-4524-b053-d813b494099c\",\r\n    \"userId\": \"6c8aeebf-8e5a-4381-805f-a2494262d6d7\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "https://localhost:8080/api/users/me/orders",
+									"protocol": "https",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"api",
+										"users",
+										"me",
+										"orders"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "ME update ORDER - Bad ID",
+							"request": {
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"orderLines\":[\r\n        {\r\n            \"bookId\": 1,\r\n            \"price\": 23.0\r\n        }\r\n    ],\r\n    \"clientId\": \"30874e14-e195-4757-9174-7ed25dbf35e1\",\r\n    \"shopId\": \"9c494cf1-dcd6-4524-b053-d813b494099c\",\r\n    \"userId\": \"6c8aeebf-8e5a-4381-805f-a2494262d6d7\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "https://localhost:8080/api/users/me/orders/asd",
+									"protocol": "https",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"api",
+										"users",
+										"me",
+										"orders",
+										"asd"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "ME delete ORDER - Bad ID",
+							"request": {
+								"method": "DELETE",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "https://localhost:8080/api/users/me/orders/asd",
+									"protocol": "https",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"api",
+										"users",
+										"me",
+										"orders",
+										"asd"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "User - Bad Password and Email",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"name\": 234,\r\n    \"username\": 234,\r\n    \"password\": 234,\r\n    \"surname\": 234,\r\n    \"email\": 234\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "https://localhost:8080/api/users",
+									"protocol": "https",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"api",
+										"users"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "User - Bad Password and Email",
+							"request": {
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"name\": 234,\r\n    \"username\": 234,\r\n    \"password\": 234,\r\n    \"surname\": 234,\r\n    \"email\": 234\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "https://localhost:8080/api/users/6c8aeebf-8e5a-4381-805f-a2494262d6d7",
+									"protocol": "https",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"api",
+										"users",
+										"6c8aeebf-8e5a-4381-805f-a2494262d6d7"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "GetAll",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://localhost:8080/api/users?isDeleted=false&page=0&size=5&direction=asc&orderBy=username",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"users"
+							],
+							"query": [
+								{
+									"key": "username",
+									"value": "Madirex",
+									"disabled": true
+								},
+								{
+									"key": "email",
+									"value": "angel@madirex.com",
+									"disabled": true
+								},
+								{
+									"key": "isDeleted",
+									"value": "false"
+								},
+								{
+									"key": "page",
+									"value": "0"
+								},
+								{
+									"key": "size",
+									"value": "5"
+								},
+								{
+									"key": "direction",
+									"value": "asc"
+								},
+								{
+									"key": "orderBy",
+									"value": "username"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "User FindById",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://localhost:8080/api/users/6c8aeebf-8e5a-4381-805f-a2494262d6d7",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"users",
+								"6c8aeebf-8e5a-4381-805f-a2494262d6d7"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "ME ORDERS",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://localhost:8080/api/users/me/orders",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"users",
+								"me",
+								"orders"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "ME ORDERS BY ID",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://localhost:8080/api/users/me/orders/sad",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"users",
+								"me",
+								"orders",
+								"sad"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "ME create ORDER",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"orderLines\":[\r\n        {\r\n            \"bookId\": 1,\r\n            \"price\": 23.0\r\n        }\r\n    ],\r\n    \"clientId\": \"30874e14-e195-4757-9174-7ed25dbf35e1\",\r\n    \"shopId\": \"3a52a539-8912-40b1-b8c1-0c952ed0216c\",\r\n    \"userId\": \"6c8aeebf-8e5a-4381-805f-a2494262d6d7\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://localhost:8080/api/users/me/orders",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"users",
+								"me",
+								"orders"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "ME update ORDER",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"orderLines\":[\r\n        {\r\n            \"bookId\": 1,\r\n            \"price\": 23.0\r\n        }\r\n    ],\r\n    \"clientId\": \"30874e14-e195-4757-9174-7ed25dbf35e1\",\r\n    \"shopId\": \"9c494cf1-dcd6-4524-b053-d813b494099c\",\r\n    \"userId\": \"6c8aeebf-8e5a-4381-805f-a2494262d6d7\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://localhost:8080/api/users/me/orders/656d2e5812629d4e23e9d97a",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"users",
+								"me",
+								"orders",
+								"656d2e5812629d4e23e9d97a"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "ME delete ORDER",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://localhost:8080/api/users/me/orders/656d2e5812629d4e23e9d97a",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"users",
+								"me",
+								"orders",
+								"656d2e5812629d4e23e9d97a"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "User",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"holAs4--\",\r\n    \"username\": \"holAs4--\",\r\n    \"password\": \"holAs4--\",\r\n    \"surname\": \"holAs4--\",\r\n    \"email\": \"madsisdss92993@madirex.com\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://localhost:8080/api/users",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"users"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "ME",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"asd\",\r\n    \"username\": \"Admin\",\r\n    \"password\": -234234,\r\n    \"surname\": \"Land\",\r\n    \"email\": \"madirex2@madirex.com\",\r\n    \"isDeleted\": false\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://localhost:8080/api/users/me/profile",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"users",
+								"me",
+								"profile"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "DELETE User",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://localhost:8080/api/users/6c8aeebf-8e5a-4381-805f-a2494262d6d7",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"users",
+								"6c8aeebf-8e5a-4381-805f-a2494262d6d7"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Publisher",
+			"item": [
+				{
+					"name": "🔴Casos incorrectos",
+					"item": [
+						{
+							"name": "FindAll",
+							"item": [
+								{
+									"name": "findAll negative page",
+									"protocolProfileBehavior": {
+										"disableBodyPruning": true
+									},
+									"request": {
+										"auth": {
+											"type": "basic",
+											"basic": [
+												{
+													"key": "username",
+													"value": "user",
+													"type": "string"
+												},
+												{
+													"key": "password",
+													"value": "a65c6604-4eea-405a-9b5f-4e6d87709747",
+													"type": "string"
+												}
+											]
+										},
+										"method": "GET",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "https://localhost:8080/api/publishers?page=-1&size=1&sortBy=id&direction=asc&name=ejeMplO",
+											"protocol": "https",
+											"host": [
+												"localhost"
+											],
+											"port": "8080",
+											"path": [
+												"api",
+												"publishers"
+											],
+											"query": [
+												{
+													"key": "page",
+													"value": "-1"
+												},
+												{
+													"key": "size",
+													"value": "1"
+												},
+												{
+													"key": "sortBy",
+													"value": "id"
+												},
+												{
+													"key": "direction",
+													"value": "asc"
+												},
+												{
+													"key": "name",
+													"value": "ejeMplO"
+												}
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "findAll size 0",
+									"protocolProfileBehavior": {
+										"disableBodyPruning": true
+									},
+									"request": {
+										"auth": {
+											"type": "basic",
+											"basic": [
+												{
+													"key": "username",
+													"value": "user",
+													"type": "string"
+												},
+												{
+													"key": "password",
+													"value": "a65c6604-4eea-405a-9b5f-4e6d87709747",
+													"type": "string"
+												}
+											]
+										},
+										"method": "GET",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "https://localhost:8080/api/publishers?page=0&size=0&sortBy=id&direction=asc&name=ejeMplO",
+											"protocol": "https",
+											"host": [
+												"localhost"
+											],
+											"port": "8080",
+											"path": [
+												"api",
+												"publishers"
+											],
+											"query": [
+												{
+													"key": "page",
+													"value": "0"
+												},
+												{
+													"key": "size",
+													"value": "0"
+												},
+												{
+													"key": "sortBy",
+													"value": "id"
+												},
+												{
+													"key": "direction",
+													"value": "asc"
+												},
+												{
+													"key": "name",
+													"value": "ejeMplO"
+												}
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "findAll sortBy incorrecto",
+									"protocolProfileBehavior": {
+										"disableBodyPruning": true
+									},
+									"request": {
+										"auth": {
+											"type": "basic",
+											"basic": [
+												{
+													"key": "username",
+													"value": "user",
+													"type": "string"
+												},
+												{
+													"key": "password",
+													"value": "a65c6604-4eea-405a-9b5f-4e6d87709747",
+													"type": "string"
+												}
+											]
+										},
+										"method": "GET",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "https://localhost:8080/api/publishers?page=0&size=56&sortBy=456&direction=564&name=45",
+											"protocol": "https",
+											"host": [
+												"localhost"
+											],
+											"port": "8080",
+											"path": [
+												"api",
+												"publishers"
+											],
+											"query": [
+												{
+													"key": "page",
+													"value": "0"
+												},
+												{
+													"key": "size",
+													"value": "56"
+												},
+												{
+													"key": "sortBy",
+													"value": "456"
+												},
+												{
+													"key": "direction",
+													"value": "564"
+												},
+												{
+													"key": "name",
+													"value": "45"
+												}
+											]
+										}
+									},
+									"response": []
+								}
+							]
+						},
+						{
+							"name": "FindById",
+							"item": [
+								{
+									"name": "FindById BadRequest ID",
+									"protocolProfileBehavior": {
+										"disableBodyPruning": true
+									},
+									"request": {
+										"auth": {
+											"type": "basic",
+											"basic": [
+												{
+													"key": "username",
+													"value": "user",
+													"type": "string"
+												},
+												{
+													"key": "password",
+													"value": "a65c6604-4eea-405a-9b5f-4e6d87709747",
+													"type": "string"
+												}
+											]
+										},
+										"method": "GET",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "https://localhost:8080/api/publishers/null",
+											"protocol": "https",
+											"host": [
+												"localhost"
+											],
+											"port": "8080",
+											"path": [
+												"api",
+												"publishers",
+												"null"
+											]
+										}
+									},
+									"response": []
+								}
+							]
+						},
+						{
+							"name": "Post",
+							"item": [
+								{
+									"name": "without data",
+									"request": {
+										"auth": {
+											"type": "basic",
+											"basic": [
+												{
+													"key": "username",
+													"value": "user",
+													"type": "string"
+												},
+												{
+													"key": "password",
+													"value": "a65c6604-4eea-405a-9b5f-4e6d87709747",
+													"type": "string"
+												}
+											]
+										},
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "https://localhost:8080/api/publishers",
+											"protocol": "https",
+											"host": [
+												"localhost"
+											],
+											"port": "8080",
+											"path": [
+												"api",
+												"publishers"
+											]
+										}
+									},
+									"response": []
+								}
+							]
+						},
+						{
+							"name": "Put",
+							"item": [
+								{
+									"name": "without data",
+									"request": {
+										"auth": {
+											"type": "basic",
+											"basic": [
+												{
+													"key": "username",
+													"value": "user",
+													"type": "string"
+												},
+												{
+													"key": "password",
+													"value": "a65c6604-4eea-405a-9b5f-4e6d87709747",
+													"type": "string"
+												}
+											]
+										},
+										"method": "PUT",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "https://localhost:8080/api/publishers/1",
+											"protocol": "https",
+											"host": [
+												"localhost"
+											],
+											"port": "8080",
+											"path": [
+												"api",
+												"publishers",
+												"1"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "Bad Request ID",
+									"request": {
+										"auth": {
+											"type": "basic",
+											"basic": [
+												{
+													"key": "username",
+													"value": "user",
+													"type": "string"
+												},
+												{
+													"key": "password",
+													"value": "a65c6604-4eea-405a-9b5f-4e6d87709747",
+													"type": "string"
+												}
+											]
+										},
+										"method": "PUT",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n    \"name\": \"Ejemplo\",\r\n    \"image\": \"https://madirex.com/favicon.ico\"\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "https://localhost:8080/api/publishers/sdfdsfsf",
+											"protocol": "https",
+											"host": [
+												"localhost"
+											],
+											"port": "8080",
+											"path": [
+												"api",
+												"publishers",
+												"sdfdsfsf"
+											]
+										}
+									},
+									"response": []
+								}
+							]
+						},
+						{
+							"name": "Patch",
+							"item": [
+								{
+									"name": "Add Book Bad ID",
+									"request": {
+										"method": "PATCH",
+										"header": [],
+										"url": {
+											"raw": "https://localhost:8080/api/publishers/books/1?bookId=dsd",
+											"protocol": "https",
+											"host": [
+												"localhost"
+											],
+											"port": "8080",
+											"path": [
+												"api",
+												"publishers",
+												"books",
+												"1"
+											],
+											"query": [
+												{
+													"key": "bookId",
+													"value": "dsd"
+												}
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "Add Book Bad ID",
+									"request": {
+										"method": "PATCH",
+										"header": [],
+										"url": {
+											"raw": "https://localhost:8080/api/publishers/books/sdf?bookId=1",
+											"protocol": "https",
+											"host": [
+												"localhost"
+											],
+											"port": "8080",
+											"path": [
+												"api",
+												"publishers",
+												"books",
+												"sdf"
+											],
+											"query": [
+												{
+													"key": "bookId",
+													"value": "1"
+												}
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "Remove Book Bad ID",
+									"request": {
+										"auth": {
+											"type": "basic",
+											"basic": [
+												{
+													"key": "username",
+													"value": "user",
+													"type": "string"
+												},
+												{
+													"key": "password",
+													"value": "a65c6604-4eea-405a-9b5f-4e6d87709747",
+													"type": "string"
+												}
+											]
+										},
+										"method": "PATCH",
+										"header": [
+											{
+												"key": "bookId",
+												"value": "1",
+												"type": "text"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "https://localhost:8080/api/publishers/books/remove/asd?bookId=1",
+											"protocol": "https",
+											"host": [
+												"localhost"
+											],
+											"port": "8080",
+											"path": [
+												"api",
+												"publishers",
+												"books",
+												"remove",
+												"asd"
+											],
+											"query": [
+												{
+													"key": "bookId",
+													"value": "1"
+												}
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "Remove Book Bad ID Copy",
+									"request": {
+										"auth": {
+											"type": "basic",
+											"basic": [
+												{
+													"key": "username",
+													"value": "user",
+													"type": "string"
+												},
+												{
+													"key": "password",
+													"value": "a65c6604-4eea-405a-9b5f-4e6d87709747",
+													"type": "string"
+												}
+											]
+										},
+										"method": "PATCH",
+										"header": [
+											{
+												"key": "bookId",
+												"value": "1",
+												"type": "text"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "https://localhost:8080/api/publishers/books/remove/1?bookId=asd",
+											"protocol": "https",
+											"host": [
+												"localhost"
+											],
+											"port": "8080",
+											"path": [
+												"api",
+												"publishers",
+												"books",
+												"remove",
+												"1"
+											],
+											"query": [
+												{
+													"key": "bookId",
+													"value": "asd"
+												}
+											]
+										}
+									},
+									"response": []
+								}
+							]
+						},
+						{
+							"name": "Image",
+							"item": [
+								{
+									"name": "unsupported media type",
+									"request": {
+										"method": "PATCH",
+										"header": [],
+										"body": {
+											"mode": "formdata",
+											"formdata": [
+												{
+													"key": "file",
+													"type": "file",
+													"src": "/C:/Users/madir/Pictures/Book Cart.png"
+												}
+											]
+										},
+										"url": {
+											"raw": "https://localhost:8080/api/publishers/image/1",
+											"protocol": "https",
+											"host": [
+												"localhost"
+											],
+											"port": "8080",
+											"path": [
+												"api",
+												"publishers",
+												"image",
+												"1"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "Bad Request extension",
+									"request": {
+										"method": "PATCH",
+										"header": [],
+										"body": {
+											"mode": "formdata",
+											"formdata": [
+												{
+													"key": "file",
+													"type": "file",
+													"src": "/C:/Users/Madirex/Desktop/Libro.pdf"
+												}
+											]
+										},
+										"url": {
+											"raw": "https://localhost:8080/api/publishers/image/1",
+											"protocol": "https",
+											"host": [
+												"localhost"
+											],
+											"port": "8080",
+											"path": [
+												"api",
+												"publishers",
+												"image",
+												"1"
+											]
+										}
+									},
+									"response": []
+								}
+							]
+						},
+						{
+							"name": "Delete",
+							"item": [
+								{
+									"name": "Bad Request ID",
+									"request": {
+										"method": "DELETE",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "https://localhost:8080/api/publishers/null",
+											"protocol": "https",
+											"host": [
+												"localhost"
+											],
+											"port": "8080",
+											"path": [
+												"api",
+												"publishers",
+												"null"
+											]
+										}
+									},
+									"response": []
+								}
+							]
+						}
+					]
+				},
+				{
+					"name": "Publisher",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://localhost:8080/api/publishers?page=0&size=1&orderBy=id&direction=asc&name=ejeMplO",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"publishers"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "0"
+								},
+								{
+									"key": "size",
+									"value": "1"
+								},
+								{
+									"key": "orderBy",
+									"value": "id"
+								},
+								{
+									"key": "direction",
+									"value": "asc"
+								},
+								{
+									"key": "name",
+									"value": "ejeMplO"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Publisher FindById",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://localhost:8080/api/publishers/1",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"publishers",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Publisher",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"Ejemplo\",\r\n    \"image\": \"https://madirex.com/favicon.ico\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://localhost:8080/api/publishers",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"publishers"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Publisher",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"Ejemplo\",\r\n    \"image\": \"https://madirex.com/favicon.ico\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://localhost:8080/api/publishers/1",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"publishers",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "CHANGE IMAGE PUBLISHER",
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "file",
+									"type": "file",
+									"src": "/C:/Users/madir/Pictures/Iconos/4477610.png"
+								}
+							]
+						},
+						"url": {
+							"raw": "https://localhost:8080/api/publishers/image/1",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"publishers",
+								"image",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "DELETE Publisher",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://localhost:8080/api/publishers/1",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"publishers",
+								"1"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Category",
+			"item": [
+				{
+					"name": "🔴 Casos incorrectos",
+					"item": [
+						{
+							"name": "FindById Bad ID",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "https://localhost:8080/api/categories/2",
+									"protocol": "https",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"api",
+										"categories",
+										"2"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "GetAll size 0",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "https://localhost:8080/api/categories?page=0&size=0&direction=desc&orderBy=name&isActive=true",
+									"protocol": "https",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"api",
+										"categories"
+									],
+									"query": [
+										{
+											"key": "page",
+											"value": "0"
+										},
+										{
+											"key": "size",
+											"value": "0"
+										},
+										{
+											"key": "direction",
+											"value": "desc"
+										},
+										{
+											"key": "nombre",
+											"value": "m",
+											"disabled": true
+										},
+										{
+											"key": "orderBy",
+											"value": "name"
+										},
+										{
+											"key": "isActive",
+											"value": "true"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "GetAll page -1",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "https://localhost:8080/api/categories?page=-1&size=1&direction=desc&orderBy=name&isActive=true",
+									"protocol": "https",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"api",
+										"categories"
+									],
+									"query": [
+										{
+											"key": "page",
+											"value": "-1"
+										},
+										{
+											"key": "size",
+											"value": "1"
+										},
+										{
+											"key": "direction",
+											"value": "desc"
+										},
+										{
+											"key": "nombre",
+											"value": "m",
+											"disabled": true
+										},
+										{
+											"key": "orderBy",
+											"value": "name"
+										},
+										{
+											"key": "isActive",
+											"value": "true"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Category without data",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "https://localhost:8080/api/categories",
+									"protocol": "https",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"api",
+										"categories"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Category already exists",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"name\": \"terror\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "https://localhost:8080/api/categories",
+									"protocol": "https",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"api",
+										"categories"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Category Bad ID",
+							"request": {
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"name\": \"sdfd\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "https://localhost:8080/api/categories/2",
+									"protocol": "https",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"api",
+										"categories",
+										"2"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Category Empty Name",
+							"request": {
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "https://localhost:8080/api/categories/25ef56da-00e9-4ea6-9065-83b47c9338a2",
+									"protocol": "https",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"api",
+										"categories",
+										"25ef56da-00e9-4ea6-9065-83b47c9338a2"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Category Bad ID",
+							"request": {
+								"method": "DELETE",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "https://localhost:8080/api/categories/2",
+									"protocol": "https",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"api",
+										"categories",
+										"2"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Category",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://localhost:8080/api/categories?page=0&size=5&direction=desc&orderBy=name&isActive=true",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"categories"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "0"
+								},
+								{
+									"key": "size",
+									"value": "5"
+								},
+								{
+									"key": "direction",
+									"value": "desc"
+								},
+								{
+									"key": "nombre",
+									"value": "m",
+									"disabled": true
+								},
+								{
+									"key": "orderBy",
+									"value": "name"
+								},
+								{
+									"key": "isActive",
+									"value": "true"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Category FindById",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://localhost:8080/api/categories/25ef56da-00e9-4ea6-9065-83b47c9338a2",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"categories",
+								"25ef56da-00e9-4ea6-9065-83b47c9338a2"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Category",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"test\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://localhost:8080/api/categories",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"categories"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Category",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://localhost:8080/api/categories/25ef56da-00e9-4ea6-9065-83b47c9338a2",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"categories",
+								"25ef56da-00e9-4ea6-9065-83b47c9338a2"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Category",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://localhost:8080/api/categories/25ef56da-00e9-4ea6-9065-83b47c9338a2",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"categories",
+								"25ef56da-00e9-4ea6-9065-83b47c9338a2"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Book",
+			"item": [
+				{
+					"name": "🔴 Casos incorrectos",
+					"item": [
+						{
+							"name": "CHANGE IMAGE empty",
+							"request": {
+								"method": "PATCH",
+								"header": [],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
+										{
+											"key": "file",
+											"type": "file",
+											"src": []
+										}
+									]
+								},
+								"url": {
+									"raw": "https://localhost:8080/api/books/image/1",
+									"protocol": "https",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"api",
+										"books",
+										"image",
+										"1"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Get All: Page -1",
+							"request": {
+								"auth": {
+									"type": "basic",
+									"basic": [
+										{
+											"key": "password",
+											"value": "a65c6604-4eea-405a-9b5f-4e6d87709747",
+											"type": "string"
+										},
+										{
+											"key": "username",
+											"value": "user",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "https://localhost:8080/api/books?page=-1&direction=desc&size=5&orderBy=name",
+									"protocol": "https",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"api",
+										"books"
+									],
+									"query": [
+										{
+											"key": "page",
+											"value": "-1"
+										},
+										{
+											"key": "direction",
+											"value": "desc"
+										},
+										{
+											"key": "publisher",
+											"value": "-mAdIReX",
+											"disabled": true
+										},
+										{
+											"key": "maxPrice",
+											"value": "300",
+											"disabled": true
+										},
+										{
+											"key": "size",
+											"value": "5"
+										},
+										{
+											"key": "orderBy",
+											"value": "name"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Get All: PageSize 0",
+							"request": {
+								"auth": {
+									"type": "basic",
+									"basic": [
+										{
+											"key": "password",
+											"value": "a65c6604-4eea-405a-9b5f-4e6d87709747",
+											"type": "string"
+										},
+										{
+											"key": "username",
+											"value": "user",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "https://localhost:8080/api/books?page=0&direction=desc&size=0&orderBy=name",
+									"protocol": "https",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"api",
+										"books"
+									],
+									"query": [
+										{
+											"key": "page",
+											"value": "0"
+										},
+										{
+											"key": "direction",
+											"value": "desc"
+										},
+										{
+											"key": "publisher",
+											"value": "-mAdIReX",
+											"disabled": true
+										},
+										{
+											"key": "maxPrice",
+											"value": "300",
+											"disabled": true
+										},
+										{
+											"key": "size",
+											"value": "0"
+										},
+										{
+											"key": "orderBy",
+											"value": "name"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "FindById BadRequest",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "https://localhost:8080/api/books/asd",
+									"protocol": "https",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"api",
+										"books",
+										"asd"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "8 Errors Post Book",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "https://localhost:8080/api/books",
+									"protocol": "https",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"api",
+										"books"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "8 Errors Put Book",
+							"request": {
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "https://localhost:8080/api/books/1",
+									"protocol": "https",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"api",
+										"books",
+										"1"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Without category Put Book",
+							"request": {
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"name\": \"Ejemplo\",\r\n    \"publisherId\": 1,\r\n    \"image\": \"https://madirex.com/favicon.ico\",\r\n    \"description\": 3,\r\n    \"price\" : 11.23,\r\n    \"author\" : \"Diver\",\r\n    \"stock\" : 32\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "https://localhost:8080/api/books/1",
+									"protocol": "https",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"api",
+										"books",
+										"1"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Books",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://localhost:8080/api/books?page=0&size=5&direction=desc&orderBy=name",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"books"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "0"
+								},
+								{
+									"key": "size",
+									"value": "5"
+								},
+								{
+									"key": "direction",
+									"value": "desc"
+								},
+								{
+									"key": "publisher",
+									"value": "-mAdIReX",
+									"disabled": true
+								},
+								{
+									"key": "maxPrice",
+									"value": "300",
+									"disabled": true
+								},
+								{
+									"key": "orderBy",
+									"value": "name"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Books FindById",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://localhost:8080/api/books/1",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"books",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Books",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"author\": \"Madirex\",\r\n    \"name\": -345,\r\n    \"publisherId\": 1,\r\n    \"image\": \"https://madirex.com/favicon.ico\",\r\n    \"category\": \"test\",\r\n    \"description\": 3,\r\n    \"price\" : 23,\r\n    \"stock\" : 22\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://localhost:8080/api/books",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"books"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Books",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"Ejemplo\",\r\n    \"publisherId\": 1,\r\n    \"image\": \"https://madirex.com/favicon.ico\",\r\n    \"category\": \"test\",\r\n    \"description\": 3,\r\n    \"price\" : 11.23,\r\n    \"author\" : \"Diver\",\r\n    \"stock\" : 32\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://localhost:8080/api/books/1",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"books",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Books",
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"Ejemplo2\",\r\n    \"publisherId\": 1,\r\n    \"image\": \"asd\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://localhost:8080/api/books/1",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"books",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "CHANGE IMAGE Books",
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "file",
+									"type": "file",
+									"src": "/C:/Users/madir/Pictures/file.jpg"
+								}
+							]
+						},
+						"url": {
+							"raw": "https://localhost:8080/api/books/image/1",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"books",
+								"image",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Books",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://localhost:8080/api/books/1",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"books",
+								"1"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Shop",
+			"item": [
+				{
+					"name": "🔴 Casos incorrectos",
+					"item": [
+						{
+							"name": "getall page -1",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "https://localhost:8080/api/shops?page=-1&size=5&direction=asc&orderBy=id",
+									"protocol": "https",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"api",
+										"shops"
+									],
+									"query": [
+										{
+											"key": "page",
+											"value": "-1"
+										},
+										{
+											"key": "location",
+											"value": "afaf",
+											"disabled": true
+										},
+										{
+											"key": "name",
+											"value": "dfsf",
+											"disabled": true
+										},
+										{
+											"key": "size",
+											"value": "5"
+										},
+										{
+											"key": "direction",
+											"value": "asc"
+										},
+										{
+											"key": "orderBy",
+											"value": "id"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "getall size 0",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "https://localhost:8080/api/shops?page=0&size=1&direction=asc&orderBy=id",
+									"protocol": "https",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"api",
+										"shops"
+									],
+									"query": [
+										{
+											"key": "page",
+											"value": "0"
+										},
+										{
+											"key": "location",
+											"value": "afaf",
+											"disabled": true
+										},
+										{
+											"key": "name",
+											"value": "dfsf",
+											"disabled": true
+										},
+										{
+											"key": "size",
+											"value": "1"
+										},
+										{
+											"key": "direction",
+											"value": "asc"
+										},
+										{
+											"key": "orderBy",
+											"value": "id"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "getById - Bad ID",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "https://localhost:8080/api/shops/08",
+									"protocol": "https",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"api",
+										"shops",
+										"08"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "update - bad location CP",
+							"request": {
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"name\": \"Manolo Shop 2\",\r\n    \"location\": {\r\n        \"postalCode\": \"asd\",\r\n        \"city\": \"ssdfa\",\r\n        \"number\": \"sdfsdf\",\r\n        \"street\": \"Lsdf\",\r\n        \"province\": \"Lasdfsdf\",\r\n        \"country\": \"Esdfsdf\"\r\n    }\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "https://localhost:8080/api/shops/0e227d23-3708-4782-9549-357d47f8c560",
+									"protocol": "https",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"api",
+										"shops",
+										"0e227d23-3708-4782-9549-357d47f8c560"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "update - bad ID",
+							"request": {
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"name\": \"Manolo Shop 2\",\r\n    \"location\": {\r\n        \"postalCode\": \"asd\",\r\n        \"city\": \"ssdfa\",\r\n        \"number\": \"sdfsdf\",\r\n        \"street\": \"Lsdf\",\r\n        \"province\": \"Lasdfsdf\",\r\n        \"country\": \"Esdfsdf\"\r\n    }\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "https://localhost:8080/api/shops/0",
+									"protocol": "https",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"api",
+										"shops",
+										"0"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "create - bad location CP",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"name\": \"Manolo Shop\",\r\n    \"location\": {\r\n        \"postalCode\": \"asd\",\r\n        \"city\": \"ssdfa\",\r\n        \"number\": \"sdfsdf\",\r\n        \"street\": \"Lsdf\",\r\n        \"province\": \"Lasdfsdf\",\r\n        \"country\": \"Esdfsdf\"\r\n    }\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "https://localhost:8080/api/shops",
+									"protocol": "https",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"api",
+										"shops"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "delete - bad ID",
+							"request": {
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "https://localhost:8080/api/shops/58b4b04d-6e9c-42ba-b239-3e86837b7c99",
+									"protocol": "https",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"api",
+										"shops",
+										"58b4b04d-6e9c-42ba-b239-3e86837b7c99"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "getall",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://localhost:8080/api/shops?page=0&size=5&direction=asc&orderBy=id",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"shops"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "0"
+								},
+								{
+									"key": "location",
+									"value": "afaf",
+									"disabled": true
+								},
+								{
+									"key": "name",
+									"value": "dfsf",
+									"disabled": true
+								},
+								{
+									"key": "size",
+									"value": "5"
+								},
+								{
+									"key": "direction",
+									"value": "asc"
+								},
+								{
+									"key": "orderBy",
+									"value": "id"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getById",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://localhost:8080/api/shops/c482c4d8-e083-4496-88fe-06b461d7d17b",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"shops",
+								"c482c4d8-e083-4496-88fe-06b461d7d17b"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "update",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"Manolo Shop 2\",\r\n    \"location\": {\r\n        \"postalCode\": \"27656\",\r\n        \"city\": \"ssdfa\",\r\n        \"number\": \"sdfsdf\",\r\n        \"street\": \"Lsdf\",\r\n        \"province\": \"Lasdfsdf\",\r\n        \"country\": \"Esdfsdf\"\r\n    }\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://localhost:8080/api/shops/0e227d23-3708-4782-9549-357d47f8c560",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"shops",
+								"0e227d23-3708-4782-9549-357d47f8c560"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "create",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"Manolo Shop\",\r\n    \"location\": {\r\n        \"postalCode\": \"27656\",\r\n        \"city\": \"ssdfa\",\r\n        \"number\": \"sdfsdf\",\r\n        \"street\": \"Lsdf\",\r\n        \"province\": \"Lasdfsdf\",\r\n        \"country\": \"Esdfsdf\"\r\n    }\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://localhost:8080/api/shops",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"shops"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "delete",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "https://localhost:8080/api/shops/c482c4d8-e083-4496-88fe-06b461d7d17b",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"shops",
+								"c482c4d8-e083-4496-88fe-06b461d7d17b"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Add Book",
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"url": {
+							"raw": "https://localhost:8080/api/shops/c482c4d8-e083-4496-88fe-06b461d7d17b/books/1",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"shops",
+								"c482c4d8-e083-4496-88fe-06b461d7d17b",
+								"books",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Remove Book",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "https://localhost:8080/api/shops/c482c4d8-e083-4496-88fe-06b461d7d17b/books/1",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"shops",
+								"c482c4d8-e083-4496-88fe-06b461d7d17b",
+								"books",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Add Client",
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"url": {
+							"raw": "https://localhost:8080/api/shops/c482c4d8-e083-4496-88fe-06b461d7d17b/clients/83fa7ed8-b6fb-407c-b7d7-3f0952dc2c70",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"shops",
+								"c482c4d8-e083-4496-88fe-06b461d7d17b",
+								"clients",
+								"83fa7ed8-b6fb-407c-b7d7-3f0952dc2c70"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Remove Client",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "https://localhost:8080/api/shops/c482c4d8-e083-4496-88fe-06b461d7d17b/clients/83fa7ed8-b6fb-407c-b7d7-3f0952dc2c70",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"shops",
+								"c482c4d8-e083-4496-88fe-06b461d7d17b",
+								"clients",
+								"83fa7ed8-b6fb-407c-b7d7-3f0952dc2c70"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Client",
+			"item": [
+				{
+					"name": "🔴 Casos incorrectos",
+					"item": [
+						{
+							"name": "getAllClients page -1",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Response status code is 400\", function () {\r",
+											"    pm.response.to.have.status(400);\r",
+											"});\r",
+											"\r",
+											"\r",
+											"pm.test(\"Response has the required fields - status and msg\", function () {\r",
+											"    const responseData = pm.response.json();\r",
+											"    \r",
+											"    pm.expect(responseData).to.be.an('object');\r",
+											"    pm.expect(responseData).to.have.property('status');\r",
+											"    pm.expect(responseData).to.have.property('msg');\r",
+											"});\r",
+											"\r",
+											"\r",
+											"pm.test(\"Status is a non-zero integer\", function () {\r",
+											"    const responseData = pm.response.json();\r",
+											"\r",
+											"    pm.expect(responseData.status).to.exist.and.to.be.a('number');\r",
+											"    pm.expect(responseData.status).to.not.equal(0);\r",
+											"});\r",
+											"\r",
+											"\r",
+											"pm.test(\"Message is a non-empty string\", function () {\r",
+											"  const responseData = pm.response.json();\r",
+											"  \r",
+											"  pm.expect(responseData).to.be.an('object');\r",
+											"  pm.expect(responseData.msg).to.exist.and.to.be.a('string').and.to.have.lengthOf.at.least(1, \"Value should not be empty\");\r",
+											"});\r",
+											"\r",
+											"\r",
+											"pm.test(\"Verify sortBy parameter is included in the response and has the expected value\", function () {\r",
+											"    const responseData = pm.response.json();\r",
+											"    \r",
+											"    pm.expect(responseData).to.be.an('object');\r",
+											"    pm.expect(responseData.sortBy).to.exist.and.to.equal(\"pepe\");\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "https://localhost:8080/api/clients?email=Gmail&page=-1",
+									"protocol": "https",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"api",
+										"clients"
+									],
+									"query": [
+										{
+											"key": "size",
+											"value": "1",
+											"disabled": true
+										},
+										{
+											"key": "orderBy",
+											"value": "pepe",
+											"disabled": true
+										},
+										{
+											"key": "order",
+											"value": "asc",
+											"disabled": true
+										},
+										{
+											"key": "name",
+											"value": "ju",
+											"disabled": true
+										},
+										{
+											"key": "surname",
+											"value": "peRe",
+											"disabled": true
+										},
+										{
+											"key": "email",
+											"value": "Gmail",
+											"description": "juan"
+										},
+										{
+											"key": "phone",
+											"value": "1234",
+											"disabled": true
+										},
+										{
+											"key": "address",
+											"value": "Calle fAlsa 3",
+											"disabled": true
+										},
+										{
+											"key": "pepe",
+											"value": "0",
+											"disabled": true
+										},
+										{
+											"key": "page",
+											"value": "-1"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "getAllClients size 0",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Response status code is 400\", function () {\r",
+											"    pm.response.to.have.status(400);\r",
+											"});\r",
+											"\r",
+											"\r",
+											"pm.test(\"Response has the required fields - status and msg\", function () {\r",
+											"    const responseData = pm.response.json();\r",
+											"    \r",
+											"    pm.expect(responseData).to.be.an('object');\r",
+											"    pm.expect(responseData).to.have.property('status');\r",
+											"    pm.expect(responseData).to.have.property('msg');\r",
+											"});\r",
+											"\r",
+											"\r",
+											"pm.test(\"Status is a non-zero integer\", function () {\r",
+											"    const responseData = pm.response.json();\r",
+											"\r",
+											"    pm.expect(responseData.status).to.exist.and.to.be.a('number');\r",
+											"    pm.expect(responseData.status).to.not.equal(0);\r",
+											"});\r",
+											"\r",
+											"\r",
+											"pm.test(\"Message is a non-empty string\", function () {\r",
+											"  const responseData = pm.response.json();\r",
+											"  \r",
+											"  pm.expect(responseData).to.be.an('object');\r",
+											"  pm.expect(responseData.msg).to.exist.and.to.be.a('string').and.to.have.lengthOf.at.least(1, \"Value should not be empty\");\r",
+											"});\r",
+											"\r",
+											"\r",
+											"pm.test(\"Verify sortBy parameter is included in the response and has the expected value\", function () {\r",
+											"    const responseData = pm.response.json();\r",
+											"    \r",
+											"    pm.expect(responseData).to.be.an('object');\r",
+											"    pm.expect(responseData.sortBy).to.exist.and.to.equal(\"pepe\");\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "https://localhost:8080/api/clients?size=0&email=Gmail&page=0",
+									"protocol": "https",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"api",
+										"clients"
+									],
+									"query": [
+										{
+											"key": "size",
+											"value": "0"
+										},
+										{
+											"key": "orderBy",
+											"value": "pep",
+											"disabled": true
+										},
+										{
+											"key": "order",
+											"value": "asc",
+											"disabled": true
+										},
+										{
+											"key": "name",
+											"value": "ju",
+											"disabled": true
+										},
+										{
+											"key": "surname",
+											"value": "peRe",
+											"disabled": true
+										},
+										{
+											"key": "email",
+											"value": "Gmail",
+											"description": "juan"
+										},
+										{
+											"key": "phone",
+											"value": "1234",
+											"disabled": true
+										},
+										{
+											"key": "address",
+											"value": "Calle fAlsa 3",
+											"disabled": true
+										},
+										{
+											"key": "pepe",
+											"value": "0",
+											"disabled": true
+										},
+										{
+											"key": "page",
+											"value": "0"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "getClient Bad ID",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "https://localhost:8080/api/clients/5",
+									"protocol": "https",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"api",
+										"clients",
+										"5"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "createClient Empty",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n\r\n    \"address\": {\r\n\r\n    }\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "https://localhost:8080/api/clients",
+									"protocol": "https",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"api",
+										"clients"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "createClient Bad phone & email & addressCP",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"name\": -5654,\r\n    \"surname\": -345,\r\n    \"email\": \"sdf\",\r\n    \"phone\": \"sdffsd\",\r\n    \"address\": {\r\n        \"postalCode\": \"sdfsdf\",\r\n        \"city\": 345,\r\n        \"number\": 345,\r\n        \"street\": 345,\r\n        \"province\": 345,\r\n        \"country\": 345\r\n    }\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "https://localhost:8080/api/clients",
+									"protocol": "https",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"api",
+										"clients"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "updateClient Empty",
+							"request": {
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"address\": {\r\n    }\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "https://localhost:8080/api/clients/6c8aeebf-8e5a-4381-805f-a2494262d6d7",
+									"protocol": "https",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"api",
+										"clients",
+										"6c8aeebf-8e5a-4381-805f-a2494262d6d7"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "updateClient Bad phone & email & addressCP",
+							"request": {
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"name\": -5654,\r\n    \"surname\": -345,\r\n    \"email\": \"sdf\",\r\n    \"phone\": \"sdffsd\",\r\n    \"address\": {\r\n        \"postalCode\": \"sdfsdf\",\r\n        \"city\": 345,\r\n        \"number\": 345,\r\n        \"street\": 345,\r\n        \"province\": 345,\r\n        \"country\": 345\r\n    }\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "https://localhost:8080/api/clients/6c8aeebf-8e5a-4381-805f-a2494262d6d7",
+									"protocol": "https",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"api",
+										"clients",
+										"6c8aeebf-8e5a-4381-805f-a2494262d6d7"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "deleteClient bad ID",
+							"request": {
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "https://localhost:8080/api/clients/3",
+									"protocol": "https",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"api",
+										"clients",
+										"3"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "getClientByEmail mail not exists",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "https://localhost:8080/api/clients/email/-657",
+									"protocol": "https",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"api",
+										"clients",
+										"email",
+										"-657"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "updateImage BadRequest",
+							"request": {
+								"method": "PATCH",
+								"header": [],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
+										{
+											"key": "file",
+											"type": "file",
+											"src": "/C:/Users/madir/Pictures/Iconos/foldergreengames_93035.ico"
+										}
+									]
+								},
+								"url": {
+									"raw": "https://localhost:8080/api/clients/b2216fde-053e-4cbc-9d3e-1225fd207b07/image",
+									"protocol": "https",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"api",
+										"clients",
+										"b2216fde-053e-4cbc-9d3e-1225fd207b07",
+										"image"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "getAllClients",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Response status code is 400\", function () {\r",
+									"    pm.response.to.have.status(400);\r",
+									"});\r",
+									"\r",
+									"\r",
+									"pm.test(\"Response has the required fields - status and msg\", function () {\r",
+									"    const responseData = pm.response.json();\r",
+									"    \r",
+									"    pm.expect(responseData).to.be.an('object');\r",
+									"    pm.expect(responseData).to.have.property('status');\r",
+									"    pm.expect(responseData).to.have.property('msg');\r",
+									"});\r",
+									"\r",
+									"\r",
+									"pm.test(\"Status is a non-zero integer\", function () {\r",
+									"    const responseData = pm.response.json();\r",
+									"\r",
+									"    pm.expect(responseData.status).to.exist.and.to.be.a('number');\r",
+									"    pm.expect(responseData.status).to.not.equal(0);\r",
+									"});\r",
+									"\r",
+									"\r",
+									"pm.test(\"Message is a non-empty string\", function () {\r",
+									"  const responseData = pm.response.json();\r",
+									"  \r",
+									"  pm.expect(responseData).to.be.an('object');\r",
+									"  pm.expect(responseData.msg).to.exist.and.to.be.a('string').and.to.have.lengthOf.at.least(1, \"Value should not be empty\");\r",
+									"});\r",
+									"\r",
+									"\r",
+									"pm.test(\"Verify sortBy parameter is included in the response and has the expected value\", function () {\r",
+									"    const responseData = pm.response.json();\r",
+									"    \r",
+									"    pm.expect(responseData).to.be.an('object');\r",
+									"    pm.expect(responseData.sortBy).to.exist.and.to.equal(\"pepe\");\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://localhost:8080/api/clients?email=Gmail",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"clients"
+							],
+							"query": [
+								{
+									"key": "size",
+									"value": "1",
+									"disabled": true
+								},
+								{
+									"key": "orderBy",
+									"value": "pepe",
+									"disabled": true
+								},
+								{
+									"key": "order",
+									"value": "asc",
+									"disabled": true
+								},
+								{
+									"key": "name",
+									"value": "ju",
+									"disabled": true
+								},
+								{
+									"key": "surname",
+									"value": "peRe",
+									"disabled": true
+								},
+								{
+									"key": "email",
+									"value": "Gmail",
+									"description": "juan"
+								},
+								{
+									"key": "phone",
+									"value": "1234",
+									"disabled": true
+								},
+								{
+									"key": "address",
+									"value": "Calle fAlsa 3",
+									"disabled": true
+								},
+								{
+									"key": "pepe",
+									"value": "0",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getClient",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://localhost:8080/api/clients/6c8aeebf-8e5a-4381-805f-a2494262d6d7",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"clients",
+								"6c8aeebf-8e5a-4381-805f-a2494262d6d7"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "createClient",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"Daniel yp\",\r\n    \"surname\": \"ñdskfñsd\",\r\n    \"email\": \"test@madirex.com\",\r\n    \"phone\": \"6456454\",\r\n    \"address\": {\r\n        \"postalCode\": \"27656\",\r\n        \"city\": \"ssdfa\",\r\n        \"number\": \"sdfsdf\",\r\n        \"street\": \"Lsdf\",\r\n        \"province\": \"Lasdfsdf\",\r\n        \"country\": \"Esdfsdf\"\r\n    }\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://localhost:8080/api/clients",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"clients"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "updateClient",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"Daniel yp\",\r\n    \"address\": {\r\n        \"postalCode\": \"27656\",\r\n        \"city\": \"ssdfa\",\r\n        \"number\": \"sdfsdf\",\r\n        \"street\": \"Lsdf\",\r\n        \"province\": \"Lasdfsdf\",\r\n        \"country\": \"Esdfsdf\"\r\n    }\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://localhost:8080/api/clients/6c8aeebf-8e5a-4381-805f-a2494262d6d7",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"clients",
+								"6c8aeebf-8e5a-4381-805f-a2494262d6d7"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "deleteClient",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "https://localhost:8080/api/clients/e67b9249-f173-414a-b977-767238c918ab",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"clients",
+								"e67b9249-f173-414a-b977-767238c918ab"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getClientByEmail",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://localhost:8080/api/clients/email/test@madirex.com",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"clients",
+								"email",
+								"test@madirex.com"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "updateImage",
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "file",
+									"type": "file",
+									"src": "/C:/Users/madir/Pictures/file.jpg"
+								}
+							]
+						},
+						"url": {
+							"raw": "https://localhost:8080/api/clients/6c8aeebf-8e5a-4381-805f-a2494262d6d7/image",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"clients",
+								"6c8aeebf-8e5a-4381-805f-a2494262d6d7",
+								"image"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Orders",
+			"item": [
+				{
+					"name": "🔴 Casos incorrectos",
+					"item": [
+						{
+							"name": "Sin elementos para procesar",
+							"request": {
+								"auth": {
+									"type": "basic",
+									"basic": [
+										{
+											"key": "password",
+											"value": "",
+											"type": "string"
+										},
+										{
+											"key": "username",
+											"value": "admin",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"quantity\": 2,\r\n    \"client\": {\r\n    },\r\n    \"orderLineList\":[\r\n    ],\r\n    \"userId\": 1\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "https://localhost:8080/api/orders",
+									"protocol": "https",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"api",
+										"orders"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Errores nulos",
+							"request": {
+								"auth": {
+									"type": "basic",
+									"basic": [
+										{
+											"key": "password",
+											"value": "",
+											"type": "string"
+										},
+										{
+											"key": "username",
+											"value": "admin",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "https://localhost:8080/api/orders",
+									"protocol": "https",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"api",
+										"orders"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Datos del cliente nulos",
+							"request": {
+								"auth": {
+									"type": "basic",
+									"basic": [
+										{
+											"key": "password",
+											"value": "",
+											"type": "string"
+										},
+										{
+											"key": "username",
+											"value": "admin",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"quantity\": 2,\r\n    \"client\": {\r\n    },\r\n    \"orderLineList\":[\r\n        {\r\n            \r\n        }\r\n    ],\r\n    \"userId\": 1\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "https://localhost:8080/api/orders",
+									"protocol": "https",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"api",
+										"orders"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Producto con ID no válida",
+							"request": {
+								"auth": {
+									"type": "basic",
+									"basic": [
+										{
+											"key": "password",
+											"value": "",
+											"type": "string"
+										},
+										{
+											"key": "username",
+											"value": "admin",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"quantity\": 1,\r\n    \"client\": {\r\n        \"phone\" : \"asd\",\r\n        \"address\":{\r\n            \"number\": \"sad\",\r\n            \"cp\": \"13434\",\r\n            \"country\": \"dsfsd\",\r\n            \"province\": \"3asd2\",\r\n            \"street\": 234,\r\n            \"city\": 234\r\n        },\r\n        \"email\": \"madirexland@gmail.com\",\r\n        \"fullName\": 234\r\n    },\r\n    \"orderLineList\":[\r\n        {\r\n            \"productId\": 234,\r\n            \"productPrice\": 23\r\n        }\r\n    ],\r\n    \"userId\": 1,\r\n    \"total\": 23\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "https://localhost:8080/api/orders",
+									"protocol": "https",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"api",
+										"orders"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Producto con ID no válida Copy",
+							"request": {
+								"auth": {
+									"type": "basic",
+									"basic": [
+										{
+											"key": "password",
+											"value": "",
+											"type": "string"
+										},
+										{
+											"key": "username",
+											"value": "admin",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"quantity\": 1,\r\n    \"client\": {\r\n        \"phone\" : \"asd\",\r\n        \"address\":{\r\n            \"number\": \"sad\",\r\n            \"cp\": \"13434\",\r\n            \"country\": \"dsfsd\",\r\n            \"province\": \"3asd2\",\r\n            \"street\": 234,\r\n            \"city\": 234\r\n        },\r\n        \"email\": \"madirexland@gmail.com\",\r\n        \"fullName\": 234\r\n    },\r\n    \"orderLineList\":[\r\n        {\r\n            \"productId\": 234,\r\n            \"productPrice\": 23\r\n        }\r\n    ],\r\n    \"userId\": 1,\r\n    \"total\": 23\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "https://localhost:8080/api/orders",
+									"protocol": "https",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"api",
+										"orders"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Producto no tiene precio válido o no coincide",
+							"request": {
+								"auth": {
+									"type": "basic",
+									"basic": [
+										{
+											"key": "password",
+											"value": "",
+											"type": "string"
+										},
+										{
+											"key": "username",
+											"value": "admin",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"quantity\": 1,\r\n    \"client\": {\r\n        \"phone\" : \"asd\",\r\n        \"address\":{\r\n            \"number\": \"sad\",\r\n            \"cp\": \"13434\"\r\n        }\r\n    },\r\n    \"orderLineList\":[\r\n        {\r\n            \"productId\": \"9882a6d0-0d85-41c4-a464-219418174edc\"\r\n        }\r\n    ],\r\n    \"userId\": 1\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "https://localhost:8080/api/orders",
+									"protocol": "https",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"api",
+										"orders"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Email no válido y country y province caracteres",
+							"request": {
+								"auth": {
+									"type": "basic",
+									"basic": [
+										{
+											"key": "password",
+											"value": "",
+											"type": "string"
+										},
+										{
+											"key": "username",
+											"value": "admin",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"quantity\": 1,\r\n    \"client\": {\r\n        \"phone\" : \"asd\",\r\n        \"address\":{\r\n            \"number\": \"sad\",\r\n            \"cp\": \"13434\",\r\n            \"country\": 34,\r\n            \"province\": 32,\r\n            \"street\": 234,\r\n            \"city\": 234\r\n        },\r\n        \"email\": \"34\",\r\n        \"fullName\": 234\r\n    },\r\n    \"orderLineList\":[\r\n        {\r\n            \"productId\": \"01e71601-e3fe-4ca9-b151-6ff94c3fe8e3\",\r\n            \"productPrice\": 23\r\n        }\r\n    ],\r\n    \"userId\": 1,\r\n    \"total\": 23\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "https://localhost:8080/api/orders",
+									"protocol": "https",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"api",
+										"orders"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Empty values",
+							"request": {
+								"auth": {
+									"type": "basic",
+									"basic": [
+										{
+											"key": "password",
+											"value": "",
+											"type": "string"
+										},
+										{
+											"key": "username",
+											"value": "admin",
+											"type": "string"
+										}
+									]
+								},
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"quantity\": 1,\r\n    \"client\": {\r\n        \"address\":{\r\n        }\r\n    },\r\n    \"orderLineList\":[\r\n        {\r\n        }\r\n    ]\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "https://localhost:8080/api/orders/655a54c83f761d101f941f4e",
+									"protocol": "https",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"api",
+										"orders",
+										"655a54c83f761d101f941f4e"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Producto con ID no válida",
+							"request": {
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"quantity\": 1,\r\n    \"client\": {\r\n        \"phone\" : \"asd\",\r\n        \"address\":{\r\n            \"number\": \"sad\",\r\n            \"cp\": \"13434\",\r\n            \"country\": \"dsfsd\",\r\n            \"province\": \"3asd2\",\r\n            \"street\": 234,\r\n            \"city\": 234\r\n        },\r\n        \"email\": \"madirexland@gmail.com\",\r\n        \"fullName\": 234\r\n    },\r\n    \"orderLineList\":[\r\n        {\r\n            \"productId\": 234,\r\n            \"productPrice\": 23\r\n        }\r\n    ],\r\n    \"userId\": 1,\r\n    \"total\": 23\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "https://localhost:8080/api/orders/655a59d28d33633b5d2be7c8",
+									"protocol": "https",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"api",
+										"orders",
+										"655a59d28d33633b5d2be7c8"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Get Orders by client INVALID",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "https://localhost:8080/api/orders/client/2",
+									"protocol": "https",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"api",
+										"orders",
+										"client",
+										"2"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Get Orders by user INVALID",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "https://localhost:8080/api/orders/user/2",
+									"protocol": "https",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"api",
+										"orders",
+										"user",
+										"2"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Get Orders by shop INVALID",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "https://localhost:8080/api/orders/shop/2",
+									"protocol": "https",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"api",
+										"orders",
+										"shop",
+										"2"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Get All Orders",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://localhost:8080/api/orders?page=0&size=5&sortBy=id&direction=desc",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"orders"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "0"
+								},
+								{
+									"key": "size",
+									"value": "5"
+								},
+								{
+									"key": "sortBy",
+									"value": "id"
+								},
+								{
+									"key": "direction",
+									"value": "desc"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Order By Id",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://localhost:8080/api/orders/656d2dd912629d4e23e9d974",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"orders",
+								"656d2dd912629d4e23e9d974"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Orders by client",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://localhost:8080/api/orders/client/6c8aeebf-8e5a-4381-805f-a2494262d6d7",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"orders",
+								"client",
+								"6c8aeebf-8e5a-4381-805f-a2494262d6d7"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Orders by user",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://localhost:8080/api/orders/user/6c8aeebf-8e5a-4381-805f-a2494262d6d7",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"orders",
+								"user",
+								"6c8aeebf-8e5a-4381-805f-a2494262d6d7"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Orders by shop",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://localhost:8080/api/orders/shop/8c912740-a044-4c6c-9384-013d2b7cd150",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"orders",
+								"shop",
+								"8c912740-a044-4c6c-9384-013d2b7cd150"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Post Order",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"clientId\": \"6c8aeebf-8e5a-4381-805f-a2494262d6d7\",\r\n    \"orderLines\":[\r\n        {\r\n            \"bookId\": 1,\r\n            \"productId\": \"1783830d-1832-466e-a444-9510cecd06c2\",\r\n            \"price\": 23,\r\n            \"quantity\": 1\r\n        }\r\n    ],\r\n    \"shopId\": \"8c912740-a044-4c6c-9384-013d2b7cd150\",\r\n    \"userId\": \"6c8aeebf-8e5a-4381-805f-a2494262d6d7\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://localhost:8080/api/orders",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"orders"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Order",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"clientId\": \"6c8aeebf-8e5a-4381-805f-a2494262d6d7\",\r\n    \"orderLines\":[\r\n        {\r\n            \"bookId\": 1,\r\n            \"productId\": \"1783830d-1832-466e-a444-9510cecd06c2\",\r\n            \"price\": 23,\r\n            \"quantity\": 1\r\n        }\r\n    ],\r\n    \"shopId\": \"8c912740-a044-4c6c-9384-013d2b7cd150\",\r\n    \"userId\": \"6c8aeebf-8e5a-4381-805f-a2494262d6d7\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://localhost:8080/api/orders/656d2dd912629d4e23e9d974",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"orders",
+								"656d2dd912629d4e23e9d974"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Order",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://localhost:8080/api/orders/656d2dd912629d4e23e9d974",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"orders",
+								"656d2dd912629d4e23e9d974"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Logic Order",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"quantity\": 1,\r\n    \"client\": {\r\n        \"phone\" : \"asd\",\r\n        \"address\":{\r\n            \"number\": \"sad\",\r\n            \"cp\": \"13434\",\r\n            \"country\": \"dsfsd\",\r\n            \"province\": \"3asd2\",\r\n            \"street\": 234,\r\n            \"city\": 234\r\n        },\r\n        \"email\": \"madirexland@gmail.com\",\r\n        \"fullName\": 234\r\n    },\r\n    \"orderLineList\":[\r\n        {\r\n            \"productId\": \"51fde372-8afa-4863-9b4b-9211202c926f\",\r\n            \"productPrice\": 23\r\n        }\r\n    ],\r\n    \"userId\": 1,\r\n    \"total\": 23\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://localhost:8080/api/orders/delete/656d2e5812629d4e23e9d97a",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"orders",
+								"delete",
+								"656d2e5812629d4e23e9d97a"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"auth": {
+		"type": "bearer",
+		"bearer": [
+			{
+				"key": "token",
+				"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhZG1pbiIsImlhdCI6MTcwMTY5MjE4OCwiZXhwIjoxNzAxNzc4NTg4LCJleHRyYSI6e319.gfPeYatPgjvhlXopsg8QVP33IyclHzfp6VxOJ9W9tNih5JIMzkng2dBCuVDYS8a2416KOo65tnWSqw3M4T9grQ",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	]
+}
