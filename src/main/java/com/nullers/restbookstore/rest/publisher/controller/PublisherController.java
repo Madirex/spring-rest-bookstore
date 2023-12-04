@@ -142,49 +142,6 @@ public class PublisherController {
     }
 
     /**
-     * Método que añade un libro a un publisher
-     *
-     * @param bookId id del libro
-     * @param id     id del publisher
-     * @return ResponseEntity<PublisherDto>
-     */
-    @Operation(summary = "Añade un libro a una editorial", description = "Añade un libro a una editorial")
-    @Parameter(name = "id", description = "id de la editorial a actualizar", example = "1", required = true)
-    @Parameter(name = "bookId", description = "id del libro a añadir", example = "1", required = true)
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Libro añadido"),
-            @ApiResponse(responseCode = "400", description = "Editorial no válida"),
-            @ApiResponse(responseCode = "404", description = "Editorial no encontrada"),
-    })
-    @PatchMapping("/books/{id}")
-    @PreAuthorize("hasAnyRole('ADMIN')")
-    public ResponseEntity<PublisherDTO> updatePatchBook(@PathVariable Long id, @RequestParam Long bookId) {
-        PublisherDTO publisherDto = publisherService.addBookPublisher(id, bookId);
-        return ResponseEntity.ok(publisherDto);
-    }
-
-    /**
-     * Método que elimina un libro de un publisher
-     *
-     * @param bookId id del libro
-     * @param id     id del publisher
-     * @return ResponseEntity<PublisherDto>
-     */
-    @Operation(summary = "Elimina un libro de una editorial", description = "Elimina un libro de una editorial")
-    @Parameter(name = "id", description = "id de la editorial a actualizar", example = "1", required = true)
-    @Parameter(name = "bookId", description = "id del libro a eliminar", example = "1", required = true)
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "204", description = "Libro eliminado"),
-            @ApiResponse(responseCode = "400", description = "Editorial no válida"),
-            @ApiResponse(responseCode = "404", description = "Editorial no encontrada"),
-    })
-    @PatchMapping("/books/remove/{id}")
-    @PreAuthorize("hasAnyRole('ADMIN')")
-    public ResponseEntity<PublisherDTO> updatePatchBookDelete(@PathVariable Long id, @RequestParam Long bookId) {
-        return ResponseEntity.ok(publisherService.removeBookPublisher(id, bookId));
-    }
-
-    /**
      * Método que elimina un publisher
      *
      * @param id id del publisher a eliminar

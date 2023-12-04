@@ -195,7 +195,7 @@ public class ClientController {
             @ApiResponse(responseCode = "404", description = "Cliente no encontrado"),
     })
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> delete(@PathVariable UUID id) {
+    public ResponseEntity<String> delete(@PathVariable UUID id) {
         clientService.deleteById(id);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }

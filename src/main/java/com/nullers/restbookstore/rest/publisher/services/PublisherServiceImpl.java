@@ -2,7 +2,6 @@ package com.nullers.restbookstore.rest.publisher.services;
 
 import com.nullers.restbookstore.rest.book.exceptions.BookNotFoundException;
 import com.nullers.restbookstore.rest.book.model.Book;
-import com.nullers.restbookstore.rest.book.repository.BookRepository;
 import com.nullers.restbookstore.rest.publisher.dto.CreatePublisherDto;
 import com.nullers.restbookstore.rest.publisher.dto.PatchPublisherDto;
 import com.nullers.restbookstore.rest.publisher.dto.PublisherDTO;
@@ -44,7 +43,6 @@ public class PublisherServiceImpl implements PublisherService {
     public static final String NO_EXISTS_STR = " no existe";
     public static final String PUBLISHER_WITH_ID_STR = "El publisher con id ";
     private final PublisherRepository publisherRepository;
-    private final BookRepository bookRepository;
     private final PublisherMapper publisherMapper;
     private final CreatePublisherMapper createPublisherMapper;
     private final StorageService storageService;
@@ -53,17 +51,15 @@ public class PublisherServiceImpl implements PublisherService {
      * Constructor de PublisherServiceImpl
      *
      * @param publisherRepository   repositorio de publisher
-     * @param bookRepository        repositorio de book
      * @param publisherMapper       mapper de publisher
      * @param createPublisherMapper mapper de createPublisher
      * @param storageService        servicio de storage
      */
     @Autowired
-    public PublisherServiceImpl(PublisherRepository publisherRepository, BookRepository bookRepository,
+    public PublisherServiceImpl(PublisherRepository publisherRepository,
                                 PublisherMapper publisherMapper, CreatePublisherMapper createPublisherMapper,
                                 StorageService storageService) {
         this.publisherRepository = publisherRepository;
-        this.bookRepository = bookRepository;
         this.publisherMapper = publisherMapper;
         this.createPublisherMapper = createPublisherMapper;
         this.storageService = storageService;
@@ -136,42 +132,6 @@ public class PublisherServiceImpl implements PublisherService {
         var publisherUpdate = publisherMapper.toDto(publisher);
         Publisher updatedPublisher = publisherMapper.toPublisherModification(publisherDTO, publisherUpdate);
         return publisherMapper.toDto(publisherRepository.save(updatedPublisher));
-    }
-
-    /**
-     * Añade un libro a un publisher
-     *
-     * @param id     id del publisher
-     * @param bookId id del libro que se quiere añadir
-     * @return PublisherDto con el libro añadido
-     */
-    @Override
-    @CachePut(key = "#id")
-    public PublisherDTO addBookPublisher(Long id, Long bookId) {
-        Book bookToAdd = bookRepository.findById(bookId).orElseThrow(() -> new BookNotFoundException("El libro con id " + bookId + NO_EXISTS_STR));
-        Publisher publisher = publisherRepository.findById(id).orElseThrow(() -> new PublisherNotFound(PUBLISHER_WITH_ID_STR + id + NO_EXISTS_STR));
-        publisher.getBooks().add(bookToAdd);
-        Publisher publisherToUpdate = publisherRepository.save(publisher);
-        return publisherMapper.toDto(publisherToUpdate);
-    }
-
-    /**
-     * Elimina un libro de un publisher
-     *
-     * @param id     id del publisher
-     * @param bookId id del libro que se quiere eliminar
-     * @return PublisherDto con el libro eliminado
-     */
-    @CachePut(key = "#id")
-    @Override
-    public PublisherDTO removeBookPublisher(Long id, Long bookId) {
-        Book bookToRemove = bookRepository.getReferenceById(bookId);
-        var publisher = publisherRepository.findById(id)
-                .orElseThrow(() -> new PublisherNotFound(PUBLISHER_WITH_ID_STR + id + NO_EXISTS_STR));
-        var publisherUpdate = publisherMapper.toDto(publisher);
-        publisherUpdate.getBooks().remove(bookToRemove);
-        publisherRepository.save(publisherMapper.toPublisher(publisherUpdate));
-        return publisherUpdate;
     }
 
     /**
