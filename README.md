@@ -1,4 +1,4 @@
-# Rest-BookStore
+# Spring-Rest-BookStore
 <p align="center">
   <img src="https://i.imgur.com/Om8sJgU.jpeg?maxwidth=500"/>
 </p>
